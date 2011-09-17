@@ -134,7 +134,7 @@
             <phase>compile</phase>
             <id>build_win32</id>
             <configuration>
-              <tasks unless="build.unix">
+              <tasks >
                 <mkdir dir="source"/>
                 <mkdir dir="source/build"/>
                 <mkdir dir="source/log4cplus"/>
@@ -158,7 +158,8 @@
                     -G ${CMAKE_MAKE_PROGRAM}
                     -DCMAKE_INSTALL_PREFIX=${project.basedir}/source/build/log4cplus 
                     -DCMAKE_BUILD_TYPE=${build_type} 
-                    -DSHARED_LIBS=Off 
+                    -DSHARED_LIBS=On
+                    -DCMAKE_OSX_ARCHITECTURES=i386
                     .."/>
                 </exec>
                 
@@ -176,7 +177,7 @@
             <phase>compile</phase>
 	    <id>build_unix</id>
             <configuration>
-              <tasks unless="build.win32">
+              <tasks unless="build.unix">
                 <mkdir dir="source"/>
                 <mkdir dir="source/build"/>
                 <mkdir dir="source/log4cplus"/>
@@ -196,7 +197,7 @@
                 </pathconvert>
 		<echo message="using basedir: ${mybasedir}"/>
 		<exec executable="sh" dir="source/log4cplus/build" failonerror="on"> 
-		    <arg line="${mybasedir}/source/log4cplus/configure --prefix=${mybasedir}/source/build/log4cplus --enable-static --disable-shared"/> 
+		    <arg line="${mybasedir}/source/log4cplus/configure --prefix=${mybasedir}/source/build/log4cplus --disable-static --enable-shared"/> 
 		</exec>
                 
                 <exec executable="${MAKE_EXECUTABLE}" dir="source/log4cplus/build" failonerror="on">
