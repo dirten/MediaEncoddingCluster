@@ -17,8 +17,8 @@
  
 -#add_library (log4cplus STATIC ${log4cplus_all_sources})
 -add_library (log4cplus SHARED ${log4cplus_all_sources})
-+add_library (log4cplus STATIC ${log4cplus_all_sources})
-+#add_library (log4cplus SHARED ${log4cplus_all_sources})
++#add_library (log4cplus STATIC ${log4cplus_all_sources})
++add_library (log4cplus SHARED ${log4cplus_all_sources})
  target_link_libraries (log4cplus ${CMAKE_THREAD_LIBS_INIT})
  
  set_target_properties (log4cplus PROPERTIES
