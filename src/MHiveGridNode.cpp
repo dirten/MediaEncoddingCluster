@@ -15,7 +15,7 @@ using namespace std;
  * 
  */
 int main(int argc, char** argv) {
-  Log::open("");
+  //Log::open("");
   org::esb::grid::GridNodeServer s;
   return 0;
 }

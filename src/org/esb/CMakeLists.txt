@@ -121,7 +121,7 @@ add_subdirectory (libjson)
 add_subdirectory (av)
 add_subdirectory (lang)
 add_subdirectory (mq)
-add_subdirectory (grid)
+#add_subdirectory (grid)
 add_subdirectory (rpc)
 #add_subdirectory (api)
 #TARGET_LINK_LIBRARIES(lang
@@ -145,7 +145,7 @@ add_library (util ${UTIL_LINK_TYPE}
   util/Decimal.cpp 
   util/ScopedTimeCounter.cpp 
   util/IllegalFormatException.cpp
-#  util/Log.cpp
+  util/Log.cpp
   util/Timer.cpp
   util/PropertyTree.cpp
 #  util/Queue.cpp

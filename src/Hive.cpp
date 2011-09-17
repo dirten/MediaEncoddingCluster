@@ -441,7 +441,7 @@ int main(int argc, char * argv[]) {
 
   org::esb::config::Config::close();
   LOGINFO("MHive is not running anymore!!!")
-  Log::close();
+  //Log::close();
 
   return 0;
 }

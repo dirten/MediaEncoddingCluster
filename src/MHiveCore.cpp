@@ -11,7 +11,7 @@ int main(int argc, char** argv) {
   org::esb::config::Config::init();
   org::esb::io::File f(argv[0]);
   std::string base_path = org::esb::io::File(f.getParent()).getParent();
-  Log::open(base_path+"/res");
+  //Log::open(base_path+"/res");
 
   org::esb::core::PluginRegistry::getInstance()->load(base_path+"/plugins");
   org::esb::core::PluginRegistry::getInstance()->startServices();

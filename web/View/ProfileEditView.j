@@ -18,7 +18,7 @@ ProfileChanged=@"ProfileChanged";
   -(id)setProfileId:(id) id{
     
     CPLog.debug("setting profile id:"+ id);
-    if(id!="double click to create a new Profile"){
+    if(id!=null&&id!="double click to create a new Profile"){
       var request = [CPURLRequest requestWithURL:"/api/v1/profile?id="+id];
       [request setHTTPMethod:"GET"];
       // see important note about CPJSONPConnection above

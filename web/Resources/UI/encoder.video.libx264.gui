@@ -41,6 +41,7 @@
 	    },
 	    {"id":"width", "type":"string", "title":"Width","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":"720"}},
 	    {"id":"height", "type":"string", "title":"Height","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":"576"}},
+	    {"id":"multipass", "type":"int", "title":"2 Pass encoding","group":"rate_settings","unit":"Yes/No","control":{"type":"CheckBox","defaults":false},"data":[{"option":"cqp", "value":"0"},{"option":"crf", "value":"0"}]},
 	    {"id":"b", "type":"int", "title":"Bitrate","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"1024","min":1,"max":10240}},
 	    {"id":"maxrate", "type":"int", "title":"Max. Bitrate","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"3000","min":1,"max":10240}},
 	    {"id":"minrate", "type":"int", "title":"Min. Bitrate","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"786","min":1,"max":10240}},
@@ -167,8 +168,7 @@
 	    {"id":"fastpskip", "type":"string", "title":"Fast P Frame Skip","group":"picture_settings","unit":"pixel","control":{"type":"CheckBox","defaults":"1"}},
 	    {"id":"intra_refresh", "type":"string", "title":"Intra Refresh","group":"picture_settings","unit":"pixel","control":{"type":"CheckBox","defaults":"0"}},
 	    {"id":"mbtree", "type":"string", "title":"MB Tree Ratecontrol","group":"picture_settings","unit":"pixel","control":{"type":"CheckBox","defaults":"0"}},
-	    {"id":"rc_lookahead", "type":"string", "title":"RC Look Ahead","group":"picture_settings","unit":"pic","control":{"type":"TextBox","defaults":"100"}},
-	    {"id":"multipass", "type":"int", "title":"2 Pass encoding","group":"rate_settings","unit":"Yes/No","control":{"type":"CheckBox","defaults":false}}
+	    {"id":"rc_lookahead", "type":"string", "title":"RC Look Ahead","group":"picture_settings","unit":"pic","control":{"type":"TextBox","defaults":"100"}}
 
 	]
     }

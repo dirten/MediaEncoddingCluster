@@ -408,6 +408,7 @@ IF(WIN32)
       ${FFMPEG_DIR}/lib/avformat-53.dll
       ${FFMPEG_DIR}/lib/avutil-51.dll
       ${FFMPEG_DIR}/lib/swscale-2.dll
+      ${FFMPEG_DIR}/lib/log4cplus-4.dll
     DESTINATION ${LIB_INSTALL_DIR}
     )
 ELSEIF(APPLE)
@@ -418,6 +419,7 @@ ELSEIF(APPLE)
       ${FFMPEG_DIR}/lib/libavformat.dylib
       ${FFMPEG_DIR}/lib/libavutil.dylib
       ${FFMPEG_DIR}/lib/libswscale.dylib
+      ${FFMPEG_DIR}/lib/liblog4cplus.4.dylib
     DESTINATION ${LIB_INSTALL_DIR}
 #    COMPONENT libraries
   )
@@ -457,6 +459,7 @@ ELSE(APPLE)
       ${FFMPEG_DIR}/lib/libavutil.so.51
 #      ${FFMPEG_DIR}/lib/libavcore.so
       ${FFMPEG_DIR}/lib/libswscale.so.2
+      ${FFMPEG_DIR}/lib/liblog4cplus.so.4
     DESTINATION ${LIB_INSTALL_DIR}
     )
     #INSTALL(CODE "CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/mectl ${CMAKE_INSTALL_PREFIX}/bin/mectl)")
