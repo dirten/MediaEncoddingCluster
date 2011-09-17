@@ -134,7 +134,7 @@
             <phase>compile</phase>
             <id>build_win32</id>
             <configuration>
-              <tasks >
+              <tasks unless="build.unix">
                 <mkdir dir="source"/>
                 <mkdir dir="source/build"/>
                 <mkdir dir="source/log4cplus"/>
@@ -177,7 +177,7 @@
             <phase>compile</phase>
 	    <id>build_unix</id>
             <configuration>
-              <tasks unless="build.unix">
+              <tasks unless="build.win32">
                 <mkdir dir="source"/>
                 <mkdir dir="source/build"/>
                 <mkdir dir="source/log4cplus"/>
@@ -198,6 +198,7 @@
 		<echo message="using basedir: ${mybasedir}"/>
 		<exec executable="sh" dir="source/log4cplus/build" failonerror="on"> 
 		    <arg line="${mybasedir}/source/log4cplus/configure --prefix=${mybasedir}/source/build/log4cplus --disable-static --enable-shared"/> 
+		    <env key="CXXFLAGS" value="-arch i386"/>
 		</exec>
                 
                 <exec executable="${MAKE_EXECUTABLE}" dir="source/log4cplus/build" failonerror="on">
