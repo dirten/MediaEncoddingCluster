@@ -52,6 +52,7 @@
         <BOOST_COMPILER>gcc40</BOOST_COMPILER>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
+        <CXXFLAGS>"-arch i386"</CXXFLAGS>
       </properties>
     </profile>
     <profile>
@@ -198,7 +199,7 @@
 		<echo message="using basedir: ${mybasedir}"/>
 		<exec executable="sh" dir="source/log4cplus/build" failonerror="on"> 
 		    <arg line="${mybasedir}/source/log4cplus/configure --prefix=${mybasedir}/source/build/log4cplus --disable-static --enable-shared"/> 
-		    <env key="CXXFLAGS" value="-arch i386"/>
+		    <env key="CXXFLAGS" value="${CXXFLAGS}"/>
 		</exec>
                 
                 <exec executable="${MAKE_EXECUTABLE}" dir="source/log4cplus/build" failonerror="on">
