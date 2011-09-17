@@ -52,7 +52,7 @@
         <BOOST_COMPILER>gcc40</BOOST_COMPILER>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
-        <CXXFLAGS>"-arch i386"</CXXFLAGS>
+        <CXXFLAGS>-arch i386</CXXFLAGS>
       </properties>
     </profile>
     <profile>
