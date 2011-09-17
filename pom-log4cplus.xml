@@ -36,6 +36,7 @@
         <BOOST_COMPILER>gcc41</BOOST_COMPILER>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
+        <CXXFLAGS></CXXFLAGS>
       </properties>
     </profile>
     <profile>
