@@ -37,9 +37,10 @@ MHIVE_BASE=$BASE_PATH
 if [ `uname` == Darwin ]
 then
     MHIVE_BASE=$MHIVE_BASE/Resources
-    export DYLD_LIBRARY_PATH=$MHIVE_BASE/lib
+    export DYLD_LIBRARY_PATH=$MHIVE_BASE/lib:$MHIVE_BASE/plugins
     
 fi
+    export LD_LIBRARY_PATH=$MHIVE_BASE/lib:$MHIVE_BASE/plugins
 
 if [ ! -d /usr/bin ]
 then                    # /usr not mounted

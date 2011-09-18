@@ -36,7 +36,7 @@ namespace org {
         _lib_handle = NULL;
         _filename=filename;
         try {
-          _lib_handle = dlopen(filename.c_str(), RTLD_NOW);
+          _lib_handle = dlopen(filename.c_str(), RTLD_LAZY);
         } catch (std::exception &exc) {
           LOGERROR("Error occurred during loading SharedObject: " << exc.what());
           _lib_handle = NULL;

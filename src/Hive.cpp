@@ -770,11 +770,16 @@ void setupConfig(po::variables_map vm) {
   config::Config::setProperty("preset.path", bpath + "/presets");
   config::Config::setProperty("log.path", bpath + "/logs");
   config::Config::setProperty("db.url", "database=" + bpath + "/data/hive.db");
-#ifdef WIN32
+#ifdef __WIN32__
   config::Config::setProperty("PATH", config::Config::get("PATH") + ";"+bpath+"/plugins");
+#elif defined __APPLE__
+  config::Config::setProperty("DYLD_LIBRARY_PATH", config::Config::get("DYLD_LIBRARY_PATH") + ":"+bpath+"/plugins");
+#elif defined __LINUX__
+  config::Config::setProperty("LD_LIBRARY_PATH", config::Config::get("LD_LIBRARY_PATH") + ":"+bpath+"/plugins");
 #else
-  config::Config::setProperty("PATH", config::Config::get("PATH") + ":"+bpath+"/plugins");
+#error "plattform not supported"
 #endif
+LOGDEBUG("LIBRARY_PATH="<<config::Config::get("DYLD_LIBRARY_PATH"));
   /*
     std::string logpath=std::string("log.path=").append(bpath).append("/logs");
     char * pa=new char[logpath.length()+1];//const_cast<char*>(logpath.c_str());
