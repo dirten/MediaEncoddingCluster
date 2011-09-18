@@ -770,6 +770,11 @@ void setupConfig(po::variables_map vm) {
   config::Config::setProperty("preset.path", bpath + "/presets");
   config::Config::setProperty("log.path", bpath + "/logs");
   config::Config::setProperty("db.url", "database=" + bpath + "/data/hive.db");
+#ifdef WIN32
+  config::Config::setProperty("PATH", config::Config::get("PATH") + ";"+bpath+"/plugins");
+#else
+  config::Config::setProperty("PATH", config::Config::get("PATH") + ":"+bpath+"/plugins");
+#endif
   /*
     std::string logpath=std::string("log.path=").append(bpath).append("/logs");
     char * pa=new char[logpath.length()+1];//const_cast<char*>(logpath.c_str());

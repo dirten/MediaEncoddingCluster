@@ -59,7 +59,7 @@ namespace org {
 
       void ApiWebServer::stopService() {
         LOGTRACEMETHOD("ApiWebServer::stopService()")
-        mg_stop(ctx);
+        //mg_stop(ctx);
       }
 
       ApiWebServer::ApiWebServer() {
