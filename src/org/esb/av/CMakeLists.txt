@@ -63,6 +63,7 @@ IF(NOT WIN32)
 	target_link_libraries (av pthread z io util lang)
 ENDIF(NOT WIN32)
 
+SET_TARGET_PROPERTIES( av PROPERTIES PREFIX "libmhive-")
 
   INSTALL(TARGETS av
     RUNTIME DESTINATION bin
