@@ -118,8 +118,8 @@ INCLUDE(cmake/HiveFindLibJson.txt)
 ############################################################
 SET(MAJOR_VERSION 0)
 SET(MINOR_VERSION 0)
-SET(PATCH_VERSION 4)
-SET(MINOR_PATCH_VERSION 9)
+SET(PATCH_VERSION 5)
+SET(MINOR_PATCH_VERSION 0)
 SET(REV ${SVN_VERSION})
 
 
