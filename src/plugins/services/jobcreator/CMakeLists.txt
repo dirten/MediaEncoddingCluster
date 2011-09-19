@@ -11,7 +11,7 @@ include_directories (${LOG4CPLUS_DIR}/include/litesql)
 add_library (jobcreator SHARED
   JobUtil.cpp
   CodecPropertyTransformer.cpp
-  PresetReaderJson.cpp
+  #PresetReaderJson.cpp
  )
 
 TARGET_LINK_LIBRARIES(jobcreator

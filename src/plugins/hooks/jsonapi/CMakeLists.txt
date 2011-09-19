@@ -12,6 +12,7 @@ include_directories (${FFMPEG_INCLUDE_DIR})
 add_library (jsonapi SHARED
 #  ProcessHandler.cpp
   JSONHandler.cpp
+  PresetVerifier.cpp
 )
 
 TARGET_LINK_LIBRARIES(jsonapi

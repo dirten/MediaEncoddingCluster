@@ -12,7 +12,6 @@ namespace org {
     namespace api {
 
       ServiceOutputStream::ServiceOutputStream(mg_connection *conn) : _conn(conn) {
-
       }
 
       ServiceOutputStream::~ServiceOutputStream() {

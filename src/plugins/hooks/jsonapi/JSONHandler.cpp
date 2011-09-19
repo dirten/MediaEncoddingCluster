@@ -21,7 +21,7 @@
 #include "boost/lexical_cast.hpp"
 #include "org/esb/signal/Message.h"
 #include "org/esb/signal/Messenger.h"
-
+#include "PresetVerifier.h"
 //#include "org/esb/hive/FileImporter.h"
 //#include "org/esb/hive/JobUtil.h"
 namespace org {
@@ -191,6 +191,7 @@ namespace org {
           if (!contains(root["audio"], "id")) {
           result = "no id attribute found in attribute \"audio\"!";
         }
+        result=PresetVerifier::verify(root);
         return result;
       }
 
