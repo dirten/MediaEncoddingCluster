@@ -18,7 +18,7 @@ ProfileChanged=@"ProfileChanged";
   -(id)setProfileId:(id) id{
     
     CPLog.debug("setting profile id:"+ id);
-    if(id!=null&&id!="double click to create a new Profile"){
+    if(id!="double click to create a new Profile"){
       var request = [CPURLRequest requestWithURL:"/api/v1/profile?id="+id];
       [request setHTTPMethod:"GET"];
       // see important note about CPJSONPConnection above
@@ -40,7 +40,7 @@ ProfileChanged=@"ProfileChanged";
 }
 
 -(id)init{
-  CPLog.debug("ProfileEditView INIT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+  CPLog.debug("ProfileEditView INIT12 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
   //self=[super initWithContentRect:CGRectMake(15,150,325,225) styleMask:CPHUDBackgroundWindowMask|CPClosableWindowMask|CPResizableWindowMask];
   views = [CPDictionary dictionary];  
   var self=[super initWithContentRect:CGRectMake(280,50,700,500) styleMask:CPClosableWindowMask|CPResizableWindowMask];
@@ -129,6 +129,7 @@ ProfileChanged=@"ProfileChanged";
   return self;
 }
 - (void)save:(id)sender{
+  CPLog.debug("SAVING PROFILE");
   //CPLog.debug(JSON.stringify(profileData));
   var url="/api/v1/profile";
   if(profileData.data.id)
@@ -150,8 +151,15 @@ ProfileChanged=@"ProfileChanged";
       postNotificationName:ProfileChanged
       object:self
       userInfo:resultData.id];
+   [self close];
+    var alert=[CPAlert alertWithMessageText:@"Profile saved" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"Profile successfull Saved"];
+    [alert setAlertStyle:CPInformationalAlertStyle];
+    [alert runModal];
+  }else{
+    var alert=[CPAlert alertWithError:resultData.error.description];
+    [alert runModal];
   }
-  [self close];
+
 
 }
 - (void)connection:(CPURLConnection)aConnection didReceiveData:(CPString)data

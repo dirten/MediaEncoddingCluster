@@ -4,7 +4,7 @@
 @import "View/ProfileEdit/AudioView.j"
 ProfileChanged=@"ProfileChanged";
 
-@implementation ProfileEditView :CPWindow
+@implementation ProfileEditViewOld :CPWindow
   {
     CPTabView tabView;
   }
