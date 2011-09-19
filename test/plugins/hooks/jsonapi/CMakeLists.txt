@@ -8,6 +8,6 @@ add_executable (PresetVerifierTest PresetVerifierTest.cpp)
 
 target_link_libraries (PresetVerifierTest jsonapi)
 
-ADD_TEST(core.PresetVerifierTest ${EXECUTABLE_OUTPUT_PATH}/PresetVerifierTest)
+#ADD_TEST(core.PresetVerifierTest ${EXECUTABLE_OUTPUT_PATH}/PresetVerifierTest)
 
 
