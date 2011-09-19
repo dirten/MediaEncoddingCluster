@@ -26,7 +26,7 @@ namespace org {
         virtual ~HookNotificationCenter();
         static  HookNotificationCenter * getInstance();
         void  postHook(std::string name,Request * object1=NULL,Response * object2=NULL);
-        void  addObserver(std::string name, boost::function<void (Request*, Response*)> func);
+        void  addObserver(std::string name, boost::function<void (Request*, Response*)> func, int prio);
       private:
         static HookNotificationCenter * _instance;
         std::map<std::string, std::list<boost::function<void (Request*req, Response*res)> > > _hook_map;

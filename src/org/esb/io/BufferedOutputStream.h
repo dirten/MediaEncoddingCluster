@@ -14,7 +14,7 @@ class BufferedOutputStream: public OutputStream{
 		void write(char  buffer);
 		void write(char * buffer, int length);
 		void write(vector <unsigned char >& buffer);
-		void close();
+		bool close();
 		void flush();
 	private:
 		int _buffer_size;

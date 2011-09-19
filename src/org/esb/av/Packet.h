@@ -71,7 +71,7 @@ namespace org {
         int _pict_type;
         TimeStamp _dtsTimeStamp;
         TimeStamp _ptsTimeStamp;
-        Duration _duration;
+        TimeStamp _duration;
         //	uint8_t _data;
         //        friend class boost::serialization::access;
         //		    void serialize(boost::archive::Archive & ar, const unsigned int version);

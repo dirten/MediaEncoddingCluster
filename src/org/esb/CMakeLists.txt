@@ -155,11 +155,11 @@ TARGET_LINK_LIBRARIES(util ${Boost_LIBRARIES} )
 
 IF(UNIX AND NOT APPLE)
     TARGET_LINK_LIBRARIES(util rt)
-  SET(LIB_EXT so)
+  SET(LIB_EXT -1.0.so.4)
   SET(LIB_PRE lib)
 ENDIF()
 IF(APPLE)
-  SET(LIB_EXT dylib)
+  SET(LIB_EXT .dylib)
   SET(LIB_PRE lib)
 ENDIF()
 
@@ -176,7 +176,7 @@ ELSEIF(WIN32)
   ELSE()
     SET(LOG4CPLUS_LIB log4cplus)
   ENDIF()
-  SET(LIB_EXT dll)
+  SET(LIB_EXT .dll)
   SET(LIB_PRE)
 ENDIF(NOT WIN32)
 TARGET_LINK_LIBRARIES(util ${LOG4CPLUS_LIB} )
@@ -186,7 +186,7 @@ TARGET_LINK_LIBRARIES(util ${LOG4CPLUS_LIB} )
     RUNTIME DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
   INSTALL(FILES
-      ${FFMPEG_DIR}/lib/${LIB_PRE}${LOG4CPLUS_LIB}.${LIB_EXT}
+      ${FFMPEG_DIR}/lib/${LIB_PRE}${LOG4CPLUS_LIB}${LIB_EXT}
     DESTINATION ${LIB_INSTALL_DIR}
     )
 #ENDIF(BUILD_SHARED_LIBS)
@@ -325,7 +325,7 @@ add_library (hive SHARED
   hive/HiveException.cpp
   hive/CodecPropertyTransformer.cpp
 #  hive/PresetReader.cpp
-#  hive/PresetReaderJson.cpp
+  hive/PresetReaderJson.cpp
 #  hive/PresetFileWriter.cpp
 #  hive/PresetLoader.cpp
 #  hive/xml/Project.cpp

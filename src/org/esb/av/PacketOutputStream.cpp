@@ -30,12 +30,14 @@ PacketOutputStream::PacketOutputStream(OutputStream * os, std::string statsfile)
   }
 }
 
-void PacketOutputStream::close() {
+bool PacketOutputStream::close() {
+  bool result=false;
   if (_isInitialized){
     LOGINFO("writing trailer");
-    av_write_trailer(_fmtCtx);
+    result=av_write_trailer(_fmtCtx)==0;
   }
   _isInitialized = false;
+  return result;
 }
 
 PacketOutputStream::~PacketOutputStream() {

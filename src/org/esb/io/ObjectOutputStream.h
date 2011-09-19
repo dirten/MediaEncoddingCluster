@@ -20,7 +20,7 @@ namespace org {
                 void write(char buffer);
                 void write(char * buffer, int length);
                 void write(vector <unsigned char >& buffer);
-                void close();
+                bool close();
                 void flush();
 
                 template<typename T>

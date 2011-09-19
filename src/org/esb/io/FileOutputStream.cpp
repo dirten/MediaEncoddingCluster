@@ -24,10 +24,11 @@ FileOutputStream::~FileOutputStream() {
     close();
 }
 
-void FileOutputStream::close() {
+bool FileOutputStream::close() {
     if(_file)
 	fclose(_file);
     _file=0;
+    return true;
 }
 
 void FileOutputStream::flush() {

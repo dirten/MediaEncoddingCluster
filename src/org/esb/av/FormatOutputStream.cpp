@@ -68,10 +68,11 @@ namespace org {
           }*/
       }
 
-      void FormatOutputStream::close() {
+      bool FormatOutputStream::close() {
+        bool result=false;
         if (!(_fmt->flags & AVFMT_NOFILE) && _status == OPENED) {
           LOGINFO("closing format context");
-          avio_close(_fmtCtx->pb);
+          result=avio_close(_fmtCtx->pb)==0;
           int nb_streams = _fmtCtx->nb_streams;
           for (int a = 0; a < nb_streams; a++) {
 //            av_free(_fmtCtx->streams[a]);
@@ -80,6 +81,7 @@ namespace org {
           _status = CLOSED;
         }
         //	av_close_input_file(_fmtCtx);
+        return result;
       };
 
       OutputFormatList FormatOutputStream::getOutputFormats() {

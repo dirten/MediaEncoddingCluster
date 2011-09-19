@@ -22,7 +22,7 @@ namespace org {
                 void write(vector<unsigned char>&buffer);
                 void write(char * buffer);
                 void open();
-                void close();
+                bool close();
                 void addPacketStream(PacketOutputStream & stream, Encoder & encoder);
                 void dumpFormat();
                 static OutputFormatList getOutputFormats();

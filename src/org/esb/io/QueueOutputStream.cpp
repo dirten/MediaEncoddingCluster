@@ -66,7 +66,8 @@ namespace org {
       void QueueOutputStream::write(vector <unsigned char >& buffer) {
       }
 
-      void QueueOutputStream::close() {
+      bool QueueOutputStream::close() {
+        return true;
       }
 
       void QueueOutputStream::flush() {

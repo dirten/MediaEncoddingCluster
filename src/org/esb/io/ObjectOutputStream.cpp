@@ -11,9 +11,10 @@ ObjectOutputStream::ObjectOutputStream(OutputStream * out){
 	void ObjectOutputStream::write(char  buffer){}
 	void ObjectOutputStream::write(char * buffer, int length){}
 	void ObjectOutputStream::write(vector <unsigned char >& buffer){}
-	void ObjectOutputStream::close(){
+	bool ObjectOutputStream::close(){
 	    _os->flush();
 	    _os->close();
+            return true;
 	}
 	void ObjectOutputStream::flush(){}
 

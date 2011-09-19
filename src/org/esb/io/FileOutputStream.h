@@ -15,7 +15,7 @@ public:
                 FileOutputStream(const char * pathname, bool append);
                 FileOutputStream(File * file, bool append);
                 ~FileOutputStream();
-                void close();
+                bool close();
                 void flush();
                 void write(const char * buffer);
                 void write(const std::string&);

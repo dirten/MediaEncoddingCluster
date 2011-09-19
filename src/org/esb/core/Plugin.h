@@ -16,20 +16,31 @@
 namespace org {
   namespace esb {
     namespace core {
+
       class Plugin {
       public:
-        void setContext(AppContext * ac){_ctx=ac;}
-        org::esb::core::AppContext*getContext(){return _ctx;}
-        virtual ~Plugin(){};
+
+        void setContext(AppContext * ac) {
+          _ctx = ac;
+        }
+
+        org::esb::core::AppContext*getContext() {
+          return _ctx;
+        }
+
+        virtual ~Plugin() {
+        };
         //virtual std::map<std::string,std::string> getProperties();
       private:
         org::esb::core::AppContext*_ctx;
       };
+
       template<typename Interface>
-      class Factory{
+      class Factory {
         virtual Interface * create();
       };
-      class WebService{
+
+      class WebService {
         void doRequest(Request *, Response*);
       };
       typedef Factory<WebService> WebServiceFactory;
@@ -45,7 +56,7 @@ namespace org {
 	                        org::esb::core::PluginRegistry::getInstance()->registerPlugin(std::string(name), (org::esb::core::Plugin*)new type()); \
 	                        } \
 	        } Register##type##Instance; 
-	
+
 #define REGISTER_SERVICE(name,type) \
 	class Register##type \
 	        { \
@@ -53,27 +64,22 @@ namespace org {
 	                public: \
 	                        Register##type() \
 	                        { \
-								std::cout<< "Register service"<<name<<std::endl; \
                                 element##type=new type(); \
 	                        org::esb::core::PluginRegistry::getInstance()->registerService(std::string(name), element##type); \
 	                        } \
                                 ~Register##type(){ \
-								std::cout<< "calling destructor "<<name<<std::endl; \
                                 } \
 	        } Register##type##Instance; 
 
-#define REGISTER_HOOK(name,instance, function, id) \
+#define REGISTER_HOOK(name,instance, function, prio) \
 	class Register##instance##id \
 	        { \
 			instance * element##instance; \
 	                public: \
 	                        Register##instance##id() \
 	                        { \
-							std::cout<< "Register hook "<<name<<std::endl; \
-								element##instance=new instance(); \
-							    std::cout<< "hook instance"<<element##instance<<std::endl; \
-                                org::esb::core::HookNotificationCenter::getInstance()->addObserver(name,boost::bind(&function, element##instance,_1,_2)); \
-							    std::cout<< "Register hook ready"<<name<<std::endl; \
+				element##instance=new instance(); \
+                                org::esb::core::HookNotificationCenter::getInstance()->addObserver(name,boost::bind(&function, element##instance,_1,_2),prio); \
 	                        } \
 	        } Register##instance##Instance##id; 
 #define REGISTER_HOOK_PROVIDER(name,type) \
@@ -85,6 +91,6 @@ namespace org {
 	                        org::esb::core::PluginRegistry::getInstance()->registerHookProvider(std::string(name), (org::esb::core::HookProvider*)new type()); \
 	                        } \
 	        } Register##type##Instance; 
-	
+
 #endif	/* PLUGIN_H */
 

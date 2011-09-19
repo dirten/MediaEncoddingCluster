@@ -48,10 +48,11 @@ void BufferedOutputStream::write(char buffer){
 	_count++;
 }
 
-void BufferedOutputStream::close(){
+bool BufferedOutputStream::close(){
 	flush();
 	_os->flush();
 	_os->close();
+        return true;
 }
 
 void BufferedOutputStream::flush(){

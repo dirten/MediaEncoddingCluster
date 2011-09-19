@@ -21,7 +21,7 @@ public:
                  * @exception  IOException  if an I/O error occurs.
                  */
 
-                virtual void close(){};
+                virtual bool close(){};
 
                 /**
                  * Flushes this output stream and forces any buffered output bytes 
