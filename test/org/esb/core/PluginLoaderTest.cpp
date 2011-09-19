@@ -68,9 +68,9 @@ int main(int argc, char** argv) {
   //i->load(JSONSERVICE_PLUGIN);
   //org::esb::core::PluginLoader loader2(JSONSERVICE_PLUGIN);
   
-  i->startServices();
+  //i->startServices();
   //org::esb::lang::Thread::sleep2(60 * 1000);
-  i->stopServices();
+  //i->stopServices();
   org::esb::core::PluginRegistry::close();
   Log::close();
   return 0;

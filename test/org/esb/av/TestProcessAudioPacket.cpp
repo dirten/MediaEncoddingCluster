@@ -1,3 +1,4 @@
+#include "plugins/services/processunitcontroller/Packetizer.h"
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/FormatInputStream.h"
@@ -14,12 +15,12 @@
 #include "org/esb/av/Frame.h"
 #include "org/esb/av/FrameConverter.h"
 
-#include "org/esb/hive/job/Packetizer.h"
 #include <boost/shared_ptr.hpp>
 #include <list>
 #include <deque>
 
 using namespace org::esb::av;
+using namespace org::esb::plugin;
 using namespace org::esb::hive::job;
 using namespace org::esb::io;
 

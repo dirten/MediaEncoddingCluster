@@ -36,7 +36,7 @@ public:
 int main(int argc, char** argv) {
   org::esb::core::HookNotificationCenter *c=org::esb::core::HookNotificationCenter::getInstance();
   TestReceiver r;
-  c->addObserver("test.hook", boost::bind(& TestReceiver::hook3, & r,_1,_2));
+  c->addObserver("test.hook", boost::bind(& TestReceiver::hook3, & r,_1,_2),1);
   
   c->postHook("test.hook",new Request(), new Response());
   

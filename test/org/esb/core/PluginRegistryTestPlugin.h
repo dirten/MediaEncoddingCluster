@@ -50,12 +50,12 @@ public:
   PluginRegistryTestPlugin4();
   virtual ~PluginRegistryTestPlugin4();
   void hook(void*,void*){}
-}TestHook;
+};
 
 REGISTER_PLUGIN("test_plugin", PluginRegistryTestPlugin)
 REGISTER_SERVICE("test_plugin2", PluginRegistryTestPlugin2)
 //REGISTER_HOOK("webserver.url.hook","/api/v1",PluginRegistryTestPlugin3)
-REGISTER_HOOK("webserver.url.hook",TestHook,PluginRegistryTestPlugin4::hook,1)
+REGISTER_HOOK("webserver.url.hook",PluginRegistryTestPlugin4,PluginRegistryTestPlugin4::hook,1)
 
         
 #endif	/* PLUGINREGISTRYTESTPLUGIN_H */

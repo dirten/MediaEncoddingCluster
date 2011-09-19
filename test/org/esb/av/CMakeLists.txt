@@ -62,7 +62,7 @@ target_link_libraries (TestDeSerializePacket io av util lang ${BOOST_SERIAL_LIB_
 target_link_libraries (TestFormatInputStream io av util lang )
 target_link_libraries (TestPacketInputStream io av util lang )
 target_link_libraries (TestPacketOutputStream io av util lang )
-target_link_libraries (TestProcessAudioPacket io hive av util lang )
+target_link_libraries (TestProcessAudioPacket io hive av util lang processunitcontroller)
 target_link_libraries (TestFullTranscoding io av util lang )
 #target_link_libraries (TestPass1 io av util lang )
 target_link_libraries (TestDecoder av io util lang )
