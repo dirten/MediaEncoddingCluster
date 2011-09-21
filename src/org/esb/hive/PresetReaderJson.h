@@ -20,7 +20,7 @@ namespace org {
         typedef CodecList FilterList;
         typedef std::map<std::string, std::string> Preset;
         PresetReaderJson(std::string filename);
-        virtual ~PresetReaderJson();
+        ~PresetReaderJson();
         Preset getPreset();
         CodecList getCodecList();
         FilterList getFilterList();
