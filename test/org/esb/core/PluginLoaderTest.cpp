@@ -58,7 +58,7 @@ REGISTER_HOOK("web.api.Service", testInstance, TestReceiver::hook,1);
  */
 
 int main(int argc, char** argv) {
-  Log::open(std::string(MEC_SOURCE_DIR)+"/res");
+  Log::open();
 
   //LOGDEBUG("test")
   //org::esb::core::PluginLoader loader1(WEBSERVER_PLUGIN);
