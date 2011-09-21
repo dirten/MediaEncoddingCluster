@@ -28,6 +28,7 @@
 #define	_PACKETIZER_H
 #include <boost/shared_ptr.hpp>
 #include "org/esb/av/Packet.h"
+#include "exports.h"
 //#include "org/esb/hive/job/ProcessUnit.h"
 
 
@@ -44,7 +45,7 @@ namespace org {
 //        typedef boost::shared_ptr<org::esb::av::Packet> PacketPtr;
 //        typedef std::deque<PacketPtr> PacketListPtr;
 
-        class Packetizer {
+        class PROCESSUNITCONTROLLER_EXPORT Packetizer {
         private:
 
           enum State {

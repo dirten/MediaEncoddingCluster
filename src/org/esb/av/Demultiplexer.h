@@ -14,11 +14,12 @@
 #include "org/esb/lang/Ptr.h"
 #include "boost/thread/condition.hpp"
 #include "boost/thread/mutex.hpp"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace av {
 
-      class Demultiplexer {
+      class AV_EXPORT Demultiplexer {
       public:
         Demultiplexer(DataSource& );
         virtual ~Demultiplexer();

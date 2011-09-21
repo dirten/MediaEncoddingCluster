@@ -8,11 +8,12 @@
 #ifndef MEDIALOCATOR_H
 #define	MEDIALOCATOR_H
 #include "org/esb/io/File.h"
+#include "exports.h"
 namespace org {
     namespace esb {
         namespace av {
 
-            class MediaLocator {
+            class AV_EXPORT MediaLocator {
             public:
                 MediaLocator(std::string);
                 virtual ~MediaLocator();

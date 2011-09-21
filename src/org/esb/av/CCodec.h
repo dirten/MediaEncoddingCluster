@@ -11,11 +11,12 @@
 #include "Format.h"
 #include <list>
 #include "Buffer.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace av {
 
-      class CCodec:public PlugIn {
+      class AV_EXPORT CCodec:public PlugIn {
       public:
         CCodec();
         CCodec(const CCodec& orig);

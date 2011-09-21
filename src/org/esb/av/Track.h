@@ -10,11 +10,12 @@
 #include "Format.h"
 #include "TimeStamp.h"
 #include "Buffer.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace av {
       class Demultiplexer;
-      class Track {
+      class AV_EXPORT Track {
       public:
         virtual ~Track();
         Format getFormat();

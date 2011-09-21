@@ -12,11 +12,12 @@
 #include "Duration.h"
 #include <stdint.h>
 #include "org/esb/lang/Ptr.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace av {
 
-      class Buffer {
+      class AV_EXPORT Buffer {
       public:
         Buffer();
         virtual ~Buffer();

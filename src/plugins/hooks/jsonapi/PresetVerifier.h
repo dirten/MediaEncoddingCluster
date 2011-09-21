@@ -8,11 +8,12 @@
 #ifndef PRESETVERIFIER_H
 #define	PRESETVERIFIER_H
 #include "org/esb/libjson/libjson.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace plugin {
 
-      class PresetVerifier {
+      class JSONAPI_EXPORT PresetVerifier {
       public:
         static std::string verify(JSONNode&root);
       private:

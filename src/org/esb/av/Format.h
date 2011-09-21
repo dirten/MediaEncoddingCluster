@@ -9,11 +9,12 @@
 #define	FORMAT_H
 #include "AV.h"
 #include "Rational.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace av {
 
-      class Format {
+      class AV_EXPORT Format {
       public:
         
         enum FormatType{

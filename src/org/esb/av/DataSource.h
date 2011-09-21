@@ -11,13 +11,14 @@
 #include "org/esb/util/Log.h"
 #include "AV.h"
 #include "FormatBaseStream.h"
+#include "exports.h"
 
 
 namespace org {
   namespace esb {
     namespace av {
 
-      class DataSource : public FormatBaseStream{
+      class AV_EXPORT DataSource : public FormatBaseStream{
         classlogger("org.esb.av.DataSource");
       public:
         DataSource(MediaLocator);
