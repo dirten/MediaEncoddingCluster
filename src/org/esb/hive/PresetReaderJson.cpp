@@ -5,7 +5,7 @@
  * Created on 23. Mai 2011, 16:24
  */
 
-#include "org/esb/hive/PresetReaderJson.h"
+#include "PresetReaderJson.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/libjson/libjson.h"
 #include "org/esb/av/AV.h"

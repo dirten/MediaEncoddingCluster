@@ -10,11 +10,12 @@
 
 #include <string>
 #include <map>
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace hive {
 
-      class PresetReaderJson {
+      class HIVE_EXPORT PresetReaderJson {
       public:
         typedef std::map<std::string, std::multimap<std::string, std::string> > CodecList;
         typedef CodecList FilterList;
