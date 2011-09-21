@@ -8,6 +8,8 @@ SET(DOWNLOAD_OPTION -C - -o )
 SET(UNZIP_CMD unzip)
 SET(MAKE_CMD make)
 SET(MAKE_CMD_PARAMS all install)
+SET(C_FLAGS "-m32 -arch i386")
+SET(CXX_FLAGS "-m32 -arch i386")
 IF(NOT build_type)
     MESSAGE("Build type not set, using default build_type=debug")
     SET(CMAKE_BUILD_TYPE debug)
@@ -22,6 +24,8 @@ IF(WIN32)
     SET(MAKE_CMD vcbuild.exe)
     SET(SYSTEM win32)
     SET(GCC_VERSION "-vc90")
+    SET(C_FLAGS "")
+    SET(CXX_FLAGS "")
     IF(NOT CMAKE_MAKE_PROGRAM)
     MESSAGE("CMAKE_MAKE_PROGRAM not set, using default Visual Studio 9 2008")
     SET(CMAKE_MAKE_PROGRAM "Visual Studio 9 2008")
@@ -129,9 +133,9 @@ EXECUTE_PROCESS(COMMAND cmake
                     -DCMAKE_INSTALL_PREFIX=${PROJECT_SOURCE_DIR}/install
                     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 		    -DCMAKE_OSX_ARCHITECTURES=i386
-		    -DCMAKE_C_FLAGS=-m32 -arch i386 
-		    -DCMAKE_CXX_FLAGS=-m32 -arch i386
-                    -DSHARED_LIBS=Off
+		    -DCMAKE_C_FLAGS=${C_FLAGS}
+		    -DCMAKE_CXX_FLAGS=${C_FLAGS}
+                    #-DSHARED_LIBS=Off
                     -DBOOST_DIR=${PROJECT_SOURCE_DIR}/${TARGET_DIR}
                     #-DBOOST_COMPILER=${GCC_VERSION}
                     -DFFMPEG_DIR=${PROJECT_SOURCE_DIR}/${TARGET_DIR}
