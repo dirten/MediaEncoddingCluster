@@ -90,9 +90,9 @@ namespace org {
           center->postHook("web.api.PreProcess", req, res);
           center->postHook("web.api.Service", req, res);
           center->postHook("web.api.PostProcess", req, res);
-          if (res->_status == 200)
+          if (res->_status != ServiceResponse::NONE)
             processed = p;
-
+          //res->flush();
           delete res;
           delete req;
         }

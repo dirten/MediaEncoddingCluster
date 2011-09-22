@@ -17,15 +17,97 @@
 #include "org/esb/hive/job/ProcessUnit.h"
 #include <stdlib.h>
 #include <string>
+#include "org/esb/util/Log.h"
+#include "org/esb/util/Foreach.h"
+#include "org/esb/util/StringUtil.h"
 /*
  * 
  */
 using namespace org::esb::io;
 using namespace org::esb::av;
 using namespace org::esb::hive::job;
+class PacketSink : public Sink {
+public:
+
+  PacketSink() {
+  }
+
+  void write(void * p) {
+    Packet* pt = (Packet*) p;
+    boost::shared_ptr<Packet> pEnc(new Packet(*pt));
+    pkts.push_back(pEnc);
+  }
+
+  std::list<boost::shared_ptr<Packet> > getList() {
+    return pkts;
+  }
+private:
+  std::list<boost::shared_ptr<Packet> > pkts;
+
+};
 
 void help() {
   std::cout << "usage: pu <view|execute> infile [outfile]" << std::endl;
+}
+
+void writeFrame(Frame * frame, int count, std::string suffix){
+  LOGDEBUG("write frame count="<<count<<" sufix "<<suffix);
+    PacketSink s;
+    org::esb::av::Encoder enc(CODEC_ID_MJPEG);
+    enc.setPixelFormat(PIX_FMT_YUVJ420P);
+    enc.setBitRate(1000000);
+    enc.setTimeBase(1,1);
+    enc.setSink(&s);
+    enc.setWidth(frame->getWidth());
+    enc.setHeight(frame->getHeight());
+    enc.open();
+    enc.encode(*frame);
+    std::string path="./";
+    path+=org::esb::util::StringUtil::toString(count);
+    path+="-"+suffix;
+    path+=".jpg";
+    FILE *jpegImgFile= fopen(path.c_str(), "wb");
+    fwrite((char*)s.getList().front()->getAVPacket()->data, 1, s.getList().front()->getAVPacket()->size, jpegImgFile);
+    fclose(jpegImgFile);
+}
+
+void writeProcessUnit(ProcessUnit & unit) {
+  LOGDEBUG("Write Images")
+
+  boost::shared_ptr<Decoder >_refdecoder;
+  if (unit._encoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
+    LOGDEBUG("create reference decoder")
+    std::map<std::string, std::string>opt = unit._encoder->getCodecOptions();
+    _refdecoder = boost::shared_ptr<Decoder > (new Decoder(unit._encoder->getCodecId()));
+    std::map<std::string, std::string>::iterator opit = opt.begin();
+    _refdecoder->setWidth(unit._encoder->getWidth());
+    _refdecoder->setHeight(unit._encoder->getHeight());
+    _refdecoder->setPixelFormat(unit._encoder->getPixelFormat());
+
+    for (; opit != opt.end(); opit++) {
+      if ((*opit).first != "extradata" || (*opit).first != "extradata_size")
+        _refdecoder->setCodecOption((*opit).first, (*opit).second);
+    }
+    LOGDEBUG("EncoderExtrdataSize:" << unit._encoder->ctx->extradata_size);
+    LOGDEBUG("RefDecoderExtrdataSize:" << _refdecoder->ctx->extradata_size);
+    //std::cout << _encoder->ctx->extradata;
+    _refdecoder->ctx->extradata = static_cast<uint8_t*> (av_malloc(unit._encoder->ctx->extradata_size));
+    memcpy(_refdecoder->ctx->extradata, unit._encoder->ctx->extradata, unit._encoder->ctx->extradata_size);
+    //_refdecoder->ctx->extradata[0] = 2;
+    //_refdecoder->ctx->extradata_size=0;
+    _refdecoder->open();
+  }
+  int count=0;
+  unit._decoder->reset();
+  foreach(std::list<boost::shared_ptr<Packet> >::value_type & packet,unit._input_packets){
+    Frame *tmp=unit._decoder->decode2(*packet);
+    writeFrame(tmp, count++,"in");
+  }
+  count=0;
+  foreach(std::list<boost::shared_ptr<Packet> >::value_type & packet,unit._output_packets){
+    Frame *tmp=_refdecoder->decode2(*packet);
+    writeFrame(tmp, count++, "out");
+  }
 }
 
 void execute(char * infile, char * outfile) {
@@ -33,12 +115,14 @@ void execute(char * infile, char * outfile) {
   ObjectInputStream ois(&fis);
   ProcessUnit pu;
   ois.readObject(pu);
+  pu._encoder->setCodecOption("multipass","1");
   pu.process();
   delete pu._converter;
 
   FileOutputStream fos(outfile);
   ObjectOutputStream oos(&fos);
   oos.writeObject(pu);
+  writeProcessUnit(pu);
 }
 
 void view_codec_data(boost::shared_ptr<Codec>c) {
@@ -76,7 +160,8 @@ void view_packet_data(Packet * p) {
   printf("%1s", isKey ? "x" : " ");
 
 }
-void viewPuData(ProcessUnit & pu){
+
+void viewPuData(ProcessUnit & pu) {
   printf("----------------------------------------------------------------------------------------------------------\n");
   //printf("%30s=%30s\n", "compensatebase",pu._frameRateCompensateBase);
   //printf("%30s=%30s", "gop",pu._gop_size);
@@ -85,14 +170,15 @@ void viewPuData(ProcessUnit & pu){
   printf("----------------------------------------------------------------------------------------------------------\n");
 
 }
+
 void view(char * filename) {
   FileInputStream fis(filename);
   ObjectInputStream ois(&fis);
-  ProcessUnit * pu_get=new ProcessUnit();
+  ProcessUnit * pu_get = new ProcessUnit();
   ois.readObject(*pu_get);
   LOGDEBUG("readed");
   viewPuData(*pu_get);
-  ProcessUnit pu=*pu_get;
+  ProcessUnit pu = *pu_get;
   //  logdebug(pu._decoder->toString());
   //  logdebug(pu._encoder->toString());
   printf("----------------------------------------------------------------------------------------------------------");
@@ -178,9 +264,9 @@ int main(int argc, char** argv) {
     help();
     exit(0);
   }
-  std::string logconfigpath=MEC_SOURCE_DIR;
+  std::string logconfigpath = MEC_SOURCE_DIR;
   logconfigpath.append("/res");
-//  Log::open(logconfigpath);
+  //  Log::open(logconfigpath);
   Log::open("");
   org::esb::av::FormatBaseStream::initialize();
 

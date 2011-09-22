@@ -204,7 +204,8 @@ namespace org {
            * clean up temporary files, they are no longer needed
            */
           fis.close();
-          infile.deleteFile();
+          if(!_source_stream_map[pu._output_packets.front()->getStreamIndex()].stream_type == AVMEDIA_TYPE_VIDEO)
+                infile.deleteFile();
         }
         if (true) {
           db::JobLog log(job.getDatabase());

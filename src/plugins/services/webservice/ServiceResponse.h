@@ -16,29 +16,41 @@ struct mg_request_info;
 namespace org {
   namespace esb {
     namespace api {
-
+      class ServiceResponse;
       class WEBSERVICE_EXPORT ServiceOutputStream {
       public:
-        ServiceOutputStream(mg_connection *conn);
+        ServiceOutputStream(mg_connection *conn,ServiceResponse*);
         ~ServiceOutputStream();
         int write(std::string data);
       private:
         mg_connection *_conn;
-        bool _sent_status;
+        bool _sent_header;
+        ServiceResponse*_response;
       };
-
+            
       class WEBSERVICE_EXPORT ServiceResponse : public org::esb::core::Response {
       public:
+        enum Status {
+          NONE=0,
+          OK = 200,
+          FORBIDDEN = 401,
+          NOT_FOUND = 404
+        };
         ServiceResponse(mg_connection *conn, const mg_request_info *request_info);
         ~ServiceResponse();
         ServiceOutputStream * getOutputStream();
-        void setStatus(int);
+        void setStatus(Status);
+        Status getStatus();
+        void setMimetype(std::string type);
+        std::string getMimetype();
+        void flush();
       private:
         ServiceOutputStream * _outputstream;
         mg_connection *_conn;
         const mg_request_info *_request_info;
         friend class ApiWebServer;
-        int _status;
+        Status _status;
+        std::string _mime;
       };
     }
   }

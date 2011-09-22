@@ -161,6 +161,7 @@ Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
   //  avcodec_get_frame_defaults(this);
   if (allocate) {
     int numBytes = avpicture_get_size(format, width, height);
+    LOGDEBUG("NumBytes to allocate="<<numBytes);
     _size = numBytes;
     _buffer = (uint8_t*) av_malloc(numBytes);
     _allocated = true;

@@ -363,7 +363,7 @@ namespace org {
           }
         }
         n.push_back(JSONNode("requestId", req->getUUID()));
-        res->setStatus(200);
+        res->setStatus(ServiceResponse::OK);
         res->getOutputStream()->write(n.write_formatted());
             
       }
@@ -517,7 +517,7 @@ namespace org {
           }
         }
         response.push_back(JSONNode("requestId", req->getUUID()));
-        res->setStatus(200);
+        res->setStatus(ServiceResponse::OK);
         res->getOutputStream()->write(response.write_formatted());
       }
 
@@ -538,7 +538,7 @@ namespace org {
         }
         n.push_back(c);
         n.push_back(JSONNode("requestId", req->getUUID()));
-        res->setStatus(200);
+        res->setStatus(ServiceResponse::OK);
         res->getOutputStream()->write(n.write_formatted());
       }
 
@@ -559,7 +559,7 @@ namespace org {
         }
         n.push_back(c);
         n.push_back(JSONNode("requestId", req->getUUID()));
-        res->setStatus(200);
+        res->setStatus(ServiceResponse::OK);
         res->getOutputStream()->write(n.write_formatted());
       }
 

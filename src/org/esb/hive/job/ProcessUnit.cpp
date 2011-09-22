@@ -180,7 +180,8 @@ void ProcessUnit::processInternal() {
   int stream_index = -1;
   int loop_count = 0;
   /*loop over each Packet received */
-  for (it = _input_packets.begin(); it != _input_packets.end() || compute_delayed_frames;) {
+  it = _input_packets.begin();
+  for (; it != _input_packets.end() || compute_delayed_frames;) {
     LOGTRACE("Loop:" << ++loop_count);
     /*get the Packet Pointer from the list*/
     boost::shared_ptr<Packet> p;

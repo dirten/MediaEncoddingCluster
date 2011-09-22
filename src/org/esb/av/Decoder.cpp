@@ -135,7 +135,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
     _pix_fmt_converter->open();
   }
   //Ptr<Frame> tmp_frame = new Frame(ctx->pix_fmt, ctx->width, ctx->height, false);
-  Frame * frame = new Frame(_output_format.pixel_format, ctx->width, ctx->height);
+  Frame * frame = new Frame(ctx->pix_fmt, ctx->width, ctx->height);
   int _frameFinished = 0;
   int len = packet.packet->size;
   LOGDEBUG(packet.toString());
