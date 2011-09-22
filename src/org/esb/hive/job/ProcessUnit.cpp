@@ -182,7 +182,7 @@ void ProcessUnit::processInternal() {
   /*loop over each Packet received */
   it = _input_packets.begin();
   for (; it != _input_packets.end() || compute_delayed_frames;) {
-    LOGTRACE("Loop:" << ++loop_count);
+    LOGDEBUG("Loop:" << ++loop_count);
     /*get the Packet Pointer from the list*/
     boost::shared_ptr<Packet> p;
     /**
@@ -232,7 +232,10 @@ void ProcessUnit::processInternal() {
     LOGTRACE("try Frame Convert");
     /*converting the source frame to target frame*/
     _converter->convert(*tmp, *f);
-
+    //this could be usefull when one pass encoding on x264,
+    //because the first encoded frames are very poor
+    if(false&&loop_count<5)
+        f->getAVFrame()->pict_type=AV_PICTURE_TYPE_I;
     /**
      * @TODO: prepend silent audio bytes to prevent audio/video desync in distributed audio encoding
      * */
