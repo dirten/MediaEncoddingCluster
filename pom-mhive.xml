@@ -270,7 +270,7 @@
                   <env key="MYSQL_DATA" path="${project.basedir}"/>
                   <env key="MYSQL_LANG" path="${project.basedir}/res"/>
                   <env key="MYSQL_BOOT" path="${project.basedir}/sql/CreateDatabase.sql"/>
-                  <env key="PATH" path="${env.PATH}:${project.basedir}/target/dependency/lib:${project.basedir}/target/dependency/bin:${project.basedir}/install/bin:${project.basedir}/build/src/org/esb:${project.basedir}/build/src/org/esb/io"/>
+                  <env key="PATH" path="${env.PATH}:${project.basedir}/target/dependency/lib:${project.basedir}/target/dependency/bin:${project.basedir}/install/bin:${project.basedir}/install/plugins:${project.basedir}/build/src/org/esb:${project.basedir}/build/src/org/esb/io"/>
                   <env key="DYLD_LIBRARY_PATH" path="${project.basedir}/target/dependency/lib;${project.basedir}/target/dependency/bin:${project.basedir}/build/src/org/esb"/>
                   <arg line="test"/>
                 </exec>
