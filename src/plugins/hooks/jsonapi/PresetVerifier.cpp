@@ -8,6 +8,7 @@
 #include "PresetVerifier.h"
 #include "org/esb/hive/PresetReaderJson.h"
 #include "org/esb/hive/CodecFactory.h"
+#include "org/esb/config/config.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/av/AV.h"
@@ -102,7 +103,7 @@ namespace org {
           return result;
         }
         /*openning the OutputStreams*/
-        org::esb::io::File fout("data/test");
+        org::esb::io::File fout(org::esb::config::Config::get("hive.tmp_path")+"/test");
 
         org::esb::av::FormatOutputStream * fos = new org::esb::av::FormatOutputStream(&fout, ofmt->name);
         org::esb::av::PacketOutputStream * pos = new org::esb::av::PacketOutputStream(fos);
@@ -134,6 +135,9 @@ namespace org {
           LOGERROR(result);
           return result;          
         }
+        pos->close();
+        fos->close();
+        fout.deleteFile();
         return result;
       }
 

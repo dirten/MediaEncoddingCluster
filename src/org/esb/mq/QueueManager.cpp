@@ -54,7 +54,7 @@ namespace org {
         if(!file.exists()){
           file.mkdir();
         }
-        org::esb::io::File f("mq.cfg");
+        org::esb::io::File f(org::esb::config::Config::get("hive.user_path")+"mq.cfg");
         //if(!f.exists()){
           org::esb::io::FileOutputStream fos(&f);
           std::string line;
@@ -69,7 +69,7 @@ namespace org {
         numForwardThreads = 1;
         _running=false;
         try {
-          pcfg = new Config("mq.cfg");
+          pcfg = new Config(org::esb::config::Config::get("hive.user_path")+"mq.cfg");
 
 //          std::string port=pcfg->getParam("port");
         } catch (int) {

@@ -127,8 +127,8 @@ namespace org {
 
 
 
-        std::string path = org::esb::config::Config::getProperty("hive.base_path");
-        path += "/tmp/";
+        std::string path = org::esb::config::Config::getProperty("hive.tmp_path");
+        path += "/";
         for (; units.rowsLeft(); units++) {
           db::ProcessUnit unit = (*units);
 
