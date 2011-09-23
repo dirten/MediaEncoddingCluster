@@ -339,7 +339,7 @@
             </goals>
           </execution>
           <execution>
-            <phase>package</phase>
+            <phase>deploy</phase>
             <id>scp_upload</id>
             <configuration>
               <tasks>

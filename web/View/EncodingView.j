@@ -265,7 +265,7 @@ if([tableColumn identifier]==8){
 // menu should open/close
 // comment
 // tag
-    var menu = [[CPMenu alloc] initWithTitle:""],
+    var menu = [[CPMenu alloc] initWithTitle:"Encoding Menu"],
     menuItems = ["Stop Encoding", "Delete Encoding"],
     menuActions = [@selector(stop:), @selector(delete:)],
     //isOpen = displayedIssuesKey === "openIssues",
@@ -330,7 +330,7 @@ if([tableColumn identifier]==8){
     }
 
     // add the seperator and the last item
-    [menu addItem:[CPMenuItem separatorItem]];
+    //[menu addItem:[CPMenuItem separatorItem]];
     [menu addItem:newMenuItem];
 
     return menu;
