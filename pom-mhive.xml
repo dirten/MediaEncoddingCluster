@@ -136,32 +136,32 @@
             <artifactId>ant-junit</artifactId>
             <version>1.8.1</version>
           </dependency>
-           <dependency>
-             <groupId>commons-net</groupId>
-             <artifactId>commons-net</artifactId>
-             <version>1.4.1</version>
-           </dependency>
-           <dependency>
-             <groupId>ant</groupId>
-             <artifactId>ant-commons-net</artifactId>
-             <version>1.6.5</version>
-           </dependency>
-           <dependency>
-             <groupId>ant</groupId>
-             <artifactId>ant-nodeps</artifactId>
-             <version>1.6.5</version>
-           </dependency>
-                  <dependency>
-                              <groupId>ant</groupId>
-                                          <artifactId>ant-jsch</artifactId>
-                                                      <version>1.6.5</version>
-                                                                </dependency>
-                                                                          <dependency>
-                                                                                      <groupId>com.jcraft</groupId>
-                                                                                                  <artifactId>jsch</artifactId>
-                                                                                                              <version>0.1.42</version>
-                                                                                                                        </dependency>
-                                                                                                                                </dependencies>
+          <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>1.4.1</version>
+          </dependency>
+          <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant-commons-net</artifactId>
+            <version>1.6.5</version>
+          </dependency>
+          <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant-nodeps</artifactId>
+            <version>1.6.5</version>
+          </dependency>
+          <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant-jsch</artifactId>
+            <version>1.6.5</version>
+          </dependency>
+          <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.42</version>
+          </dependency>
+        </dependencies>
         <executions>
           <execution>
             <phase>clean</phase>
@@ -270,7 +270,7 @@
                   <env key="MYSQL_DATA" path="${project.basedir}"/>
                   <env key="MYSQL_LANG" path="${project.basedir}/res"/>
                   <env key="MYSQL_BOOT" path="${project.basedir}/sql/CreateDatabase.sql"/>
-                  <env key="PATH" path="${env.PATH}:${project.basedir}/target/dependency/lib:${project.basedir}/target/dependency/bin:${project.basedir}/build/src/org/esb:${project.basedir}/build/src/org/esb/io"/>
+                  <env key="PATH" path="${env.PATH}:${project.basedir}/target/dependency/lib:${project.basedir}/target/dependency/bin:${project.basedir}/install/bin:${project.basedir}/build/src/org/esb:${project.basedir}/build/src/org/esb/io"/>
                   <env key="DYLD_LIBRARY_PATH" path="${project.basedir}/target/dependency/lib;${project.basedir}/target/dependency/bin:${project.basedir}/build/src/org/esb"/>
                   <arg line="test"/>
                 </exec>
@@ -325,13 +325,13 @@
             <id>upload</id>
             <configuration>
               <tasks if="ftp_upload">
-		<ftp action="send" server="codergrid.de" remotedir="/" userid="${userid}" password="${passwd}" depends="yes" verbose="yes">
-		    <fileset dir="${project.basedir}/build">
-			<include name="*.dmg" />
-			<include name="*.exe" />
-			<include name="*.sh" />
-		    </fileset>
-		</ftp>
+                <ftp action="send" server="codergrid.de" remotedir="/" userid="${userid}" password="${passwd}" depends="yes" verbose="yes">
+                  <fileset dir="${project.basedir}/build">
+                    <include name="*.dmg" />
+                    <include name="*.exe" />
+                    <include name="*.sh" />
+                  </fileset>
+                </ftp>
               </tasks>
             </configuration>
             <goals>
@@ -343,13 +343,13 @@
             <id>scp_upload</id>
             <configuration>
               <tasks>
-		<scp todir="${userid}:${passwd}@${host}:${target}" trust="Yes" verbose="yes">
-		    <fileset dir="${project.basedir}/build">
-			<include name="*.dmg" />
-			<include name="*.exe" />
-			<include name="*.sh" />
-		    </fileset>
-		</scp>
+                <scp todir="${userid}:${passwd}@${host}:${target}" trust="Yes" verbose="yes">
+                  <fileset dir="${project.basedir}/build">
+                    <include name="*.dmg" />
+                    <include name="*.exe" />
+                    <include name="*.sh" />
+                  </fileset>
+                </scp>
               </tasks>
             </configuration>
             <goals>
@@ -404,7 +404,7 @@
       <artifactId>ffmpeg</artifactId>
       <version>daily</version>
       <type>zip</type>
-     <classifier>${my.family}-${build_type}</classifier>
+      <classifier>${my.family}-${build_type}</classifier>
     </dependency>
     <dependency>
       <groupId>org.esb.log4cplus</groupId>
