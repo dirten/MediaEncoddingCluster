@@ -69,8 +69,9 @@ namespace org {
           //    }
         }
         /*openning the OutputStreams*/
+        std::string upath=org::esb::config::Config::get("hive.data_path");
         FormatOutputStream * fos = new FormatOutputStream(&fout, outfile.containertype.value().c_str());
-        PacketOutputStream * pos = new PacketOutputStream(fos, job.uuid.value() + ".stats");
+        PacketOutputStream * pos = new PacketOutputStream(fos, upath+"/"+job.uuid.value() + ".stats");
 
         vector<db::Stream> streams = outfile.streams().get().all();
         vector<db::Stream>::iterator stream_it = streams.begin();
