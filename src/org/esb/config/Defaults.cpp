@@ -24,9 +24,9 @@ namespace org {
         props->setProperty("web.port", "8080");
 
         /*make directory for the database*/
-        org::esb::io::File datadir(base_path+"/data");
-        if(!datadir.exists())
-          datadir.mkdir();
+        //org::esb::io::File datadir(base_path+"/data");
+        //if(!datadir.exists())
+        //  datadir.mkdir();
         /*default url for the Database Server*/
         if(!props->hasProperty("db.url"))
           props->setProperty("db.url", "database="+base_path+"/data/hive.db");
@@ -34,7 +34,6 @@ namespace org {
         /*default path for the presets*/
         props->setProperty("preset.path", base_path+"/presets");
         props->setProperty("log.path", base_path+"/logs");
-		putenv("bla=test");
 		//setenv("log.path",std::string(base_path+"/logs").c_str(),1);
         /*default parameter for the encoding profiles*/
         //props->setProperty("framerates", "1/10#10,1/15#15,1000/23976#23.976,1/24#24,1/25#25,100/2997#29.97,1/30#30");

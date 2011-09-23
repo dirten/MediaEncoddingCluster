@@ -108,11 +108,6 @@ int main(int argc, char * argv[]) {
   org::esb::io::File f(argv[0]);
   std::string base_path = org::esb::io::File(f.getParent()).getParent();
   //log4cplus::BasicConfigurator::doConfigure();
-      log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT(base_path+"/res/logging.properties"));
-    //log4cplus::helpers::Properties & props = const_cast<log4cplus::helpers::Properties&> (config.getProperties());
-    //props.setProperty(LOG4CPLUS_TEXT("appender.MAIN.File"), LOG4CPLUS_TEXT(path+"/mhive-debug.log"));
-    //props.setProperty(LOG4CPLUS_TEXT("appender.ERROR.File"), LOG4CPLUS_TEXT(path+"/mhive-error.log"));
-    config.configure();
 
   //config::Config::setProperty("hive.base_path", base_path);
   //log4cplus::BasicConfigurator::doConfigure();
@@ -215,9 +210,16 @@ int main(int argc, char * argv[]) {
     setupDefaults();
     setupConfig(vm);
     checkDirs();
+    log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT(config::Config::get("hive.base_path")+"/res/logging.properties"));
+    log4cplus::helpers::Properties & props = const_cast<log4cplus::helpers::Properties&> (config.getProperties());
+    props.setProperty(LOG4CPLUS_TEXT("appender.MAIN.File"), LOG4CPLUS_TEXT(config::Config::get("log.path")+"/mhive-debug.log"));
+    props.setProperty(LOG4CPLUS_TEXT("appender.ERROR.File"), LOG4CPLUS_TEXT(config::Config::get("log.path")+"/mhive-error.log"));
+    config.configure();
+
     //std::cout << "logpath"<<getenv("log.path")<<std::endl;
     string base_path = org::esb::config::Config::getProperty("hive.base_path");
 	std::cout << "base_path:"<<base_path<<std::endl;
+        LOGDEBUG("UserDataPath="<<config::Config::get("hive.user_path"))
     //org::esb::util::LogConfigurator * lconfig=new org::esb::util::LogConfigurator();
     //lconfig->configure();
   //LoggerConfig();  
@@ -733,6 +735,10 @@ bool setupDatabase() {
 }
 
 void checkDirs() {
+  org::esb::io::File upath(config::Config::get("hive.user_path"));
+  if (!upath.exists())
+    upath.mkdir();
+
   org::esb::io::File dpath(config::Config::get("hive.dump_path"));
   if (!dpath.exists())
     dpath.mkdir();
@@ -759,17 +765,28 @@ void setupConfig(po::variables_map vm) {
     config::Config::setProperty("hive.base_path", vm["base"].as<std::string > ());
   }
   std::string bpath = config::Config::get("hive.base_path");
+#ifdef __WIN32__
+  std::string upath = config::Config::get("APPDATA")+"/mhive";
+#elif defined __APPLE__
+  std::string upath = config::Config::get("HOME")+"/.mhive";
+#elif defined __LINUX__
+  std::string upath = config::Config::get("HOME")+"/.mhive";
+#else
+#error "plattform not supported"
+#endif
+
+  config::Config::setProperty("hive.user_path", upath);
   config::Config::setProperty("partition", StringUtil::toString(vm["partition"].as<std::string> ()));
   config::Config::setProperty("hive.port", StringUtil::toString(vm["hiveport"].as<int> ()));
   config::Config::setProperty("web.port", StringUtil::toString(vm["webport"].as<int> ()));
   config::Config::setProperty("web.docroot", bpath + "/web");
-  config::Config::setProperty("hive.config_path", bpath + "/.mhive.cfg");
-  config::Config::setProperty("hive.dump_path", bpath + "/dmp");
-  config::Config::setProperty("hive.tmp_path", bpath + "/tmp");
-  config::Config::setProperty("hive.data_path", bpath + "/data");
+  config::Config::setProperty("hive.config_path", upath + "/.mhive.cfg");
+  config::Config::setProperty("hive.dump_path", upath + "/dmp");
+  config::Config::setProperty("hive.tmp_path", upath + "/tmp");
+  config::Config::setProperty("hive.data_path", upath + "/data");
   config::Config::setProperty("preset.path", bpath + "/presets");
-  config::Config::setProperty("log.path", bpath + "/logs");
-  config::Config::setProperty("db.url", "database=" + bpath + "/data/hive.db");
+  config::Config::setProperty("log.path", upath + "/logs");
+  config::Config::setProperty("db.url", "database=" + upath + "/data/hive.db");
 #ifdef __WIN32__
   config::Config::setProperty("PATH", config::Config::get("PATH") + ";"+bpath+"/plugins");
 #elif defined __APPLE__
@@ -779,7 +796,7 @@ void setupConfig(po::variables_map vm) {
 #else
 #error "plattform not supported"
 #endif
-LOGDEBUG("LIBRARY_PATH="<<config::Config::get("DYLD_LIBRARY_PATH"));
+//LOGDEBUG("LIBRARY_PATH="<<config::Config::get("DYLD_LIBRARY_PATH"));
   /*
     std::string logpath=std::string("log.path=").append(bpath).append("/logs");
     char * pa=new char[logpath.length()+1];//const_cast<char*>(logpath.c_str());

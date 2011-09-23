@@ -510,8 +510,8 @@ namespace org {
         bool ProcessUnitController::putProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit> & unit) {
           boost::mutex::scoped_lock scoped_lock(put_pu_mutex);
           int stream_type = AVMEDIA_TYPE_UNKNOWN;
-          std::string name = org::esb::config::Config::getProperty("hive.base_path");
-          name += "/tmp/";
+          std::string name = org::esb::config::Config::getProperty("hive.tmp_path");
+          name += "/";
           name += org::esb::util::StringUtil::toString(unit->_process_unit % 10);
 
           org::esb::io::File dir(name.c_str());
