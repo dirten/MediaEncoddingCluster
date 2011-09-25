@@ -37,13 +37,13 @@ using namespace org::esb::io;
 using namespace org::esb::util;
 using namespace org::esb::hive::job;
 
-struct StreamData {
+struct StreamData2 {
   boost::shared_ptr<Decoder> dec;
   boost::shared_ptr<Encoder> enc;
   FrameConverter * conv;
 };
 //CodecID video_codec_id = CODEC_ID_VP8;
-CodecID video_codec_id = CODEC_ID_MPEG4;
+CodecID video_codec_id = CODEC_ID_H264;
 //CodecID audio_codec_id = CODEC_ID_VORBIS;
 CodecID audio_codec_id = CODEC_ID_MP2;
 
@@ -82,7 +82,7 @@ void build_process_units(int argc, char** argv) {
   File f_out(trg.c_str());
   FormatOutputStream fos(&f_out);
   PacketOutputStream pos(&fos);
-  map<int, StreamData> _sdata;
+  map<int, StreamData2> _sdata;
 
   /*Create and open the input and output Codecs*/
   int c = fis.getStreamCount();
@@ -176,7 +176,7 @@ void build_process_units(int argc, char** argv) {
 
   //  fis.close();
 
-  map<int, StreamData>::iterator streams = _sdata.begin();
+  map<int, StreamData2>::iterator streams = _sdata.begin();
   for (; streams != _sdata.end(); streams++) {
     //    delete (*streams).second.enc;
     //	  av_freep( (*streams).second.dec->ctx->extradata);

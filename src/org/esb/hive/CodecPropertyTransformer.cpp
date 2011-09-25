@@ -62,6 +62,7 @@ namespace org {
               }
           } else {
             LOGWARN("Property \"" << (*it).first << "\" with value \"" << (*it).second << "\" is unknown!");
+            //_result[key] = value;
           }
 
           if(_options.count(key)&&_options[key]->type==FF_OPT_TYPE_FLAGS){

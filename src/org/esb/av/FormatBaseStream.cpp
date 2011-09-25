@@ -11,15 +11,15 @@ namespace org {
     namespace av {
 	  
       bool isInitialized = false;
-      int av_log_level = AV_LOG_INFO;
+      //int av_log_level = AV_LOG_INFO;
 
       void mhive_log_default_callback(void* ptr, int level, const char* fmt, va_list vl) {
         static int print_prefix = 1;
         static int count;
         static char line[1024], prev[1024];
         AVClass* avc = ptr ? *(AVClass**) ptr : NULL;
-        if (level > av_log_level)
-          return;
+        //if (level > av_log_level)
+        //  return;
 #undef fprintf
 #ifdef __WIN32__
 #define snprintf _snprintf
@@ -99,7 +99,7 @@ namespace org {
           avcodec_register_all();
           av_register_all();
           av_log_set_callback(mhive_log_default_callback);
-          av_log_set_level(AV_LOG_DEBUG);
+          av_log_set_level(AV_LOG_VERBOSE);
           av_register_protocol2(&test_protocol, sizeof(URLProtocol));
           av_lockmgr_register(lockmgr);
           isInitialized = true;

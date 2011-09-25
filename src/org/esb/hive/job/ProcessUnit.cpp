@@ -287,7 +287,12 @@ void ProcessUnit::processInternal() {
   _output_packets = sink.getList();
   if (_expected_frame_count != -1 && _output_packets.size() != _expected_frame_count)
     LOGWARN("PUID=" << _process_unit << " Expected Frame count diff from resulting Frame count: expected=" << _expected_frame_count << " got=" << _output_packets.size())
-  }
+//  _encoder->close();
+//  _decoder->close();
+//      delete _converter;
+//    _converter=NULL;
+
+}
 
 boost::shared_ptr<Decoder> ProcessUnit::getDecoder() {
   return _decoder;

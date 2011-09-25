@@ -313,7 +313,7 @@ add_library (hive SHARED
 #	hive/ExportScanner.cpp
 #	hive/FormatStreamFactory.cpp
 #        hive/protocol/PartitionHandler.cpp
-#  hive/job/Packetizer.cpp
+  hive/job/Packetizer.cpp
 #  hive/JobScanner.cpp
   hive/NodeSender.cpp
 	hive/NodeReceiver.cpp

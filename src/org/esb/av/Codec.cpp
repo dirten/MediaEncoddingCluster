@@ -215,7 +215,7 @@ namespace org {
       }
 
       void Codec::setContextDefaults() {
-
+        return;
         //        ctx->global_quality = 1000000;
         ctx->pix_fmt = (PixelFormat) 0;
         ctx->width = 0;
@@ -381,19 +381,23 @@ namespace org {
           return false;
 
         }
+        
         /*setting special passlogfile for x264 encoder, 
          * because in mutlithreaded environment it overwrites 
          * the statistics file when this is not set to a value like thread id*/
-
+        
         std::string passlogfile = getCodecOption("passlogfile");
         LOGDEBUG("try setting passlogfile to:"<<passlogfile);
         if (getCodecId() == CODEC_ID_H264 && passlogfile.length() > 0) {
           if (_codec && _codec->priv_data_size) {
             if (!ctx->priv_data) {
+              LOGDEBUG("Allocate context private data");
               ctx->priv_data = av_mallocz(_codec->priv_data_size);
               if (!ctx->priv_data) {
                 return false; //AVERROR(ENOMEM);
               }
+            }else{
+              LOGDEBUG("private data allocated");
             }
             if (_codec->priv_class) {
               *(AVClass**) ctx->priv_data = const_cast<AVClass*> (_codec->priv_class);

@@ -1,54 +1,57 @@
-<?xml version="1.0"?>
-<preset name="Mp4 x264(320x240 hq) mp3(128kb 44.1kHz stereo)">
-    <format id="mp4">
-	<param name="fileExtension" value="mp4"/>
-	<param name="author" value="MediaEncodingCluster"/>
-    </format>
-    <codec type="video" id="libx264">
-	<param name="qscale" value="4"/>
-	<param name="b" value="1024000"/>
-	<param name="coder" value="1"/>
-	<param name="psnr" value="1"/>
-	<param name="loop" value="1"/>
-	<param name="cmp" value="chroma"/>
-	<param name="me_method" value="chroma"/>
-	<param name="parti8x8" value="1"/>
-	<param name="parti4x4" value="1"/>
-	<param name="partp4x4" value="1"/>
-	<param name="partp8x8" value="1"/>
-	<param name="partb8x8" value="0"/>
-	<param name="me_method" value="esa"/>
-	<param name="subq" value="8"/>
-	<param name="me_range" value="16"/>
-	<param name="g" value="250"/>
-	<param name="cqp" value="40"/>
-	<param name="keyint_min" value="25"/>
-	<param name="sc_threshold" value="40"/>
-	<param name="i_qfactor" value="0.71"/>
-	<param name="b_strategy" value="1"/>
-	<param name="qcomp" value="0.6"/>
-	<param name="qmin" value="2"/>
-	<param name="qmax" value="51"/>
-	<param name="qdiff" value="4"/>
-	<param name="bf" value="3"/>
-	<param name="refs" value="16"/>
-	<param name="directpred" value="3"/>
-	<param name="trellis" value="1"/>
-	<param name="wpred" value="1"/>
-	<param name="mixed_refs" value="1"/>
-	<param name="dct8x8" value="1"/>
-	<param name="fastpskip" value="1"/>
-	<param name="wpredp" value="2"/>
-	<param name="picture_frame_size" value="720p"/>
-	<param name="time_base" value="1/25"/>
-	<param name="global_header" value="1"/>
-	<param name="width" value="720"/>
-	<param name="height" value="576"/>
-    </codec>
-    <codec type="audio" id="libmp3lame">
-	<param name="ab" value="128000"/>
-	<param name="ac" value="2"/>
-	<param name="ar" value="44100"/>
-	<param name="global_header" value="1"/>
-    </codec>
-</preset>
+{
+    "name":"Mp4 x264(320x240 hq) mp3(128kb 44.1kHz stereo)",
+    "format":{ 
+	"id":"mp4",
+	"fileExtension":="mp4",
+	"author":"MediaEncodingCluster"
+	},
+    "video":{ 
+	"id":"libx264",
+	"qscale":="4",
+	"b":="1024000",
+	"coder":="1",
+	"psnr":="1",
+	"loop":="1",
+	"cmp":="chroma",
+	"me_method":="chroma",
+	"parti8x8":="1",
+	"parti4x4":="1",
+	"partp4x4":="1",
+	"partp8x8":="1",
+	"partb8x8":="0",
+	"me_method":="esa",
+	"subq":="8",
+	"me_range":="16",
+	"g":="250",
+	"cqp":="40",
+	"keyint_min":="25",
+	"sc_threshold":="40",
+	"i_qfactor":="0.71",
+	"b_strategy":="1",
+	"qcomp":="0.6",
+	"qmin":="2",
+	"qmax":="51",
+	"qdiff":="4",
+	"bf":="3",
+	"refs":="16",
+	"directpred":="3",
+	"trellis":="1",
+	"wpred":="1",
+	"mixed_refs":="1",
+	"dct8x8":="1",
+	"fastpskip":="1",
+	"wpredp":="2",
+	"picture_frame_size":="720p",
+	"time_base":="1/25",
+	"global_header":="1",
+	"width":="320",
+	"height":="240"
+    }
+    "audio":{ 
+	id:"libmp3lame",
+	"ab":="128000",
+	"ac":="2",
+	"ar":="44100",
+	"global_header":="1"
+    }
+}

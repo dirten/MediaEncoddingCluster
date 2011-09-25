@@ -145,7 +145,7 @@
 			{"key":"RD on all frames","value":"7"},
 			{"key":"RD refinement on I/P frames","value":"8"},
 			{"key":"RD refinement on all frames","value":"9"},
-			{"key":"QP-RD","value":"10","data":[{"option":"trellis", "value":"2"},{"option":"height", "value":"1080"}]}
+			{"key":"QP-RD","value":"10","data":[{"option":"trellis", "value":"2"}]}
 		    ]
 		}
 

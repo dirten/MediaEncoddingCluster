@@ -179,7 +179,8 @@ int encode(int argc, char** argv) {
   //return 0;
   File outfile(videofile.getFileName());
   PresetReaderJson::Preset preset=pr.getPreset();
-  outfile.changeExtension(preset["fileExtension"]);
+  outfile.changeExtension("mp4");
+  LOGDEBUG("writing to outfile "<<outfile.getPath());
   FormatOutputStream fos(&outfile);
   PacketOutputStream pos(&fos);
   pos.setEncoder(*videoEncoder2.get(),0);
@@ -190,7 +191,8 @@ int encode(int argc, char** argv) {
   }
   videoEncoder2->setOutputStream(&pos);
   audioEncoder2->setOutputStream(&pos);
-  while (pis.readPacket(p)==0) {
+  int c=0;
+  while (pis.readPacket(p)==0/*&&c++<5000*/) {
     Packet * encodedPacket = convert(p);
   }
   pos.close();
@@ -210,7 +212,6 @@ int encode(int argc, char** argv) {
 }
 
 int check(int argc, char**argv){
-  Log::open();
 
   /*loading the preset*/
   File preset_file(argv[2]);
@@ -232,7 +233,7 @@ int check(int argc, char**argv){
       LOGDEBUG("could not find codec by name");
     (*(*cit).second.find("codec_id")).second=org::esb::util::StringUtil::toString(vcodec->id);
     boost::shared_ptr<Encoder> encoder = CodecFactory::getStreamEncoder((*cit).second);
-    encoder->ctx->crf=0.0;
+    //encoder->ctx->crf=0.0;
     //encoder->setFlag(CODEC_FLAG_PASS2);
     if(!encoder->open())
       exit(1);
@@ -246,6 +247,7 @@ int check(int argc, char**argv){
 }
 
 int main(int argc, char** argv) {
+  Log::open();
   FormatBaseStream::initialize();
   if(argc>1&&strcmp(argv[1],"check")==0){
     return check(argc, argv);
