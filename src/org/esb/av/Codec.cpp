@@ -381,6 +381,21 @@ namespace org {
           return false;
 
         }
+  if (getCodecType() == AVMEDIA_TYPE_VIDEO) {
+    if (_options.count("width"))
+      setWidth(atoi((*_options.find("width")).second.c_str()));
+    if (_options.count("height"))
+      setHeight(atoi((*_options.find("height")).second.c_str()));
+      setPixelFormat((PixelFormat) 0);
+    if (_codec->pix_fmts) {
+      setPixelFormat(_codec->pix_fmts[0]);
+    }
+  }
+  if (getCodecType() == AVMEDIA_TYPE_AUDIO) {
+    if (_codec->sample_fmts) {
+      setSampleFormat(_codec->sample_fmts[0]);
+    }
+  }
         
         /*setting special passlogfile for x264 encoder, 
          * because in mutlithreaded environment it overwrites 
@@ -684,6 +699,14 @@ namespace org {
         std::map<std::string, std::string> result;
         const AVOption *opt = NULL;
         while ((opt = av_next_option(ctx, opt)) != NULL) {
+          if (strcmp(opt->name, "lpc_coeff_precision") == 0 ||
+                    strcmp(opt->name, "prediction_order_method") == 0||
+                    strcmp(opt->name, "min_partition_order") == 0||
+                    strcmp(opt->name, "max_partition_order") == 0||
+                    strcmp(opt->name, "lpc_type") == 0||
+                    strcmp(opt->name, "drc_scale") == 0||
+                    strcmp(opt->name, "lpc_passes") == 0
+                    )continue;
           int len = 1000;
           char data[1000];
           av_get_string(ctx, opt->name, NULL, data, len);

@@ -1,6 +1,6 @@
 @import <Foundation/CPObject.j>
 
-//@import "../Views/PhotosView.j"
+@import "../View/Analyzer/AnalyzerWindow.j"
 
 
 @implementation ContentViewController : CPObject
@@ -49,6 +49,11 @@
     var outlineView = [notification object];
     var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
     var item = [outlineView itemAtRow:selectedRow];
+    if(item=="Codec Analyzer"){
+      //alert("Analyzer");
+      analyzer=[[AnalyzerWindow alloc] init];
+      return;
+    }
     item=[item substringToIndex:[item length]-1];
     var view = [views objectForKey:item  + "View"];
     

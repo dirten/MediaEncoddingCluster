@@ -60,7 +60,7 @@ namespace org {
                 void rescaleTimestamp(Frame & input, Frame & out);
                 void compensateAudioResampling(Frame & input, Frame & out);
                 void compensateFrameRateConversion(Frame & input, Frame & out);
-                void doDeinterlaceFrame(Frame & in_frame);
+                bool doDeinterlaceFrame(Frame & in,Frame & out);
                 SwsContext * _swsContext;
                 FrameFormat * _inFormat;
                 FrameFormat * _outFormat;

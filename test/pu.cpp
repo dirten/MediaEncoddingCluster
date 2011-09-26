@@ -26,6 +26,7 @@
 using namespace org::esb::io;
 using namespace org::esb::av;
 using namespace org::esb::hive::job;
+
 class PacketSink : public Sink {
 public:
 
@@ -50,30 +51,31 @@ void help() {
   std::cout << "usage: pu <view|execute> infile [outfile]" << std::endl;
 }
 
-void writeFrame(Frame * frame, int count, std::string suffix){
-  LOGDEBUG("write frame count="<<count<<" sufix "<<suffix);
-    PacketSink s;
-    org::esb::av::Encoder enc(CODEC_ID_MJPEG);
-    enc.setPixelFormat(PIX_FMT_YUVJ420P);
-    enc.setBitRate(1000000);
-    enc.setTimeBase(1,1);
-    enc.setSink(&s);
-    enc.setWidth(frame->getWidth());
-    enc.setHeight(frame->getHeight());
-    enc.open();
-    enc.encode(*frame);
-    std::string path="./";
-    path+=org::esb::util::StringUtil::toString(count);
-    path+="-"+suffix;
-    path+=".jpg";
-    FILE *jpegImgFile= fopen(path.c_str(), "wb");
-    fwrite((char*)s.getList().front()->getAVPacket()->data, 1, s.getList().front()->getAVPacket()->size, jpegImgFile);
-    fclose(jpegImgFile);
+void writeFrame(Frame * frame, int count, std::string suffix) {
+  LOGDEBUG("write frame count=" << count << " sufix " << suffix);
+  PacketSink s;
+  org::esb::av::Encoder enc(CODEC_ID_MJPEG);
+  enc.setPixelFormat(PIX_FMT_YUVJ420P);
+  enc.setBitRate(1000000);
+  enc.setTimeBase(1, 1);
+  enc.setSink(&s);
+  enc.setWidth(frame->getWidth());
+  enc.setHeight(frame->getHeight());
+  enc.open();
+  enc.encode(*frame);
+  std::string path = "./";
+  path += org::esb::util::StringUtil::toString(count);
+  path += "-" + suffix;
+  path += ".jpg";
+  FILE *jpegImgFile = fopen(path.c_str(), "wb");
+  fwrite((char*) s.getList().front()->getAVPacket()->data, 1, s.getList().front()->getAVPacket()->size, jpegImgFile);
+  fclose(jpegImgFile);
 }
 
 void writeProcessUnit(ProcessUnit & unit) {
   LOGDEBUG("Write Images")
-
+  unit._decoder->open();
+  unit._encoder->open();
   boost::shared_ptr<Decoder >_refdecoder;
   if (unit._encoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
     LOGDEBUG("create reference decoder")
@@ -97,17 +99,35 @@ void writeProcessUnit(ProcessUnit & unit) {
     //_refdecoder->ctx->extradata_size=0;
     _refdecoder->open();
   }
-  int count=0;
+  int count = 0;
   unit._decoder->reset();
-  foreach(std::list<boost::shared_ptr<Packet> >::value_type & packet,unit._input_packets){
-    Frame *tmp=unit._decoder->decode2(*packet);
-    writeFrame(tmp, count++,"in");
+
+  foreach(std::list<boost::shared_ptr<Packet> >::value_type & packet, unit._input_packets) {
+    Frame *tmp = unit._decoder->decode2(*packet);
+    writeFrame(tmp, count++, "in");
   }
-  count=0;
-  foreach(std::list<boost::shared_ptr<Packet> >::value_type & packet,unit._output_packets){
-    Frame *tmp=_refdecoder->decode2(*packet);
-    writeFrame(tmp, count++, "out");
+  count = 0;
+
+  foreach(std::list<boost::shared_ptr<Packet> >::value_type & packet, unit._output_packets) {
+    Frame *tmp = _refdecoder->decode2(*packet);
+    if (tmp->isFinished())
+      writeFrame(tmp, count++, "out");
   }
+  bool last_packets = true;
+  while (last_packets) {
+    boost::shared_ptr<Packet >p = boost::shared_ptr<Packet > (new Packet());
+    p->setTimeBase(unit._input_packets.front()->getTimeBase());
+    p->setDuration(unit._input_packets.front()->getDuration());
+    p->setStreamIndex(unit._input_packets.front()->getStreamIndex());
+    Frame * lastf = _refdecoder->decode2(*p);
+    if (!lastf->isFinished()) {
+      last_packets = false;
+    } else {
+      writeFrame(lastf, count++, "out");
+    }
+  }
+
+
 }
 
 void execute(char * infile, char * outfile) {
@@ -115,8 +135,10 @@ void execute(char * infile, char * outfile) {
   ObjectInputStream ois(&fis);
   ProcessUnit pu;
   ois.readObject(pu);
-  pu._encoder->setCodecOption("multipass","1");
-  pu.process();
+  pu._encoder->setCodecOption("multipass", "1");
+  pu._encoder->reset();
+  pu._decoder->reset();
+  //pu.process();
   delete pu._converter;
 
   FileOutputStream fos(outfile);

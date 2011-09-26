@@ -31,6 +31,7 @@
 #include "org/esb/av/Sink.h"
 
 #include "org/esb/util/Log.h"
+#include "org/esb/util/StringUtil.h"
 #include "boost/thread/detail/thread.hpp"
 
 using namespace org::esb::hive::job;
@@ -87,6 +88,7 @@ void ProcessUnit::process() {
   if(hasProperty("2pass")){
     LOGDEBUG("Performing Pass 1");
     _encoder->setCodecOption("flags","pass1");
+    _encoder->setCodecOption("g", org::esb::util::StringUtil::toString(_input_packets.size()));
     std::ostringstream oss;
     oss<<boost::this_thread::get_id();
     LOGDEBUG("Thread pass1:"<<oss.str());
@@ -106,6 +108,7 @@ void ProcessUnit::process() {
     _encoder=_2passencoder;
     //_encoder->setCodecID(CODEC_ID_LIBXVID);
     _encoder->setCodecOption("flags","pass2");
+    _encoder->setCodecOption("g", org::esb::util::StringUtil::toString(_input_packets.size()));
     std::ostringstream oss;
     oss<<boost::this_thread::get_id();
     _encoder->setCodecOption("passlogfile",oss.str());
@@ -234,8 +237,8 @@ void ProcessUnit::processInternal() {
     _converter->convert(*tmp, *f);
     //this could be usefull when one pass encoding on x264,
     //because the first encoded frames are very poor
-    if(false&&loop_count<5)
-        f->getAVFrame()->pict_type=AV_PICTURE_TYPE_I;
+    //if(false&&loop_count<5)
+    //    f->getAVFrame()->pict_type=AV_PICTURE_TYPE_I;
     /**
      * @TODO: prepend silent audio bytes to prevent audio/video desync in distributed audio encoding
      * */

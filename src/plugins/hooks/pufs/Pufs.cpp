@@ -5,6 +5,7 @@
  * Created on 22. September 2011, 10:36
  */
 
+#include "org/esb/db/hivedb.hpp"
 #include "Pufs.h"
 #include "plugins/services/webservice/ServiceRequest.h"
 #include "plugins/services/webservice/ServiceResponse.h"
@@ -16,6 +17,7 @@
 #include "org/esb/io/ObjectInputStream.h"
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/config/config.h"
+#include "org/esb/libjson/libjson.h"
 
 class PacketSink : public Sink {
 public:
@@ -45,7 +47,35 @@ Pufs::~Pufs() {
 
 void Pufs::handleRequest(org::esb::core::Request * req, org::esb::core::Response*res) {
   org::esb::api::ServiceRequest*sreq = ((org::esb::api::ServiceRequest*) req);
-  if (sreq->getRequestURI().find("/api/v1/pufs") == 0) {
+  if (sreq->getRequestURI().find("/api/v1/pufs/pus") == 0) {
+    std::string encid = sreq->getParameter("encid");
+    JSONNode n(JSON_NODE);
+    db::HiveDb db("sqlite3", org::esb::config::Config::get("db.url"));
+    litesql::DataSource<db::Job>s = litesql::select<db::Job > (db, db::Job::Uuid == encid);
+    if (s.count() == 1) {
+      db::Job job = s.one();
+      std::vector<db::Stream> streams = job.inputfile().get().one().streams().get().all();
+
+      foreach(std::vector<db::Stream>::value_type & stream, streams) {
+        if (stream.streamtype.value() == AVMEDIA_TYPE_VIDEO) {
+          int sid = stream.id;
+          LOGDEBUG("Video stream found " << sid);
+          std::vector<db::ProcessUnit> units = litesql::select<db::ProcessUnit > (db, db::ProcessUnit::Sorcestream == sid).all();
+          JSONNode n2(JSON_ARRAY);
+
+          foreach(std::vector<db::ProcessUnit>::value_type & unit, units) {
+            n2.push_back(JSONNode("", unit.id.value()));
+          }
+          n.push_back(n2);
+        }
+      }
+    }
+    org::esb::api::ServiceResponse*sres = ((org::esb::api::ServiceResponse*) res);
+    n.push_back(JSONNode("requestId", sreq->getUUID()));
+    sres->setStatus(org::esb::api::ServiceResponse::OK);
+    sres->getOutputStream()->write(n.write_formatted());
+  } else
+    if (sreq->getRequestURI().find("/api/v1/pufs") == 0) {
     LOGDEBUG("PUFS called");
     org::esb::api::ServiceResponse*sres = ((org::esb::api::ServiceResponse*) res);
     sres->setStatus(org::esb::api::ServiceResponse::OK);
@@ -59,15 +89,22 @@ void Pufs::handleRequest(org::esb::core::Request * req, org::esb::core::Response
     name += org::esb::util::StringUtil::toString(puid);
     name += ".unit";
     org::esb::io::File f(name.c_str());
+    if(!f.exists()){
+      LOGERROR("file "<<f.getPath()<<" does not exist");
+      return;
+    }
     org::esb::io::FileInputStream fis(&f);
     org::esb::io::ObjectInputStream ois(&fis);
     org::esb::hive::job::ProcessUnit unit;
 
     ois.readObject(unit);
     //unit.process();
-    if(unit._decoder->getCodecType()!=AVMEDIA_TYPE_VIDEO)return;
     unit._decoder->open();
     unit._encoder->open();
+    if (unit._decoder->getCodecType() != AVMEDIA_TYPE_VIDEO) {
+      LOGDEBUG("ProcessUnit " << f.getPath() << " is not a video");
+      return;
+    }
     boost::shared_ptr<Decoder >_refdecoder;
     if (unit._encoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
       std::map<std::string, std::string>opt = unit._encoder->getCodecOptions();
@@ -120,11 +157,14 @@ void Pufs::handleRequest(org::esb::core::Request * req, org::esb::core::Response
     foreach(std::list<boost::shared_ptr<Packet> >::value_type & packet, unit._input_packets) {
       Frame * tmp = unit._decoder->decode2(*packet);
       if (tmp->isFinished()) {
+        
         Frame * f = new Frame(unit._encoder->getInputFormat().pixel_format, unit._encoder->getWidth(), unit._encoder->getHeight());
         conv.convert(*tmp, *f);
         unit._encoder->encode(*f);
         //unit._encoder->encode();
+         
         if (++c > fnb) {
+          
           bool have_more_frames = true;
           while (have_more_frames) {
             if (unit._encoder->encode() <= 0) {
@@ -146,8 +186,8 @@ void Pufs::handleRequest(org::esb::core::Request * req, org::esb::core::Response
             Frame * lastf = _refdecoder->decode2(*p);
             if (!lastf->isFinished()) {
               last_packets = false;
-            }else{
-              tmp2=lastf;
+            } else {
+              tmp2 = lastf;
             }
           }
           sres->setMimetype("image/jpg");

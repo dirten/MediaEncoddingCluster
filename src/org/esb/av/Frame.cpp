@@ -210,7 +210,7 @@ Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
 
 Frame::~Frame() {
   if (_allocated && _buffer) {
-//    cout << "Delete Frame:" << framePtr.use_count()<<&_buffer << endl;
+    cout << "Delete Frame:" << framePtr.use_count()<<" : "<<this << endl;
     if (framePtr.use_count() == 1) {
       av_free(_buffer);
       _buffer = NULL;

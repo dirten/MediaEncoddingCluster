@@ -24,6 +24,8 @@ int main(int argc, char** argv){
   frame1.setStorageAspectRatio(320,240);
   frame1.setPixelAspectRatio(64,45);
 
+  std::cout <<"Frame 1:"<<&frame1<<std::endl;
+  /*
   Frame frame3(PIX_FMT_YUV422P, 320,240);
   frame3.setWidth(320);
   frame3.setHeight(240);
@@ -31,11 +33,11 @@ int main(int argc, char** argv){
   frame3.setDisplayAspectRatio(16,9);
   frame3.setStorageAspectRatio(320,240);
   frame3.setPixelAspectRatio(64,45);
-
-  Frame frame2=frame1;
-  assert(frame1.getHeight()==frame2.getHeight());
-  assert(frame1.getWidth()==frame2.getWidth());
-
+  
+  
+  
+  
+  
   std::cout<<frame2.toString()<<std::endl;
 
   frame2=frame3;
@@ -49,6 +51,17 @@ int main(int argc, char** argv){
   Frame * frame6=new Frame(*frame5);
   delete frame5;
   delete frame6;
+  std::cout <<"Frame 3:"<<&frame3<<std::endl;
+
+  Frame frame2=frame1;
+  assert(frame1.getHeight()==frame2.getHeight());
+  assert(frame1.getWidth()==frame2.getWidth());
+   */
+  {
+  Frame tmp(frame1._pixFormat,frame1.getWidth(), frame1.getHeight());
+  std::cout <<"Frame 2:"<<&tmp<<std::endl;
   
+  frame1=tmp;
+  }
   return 0;
 }

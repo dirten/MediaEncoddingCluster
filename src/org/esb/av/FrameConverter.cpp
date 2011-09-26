@@ -30,7 +30,7 @@ namespace org {
         inframes = 0;
         outframes = 0;
         duplicatedframes = 0;
-        inchannels=0;
+        inchannels = 0;
         int sws_flags = 1;
         _dec = dec;
         _enc = enc;
@@ -76,8 +76,10 @@ namespace org {
 
         LOGDEBUG(in_frame.toString());
         if (_dec->getCodecType() == AVMEDIA_TYPE_VIDEO) {
-
-          doDeinterlaceFrame(in_frame);
+          /*
+          if (doDeinterlaceFrame(in_frame, in_frame)) {
+            
+          }*/
           convertVideo(in_frame, out_frame);
 
         }
@@ -204,17 +206,27 @@ namespace org {
 
       }
 
-      void FrameConverter::doDeinterlaceFrame(Frame & in_frame) {
+      bool FrameConverter::doDeinterlaceFrame(Frame & in_frame, Frame & out_frame) {
+        bool result = false;
         LOGDEBUG("deinterlacing frame");
+          Frame tmp(in_frame._pixFormat,in_frame.getWidth(), in_frame.getHeight());
+          tmp.setTimeBase(in_frame.getTimeBase());
+          tmp.setPts(in_frame.getPts());
+          tmp.setDts(in_frame.getDts());
+          tmp.setDuration(in_frame.getDuration());
+          tmp.stream_index=in_frame.stream_index;
+
         /* deinterlace : must be done before any resize */
-        Frame frame(in_frame);
-        if (avpicture_deinterlace((AVPicture*) frame.getAVFrame(), (const AVPicture*) in_frame.getAVFrame(), _dec->getPixelFormat(), _dec->getWidth(), _dec->getHeight()) < 0) {
+        if (avpicture_deinterlace((AVPicture*) tmp.getAVFrame(), (const AVPicture*) in_frame.getAVFrame(), _dec->getPixelFormat(), _dec->getWidth(), _dec->getHeight()) < 0) {
           /* if error, do not deinterlace */
           //fprintf(stderr, "Deinterlacing failed\n");
+          result = false;
         } else {
-          in_frame = frame;
+          in_frame=tmp;
+          result = true;
         }
         LOGDEBUG("deinterlacing frame ready");
+        return result;
       }
 
       void FrameConverter::compensateAudioResampling(Frame & input, Frame & out) {
@@ -267,10 +279,10 @@ namespace org {
        * this resample the input Frame data into the output Frame data
        */
       void FrameConverter::convertAudio(Frame & in_frame, Frame & out_frame) {
-        
-        if (_audioCtx == NULL||inchannels!=in_frame.channels) {
-          inchannels=in_frame.channels;
-          if(_audioCtx)audio_resample_close(_audioCtx);
+
+        if (_audioCtx == NULL || inchannels != in_frame.channels) {
+          inchannels = in_frame.channels;
+          if (_audioCtx)audio_resample_close(_audioCtx);
           if (_dec->getCodecType() == AVMEDIA_TYPE_AUDIO && _enc->getCodecType() == AVMEDIA_TYPE_AUDIO) {
             if (_dec->getSampleFormat() != SAMPLE_FMT_S16)
               LOGWARN("Warning, using s16 intermediate sample format for resampling\n");
