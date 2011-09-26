@@ -34,6 +34,7 @@
 #include <deque>
 #include <map>
 #include <list>
+#include "../exports.h"
 namespace org {
   namespace esb {
     namespace av {
@@ -45,7 +46,7 @@ namespace org {
 //        typedef boost::shared_ptr<org::esb::av::Packet> PacketPtr;
 //        typedef std::deque<PacketPtr> PacketListPtr;
 
-        class Packetizer {
+        class HIVE_EXPORT Packetizer {
         private:
 
           enum State {
