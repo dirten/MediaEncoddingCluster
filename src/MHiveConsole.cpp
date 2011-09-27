@@ -61,7 +61,7 @@ bool startserver() {
   //prq.addProcessListener(&listener);
   prq->run();
   server_pid = prq->getPid();
-  FileOutputStream fos(org::esb::config::Config::get("hive.base_path") + "/data/server.pid");
+  FileOutputStream fos(org::esb::config::Config::get("hive.data_path") + "/server.pid");
   fos.write(org::esb::util::StringUtil::toString(server_pid));
   fos.close();
   return true;
@@ -81,7 +81,7 @@ bool stopserver() {
     proc.kill();
   }
   server_pid = 0;
-  File f(org::esb::config::Config::get("hive.base_path") + "/data/server.pid");
+  File f(org::esb::config::Config::get("hive.data_path") + "/server.pid");
   f.deleteFile();
   return result;
 }
@@ -116,7 +116,7 @@ bool startclient() {
   //prq.addProcessListener(&listener);
   prq->run();
   client_pid = prq->getPid();
-  FileOutputStream fos(org::esb::config::Config::get("hive.base_path") + "/data/client.pid");
+  FileOutputStream fos(org::esb::config::Config::get("hive.data_path") + "/client.pid");
   fos.write(org::esb::util::StringUtil::toString(client_pid));
   fos.close();
   return true;
@@ -135,7 +135,7 @@ bool stopclient() {
   } catch (org::esb::lang::ProcessException & ex) {
     proc.kill();
   }
-  File f(org::esb::config::Config::get("hive.base_path") + "/data/client.pid");
+  File f(org::esb::config::Config::get("hive.data_path") + "/client.pid");
   f.deleteFile();
   client_pid=0;
   return result;
@@ -152,7 +152,7 @@ void showstatus(){
  * 
  */
 int console() {
-  File fs(org::esb::config::Config::get("hive.base_path") + "/data/server.pid");
+  File fs(org::esb::config::Config::get("hive.data_path") + "/server.pid");
   if (fs.exists()) {
     FileInputStream fis(&fs);
     std::string buffer;
@@ -162,7 +162,7 @@ int console() {
     if(!proc->isRunning())
       server_pid=0;
   }
-  File fc(org::esb::config::Config::get("hive.base_path") + "/data/client.pid");
+  File fc(org::esb::config::Config::get("hive.data_path") + "/client.pid");
   if (fc.exists()) {
     FileInputStream fis(&fc);
     std::string buffer;

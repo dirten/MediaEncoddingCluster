@@ -136,9 +136,10 @@ namespace org {
         if (size > 0) {
           for (int a = 0; a < size; a++) {
             JSONNode n = node[a];
-            //LOGDEBUG("name=" << n.name());
+            LOGDEBUG("search for "<<name<<" iter = " << n.name());
             if (name == n.name()) {
               result = true;
+              LOGDEBUG("attribute "<<name<<" found")
             }
           }
         }
@@ -149,22 +150,22 @@ namespace org {
         /*check the root contains required data*/
         if (contains(root, "infile")) {
           if (!contains(root, "profileid")) {
-            result = "no profileid attribute found!";
+            return "no profileid attribute found!";
           } else if (!contains(root, "outfile")) {
-            result = "no outfile attribute found!";
+            return "no outfile attribute found!";
           }
         } else if (contains(root, "indir")) {
           if (!contains(root, "profileid")) {
-            result = "no profileid attribute found!";
+            return "no profileid attribute found!";
           } else if (!contains(root, "outdir")) {
-            result = "no outfile attribute found!";
+            return "no outfile attribute found!";
           } else if (!contains(root, "outfilepattern")) {
-            result = "no outfilepattern attribute found!";
+            return "no outfilepattern attribute found!";
           }
         } else {
-          result = "no infile or indir attribute given!";
+          return "no infile or indir attribute given!";
         }
-        return result;
+        return "";
       }
 
       std::string JSONHandler::checkJsonProfile(JSONNode&root) {
@@ -241,8 +242,9 @@ namespace org {
                 error.push_back(JSONNode("code", "attribute_error"));
                 error.push_back(JSONNode("description", msg));
                 n.push_back(error);
+              }else{
+                n=save(*db, inode);
               }
-              n=save(*db, inode);
             } else {
               JSONNode error(JSON_NODE);
 
@@ -684,6 +686,7 @@ namespace org {
       }
 
       JSONNode JSONHandler::save_outfile(db::HiveDb&db, JSONNode & root) {
+        LOGDEBUG("root_node:"<<root.write_formatted());
         JSONNode n(JSON_NODE);
         org::esb::io::File outfile(root["outfile"].as_string());
         if (!outfile.canWrite()) {

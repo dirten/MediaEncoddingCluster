@@ -8,7 +8,8 @@
     CPLog.debug("Nvaigator init");
     //items = [CPDictionary dictionaryWithObjects:[[@"glossary 2"], [@"proj 1", @"proj 2", @"proj 3"]] forKeys:[@"Glossaries", @"Projects"]];
     //items = [CPDictionary dictionaryWithObjects:[[@"Configuration",@"Nodes"],[], []] forKeys:[@"System",@"Profiles", @"Encodings"]];
-    items = [CPDictionary dictionaryWithObjects:[[],[], []] forKeys:[@"Profiles", @"Encodings"]];
+    
+    items = [CPDictionary dictionaryWithObjects:[[], []] forKeys:[@"Profiles", @"Encodings"]];
     var textColumn = [[CPTableColumn alloc] initWithIdentifier:@"TextColumn2"];
     [textColumn setWidth:190.0];
     [textColumn setEditable:YES];
