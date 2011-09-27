@@ -86,6 +86,7 @@ void ProcessUnit::process() {
     LOGDEBUG("Two Pass Enabled");
     setProperty("2pass","true");
 	oss<<org::esb::config::Config::get("hive.tmp_path");
+	oss<<"/";
     oss<<boost::this_thread::get_id();
   }
   
