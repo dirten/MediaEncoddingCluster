@@ -101,7 +101,7 @@ bool quiet = false;
 
 int main(int argc, char * argv[]) {
   //org::esb::core::Application(argc, argv);
-  //std::cout << "arg0:" << argv[0] << std::endl;
+  std::cout << "arg0:" << argv[0] << std::endl;
   //isatty(0);
   /*setting default path to Program*/
   //log4cplus::BasicConfigurator conf;
@@ -136,6 +136,7 @@ int main(int argc, char * argv[]) {
             ;
 
     po::options_description cli("Client options");
+
     cli.add_options()
             ("client,i", "start the Hive Client")
             ("host,h", po::value<std::string > ()->default_value("auto"), "Host to connect")

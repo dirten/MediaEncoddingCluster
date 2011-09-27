@@ -50,6 +50,10 @@ void testReplace(){
   target=util::StringUtil::replace("bla:fasel:test:test2", ":", ",");
   LOGDEBUG(target);
   assert(target=="bla,fasel,test,test2");
+
+  target=util::StringUtil::replace("bla fasel test test2", " ", "\ ");
+  LOGDEBUG(target);
+  assert(target=="bla\ fasel\ test\ test2");
 }
 int main() {
   Log::open("");

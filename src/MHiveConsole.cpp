@@ -34,17 +34,9 @@ char *getmyline() {
 
 bool startserver() {
   std::string executable = org::esb::config::Config::get("hive.base_path");
-  executable.append("/bin");
+  executable.append("/bin/mhive");
 #ifdef WIN32
-  executable.append("/mhive.exe ");
-  //replacing all slashes with backslashes
-  int position = executable.find("/"); // find first slash
-  while (position != string::npos) {
-    executable.replace(position, 1, "\\");
-    position = executable.find("/", position + 1);
-  }
-#else
-  executable.append("/mhive");
+  executable.append(".exe");
 #endif
   std::list<std::string> arguments;
   arguments.clear();
@@ -88,17 +80,9 @@ bool stopserver() {
 
 bool startclient() {
   std::string executable = org::esb::config::Config::get("hive.base_path");
-  executable.append("/bin");
+  executable.append("/bin/mhive");
 #ifdef WIN32
-  executable.append("/mhive.exe ");
-  //replacing all slashes with backslashes
-  int position = executable.find("/"); // find first slash
-  while (position != string::npos) {
-    executable.replace(position, 1, "\\");
-    position = executable.find("/", position + 1);
-  }
-#else
-  executable.append("/mhive");
+  executable.append(".exe");
 #endif
   std::list<std::string> arguments;
   arguments.clear();

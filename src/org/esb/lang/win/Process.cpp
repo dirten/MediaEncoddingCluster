@@ -11,8 +11,10 @@
 #include <tchar.h>
 #include <strsafe.h>
 #include "org/esb/util/Log.h"
+#include "org/esb/util/StringUtil.h"
 #include "boost/thread.hpp"
 #include "boost/bind.hpp"
+#include "org/esb/io/File.h"
 /*
 bool isRunning(string pName)
 {
@@ -66,7 +68,7 @@ namespace org {
       void Process::start() {
         if (_executable.length() == 0)
           throw ProcessException("no executable given");
-
+		//_executable=std::string("\"").append(_executable).append("\"");
         std::string args;
         std::list<std::string>::iterator arg_it = _arguments.begin();
         for (; arg_it != _arguments.end(); arg_it++) {
@@ -80,8 +82,9 @@ namespace org {
         }
 
         std::string a;
+		std::string qexecutable=std::string("\"").append(_executable).append("\"");
         if (_name.length() == 0) {
-          a = (_executable + " " + args);
+          a = (qexecutable + " " + args);
         } else {
           a = _name + " " + args;
         }	
@@ -94,9 +97,9 @@ namespace org {
         memset(&suInfo, 0, sizeof (suInfo));
         memset(&procInfo, 0, sizeof (procInfo));
         suInfo.cb = sizeof (suInfo);
+
         LOGDEBUG("start executable:" << _executable);
         LOGDEBUG("start command line:" << vip);
-
         bWorked = ::CreateProcess(_executable.c_str(),
                 vip, // can also be NULL
                 NULL,

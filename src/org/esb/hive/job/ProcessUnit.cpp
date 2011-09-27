@@ -33,6 +33,7 @@
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringUtil.h"
 #include "boost/thread/detail/thread.hpp"
+#include "org/esb/config/config.h"
 
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
@@ -80,17 +81,18 @@ ProcessUnit::~ProcessUnit() {
 }
 
 void ProcessUnit::process() {
+  std::ostringstream oss;
   if(_encoder->getCodecOption("multipass")=="1"||_encoder->getCodecOption("multipass")=="true"){
     LOGDEBUG("Two Pass Enabled");
     setProperty("2pass","true");
+	oss<<org::esb::config::Config::get("hive.tmp_path");
+    oss<<boost::this_thread::get_id();
   }
   
   if(hasProperty("2pass")){
     LOGDEBUG("Performing Pass 1");
     _encoder->setCodecOption("flags","pass1");
     _encoder->setCodecOption("g", org::esb::util::StringUtil::toString(_input_packets.size()));
-    std::ostringstream oss;
-    oss<<boost::this_thread::get_id();
     LOGDEBUG("Thread pass1:"<<oss.str());
     _encoder->setCodecOption("passlogfile",oss.str());
     _encoder->setFlag(CODEC_FLAG_PASS1);
@@ -109,8 +111,6 @@ void ProcessUnit::process() {
     //_encoder->setCodecID(CODEC_ID_LIBXVID);
     _encoder->setCodecOption("flags","pass2");
     _encoder->setCodecOption("g", org::esb::util::StringUtil::toString(_input_packets.size()));
-    std::ostringstream oss;
-    oss<<boost::this_thread::get_id();
     _encoder->setCodecOption("passlogfile",oss.str());
     _encoder->setFlag(CODEC_FLAG_PASS2);
     processInternal();
