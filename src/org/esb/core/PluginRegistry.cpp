@@ -16,6 +16,15 @@
 namespace org {
   namespace esb {
     namespace core {
+
+      bool compare_webservice(Ptr<org::esb::io::File> first, Ptr<org::esb::io::File> second) {
+        LOGDEBUG("Compare="<<first->getPath());
+        if(first->getPath().find("webservice")!=std::string::npos){
+          return true;
+        }else{
+          false;
+        }
+      }
       AppContext * PluginRegistry::context = NULL;
       PluginRegistry * PluginRegistry::_instance = NULL;
 
@@ -49,6 +58,7 @@ namespace org {
 
       void CORE_EXPORT PluginRegistry::startServices() {
         typedef std::map<std::string, Plugin*> PluginMap;
+
         foreach(PluginMap::value_type s, _plugin_map) {
           ((ServicePlugin*) s.second)->startService();
         }
@@ -57,6 +67,7 @@ namespace org {
 
       void CORE_EXPORT PluginRegistry::stopServices() {
         typedef std::map<std::string, Plugin*> PluginMap;
+
         foreach(PluginMap::value_type s, _plugin_map) {
           ((ServicePlugin*) s.second)->stopService();
         }
@@ -85,12 +96,14 @@ namespace org {
 
       PluginRegistry::PluginRegistry() {
       }
-      
+
       void PluginRegistry::load(std::string file) {
         org::esb::io::File plugin_dir(file);
+        
         if (plugin_dir.isDirectory()) {
           org::esb::io::FileList plugin_list = plugin_dir.listFiles();
-
+          plugin_list.sort(compare_webservice);
+          
           foreach(Ptr<org::esb::io::File> f, plugin_list) {
             if (f->isFile())
               load(f->getPath());
@@ -100,21 +113,24 @@ namespace org {
         }
 
       }
+
       void PluginRegistry::loadFile(std::string file) {
-        LOGDEBUG("loading plugins from "<<file);
-			//std::cout<<"loading plugins from "<<file<<std::endl;
-        try{
-        org::esb::lang::SharedObjectLoader * loader = new org::esb::lang::SharedObjectLoader(file);
-        _shared_objects[file]=loader;
-        }catch(org::esb::lang::NotFoundException & ex){
+        LOGDEBUG("loading plugins from " << file);
+        //std::cout<<"loading plugins from "<<file<<std::endl;
+        
+        try {
+          org::esb::lang::SharedObjectLoader * loader = new org::esb::lang::SharedObjectLoader(file);
+          _shared_objects[file] = loader;
+        } catch (org::esb::lang::NotFoundException & ex) {
 
         }
       }
 
       PluginRegistry::~PluginRegistry() {
         LOGDEBUG("PluginRegistry::~PluginRegistry()")
-        typedef std::map<std::string, org::esb::lang::SharedObjectLoader*> SharedObjectMap;
-        foreach(SharedObjectMap::value_type row, _shared_objects){
+                typedef std::map<std::string, org::esb::lang::SharedObjectLoader*> SharedObjectMap;
+
+        foreach(SharedObjectMap::value_type row, _shared_objects) {
           delete row.second;
         }
       }
