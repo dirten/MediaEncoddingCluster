@@ -18,6 +18,7 @@ namespace org {
 
       PresetReader::PresetReader(std::string filename) {
         org::esb::io::File file(filename);
+        
 		if (!file.exists()) {
           LOGERROR("Preset File does not exist! " <<filename);
           return;
