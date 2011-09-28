@@ -5,6 +5,7 @@
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/av/FormatOutputStream.h"
 #include "org/esb/av/PacketOutputStream.h"
+#include "org/esb/io/File.h"
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/io/ObjectInputStream.h"
 #include "org/esb/io/FileOutputStream.h"
@@ -238,9 +239,13 @@ void write_audio_to_file() {
 
 int main(int argc, char ** argv) {
   Log::open("");
-    org::esb::io::File d("data");
-  if(!d.exists())
+  org::esb::io::File d("data");
+  if(!d.exists()){
+    LOGDEBUG("mkdir test")
     d.mkdir();
+  }else{
+    LOGDEBUG("dir exist")
+  }
 
   av_register_all();
   avcodec_init();
