@@ -22,7 +22,7 @@ namespace org {
         if(first->getPath().find("webservice")!=std::string::npos){
           return true;
         }else{
-          false;
+          return false;
         }
       }
       AppContext * PluginRegistry::context = NULL;
