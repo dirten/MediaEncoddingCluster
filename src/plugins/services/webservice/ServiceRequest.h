@@ -11,6 +11,7 @@
 #include "org/esb/core/Request.h"
 #include "exports.h"
 #include "mongoose.h"
+#include "boost/function.hpp"
 
 namespace org {
   namespace esb {
@@ -21,7 +22,9 @@ namespace org {
         ServiceInputStream( mg_connection *conn);
         //ServiceInputStream();
         ~ServiceInputStream();
-        int read(string & str, int max=1500);
+        int read(string & str, int max=5000);
+        int read(string & str, boost::function<bool (std::string data) > func, int size=1);
+        
         int read(unsigned char * buffer, int length);
         int read(vector<unsigned char>&buffer) {return 0;};
         int read() {return 0;};

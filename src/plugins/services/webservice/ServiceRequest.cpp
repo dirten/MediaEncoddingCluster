@@ -25,14 +25,27 @@ namespace org {
       int ServiceInputStream::read(string& str, int max) {
         //int size = available();
         int bytes = 0, recv = 0;
-        char buffer[100000];
+        char buffer[std::min(10000,max)];
 
         while (max > 0 && (bytes = mg_read(_conn, buffer, sizeof (buffer))) > 0) {
           str = str.append(buffer, bytes);
           max -= bytes;
           recv += bytes;
         }
+        //LOGDEBUG("received data size="<<recv);
         return recv;
+      }
+
+      int ServiceInputStream::read(string & str, boost::function<bool (std::string data) > func, int size) {
+        std::string tmp;
+        while(read(tmp,size)){
+          if(func(tmp)){
+            str.append(tmp);
+          }else{
+            break;
+          }
+          tmp.clear();
+        }
       }
 
       int ServiceInputStream::read(unsigned char* buffer, int length) {

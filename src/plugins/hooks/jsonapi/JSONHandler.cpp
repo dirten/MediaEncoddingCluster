@@ -224,14 +224,34 @@ namespace org {
           //sres->getOutputStream()->write(n.write());
         }
       }
-
+      int charcounter=0;
+      int counter=0;
+      bool first_open_found=false;
+      bool jsonFilter(std::string data){
+        if(counter==0&&first_open_found){
+          return false;
+        }
+        charcounter++;
+        if(data=="{"){
+          counter++;
+          first_open_found=true;
+        }
+        if(data=="}"){
+          counter--;
+        }
+        return true;
+      }
       void JSONHandler::handleEncoding(ServiceRequest* req, ServiceResponse* res) {
             JSONNode n(JSON_NODE);
         if (req->getMethod() == "POST") {
           JSONNode inode;
           try {
             std::string postdata;
-            req->getInputstream()->read(postdata);
+            req->getInputstream()->read(postdata, &jsonFilter,1);
+            LOGDEBUG("charcounter="<<charcounter<< " counter="<<counter<<" first open found = "<<first_open_found);
+            LOGDEBUG("POSTDATA = "<<postdata);
+            first_open_found=false;
+            counter=0;
             if (libjson::is_valid(postdata)) {
               LOGDEBUG("Data is valid");
               inode = libjson::parse(postdata);
@@ -363,6 +383,17 @@ namespace org {
             }
             n.push_back(c);
           }
+        }else if (req->getMethod() == "PUT") {
+            std::string putdata;
+            req->getInputstream()->read(putdata);
+            LOGDEBUG("PUTDATA = "<<putdata)
+        }else{
+              JSONNode error(JSON_NODE);
+              error.set_name("error");
+              error.push_back(JSONNode("code", "unknown_method"));
+              error.push_back(JSONNode("description", std::string("unknown method used to create an encoding, method=").append(req->getMethod())));
+              n.push_back(error);
+          
         }
         n.push_back(JSONNode("requestId", req->getUUID()));
         res->setStatus(ServiceResponse::OK);
@@ -576,7 +607,7 @@ namespace org {
 
       JSONNode JSONHandler::save_outdir(db::HiveDb&db, JSONNode & root) {
         JSONNode n(JSON_NODE);
-        
+
         org::esb::io::File indir(root["indir"].as_string());
         org::esb::io::File outdir(root["outdir"].as_string());
         if (!indir.exists() || !indir.isDirectory()) {
@@ -599,7 +630,7 @@ namespace org {
         litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == root["profileid"].as_string());
         if (s.count() == 1) {
           db::Preset preset = s.one();
-  
+
           //org::esb::hive::FileImporter importer;
           std::string filter;
           if (contains(root, "filter")) {
@@ -636,25 +667,25 @@ namespace org {
 
             if (org::esb::io::File(outfile).canWrite()) {
               org::esb::signal::Message msg;
-              msg.setProperty("mediaimporter","import");
-              msg.setProperty("file",root["infile"].as_string());
+              msg.setProperty("mediaimporter", "import");
+              msg.setProperty("file", root["infile"].as_string());
               org::esb::signal::Messenger::getInstance().sendRequest(msg);
-              LOGDEBUG("Returned FileId="<<msg.getProperty("fileid"));
-              boost::shared_ptr<db::MediaFile> tmf=boost::static_pointer_cast<db::MediaFile>(msg.getVoidProperty("mediafile"));
+              LOGDEBUG("Returned FileId=" << msg.getProperty("fileid"));
+              boost::shared_ptr<db::MediaFile> tmf = boost::static_pointer_cast<db::MediaFile > (msg.getVoidProperty("mediafile"));
 
-              db::MediaFile infile = *(tmf.get());// importer.import(org::esb::io::File(root["infile"].as_string()));
+              db::MediaFile infile = *(tmf.get()); // importer.import(org::esb::io::File(root["infile"].as_string()));
               if (infile.id > 0) {
                 org::esb::signal::Message msg_job;
                 boost::shared_ptr<db::Preset> pp(new db::Preset(preset));
-                msg_job.setProperty("jobcreator","create").
-                        setProperty("mediafile",tmf).
-                        setProperty("preset",pp).
-                        setProperty("outfile",root["outfile"].as_string());
+                msg_job.setProperty("jobcreator", "create").
+                        setProperty("mediafile", tmf).
+                        setProperty("preset", pp).
+                        setProperty("outfile", root["outfile"].as_string());
                 org::esb::signal::Messenger::getInstance().sendRequest(msg_job);
-                LOGDEBUG("Returned job Object:"<<msg_job.getProperty("jobid"));
+                LOGDEBUG("Returned job Object:" << msg_job.getProperty("jobid"));
 
-                int id = atoi(msg_job.getProperty("jobid").c_str());//org::esb::hive::JobUtil::createJob(infile, preset, root["outfile"].as_string());
-                LOGDEBUG("Returned job id:"<<id);
+                int id = atoi(msg_job.getProperty("jobid").c_str()); //org::esb::hive::JobUtil::createJob(infile, preset, root["outfile"].as_string());
+                LOGDEBUG("Returned job id:" << id);
                 db::Job pre = litesql::select<db::Job > (db, db::Job::Id == id).one();
                 ids.push_back(JSONNode("id", pre.uuid.value()));
               } else {
@@ -686,7 +717,7 @@ namespace org {
       }
 
       JSONNode JSONHandler::save_outfile(db::HiveDb&db, JSONNode & root) {
-        LOGDEBUG("root_node:"<<root.write_formatted());
+        LOGDEBUG("root_node:" << root.write_formatted());
         JSONNode n(JSON_NODE);
         org::esb::io::File outfile(root["outfile"].as_string());
         if (!outfile.canWrite()) {
@@ -699,27 +730,27 @@ namespace org {
           litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == root["profileid"].as_string());
           if (s.count() == 1) {
             db::Preset preset = s.one();
-              org::esb::signal::Message msg;
-              msg.setProperty("mediaimporter","import");
-              msg.setProperty("file",root["infile"].as_string());
-              org::esb::signal::Messenger::getInstance().sendRequest(msg);
-              LOGDEBUG("Returned FileId="<<msg.getProperty("fileid"));
-              boost::shared_ptr<db::MediaFile> tmf=boost::static_pointer_cast<db::MediaFile>(msg.getVoidProperty("mediafile"));
+            org::esb::signal::Message msg;
+            msg.setProperty("mediaimporter", "import");
+            msg.setProperty("file", root["infile"].as_string());
+            org::esb::signal::Messenger::getInstance().sendRequest(msg);
+            LOGDEBUG("Returned FileId=" << msg.getProperty("fileid"));
+            boost::shared_ptr<db::MediaFile> tmf = boost::static_pointer_cast<db::MediaFile > (msg.getVoidProperty("mediafile"));
 
             //org::esb::hive::FileImporter importer;
-            db::MediaFile infile = *(tmf.get());// importer.import(org::esb::io::File(root["infile"].as_string()));
+            db::MediaFile infile = *(tmf.get()); // importer.import(org::esb::io::File(root["infile"].as_string()));
             if (infile.id > 0) {
               org::esb::signal::Message msg_job;
               boost::shared_ptr<db::Preset> pp(new db::Preset(preset));
-              msg_job.setProperty("jobcreator","create").
-                      setProperty("mediafile",tmf).
-                      setProperty("preset",pp).
-                      setProperty("outfile",root["outfile"].as_string());
+              msg_job.setProperty("jobcreator", "create").
+                      setProperty("mediafile", tmf).
+                      setProperty("preset", pp).
+                      setProperty("outfile", root["outfile"].as_string());
               org::esb::signal::Messenger::getInstance().sendRequest(msg_job);
-              LOGDEBUG("Returned job Object:"<<msg_job.getProperty("jobid"));
+              LOGDEBUG("Returned job Object:" << msg_job.getProperty("jobid"));
 
-              int id = atoi(msg_job.getProperty("jobid").c_str());//org::esb::hive::JobUtil::createJob(infile, preset, root["outfile"].as_string());
-              LOGDEBUG("Returned job id:"<<id);
+              int id = atoi(msg_job.getProperty("jobid").c_str()); //org::esb::hive::JobUtil::createJob(infile, preset, root["outfile"].as_string());
+              LOGDEBUG("Returned job id:" << id);
               db::Job pre = litesql::select<db::Job > (db, db::Job::Id == id).one();
 
               n.push_back(JSONNode("id", pre.uuid.value()));
