@@ -53,7 +53,7 @@ namespace org {
       void PluginRegistry::registerService(std::string name, ServicePlugin*plugin) {
         if (plugin == NULL)return;
         _plugin_map[name] = plugin;
-        //plugin->setContext(context);
+        plugin->setContext(context);
       }
 
       void CORE_EXPORT PluginRegistry::startServices() {
