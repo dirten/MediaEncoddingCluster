@@ -66,9 +66,9 @@ namespace org {
 
       SharedObjectLoader::~SharedObjectLoader() {
         LOGDEBUG("SharedObjectLoader::~SharedObjectLoader():"<<_filename)
-        /*if(dlclose(_lib_handle)){
+        if(dlclose(_lib_handle)){
           LOGERROR("closing shared object : "<<_filename<<" : "<<dlerror());
-        }*/
+        }
       }
     }
   }
