@@ -93,7 +93,7 @@ void ProcessUnit::process() {
   if(hasProperty("2pass")){
     LOGDEBUG("Performing Pass 1");
     _encoder->setCodecOption("flags","pass1");
-    _encoder->setCodecOption("g", org::esb::util::StringUtil::toString(_input_packets.size()));
+    //_encoder->setCodecOption("g", org::esb::util::StringUtil::toString(_input_packets.size()));
     LOGDEBUG("Thread pass1:"<<oss.str());
     _encoder->setCodecOption("passlogfile",oss.str());
     _encoder->setFlag(CODEC_FLAG_PASS1);
@@ -111,7 +111,7 @@ void ProcessUnit::process() {
     _encoder=_2passencoder;
     //_encoder->setCodecID(CODEC_ID_LIBXVID);
     _encoder->setCodecOption("flags","pass2");
-    _encoder->setCodecOption("g", org::esb::util::StringUtil::toString(_input_packets.size()));
+    //_encoder->setCodecOption("g", org::esb::util::StringUtil::toString(_input_packets.size()));
     _encoder->setCodecOption("passlogfile",oss.str());
     _encoder->setFlag(CODEC_FLAG_PASS2);
     processInternal();

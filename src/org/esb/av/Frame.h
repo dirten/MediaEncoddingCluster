@@ -17,8 +17,8 @@ namespace org {
         Frame(PixelFormat format, int width, int height, bool allocate = true);
         Frame(uint8_t * buffer, int64_t size);
 
-//        Frame(const Frame & source);
-//        Frame operator=(Frame & frame);
+        Frame(const Frame & source);
+        Frame operator=(Frame & frame);
         ~Frame();
 
         uint8_t * getData();
@@ -69,6 +69,7 @@ namespace org {
         //	AVFrame * _frame;
         uint8_t * _buffer;
       private:
+        void copyFromFrame(const Frame&);
         bool _isFinished;
         int64_t _dts;
         int64_t _pts;

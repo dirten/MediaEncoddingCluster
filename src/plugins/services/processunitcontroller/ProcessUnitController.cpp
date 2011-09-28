@@ -248,7 +248,7 @@ namespace org {
               stream_data[idx].decoder = stream_map[idx].decoder;
               stream_data[idx].encoder = stream_map[idx].encoder;
               if (stream_map[idx].encoder->getCodecType() == AVMEDIA_TYPE_VIDEO)
-                stream_data[idx].min_packet_count = stream_map[idx].encoder->getGopSize();
+                stream_data[idx].min_packet_count = 0;//stream_map[idx].encoder->getGopSize();
               else
                 stream_data[idx].min_packet_count = 0;
             }

@@ -86,7 +86,7 @@ namespace org {
           std::list<org::esb::av::PacketListPtr> _packet_list;
 
           static const int MIN_AUDIO_PACKETS = 500;
-          static const int MIN_VIDEO_PACKETS = 20;
+          static const int MIN_VIDEO_PACKETS = 250;
 
           std::map<int, org::esb::av::PacketListPtr> _overlap_queue;
           std::map<CodecID, int> _codec_overlap;

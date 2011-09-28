@@ -314,8 +314,8 @@ namespace org {
                 db::Job job = s.one();
                 job.status = job.status == "running" ? "stopping" : "stopped";
                 job.update();
-                //std::string job_id = org::esb::util::StringUtil::toString(job.id);
-                //org::esb::signal::Messenger::getInstance().sendMessage(org::esb::signal::Message().setProperty("processunitcontroller", "STOP_JOB").setProperty("job_id", job_id));
+                std::string job_id = org::esb::util::StringUtil::toString(job.id);
+                org::esb::signal::Messenger::getInstance().sendMessage(org::esb::signal::Message().setProperty("processunitcontroller", "STOP_JOB").setProperty("job_id", job_id));
 
                 //job.del();
                 JSONNode ok(JSON_NODE);

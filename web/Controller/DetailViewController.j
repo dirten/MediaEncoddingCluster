@@ -131,7 +131,7 @@
     duration=parseInt(duration/60);
     metric=" h"
   }
-  return "~"+result;
+  return ""+result;
 
 }
 @end

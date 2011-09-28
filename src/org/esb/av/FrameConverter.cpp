@@ -76,10 +76,10 @@ namespace org {
 
         LOGDEBUG(in_frame.toString());
         if (_dec->getCodecType() == AVMEDIA_TYPE_VIDEO) {
-          /*
+          
           if (doDeinterlaceFrame(in_frame, in_frame)) {
             
-          }*/
+          }
           convertVideo(in_frame, out_frame);
 
         }
@@ -209,20 +209,20 @@ namespace org {
       bool FrameConverter::doDeinterlaceFrame(Frame & in_frame, Frame & out_frame) {
         bool result = false;
         LOGDEBUG("deinterlacing frame");
-          Frame tmp(in_frame._pixFormat,in_frame.getWidth(), in_frame.getHeight());
-          tmp.setTimeBase(in_frame.getTimeBase());
-          tmp.setPts(in_frame.getPts());
-          tmp.setDts(in_frame.getDts());
-          tmp.setDuration(in_frame.getDuration());
-          tmp.stream_index=in_frame.stream_index;
-
+        int size = avpicture_get_size(_dec->getPixelFormat(),_dec->getWidth(),_dec->getHeight());
+        uint8_t * buf=static_cast<uint8_t*>(av_malloc(size));
+        AVPicture *pic;
+        AVPicture pic_tmp;
+        pic=&pic_tmp;
+        avpicture_fill(pic,buf,_dec->getPixelFormat(),_dec->getWidth(),_dec->getHeight());
         /* deinterlace : must be done before any resize */
-        if (avpicture_deinterlace((AVPicture*) tmp.getAVFrame(), (const AVPicture*) in_frame.getAVFrame(), _dec->getPixelFormat(), _dec->getWidth(), _dec->getHeight()) < 0) {
+        if (avpicture_deinterlace(pic, (const AVPicture*) in_frame.getAVFrame(), _dec->getPixelFormat(), _dec->getWidth(), _dec->getHeight()) < 0) {
           /* if error, do not deinterlace */
-          //fprintf(stderr, "Deinterlacing failed\n");
           result = false;
         } else {
-          in_frame=tmp;
+          *((AVPicture*)in_frame.getAVFrame())=*pic;
+          av_free(in_frame._buffer);
+          in_frame._buffer=buf;
           result = true;
         }
         LOGDEBUG("deinterlacing frame ready");

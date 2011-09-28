@@ -8,6 +8,7 @@
 
 
 #include "org/esb/av/Frame.h"
+#include "org/esb/util/Log.h"
 
 #include <assert.h>
 #include <iostream>
@@ -15,7 +16,7 @@ using namespace org::esb::av;
 
 
 int main(int argc, char** argv){
-
+  Log::open();
   Frame frame1(PIX_FMT_YUV422P, 320,240);
   frame1.setWidth(320);
   frame1.setHeight(240);
@@ -57,11 +58,13 @@ int main(int argc, char** argv){
   assert(frame1.getHeight()==frame2.getHeight());
   assert(frame1.getWidth()==frame2.getWidth());
    */
+  //test zuweisungs operator
   {
   Frame tmp(frame1._pixFormat,frame1.getWidth(), frame1.getHeight());
   std::cout <<"Frame 2:"<<&tmp<<std::endl;
   
   frame1=tmp;
+  std::cout <<"Frame 1:"<<&frame1<<std::endl;
   }
   return 0;
 }
