@@ -238,6 +238,10 @@ void write_audio_to_file() {
 
 int main(int argc, char ** argv) {
   Log::open("");
+    org::esb::io::File d("data");
+  if(!d.exists())
+    d.mkdir();
+
   av_register_all();
   avcodec_init();
   avcodec_register_all();

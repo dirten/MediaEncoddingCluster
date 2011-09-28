@@ -27,6 +27,10 @@ using namespace org::esb::hive::job;
  * 
  */
 int main(int argc, char** argv) {
+  org::esb::io::File d("data");
+  if(!d.exists())
+    d.mkdir();
+
   File f("test.cfg");
   if(!f.exists())
     f.createNewFile();

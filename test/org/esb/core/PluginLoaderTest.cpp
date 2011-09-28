@@ -59,7 +59,9 @@ REGISTER_HOOK("web.api.Service", testInstance, TestReceiver::hook,1);
 
 int main(int argc, char** argv) {
   Log::open();
-
+  org::esb::io::File d("data");
+  if(!d.exists())
+    d.mkdir();
   //LOGDEBUG("test")
   //org::esb::core::PluginLoader loader1(WEBSERVER_PLUGIN);
   org::esb::core::PluginRegistry * i=org::esb::core::PluginRegistry::getInstance();
