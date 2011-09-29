@@ -24,7 +24,6 @@ namespace org {
       }
 
       int ServiceInputStream::read(string& str, int max) {
-        //int size = available();
         int bytes = 0, recv = 0;
         size_t size=min(10000,max);
         char * buffer=new char[size];
@@ -48,6 +47,7 @@ namespace org {
           }
           tmp.clear();
         }
+        return str.length();
       }
 
       int ServiceInputStream::read(unsigned char* buffer, int length) {
