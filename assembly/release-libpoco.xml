@@ -1,0 +1,24 @@
+<assembly>
+  <id>${my.family}-${build_type}</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>source/build/libpoco/include</directory>
+      <outputDirectory>include/</outputDirectory>
+      <includes>
+        <include>**/*</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+    <files>
+        <file>
+          <source>source/libpoco/</source>
+          <outputDirectory>lib</outputDirectory>
+          <destName>libjson.a</destName>
+        </file>
+    </files>
+
+</assembly>
