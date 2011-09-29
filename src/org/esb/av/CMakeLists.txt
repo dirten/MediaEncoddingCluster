@@ -14,7 +14,7 @@ LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
 add_library (av SHARED
   Init.cpp 
   FrameConverter.cpp 
-  FrameOutputStream.cpp 
+#  FrameOutputStream.cpp 
   FormatInputStream.cpp 
   FormatBaseStream.cpp 
   FormatOutputStream.cpp 
@@ -28,7 +28,7 @@ add_library (av SHARED
   PPSWriter.cpp
   PGMUtil.cpp
   BMPUtil.cpp
-  AVInputStream.cpp
+#  AVInputStream.cpp
   FormatStreamFactory.cpp
   StreamInfo.cpp
   FrameProcessor.cpp

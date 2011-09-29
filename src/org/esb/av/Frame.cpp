@@ -90,7 +90,7 @@ Frame::Frame(uint8_t *buffer, int64_t size) {
 
  }
  */
-
+/*
 Frame::Frame(const Frame & frame) {
   LOGDEBUG("Frame::Frame(const Frame & frame)")
   copyFromFrame(frame);
@@ -103,7 +103,7 @@ Frame Frame::operator=(Frame & frame) {
   copyFromFrame(frame);
   return *this;
 }
-
+*/
 Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
   //  logdebug("Create Frame(int format, int width, int height)");
   _isFinished = false;

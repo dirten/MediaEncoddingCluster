@@ -26,9 +26,10 @@ namespace org {
       int ServiceInputStream::read(string& str, int max) {
         //int size = available();
         int bytes = 0, recv = 0;
-        char buffer[min(10000,max)];
+        size_t size=min(10000,max);
+        char * buffer=new char[size];
 
-        while (max > 0 && (bytes = mg_read(_conn, buffer, sizeof (buffer))) > 0) {
+        while (max > 0 && (bytes = mg_read(_conn, buffer, size)) > 0) {
           str = str.append(buffer, bytes);
           max -= bytes;
           recv += bytes;

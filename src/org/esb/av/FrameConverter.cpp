@@ -218,6 +218,7 @@ namespace org {
         /* deinterlace : must be done before any resize */
         if (avpicture_deinterlace(pic, (const AVPicture*) in_frame.getAVFrame(), _dec->getPixelFormat(), _dec->getWidth(), _dec->getHeight()) < 0) {
           /* if error, do not deinterlace */
+          av_free(buf);
           result = false;
         } else {
           *((AVPicture*)in_frame.getAVFrame())=*pic;
