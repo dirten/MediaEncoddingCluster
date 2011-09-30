@@ -11,6 +11,7 @@
 #include "org/esb/core/Plugin.h"
 #include "org/esb/core/ServicePlugin.h"
 #include "org/esb/core/WebservicePlugin.h"
+#include "org/esb/core/HookPlugin.h"
 #include "org/esb/core/HookProvider.h"
 
 class PluginRegistryTestPlugin : public org::esb::core::Plugin{
@@ -45,7 +46,7 @@ private:
 
 };
 
-class PluginRegistryTestPlugin4 : public org::esb::core::HookProvider{
+class PluginRegistryTestPlugin4 : public org::esb::core::HookPlugin{
 public:
   PluginRegistryTestPlugin4();
   virtual ~PluginRegistryTestPlugin4();

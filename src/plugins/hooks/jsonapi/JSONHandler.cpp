@@ -85,7 +85,6 @@ namespace org {
       };
 
       JSONHandler::JSONHandler() {
-		  std::cout << "Constructor start"<<std::endl;
         base_uri = "/api/v1";
         //LOGDEBUG("JSONHandler::JSONHandler()");
         db = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
@@ -121,7 +120,6 @@ namespace org {
         valid_formats.insert("3g2");
         valid_formats.insert("3gp");
         valid_formats.insert("webm");
-		  std::cout << "Constructor end"<<std::endl;
 
       }
 

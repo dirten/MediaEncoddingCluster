@@ -71,17 +71,6 @@ namespace org {
                                 } \
 	        } Register##type##Instance; 
 
-#define REGISTER_HOOK(name,instance, function, prio) \
-	class Register##instance##id \
-	        { \
-			instance * element##instance; \
-	                public: \
-	                        Register##instance##id() \
-	                        { \
-				element##instance=new instance(); \
-                                org::esb::core::HookNotificationCenter::getInstance()->addObserver(name,boost::bind(&function, element##instance,_1,_2),prio); \
-	                        } \
-	        } Register##instance##Instance##id; 
 #define REGISTER_HOOK_PROVIDER(name,type) \
 	class Register##type \
 	        { \

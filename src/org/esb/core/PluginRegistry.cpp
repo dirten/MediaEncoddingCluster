@@ -18,7 +18,7 @@ namespace org {
     namespace core {
 
       bool compare_webservice(Ptr<org::esb::io::File> first, Ptr<org::esb::io::File> second) {
-        LOGDEBUG("Compare="<<first->getPath());
+        //LOGDEBUG("Compare="<<first->getPath());
         if(first->getPath().find("webservice")!=std::string::npos){
           return true;
         }else{

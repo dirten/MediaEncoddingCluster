@@ -154,7 +154,7 @@
                   <path location="${project.basedir}"/>
                 </pathconvert>
                 <exec executable="sh" dir="source/poco-1.4.2p1-all" failonerror="yes">
-                  <arg line="${mybasedir}/source/poco-1.4.2p1-all/configure --prefix=${mybasedir}/source/build --static "/>
+                  <arg line="${mybasedir}/source/poco-1.4.2p1-all/configure --prefix=${mybasedir}/source/build --static --omit=Data/MySQL,Data/ODBC"/>
                 </exec>
 
                 <exec executable="make" dir="source/poco-1.4.2p1-all" failonerror="yes">

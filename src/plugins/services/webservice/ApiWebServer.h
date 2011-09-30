@@ -29,7 +29,7 @@ namespace org {
   namespace esb {
     namespace api {
 
-      class  ApiWebServer:public org::esb::core::ServicePlugin{
+      class ApiWebServer : public org::esb::core::ServicePlugin {
         classlogger("org.esb.plugin.ApiWebServer")
       public:
         WEBSERVICE_EXPORT ApiWebServer();
@@ -38,6 +38,7 @@ namespace org {
         void WEBSERVICE_EXPORT startService();
         void WEBSERVICE_EXPORT stopService();
         //void API_EXPORT addHook(std::string hookname, org::esb::core::HookPlugin*);
+        static void getDescription();
       private:
         static void * event_handler(enum mg_event event, struct mg_connection *conn, const struct mg_request_info *request_info);
         struct mg_context *ctx;
@@ -46,6 +47,8 @@ namespace org {
         static org::esb::core::HookNotificationCenter * center;
         static char * p;
       };
+      REGISTER_SERVICE("apiwebserver", ApiWebServer)
+
       //REGISTER_HOOK_PROVIDER("web.api.url", ApiWebServer)
     }
   }

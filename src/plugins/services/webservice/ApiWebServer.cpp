@@ -59,7 +59,7 @@ namespace org {
 
       void ApiWebServer::stopService() {
         LOGTRACEMETHOD("ApiWebServer::stopService()")
-        //mg_stop(ctx);
+        mg_stop(ctx);
       }
 
       ApiWebServer::ApiWebServer() {
@@ -104,7 +104,6 @@ namespace org {
         _urlhandler[url] = handler;
         return true;
       }*/
-	REGISTER_SERVICE("apiwebserver", ApiWebServer)
     }
   }
 }

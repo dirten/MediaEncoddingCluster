@@ -25,6 +25,18 @@ namespace org {
     }
   }
 }
+#define REGISTER_HOOK(name,instance, function, prio) \
+	class Register##instance##id \
+	        { \
+			instance * element##instance; \
+	                public: \
+	                        Register##instance##id() \
+	                        { \
+				element##instance=new instance(); \
+                                org::esb::core::PluginRegistry::getInstance()->registerHookPlugin(std::string(name), element##instance); \
+                                org::esb::core::HookNotificationCenter::getInstance()->addObserver(name,boost::bind(&function, element##instance,_1,_2),prio); \
+	                        } \
+	        } Register##instance##Instance##id; 
 
 
 #endif	/* HOOKPLUGIN_H */

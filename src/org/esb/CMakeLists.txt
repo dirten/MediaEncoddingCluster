@@ -315,8 +315,8 @@ add_library (hive SHARED
 #        hive/protocol/PartitionHandler.cpp
   hive/job/Packetizer.cpp
 #  hive/JobScanner.cpp
-  hive/NodeSender.cpp
-	hive/NodeReceiver.cpp
+#  hive/NodeSender.cpp
+#	hive/NodeReceiver.cpp
   hive/NodeResolver.cpp
 #  hive/job/ProcessUnitBuilder.cpp
 #  hive/job/ProcessUnitController.cpp
