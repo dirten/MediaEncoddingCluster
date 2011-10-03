@@ -393,7 +393,7 @@ int main(int argc, char * argv[]) {
       //      LOGINFO("shutdown app, this will take some time!");
       //      Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
     }
-
+    
     if (vm.count("mon")) {
 
       // Wait until enter is pressed, then exit

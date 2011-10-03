@@ -28,6 +28,7 @@ namespace org {
         JSONHandler();
         ~JSONHandler();
         void handleRequest(Request * req, Response*res);
+        OptionsDescription getOptionsDescription();
       private:
         std::string base_uri;
         db::HiveDb * db;

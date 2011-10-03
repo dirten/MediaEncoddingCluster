@@ -222,6 +222,14 @@ namespace org {
           //sres->getOutputStream()->write(n.write());
         }
       }
+
+      OptionsDescription JSONHandler::getOptionsDescription(){
+         OptionsDescription result("JSONHandler");
+         result.add_options()
+                 ("base_uri",boost::program_options::value<std::string >()->default_value("/api/v1"),"this defines the base uri for the JSON API");
+        return result;
+      }
+
       int charcounter=0;
       int counter=0;
       bool first_open_found=false;

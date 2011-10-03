@@ -10,12 +10,17 @@
 #include <iostream>
 #include <map>
 #include <boost/bind.hpp>
+#include "boost/program_options.hpp"
+
 #ifndef ORG_ESB_CORE_PLUGIN_H
 #define	ORG_ESB_CORE_PLUGIN_H
 
 namespace org {
   namespace esb {
     namespace core {
+      typedef boost::program_options::options_description OptionsDescription;
+      //typedef boost::program_options::value Value;
+
 
       class Plugin {
       public:
@@ -30,6 +35,10 @@ namespace org {
 
         virtual ~Plugin() {
         };
+
+        virtual OptionsDescription getOptionsDescription() {
+          return OptionsDescription();
+        }
         //virtual std::map<std::string,std::string> getProperties();
       private:
         org::esb::core::AppContext*_ctx;

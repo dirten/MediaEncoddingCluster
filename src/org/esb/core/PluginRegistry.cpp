@@ -6,7 +6,6 @@
  */
 
 #include "PluginRegistry.h"
-#include "Plugin.h"
 #include "ServicePlugin.h"
 #include "introspec.h"
 #include "org/esb/core/HookPlugin.h"
@@ -19,9 +18,9 @@ namespace org {
 
       bool compare_webservice(Ptr<org::esb::io::File> first, Ptr<org::esb::io::File> second) {
         //LOGDEBUG("Compare="<<first->getPath());
-        if(first->getPath().find("webservice")!=std::string::npos){
+        if (first->getPath().find("webservice") != std::string::npos) {
           return true;
-        }else{
+        } else {
           return false;
         }
       }
@@ -43,6 +42,22 @@ namespace org {
         return _instance;
       }
 
+      OptionsDescription PluginRegistry::getOptionsDescription(std::string name) {
+        if(_plugin_map.count(name)>0){
+          return _plugin_map[name]->getOptionsDescription();
+        }
+        return OptionsDescription();
+      }
+
+      std::list<std::string> PluginRegistry::getPluginNameList() {
+        std::list<std::string> result;
+        typedef std::map<std::string, Plugin*> PluginMap;
+        foreach(PluginMap::value_type s, _plugin_map) {
+          result.push_back(s.first);
+        }
+        return result;
+      }
+
       void PluginRegistry::registerPlugin(std::string name, Plugin*plugin) {
         //LOGDEBUG("register plugin")
         _plugin_map[name] = plugin;
@@ -53,6 +68,8 @@ namespace org {
       void PluginRegistry::registerService(std::string name, ServicePlugin*plugin) {
         if (plugin == NULL)return;
         _plugin_map[name] = plugin;
+        OptionsDescription desc = plugin->getOptionsDescription();
+
         plugin->setContext(context);
       }
 
@@ -60,6 +77,7 @@ namespace org {
         typedef std::map<std::string, Plugin*> PluginMap;
 
         foreach(PluginMap::value_type s, _plugin_map) {
+          LOGDEBUG("Start Service:" << s.first);
           ((ServicePlugin*) s.second)->startService();
         }
 
@@ -75,7 +93,7 @@ namespace org {
 
       void PluginRegistry::registerHookPlugin(std::string name, HookPlugin*plugin) {
         //LOGDEBUG("register HookPlugin "<<name);
-        _plugin_map[name] = plugin;
+        //_plugin_map[name] = plugin;
         if (_plugin_map.count("apiwebserver") > 0) {
           //static_cast<org::esb::core::HookProvider*>(_plugin_map["apiwebserver"])->addHook(url,plugin);
         }
@@ -99,11 +117,11 @@ namespace org {
 
       void PluginRegistry::load(std::string file) {
         org::esb::io::File plugin_dir(file);
-        
+
         if (plugin_dir.isDirectory()) {
           org::esb::io::FileList plugin_list = plugin_dir.listFiles();
           plugin_list.sort(compare_webservice);
-          
+
           foreach(Ptr<org::esb::io::File> f, plugin_list) {
             if (f->isFile())
               load(f->getPath());
@@ -117,7 +135,7 @@ namespace org {
       void PluginRegistry::loadFile(std::string file) {
         LOGDEBUG("loading plugins from " << file);
         //std::cout<<"loading plugins from "<<file<<std::endl;
-        
+
         try {
           org::esb::lang::SharedObjectLoader * loader = new org::esb::lang::SharedObjectLoader(file);
           _shared_objects[file] = loader;

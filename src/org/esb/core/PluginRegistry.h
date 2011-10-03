@@ -9,6 +9,7 @@
 #define	PLUGINREGISTRY_H
 #include <map>
 #include <string>
+#include "Plugin.h"
 #include "AppContext.h"
 #include "org/esb/lang/SharedObjectLoader.h"
 #include "org/esb/util/Log.h"
@@ -32,6 +33,8 @@ namespace org {
         void CORE_EXPORT startServices();
         void CORE_EXPORT stopServices();
         void CORE_EXPORT load(std::string);
+        OptionsDescription CORE_EXPORT getOptionsDescription(std::string);
+        std::list<std::string> CORE_EXPORT getPluginNameList();
         
         
         static AppContext * context;
