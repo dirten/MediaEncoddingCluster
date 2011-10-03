@@ -59,10 +59,6 @@ namespace org {
       }
 
       void PluginRegistry::registerPlugin(std::string name, Plugin*plugin) {
-        //LOGDEBUG("register plugin")
-        _plugin_map[name] = plugin;
-        //LOGDEBUG("delete plugin")
-        delete plugin;
       }
 
       void PluginRegistry::registerService(std::string name, ServicePlugin*plugin) {

@@ -7,6 +7,7 @@
 
 #include <cstdlib>
 #include "org/esb/util/Log.h"
+#include "org/esb/util/Foreach.h"
 
 #include "org/esb/core/PluginLoader.h"
 #include "org/esb/core/HookPlugin.h"
@@ -52,7 +53,8 @@ public:
 REGISTER_HOOK("web.api.Service", testInstance, TestReceiver::hook,1);
 //REGISTER_HOOK("web.api.Service", testInstance, TestReceiver::hook,2);
 //REGISTER_HOOK("web.api.Auth", testInstance, TestReceiver::hook,3);
-*/
+ */
+
 /*
  * 
  */
@@ -60,16 +62,25 @@ REGISTER_HOOK("web.api.Service", testInstance, TestReceiver::hook,1);
 int main(int argc, char** argv) {
   Log::open();
   org::esb::io::File d("data");
-  if(!d.exists())
+  if (!d.exists())
     d.mkdir();
   //LOGDEBUG("test")
   //org::esb::core::PluginLoader loader1(WEBSERVER_PLUGIN);
-  org::esb::core::PluginRegistry * i=org::esb::core::PluginRegistry::getInstance();
-  i->load(std::string(MEC_SOURCE_DIR)+"/install/plugins");
+  org::esb::core::PluginRegistry * i = org::esb::core::PluginRegistry::getInstance();
+  i->load(std::string(MEC_SOURCE_DIR) + "/install/plugins");
+
+  foreach(std::list<std::string>::value_type data, i->getPluginNameList()) {
+    LOGDEBUG("Plugin List:" << data);
+    OptionsDescription od = i->getOptionsDescription(data);
+    typedef boost::shared_ptr<boost::program_options::option_description> option;
+    foreach(const option value,od.options()){
+      LOGDEBUG("Option:"<<value->description());
+    }
+  }
   //i->load(WEBSERVER_PLUGIN);
   //i->load(JSONSERVICE_PLUGIN);
   //org::esb::core::PluginLoader loader2(JSONSERVICE_PLUGIN);
-  
+
   //i->startServices();
   //org::esb::lang::Thread::sleep2(60 * 1000);
   //i->stopServices();

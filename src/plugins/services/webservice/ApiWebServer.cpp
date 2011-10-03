@@ -61,6 +61,12 @@ namespace org {
         LOGTRACEMETHOD("ApiWebServer::stopService()")
         mg_stop(ctx);
       }
+      org::esb::core::OptionsDescription ApiWebServer::getOptionsDescription(){
+         org::esb::core::OptionsDescription result("ApiWebServer");
+         result.add_options()
+                 ("port",boost::program_options::value<int >()->default_value(8080),"web server port listen on");
+        return result;
+      }
 
       ApiWebServer::ApiWebServer() {
         center = org::esb::core::HookNotificationCenter::getInstance();

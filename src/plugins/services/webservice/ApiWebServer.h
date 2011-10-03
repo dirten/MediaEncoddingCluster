@@ -37,8 +37,8 @@ namespace org {
         //bool API_EXPORT addHandler(std::string url,org::esb::core::WebservicePlugin *);
         void WEBSERVICE_EXPORT startService();
         void WEBSERVICE_EXPORT stopService();
+        org::esb::core::OptionsDescription WEBSERVICE_EXPORT getOptionsDescription();
         //void API_EXPORT addHook(std::string hookname, org::esb::core::HookPlugin*);
-        static void getDescription();
       private:
         static void * event_handler(enum mg_event event, struct mg_connection *conn, const struct mg_request_info *request_info);
         struct mg_context *ctx;
