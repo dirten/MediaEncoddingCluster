@@ -91,7 +91,7 @@ void client(int argc, char * argv[]);
 void shell(int argc, char * argv[]);
 void start();
 void start_auto(int argc, char * argv[]);
-void setupConfig(po::variables_map vm);
+void setupConfig();
 bool setupDatabase();
 void setupDefaults();
 void checkDirs();
@@ -110,7 +110,7 @@ int main(int argc, char * argv[]) {
   std::string base_path = org::esb::io::File(f.getParent()).getParent();
   //log4cplus::BasicConfigurator::doConfigure();
 
-  //config::Config::setProperty("hive.base_path", base_path);
+  config::Config::setProperty("hive.base_path", base_path);
   //log4cplus::BasicConfigurator::doConfigure();
   //  Config::setProperty("hive.base_path", base_path);
   try {
@@ -169,44 +169,8 @@ int main(int argc, char * argv[]) {
     po::options_description all("all");
     all.add(gen).add(ser).add(cli).add(inst).add(web).add(queue).add(mon);
     priv.add(all);
-
-    po::variables_map vm;
-    try {
-      po::store(po::parse_command_line(argc, argv, priv), vm);
-    } catch (std::exception & ex) {
-      //std::cout <<boost::diagnostic_information(ex)<<std::endl;
-      std::cout << ex.what() << "!!!" << std::endl << std::endl;
-      std::cout << all << std::endl;
-      exit(1);
-    }
-    po::notify(vm);
-
-    if (vm.count("loglevel")) {
-      config::Config::setProperty("loglevel", vm["loglevel"].as<string > ());
-    }
-    if (!vm.count("quiet")) {
-      std::cout << "" << std::endl;
-      std::cout << "******************************************************************" << std::endl;
-      std::cout << "* MediaEncodingCluster, Copyright (C) 2000-2011   Jan Hoelscher  *" << std::endl;
-      std::cout << "*                                                                *" << std::endl;
-      std::cout << "* This program is Licensed under the terms in the LICENSE file   *" << std::endl;
-      std::cout << "*                                                                *" << std::endl;
-      std::cout << "* This program is distributed in the hope that it will be useful,*" << std::endl;
-      std::cout << "* but WITHOUT ANY WARRANTY; without even the implied warranty of *" << std::endl;
-      std::cout << "* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *" << std::endl;
-      std::cout << "******************************************************************" << std::endl;
-      std::cout << "" << std::endl;
-    } else {
-      quiet = true;
-    }
-    //std::cout << "here" << std::endl;
-    //config::Config::init("hive.cfg");
-    //if (getenv("log.path"))
-    //  std::cout << "logpath" << getenv("log.path") << std::endl;
-    //else
-    //  std::cout << "logpath is null" << std::endl;
     setupDefaults();
-    setupConfig(vm);
+    setupConfig();
     checkDirs();
     log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT(config::Config::get("hive.base_path")+"/res/logging.properties"));
     log4cplus::helpers::Properties & props = const_cast<log4cplus::helpers::Properties&> (config.getProperties());
@@ -237,10 +201,51 @@ int main(int argc, char * argv[]) {
     }*/
   }
 
+
+    po::variables_map vm;
+    try {
+      po::store(po::parse_command_line(argc, argv, priv), vm);
+    } catch (std::exception & ex) {
+      //std::cout <<boost::diagnostic_information(ex)<<std::endl;
+      std::cout << ex.what() << "!!!" << std::endl << std::endl;
+      std::cout << all << std::endl;
+      exit(1);
+    }
+
+    po::notify(vm);
+    config::Config::setProperty("partition", StringUtil::toString(vm["partition"].as<std::string> ()));
+    config::Config::setProperty("hive.port", StringUtil::toString(vm["hiveport"].as<int> ()));
+    config::Config::setProperty("web.port", StringUtil::toString(vm["webport"].as<int> ()));
+    
     if (vm.count("help") || argc == 1) {
       cout << all << "\n";
       exit(0);
     }
+
+    if (vm.count("loglevel")) {
+      config::Config::setProperty("loglevel", vm["loglevel"].as<string > ());
+    }
+    if (!vm.count("quiet")) {
+      std::cout << "" << std::endl;
+      std::cout << "******************************************************************" << std::endl;
+      std::cout << "* MediaEncodingCluster, Copyright (C) 2000-2011   Jan Hoelscher  *" << std::endl;
+      std::cout << "*                                                                *" << std::endl;
+      std::cout << "* This program is Licensed under the terms in the LICENSE file   *" << std::endl;
+      std::cout << "*                                                                *" << std::endl;
+      std::cout << "* This program is distributed in the hope that it will be useful,*" << std::endl;
+      std::cout << "* but WITHOUT ANY WARRANTY; without even the implied warranty of *" << std::endl;
+      std::cout << "* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *" << std::endl;
+      std::cout << "******************************************************************" << std::endl;
+      std::cout << "" << std::endl;
+    } else {
+      quiet = true;
+    }
+    //std::cout << "here" << std::endl;
+    //config::Config::init("hive.cfg");
+    //if (getenv("log.path"))
+    //  std::cout << "logpath" << getenv("log.path") << std::endl;
+    //else
+    //  std::cout << "logpath is null" << std::endl;
 
     if (vm.count("stop")) {
       if (vm["stop"].as<int> () <= 0) {
@@ -772,10 +777,7 @@ void checkDirs() {
 void setupDefaults() {
 }
 
-void setupConfig(po::variables_map vm) {
-  if (vm.count("base")) {
-    config::Config::setProperty("hive.base_path", vm["base"].as<std::string > ());
-  }
+void setupConfig() {
   std::string bpath = config::Config::get("hive.base_path");
 #ifdef __WIN32__
   std::string upath = config::Config::get("APPDATA")+"/mhive";
@@ -788,9 +790,6 @@ void setupConfig(po::variables_map vm) {
 #endif
 
   config::Config::setProperty("hive.user_path", upath);
-  config::Config::setProperty("partition", StringUtil::toString(vm["partition"].as<std::string> ()));
-  config::Config::setProperty("hive.port", StringUtil::toString(vm["hiveport"].as<int> ()));
-  config::Config::setProperty("web.port", StringUtil::toString(vm["webport"].as<int> ()));
   config::Config::setProperty("web.docroot", bpath + "/web");
   config::Config::setProperty("hive.config_path", upath + "/.mhive.cfg");
   config::Config::setProperty("hive.dump_path", upath + "/dmp");
