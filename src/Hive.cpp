@@ -31,6 +31,7 @@
 #include "org/esb/hive/ExportScanner.h"
 #include "org/esb/hive/DatabaseService.h"
 #include "org/esb/util/Decimal.h"
+#include "org/esb/util/Foreach.h"
 #include "org/esb/hive/HiveClient.h"
 #include "org/esb/hive/HiveClientAudio.h"
 #include "org/esb/hive/HiveListener.h"
@@ -198,10 +199,6 @@ int main(int argc, char * argv[]) {
     } else {
       quiet = true;
     }
-    if (vm.count("help") || argc == 1) {
-      cout << all << "\n";
-      exit(0);
-    }
     //std::cout << "here" << std::endl;
     //config::Config::init("hive.cfg");
     //if (getenv("log.path"))
@@ -229,6 +226,21 @@ int main(int argc, char * argv[]) {
     //LOGDEBUG("configure Log opened");
     //return 0;
     setupDatabase();
+    org::esb::core::PluginRegistry::getInstance()->load(base_path+"/plugins");
+    foreach(std::list<std::string>::value_type data, org::esb::core::PluginRegistry::getInstance()->getPluginNameList()) {
+    //LOGDEBUG("Plugin List:" << data);
+    org::esb::core::OptionsDescription od = org::esb::core::PluginRegistry::getInstance()->getOptionsDescription(data);
+    all.add(od);
+    /*typedef boost::shared_ptr<boost::program_options::option_description> option;
+    foreach(const option value,od.options()){
+      LOGDEBUG("Option:"<<value->description());
+    }*/
+  }
+
+    if (vm.count("help") || argc == 1) {
+      cout << all << "\n";
+      exit(0);
+    }
 
     if (vm.count("stop")) {
       if (vm["stop"].as<int> () <= 0) {
@@ -358,7 +370,6 @@ int main(int argc, char * argv[]) {
       //org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
 
       //org::esb::api::JsonServer server(vm["webport"].as<int> ());
-      org::esb::core::PluginRegistry::getInstance()->load(base_path+"/plugins");
       org::esb::core::PluginRegistry::getInstance()->startServices();
       listener(argc, argv);
     }

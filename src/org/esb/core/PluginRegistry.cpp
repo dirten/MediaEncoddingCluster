@@ -65,7 +65,7 @@ namespace org {
         if (plugin == NULL)return;
         _plugin_map[name] = plugin;
         OptionsDescription desc = plugin->getOptionsDescription();
-
+        
         plugin->setContext(context);
       }
 

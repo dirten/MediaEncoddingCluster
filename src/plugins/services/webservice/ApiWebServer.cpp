@@ -59,7 +59,8 @@ namespace org {
 
       void ApiWebServer::stopService() {
         LOGTRACEMETHOD("ApiWebServer::stopService()")
-        mg_stop(ctx);
+        if(ctx)
+          mg_stop(ctx);
       }
       org::esb::core::OptionsDescription ApiWebServer::getOptionsDescription(){
          org::esb::core::OptionsDescription result("ApiWebServer");
