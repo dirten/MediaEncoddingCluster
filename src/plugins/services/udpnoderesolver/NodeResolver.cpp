@@ -99,6 +99,9 @@ namespace org {
         //        logdebug("*operator==");
         return _ep == a->_ep;
       }
+      org::esb::core::OptionsDescription NodeResolver::getOptionsDescription(){
+        return org::esb::core::OptionsDescription();
+      }
 
       NodeResolver::NodeResolver():
       _node_timeout(5),

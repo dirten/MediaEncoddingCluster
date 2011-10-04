@@ -52,6 +52,9 @@ namespace org {
         LOGDEBUG("JobUtil::stopService()");
 
       }
+      org::esb::core::OptionsDescription JobUtil::getOptionsDescription(){
+        return org::esb::core::OptionsDescription();
+      }
 
       void JobUtil::onMessage(org::esb::signal::Message & msg) {
         if (msg.getProperty("jobcreator") == "create") {
@@ -114,7 +117,7 @@ namespace org {
           codecs["video"].insert(std::pair<std::string, std::string > ("global_header", "1"));
           codecs["audio"].insert(std::pair<std::string, std::string > ("global_header", "1"));
         }
-        const litesql::Database db = infile.getDatabase();
+        const litesql::Database db = *getContext()->database;//infile.getDatabase();
         db.begin();
 
         boost::uuids::uuid uuid = boost::uuids::random_generator()();

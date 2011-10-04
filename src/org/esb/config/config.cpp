@@ -30,6 +30,7 @@ using namespace org::esb::lang;
  */
 Properties * Config::properties = NULL;
 bool Config::_isInitialized=false;
+std::map<std::string, char *> Config::_free_map;
 string trim(string & s, string & drop) {
   string r = s.erase(s.find_last_not_of(drop) + 1);
   return r.erase(0, r.find_first_not_of(drop));
@@ -38,16 +39,17 @@ string trim(string & s, string & drop) {
 void Config::close() {
   //LOGDEBUG("void Config::close()");
   typedef std::vector< std::pair< std::string, std::string > > array;
-  typedef std::pair< std::string, std::string > row;
+  typedef std::pair< std::string, char* > row;
 
    array props=properties->toArray();
   //std::vector< std::pair< std::string, std::string > >::iterator it=props.begin();
   
-  BOOST_FOREACH(row p, props) {
+  BOOST_FOREACH(row p, _free_map) {
     if(getenv(p.first.c_str())){
       //LOGDEBUG("delete env key"<<p.first.c_str());
       //LOGDEBUG("delete env val"<<getenv(p.first.c_str()));
-      //unsetenv(p.first.c_str());
+      unsetenv(p.first.c_str());
+      delete [] p.second;
     }
   }
 
@@ -117,6 +119,7 @@ void Config::setProperty(std::string key, std::string val) {
   memset(pa,0,env.length()+1);
   memcpy(pa,env.c_str(),env.length());
   putenv(pa);
+  _free_map[key]=pa;
 
 }
 

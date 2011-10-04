@@ -51,7 +51,9 @@ namespace org {
       }
 
       HiveListener::~HiveListener() {
-        //        server->close();
+        
+        delete server;
+        server = NULL;
       }
 
       void HiveListener::onMessage(org::esb::signal::Message & msg) {
@@ -63,50 +65,53 @@ namespace org {
           is_running = true;
         } else
           if (msg.getProperty("hivelistener") == org::esb::hive::STOP) {
-          LOGDEBUG( "Hive Listener stopp signal:");
+          LOGDEBUG("Hive Listener stopp signal:");
           main_nextloop = false;
-          if (server){
-            
+          if (server) {
+
             server->close();
           }
           delete server;
           server = NULL;
-          LOGDEBUG( "Hive Listener stopped:");
+          LOGDEBUG("Hive Listener stopped:");
           //    cout << "Stop Message Arrived:"<<endl;
         }
       }
-        void HiveListener::startService(){
-          boost::thread tt(boost::bind(&HiveListener::startListener, this));
-          LOGDEBUG("Hive Listener running on port:" << Config::get("hive.port"));
-          is_running = true;
-          
+      org::esb::core::OptionsDescription HiveListener::getOptionsDescription(){
+        return org::esb::core::OptionsDescription();
+      }
+      void HiveListener::startService() {
+        boost::thread(boost::bind(&HiveListener::startListener, this));
+        LOGDEBUG("Hive Listener running on port:" << Config::get("hive.port"));
+        is_running = true;
+
+      }
+
+      void HiveListener::stopService() {
+        LOGDEBUG("Hive Listener stopp signal:");
+        main_nextloop = false;
+        if (server) {
+          server->close();
         }
-        void HiveListener::stopService(){
-          LOGDEBUG( "Hive Listener stopp signal:");
-          main_nextloop = false;
-          if (server){            
-            server->close();
-          }
-          delete server;
-          server = NULL;
-          LOGDEBUG( "Hive Listener stopped:");
-          
-        }
+        delete server;
+        server = NULL;
+        LOGDEBUG("Hive Listener stopped:");
+
+      }
 
       void HiveListener::startListener() {
-
         int port = atoi(Config::get("hive.port").c_str());
-        LOGDEBUG(" Start Listening on port "<<port);
+        LOGDEBUG(" Start Listening on port " << port);
         server = new TcpServerSocket(port);
         server->bind();
         for (; main_nextloop;) {
           //          try {
           TcpSocket * clientSocket = server->accept();
-          if (clientSocket&&clientSocket->isConnected() &&(main_nextloop)) {
+          if (clientSocket && clientSocket->isConnected() && (main_nextloop)) {
             /*need some client auth and handshake here*/
             ProtocolServer *protoServer = new ProtocolServer(clientSocket);
             go(ProtocolServer::run, protoServer);
-            
+
             //boost::thread tt(boost::bind(&ProtocolServer::run, protoServer));
             //              Thread *thread = new Thread(protoServer);
             //              thread->start();

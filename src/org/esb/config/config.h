@@ -43,6 +43,7 @@ namespace org
         static void parseLine(const char*);
         static bool _isInitialized;
         static Properties * properties;
+        static std::map<std::string, char*> _free_map;
       };
     }
   }

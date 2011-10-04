@@ -45,6 +45,7 @@ namespace org {
           bool putProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit> & unit);
           void startService();
           void stopService();
+          org::esb::core::OptionsDescription getOptionsDescription();
         private:
           void start();
           void stop();

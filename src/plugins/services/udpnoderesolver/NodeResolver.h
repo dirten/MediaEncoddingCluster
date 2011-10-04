@@ -110,6 +110,7 @@ namespace org {
         static NodeList getNodes();
         void startService();
         void stopService();
+      org::esb::core::OptionsDescription getOptionsDescription();
 
       private:
         boost::asio::io_service send_service_;

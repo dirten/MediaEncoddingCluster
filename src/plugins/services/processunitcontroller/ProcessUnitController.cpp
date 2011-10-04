@@ -83,6 +83,9 @@ namespace org {
             LOGDEBUG("stopped");
           
         }
+      org::esb::core::OptionsDescription ProcessUnitController::getOptionsDescription(){
+        return org::esb::core::OptionsDescription();
+      }
 
         ProcessUnitController::ProcessUnitController() :
         _dbCon("sqlite3",org::esb::config::Config::get("db.url")),

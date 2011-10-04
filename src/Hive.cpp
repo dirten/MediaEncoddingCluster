@@ -102,7 +102,6 @@ bool quiet = false;
 
 int main(int argc, char * argv[]) {
   //org::esb::core::Application(argc, argv);
-  std::cout << "arg0:" << argv[0] << std::endl;
   //isatty(0);
   /*setting default path to Program*/
   //log4cplus::BasicConfigurator conf;
@@ -178,8 +177,8 @@ int main(int argc, char * argv[]) {
 
     //std::cout << "logpath"<<getenv("log.path")<<std::endl;
     string base_path = org::esb::config::Config::getProperty("hive.base_path");
-    std::cout << "base_path:" << base_path << std::endl;
-    LOGDEBUG("UserDataPath=" << config::Config::get("hive.user_path"))
+    //std::cout << "base_path:" << base_path << std::endl;
+    //LOGDEBUG("UserDataPath=" << config::Config::get("hive.user_path"))
     //org::esb::util::LogConfigurator * lconfig=new org::esb::util::LogConfigurator();
     //lconfig->configure();
     //LoggerConfig();  
@@ -209,7 +208,6 @@ int main(int argc, char * argv[]) {
 
     po::notify(vm);
     foreach(po::variables_map::value_type & val, vm){
-      LOGDEBUG("setting parameter:"<<val.first);
       if(vm[val.first].value().type()==typeid(int)){
         config::Config::setProperty(val.first, StringUtil::toString(vm[val.first].as<int>()));
       }else
@@ -227,7 +225,7 @@ int main(int argc, char * argv[]) {
       cout << all << "\n";
       exit(0);
     }
-
+    org::esb::core::PluginRegistry::getInstance()->initPlugins();
     if (vm.count("loglevel")) {
       config::Config::setProperty("loglevel", vm["loglevel"].as<string > ());
     }

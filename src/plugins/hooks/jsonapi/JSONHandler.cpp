@@ -85,9 +85,10 @@ namespace org {
       };
 
       JSONHandler::JSONHandler() {
-        base_uri = "/api/v1";
+        //base_uri = "/api/v1";
+        _db=NULL;
         //LOGDEBUG("JSONHandler::JSONHandler()");
-        db = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
+        //db = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
         //org::esb::av::FormatBaseStream::initialize();
 
         valid_formats.insert("amr");
@@ -125,8 +126,16 @@ namespace org {
 
       JSONHandler::~JSONHandler() {
         //LOGDEBUG("JSONHandler::~JSONHandler()");
-        delete db;
+        //delete db;
       }
+      
+      org::esb::core::OptionsDescription JSONHandler::getOptionsDescription(){
+         org::esb::core::OptionsDescription result("JSONHandler");
+         result.add_options()
+                 ("jsonapi.baseuri",boost::program_options::value<std::string >()->default_value("/api/v1"),"base uri for the api requests");
+        return result;
+      }
+
       bool JSONHandler::contains(JSONNode& node, std::string name) {
         bool result = false;
         int size = node.size();
@@ -193,7 +202,11 @@ namespace org {
         result=PresetVerifier::verify(root);
         return result;
       }
-
+      void JSONHandler::init(){
+        _db=getContext()->database;
+        base_uri=getContext()->env["jsonapi.baseuri"];
+        LOGDEBUG("setting base uri to "<<base_uri);
+      }
       void JSONHandler::handleRequest(Request * req, Response*res) {
         ServiceRequest*sreq = ((ServiceRequest*) req);
         if (sreq->getRequestURI().find(base_uri + "/encoding") == 0) {
@@ -223,13 +236,6 @@ namespace org {
         }
       }
 
-      OptionsDescription JSONHandler::getOptionsDescription(){
-         OptionsDescription result("JSONHandler");
-         result.add_options()
-                 ("base_uri",boost::program_options::value<std::string >()->default_value("/api/v1"),"this defines the base uri for the JSON API");
-        return result;
-      }
-
       int charcounter=0;
       int counter=0;
       bool first_open_found=false;
@@ -251,7 +257,7 @@ namespace org {
             JSONNode n(JSON_NODE);
         if (req->getMethod() == "POST") {
           JSONNode inode;
-          try {
+          //try {
             std::string postdata;
             req->getInputstream()->read(postdata, &jsonFilter,1);
             LOGDEBUG("charcounter="<<charcounter<< " counter="<<counter<<" first open found = "<<first_open_found);
@@ -269,7 +275,7 @@ namespace org {
                 error.push_back(JSONNode("description", msg));
                 n.push_back(error);
               }else{
-                n=save(*db, inode);
+                n=save(*_db, inode);
               }
             } else {
               JSONNode error(JSON_NODE);
@@ -280,7 +286,7 @@ namespace org {
               n.push_back(error);
               
             }
-          } catch (std::exception &ex) {
+          /*} catch (std::exception &ex) {
             LOGDEBUG(ex.what());
             JSONNode error(JSON_NODE);
             error.set_name("error");
@@ -288,7 +294,7 @@ namespace org {
             error.push_back(JSONNode("description", "internal error ouccured"));
             n.push_back(error);
             
-          }
+          }*/
 
         } else if (req->getMethod() == "GET") {
           std::string id = req->getParameter("id");
@@ -298,7 +304,7 @@ namespace org {
           if (delflag) {
             if (id.length() > 0) {
               LOGDEBUG("loading encoding data for id " << id);
-              litesql::DataSource<db::Job>s = litesql::select<db::Job > (*db, db::Job::Uuid == id);
+              litesql::DataSource<db::Job>s = litesql::select<db::Job > (*_db, db::Job::Uuid == id);
               if (s.count() == 1) {
                 db::Job job = s.one();
                 if (job.status == "running") {
@@ -335,7 +341,7 @@ namespace org {
           } else if (stopflag) {
             if (id.length() > 0) {
               //LOGDEBUG("loading encoding data for id " << id);
-              litesql::DataSource<db::Job>s = litesql::select<db::Job > (*db, db::Job::Uuid == id);
+              litesql::DataSource<db::Job>s = litesql::select<db::Job > (*_db, db::Job::Uuid == id);
               if (s.count() == 1) {
                 db::Job job = s.one();
                 job.status = job.status == "running" ? "stopping" : "stopped";
@@ -365,7 +371,7 @@ namespace org {
             }
           } else if (id.length() > 0) {
             //LOGDEBUG("loading encoding data for id " << id);
-            litesql::DataSource<db::Job>s = litesql::select<db::Job > (*db, db::Job::Uuid == id && db::Job::Status != "deleted");
+            litesql::DataSource<db::Job>s = litesql::select<db::Job > (*_db, db::Job::Uuid == id && db::Job::Status != "deleted");
             if (s.count() > 0) {
               //LOGDEBUG("Encoding found");
               db::Job job = s.one();
@@ -378,9 +384,7 @@ namespace org {
               n.push_back(error);
             }
           } else {
-            LOGDEBUG("listing all encodings")
-            std::vector<db::Job> jobs = litesql::select<db::Job > (*db, db::Job::Status != "deleted").orderBy(db::Job::Id, false).all();
-            //JSONNode n(JSON_NODE);
+            std::vector<db::Job> jobs = litesql::select<db::Job > (*_db, db::Job::Status != "deleted").orderBy(db::Job::Id, false).all();
             JSONNode c(JSON_ARRAY);
             c.set_name("data");
             std::vector<db::Job>::iterator jobit = jobs.begin();
@@ -458,7 +462,7 @@ namespace org {
           /*case when "id" data is given, that means a profile update*/
           if(valid_data){
           if (iddata.length() > 0) {
-            litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (*db, db::Preset::Uuid == iddata);
+            litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (*_db, db::Preset::Uuid == iddata);
             if (s.count() == 1) {
               LOGDEBUG("Update profile");
               db::Preset preset = s.one();
@@ -479,7 +483,7 @@ namespace org {
               boost::uuids::uuid uuid = boost::uuids::random_generator()();
               std::string uuidstr = boost::lexical_cast<std::string > (uuid);
               response.push_back(JSONNode("id", uuidstr));
-              db::Preset preset(*db);
+              db::Preset preset(*_db);
               preset.data = postdata;
               preset.uuid = uuidstr;
               preset.name = inode["name"].as_string();
@@ -490,7 +494,7 @@ namespace org {
         } else if (req->getMethod() == "GET") {
           std::string id = req->getParameter("id");
           if (id.length() > 0) {
-            litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (*db, db::Preset::Uuid == id);
+            litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (*_db, db::Preset::Uuid == id);
             if (s.count() > 0) {
               db::Preset preset = s.one();
               JSONNode data = libjson::parse(preset.data);
@@ -513,7 +517,7 @@ namespace org {
               response.push_back(error);
             }
           } else {
-            vector<db::Preset> presets = litesql::select<db::Preset > (*db).all();
+            vector<db::Preset> presets = litesql::select<db::Preset > (*_db).all();
             JSONNode c(JSON_ARRAY);
             c.set_name("data");
 
@@ -530,7 +534,7 @@ namespace org {
           std::string id = req->getParameter("id");
           if (id.length() > 0) {
             LOGDEBUG("loading preset data for id " << id);
-            litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (*db, db::Preset::Uuid == id);
+            litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (*_db, db::Preset::Uuid == id);
             if (s.count() == 1) {
               db::Preset preset = s.one();
               preset.del();

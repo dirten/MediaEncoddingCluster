@@ -28,6 +28,7 @@ TARGET_LINK_LIBRARIES(core
   lang
   io
   hive
+  db
 )
 SET_TARGET_PROPERTIES( core PROPERTIES PREFIX "libmhive-")
 

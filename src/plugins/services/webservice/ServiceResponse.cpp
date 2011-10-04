@@ -13,6 +13,7 @@ namespace org {
     namespace api {
 
       ServiceOutputStream::ServiceOutputStream(mg_connection *conn, ServiceResponse*res) : _conn(conn), _response(res) {
+        _sent_header=false;
       }
 
       ServiceOutputStream::~ServiceOutputStream() {

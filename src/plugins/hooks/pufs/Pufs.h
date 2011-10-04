@@ -14,6 +14,8 @@ public:
   Pufs();
   virtual ~Pufs();
   void handleRequest(org::esb::core::Request * req, org::esb::core::Response*res);
+  org::esb::core::OptionsDescription getOptionsDescription();
+
 private:
 
 };

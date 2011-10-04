@@ -45,6 +45,7 @@ namespace org {
         void onMessage(org::esb::signal::Message & msg);
         void startService();
         void stopService();
+      org::esb::core::OptionsDescription getOptionsDescription();
 
       private:
         void start();

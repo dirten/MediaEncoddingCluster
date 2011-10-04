@@ -9,13 +9,14 @@
 #define	PLUGINCONTEXT_H
 #include <map>
 #include <string>
+#include "org/esb/db/hivedb.hpp"
 namespace org {
   namespace esb {
     namespace core {
 
       class PluginContext {
       public:
-
+        db::HiveDb * database;
         std::map<std::string, std::string> env;
       private:
         friend class PluginRegistry;

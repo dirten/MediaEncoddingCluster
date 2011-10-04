@@ -101,6 +101,7 @@ namespace org {
         stop();
         delete theQueueManager;
         theQueueManager=NULL;
+        plog->Shutdown();
         delete plog;
         plog=NULL;
         delete pcfg;
@@ -128,7 +129,7 @@ namespace org {
           forwardthds[x].start();
         }
         server->start();
-        plog->Startup();
+        //plog->Startup();
         _running=true;
         
       }
@@ -146,12 +147,13 @@ namespace org {
           forwardthds[x].join();
         delete [] forwardthds;
         sysdeliver->join();
+        delete sysdeliver;
         theQueueManager->join();
 
         //Log::getLog()->Info("Shutting down SAFMQ, freeing theQueueManager");
         //delete theQueueManager;
 
-        safmq::Log::getLog()->Shutdown();
+        
         _running=false;
       }
     }

@@ -35,6 +35,7 @@ namespace org {
 	                        org::esb::core::PluginRegistry::getInstance()->registerService(std::string(name), element##type); \
 	                        } \
                                 ~Register##type(){ \
+                                delete element##type; \
                                 } \
 	        } Register##type##Instance; 
 

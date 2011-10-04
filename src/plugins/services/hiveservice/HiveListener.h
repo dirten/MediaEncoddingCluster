@@ -25,6 +25,7 @@ namespace org {
         void stopService();
 
         void startListener();
+        org::esb::core::OptionsDescription getOptionsDescription();
       private:
         bool main_nextloop;
         bool is_running;

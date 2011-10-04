@@ -44,6 +44,9 @@ Pufs::Pufs() {
 
 Pufs::~Pufs() {
 }
+      org::esb::core::OptionsDescription Pufs::getOptionsDescription(){
+        return org::esb::core::OptionsDescription();
+      }
 
 void Pufs::handleRequest(org::esb::core::Request * req, org::esb::core::Response*res) {
   org::esb::api::ServiceRequest*sreq = ((org::esb::api::ServiceRequest*) req);

@@ -88,6 +88,9 @@ namespace org {
         //LOGDEBUG("stoping FileImporter");
 
       }
+      org::esb::core::OptionsDescription FileImporter::getOptionsDescription(){
+        return org::esb::core::OptionsDescription();
+      }
 
       void FileImporter::onMessage(org::esb::signal::Message & msg) {
         if (msg.getProperty("mediaimporter") == "import") {
@@ -110,7 +113,7 @@ namespace org {
       }*/
 
       db::MediaFile FileImporter::import(org::esb::io::File file) {
-        db::HiveDb connection("sqlite3", org::esb::config::Config::get("db.url"));
+        db::HiveDb & connection=*getContext()->database;//("sqlite3", org::esb::config::Config::get("db.url"));
         db::MediaFile mediafile(connection);
         FormatInputStream fis(&file);
         if (!fis.isValid())return mediafile;

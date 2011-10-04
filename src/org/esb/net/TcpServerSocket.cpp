@@ -56,7 +56,7 @@ namespace org {
          * @TODO: check the connection before returning
          */
         TcpSocket * s = NULL;
-        if (sock->is_open())
+        if (sock->is_open()&& !_inShutdown)
           s = new TcpSocket(sock);
 
         return s;

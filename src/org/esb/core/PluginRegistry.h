@@ -15,6 +15,7 @@
 #include "org/esb/lang/SharedObjectLoader.h"
 #include "org/esb/util/Log.h"
 #include "PluginContext.h"
+#include "org/esb/db/hivedb.hpp"
 namespace org {
   namespace esb {
     namespace core {
@@ -35,11 +36,12 @@ namespace org {
         void CORE_EXPORT startServices();
         void CORE_EXPORT stopServices();
         void CORE_EXPORT load(std::string);
+        void CORE_EXPORT initPlugins();
+        
         OptionsDescription CORE_EXPORT getOptionsDescription(std::string);
         std::list<std::string> CORE_EXPORT getPluginNameList();
         
         
-        static AppContext * context;
       private:
         PluginRegistry();
         virtual ~PluginRegistry();
@@ -51,8 +53,10 @@ namespace org {
           PluginContext * context;
         };
 
-        std::map<std::string, Plugin*> _plugin_map;
+        std::map<std::string, Plugin*> _plug_map;
+        std::map<std::string, ServicePlugin*> _service_map;
         std::map<std::string, HookProvider*> _hook_provider_map;
+        std::map<std::string, HookPlugin*> _hook_map;
         std::map<std::string, org::esb::lang::SharedObjectLoader*> _shared_objects;
         std::map<std::string,PluginData> _plugin_data;
       };

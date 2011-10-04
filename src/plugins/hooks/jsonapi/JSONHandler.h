@@ -29,9 +29,10 @@ namespace org {
         ~JSONHandler();
         void handleRequest(Request * req, Response*res);
         OptionsDescription getOptionsDescription();
+        void init();
       private:
         std::string base_uri;
-        db::HiveDb * db;
+        db::HiveDb * _db;
         void handleEncoding(ServiceRequest * req, ServiceResponse*res);
         void handleProfile(ServiceRequest * req, ServiceResponse*res);
         void handleFormat(ServiceRequest * req, ServiceResponse*res);
@@ -45,12 +46,12 @@ namespace org {
         JSONNode save(db::HiveDb&db, JSONNode & root);
         JSONNode save_outfile(db::HiveDb&db, JSONNode & root);
         JSONNode save_outdir(db::HiveDb&db, JSONNode & root);
-
       };
       REGISTER_HOOK("web.api.Service", JSONHandler, JSONHandler::handleRequest, 1);
     }
   }
 }
+
 
 #endif	/* JSONHANDLER_H */
 

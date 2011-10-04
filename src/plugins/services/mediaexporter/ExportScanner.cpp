@@ -77,9 +77,12 @@ namespace org {
           LOGDEBUG("Export Scanner stopped");
           
         }
+      org::esb::core::OptionsDescription ExportScanner::getOptionsDescription(){
+        return org::esb::core::OptionsDescription();
+      }
 
       void ExportScanner::start() {
-        db::HiveDb db("sqlite3", org::esb::config::Config::get("db.url"));
+        db::HiveDb db=*getContext()->database;//("sqlite3", org::esb::config::Config::get("db.url"));
         while (_run) {
           {
             try {

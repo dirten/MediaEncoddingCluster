@@ -18,6 +18,8 @@ namespace org {
         void startService();
         void stopService();
         void onMessage(org::esb::signal::Message & msg);
+        org::esb::core::OptionsDescription getOptionsDescription();
+
       private:
 
       };

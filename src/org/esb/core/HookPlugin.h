@@ -18,6 +18,7 @@ namespace org {
       class HookPlugin: public Plugin{
       public:
         //virtual void hook()=0;
+        
         virtual ~HookPlugin(){};
       private:
 
@@ -33,8 +34,13 @@ namespace org {
 	                        Register##instance##id() \
 	                        { \
 				element##instance=new instance(); \
-                                org::esb::core::PluginRegistry::getInstance()->registerHookPlugin(std::string(name), element##instance); \
+                                std::string tmpname=#instance; \
+                                org::esb::core::PluginRegistry::getInstance()->registerHookPlugin(tmpname, element##instance); \
                                 org::esb::core::HookNotificationCenter::getInstance()->addObserver(name,boost::bind(&function, element##instance,_1,_2),prio); \
+	                        } \
+	                        ~Register##instance##id() \
+	                        { \
+				delete element##instance; \
 	                        } \
 	        } Register##instance##Instance##id; 
 

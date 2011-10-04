@@ -12,6 +12,7 @@
 #include "org/esb/util/Foreach.h"
 #include "org/esb/io/File.h"
 #include "org/esb/config/config.h"
+#include "org/esb/db/hivedb.hpp"
 //#include "org/esb/api/ApiWebServer.h"
 namespace org {
   namespace esb {
@@ -25,27 +26,19 @@ namespace org {
           return false;
         }
       }
-      AppContext * PluginRegistry::context = NULL;
       PluginRegistry * PluginRegistry::_instance = NULL;
 
       PluginRegistry * PluginRegistry::getInstance() {
         if (_instance == NULL) {
           _instance = new PluginRegistry;
         }
-        if (context == NULL) {
-          context = new AppContext();
-
-          context->env["web.port"] = getenv("web.port") == NULL ? "8080" : getenv("web.port");
-          context->env["web.docroot"] = getenv("web.docroot") == NULL ? "." : getenv("web.docroot");
-
-        }
 
         return _instance;
       }
 
       OptionsDescription PluginRegistry::getOptionsDescription(std::string name) {
-        if (_plugin_map.count(name) > 0) {
-          return _plugin_map[name]->getOptionsDescription();
+        if (_plug_map.count(name) > 0) {
+          return _plug_map[name]->getOptionsDescription();
         }
         return OptionsDescription();
       }
@@ -54,7 +47,7 @@ namespace org {
         std::list<std::string> result;
         typedef std::map<std::string, Plugin*> PluginMap;
 
-        foreach(PluginMap::value_type s, _plugin_map) {
+        foreach(PluginMap::value_type s, _plug_map) {
           result.push_back(s.first);
         }
         return result;
@@ -65,28 +58,15 @@ namespace org {
 
       void PluginRegistry::registerService(std::string name, ServicePlugin*plugin) {
         if (plugin == NULL)return;
-        _plugin_map[name] = plugin;
+        _service_map[name] = plugin;
+        _plug_map[name] = plugin;
         //OptionsDescription desc = plugin->getOptionsDescription();
       }
 
       void CORE_EXPORT PluginRegistry::startServices() {
         typedef std::map<std::string, Plugin*> PluginMap;
 
-        foreach(PluginMap::value_type s, _plugin_map) {
-          LOGDEBUG("Start Service:" << s.first);
-          _plugin_data[s.first].name = s.first;
-          _plugin_data[s.first].context = new PluginContext();
-          _plugin_data[s.first].plugin = s.second;
-          LOGDEBUG("Fill up PluginContext")
-          /*fill up PluginContext with Options*/
-          OptionsDescription desc = s.second->getOptionsDescription();
-          typedef boost::shared_ptr<boost::program_options::option_description> option;
-          foreach(const option value, desc.options()) {
-            LOGDEBUG("Option:" << value->long_name()<<" value "<<org::esb::config::Config::get(value->long_name()));
-            _plugin_data[s.first].context->env[value->long_name()]=org::esb::config::Config::get(value->long_name());
-          }
-          
-          ((ServicePlugin*) s.second)->setContext(_plugin_data[s.first].context);
+        foreach(PluginMap::value_type s, _service_map) {
           ((ServicePlugin*) s.second)->startService();
         }
 
@@ -95,33 +75,46 @@ namespace org {
       void CORE_EXPORT PluginRegistry::stopServices() {
         typedef std::map<std::string, Plugin*> PluginMap;
 
-        foreach(PluginMap::value_type s, _plugin_map) {
+        foreach(PluginMap::value_type s, _service_map) {
           ((ServicePlugin*) s.second)->stopService();
         }
       }
 
       void PluginRegistry::registerHookPlugin(std::string name, HookPlugin*plugin) {
-        //LOGDEBUG("register HookPlugin "<<name);
-        //_plugin_map[name] = plugin;
-        if (_plugin_map.count("apiwebserver") > 0) {
-          //static_cast<org::esb::core::HookProvider*>(_plugin_map["apiwebserver"])->addHook(url,plugin);
-        }
-        //
-        //LOGDEBUG("delete service")
-        //delete plugin;
+        LOGDEBUG("register HookPlugin " << name);
+        _plug_map[name] = plugin;
       }
 
       void PluginRegistry::registerHookProvider(std::string name, HookProvider*plugin) {
-        //LOGDEBUG("register HookProvider "<<name);
         _hook_provider_map[name] = plugin;
       }
 
       void PluginRegistry::close() {
         delete _instance;
-        delete context;
+
       }
 
       PluginRegistry::PluginRegistry() {
+      }
+
+      void PluginRegistry::initPlugins() {
+        typedef std::map<std::string, Plugin*> PluginMap;
+
+        foreach(PluginMap::value_type s, _plug_map) {
+          LOGDEBUG("Initialize Plugin:" << s.first);
+          _plugin_data[s.first].name = s.first;
+          _plugin_data[s.first].context = new PluginContext();
+          _plugin_data[s.first].plugin = s.second;
+          _plugin_data[s.first].context->database = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
+          /*fill up PluginContext with Options*/
+          OptionsDescription desc = s.second->getOptionsDescription();
+          typedef boost::shared_ptr<boost::program_options::option_description> option;
+          foreach(const option value, desc.options()) {
+            _plugin_data[s.first].context->env[value->long_name()] = org::esb::config::Config::get(value->long_name());
+          }
+          s.second->setContext(_plugin_data[s.first].context);
+          s.second->init();
+        }
       }
 
       void PluginRegistry::load(std::string file) {
@@ -154,8 +147,16 @@ namespace org {
       }
 
       PluginRegistry::~PluginRegistry() {
-        LOGDEBUG("PluginRegistry::~PluginRegistry()")
-                typedef std::map<std::string, org::esb::lang::SharedObjectLoader*> SharedObjectMap;
+        LOGDEBUG("PluginRegistry::~PluginRegistry()");
+
+        typedef std::map<std::string, org::esb::lang::SharedObjectLoader*> SharedObjectMap;
+        
+        typedef std::map<std::string, PluginData> PluginDataMap;
+
+        foreach(PluginDataMap::value_type s, _plugin_data) {
+          delete s.second.context->database;
+          delete s.second.context;
+        }
 
         foreach(SharedObjectMap::value_type row, _shared_objects) {
           delete row.second;

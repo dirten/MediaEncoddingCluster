@@ -37,9 +37,10 @@ namespace org {
         virtual ~Plugin() {
         };
 
-        virtual OptionsDescription getOptionsDescription() {
+        virtual OptionsDescription getOptionsDescription(){
           return OptionsDescription();
-        }
+        };
+        virtual void init(){};
         //virtual std::map<std::string,std::string> getProperties();
       private:
         org::esb::core::PluginContext*_ctx;
