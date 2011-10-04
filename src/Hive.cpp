@@ -192,17 +192,9 @@ int main(int argc, char * argv[]) {
     setupDatabase();
     org::esb::core::PluginRegistry::getInstance()->load(base_path + "/plugins");
     foreach(std::list<std::string>::value_type data, org::esb::core::PluginRegistry::getInstance()->getPluginNameList()) {
-      //LOGDEBUG("Plugin List:" << data);
       org::esb::core::OptionsDescription od = org::esb::core::PluginRegistry::getInstance()->getOptionsDescription(data);
       all.add(od);
-      /*typedef boost::shared_ptr<boost::program_options::option_description> option;
-      foreach(const option value,od.options()){
-        plug.add_options()(value->format_name().c_str(),value->description().c_str());
-        plug.
-        LOGDEBUG("Option:"<<value->description());
-      }*/
     }
-    //all.add(plug);
 
     po::variables_map vm;
     try {

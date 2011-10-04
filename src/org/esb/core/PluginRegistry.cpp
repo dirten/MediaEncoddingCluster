@@ -43,7 +43,7 @@ namespace org {
       }
 
       OptionsDescription PluginRegistry::getOptionsDescription(std::string name) {
-        if(_plugin_map.count(name)>0){
+        if (_plugin_map.count(name) > 0) {
           return _plugin_map[name]->getOptionsDescription();
         }
         return OptionsDescription();
@@ -52,6 +52,7 @@ namespace org {
       std::list<std::string> PluginRegistry::getPluginNameList() {
         std::list<std::string> result;
         typedef std::map<std::string, Plugin*> PluginMap;
+
         foreach(PluginMap::value_type s, _plugin_map) {
           result.push_back(s.first);
         }
@@ -65,8 +66,6 @@ namespace org {
         if (plugin == NULL)return;
         _plugin_map[name] = plugin;
         //OptionsDescription desc = plugin->getOptionsDescription();
-        
-        
       }
 
       void CORE_EXPORT PluginRegistry::startServices() {
@@ -74,6 +73,16 @@ namespace org {
 
         foreach(PluginMap::value_type s, _plugin_map) {
           LOGDEBUG("Start Service:" << s.first);
+          _plugin_data[s.first].name = s.first;
+          _plugin_data[s.first].context = new PluginContext();
+          _plugin_data[s.first].plugin = s.second;
+          /*fill up PluginContext with Options*/
+          OptionsDescription desc = s.second->getOptionsDescription();
+          typedef boost::shared_ptr<boost::program_options::option_description> option;
+
+          foreach(const option value, od.options()) {
+            LOGDEBUG("Option:" << value->format_name());
+          }
           ((ServicePlugin*) s.second)->setContext(context);
           ((ServicePlugin*) s.second)->startService();
         }

@@ -15,6 +15,7 @@ SET(core_source
   PluginRegistry.cpp
   PluginLoader.cpp
   AppContext.cpp
+  PluginContext.cpp
   HookNotificationCenter.cpp
   Application.cpp
 )

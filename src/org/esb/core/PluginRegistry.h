@@ -8,11 +8,13 @@
 #ifndef PLUGINREGISTRY_H
 #define	PLUGINREGISTRY_H
 #include <map>
+#include <set>
 #include <string>
 #include "Plugin.h"
 #include "AppContext.h"
 #include "org/esb/lang/SharedObjectLoader.h"
 #include "org/esb/util/Log.h"
+#include "PluginContext.h"
 namespace org {
   namespace esb {
     namespace core {
@@ -43,9 +45,16 @@ namespace org {
         virtual ~PluginRegistry();
         static PluginRegistry * _instance;
         void loadFile(std::string);
+        struct PluginData{
+          std::string name;
+          Plugin * plugin;
+          PluginContext * context;
+        };
+
         std::map<std::string, Plugin*> _plugin_map;
         std::map<std::string, HookProvider*> _hook_provider_map;
         std::map<std::string, org::esb::lang::SharedObjectLoader*> _shared_objects;
+        std::map<std::string,PluginData> _plugin_data;
       };
     }
   }
