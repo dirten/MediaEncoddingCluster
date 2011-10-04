@@ -64,9 +64,9 @@ namespace org {
       void PluginRegistry::registerService(std::string name, ServicePlugin*plugin) {
         if (plugin == NULL)return;
         _plugin_map[name] = plugin;
-        OptionsDescription desc = plugin->getOptionsDescription();
+        //OptionsDescription desc = plugin->getOptionsDescription();
         
-        plugin->setContext(context);
+        
       }
 
       void CORE_EXPORT PluginRegistry::startServices() {
@@ -74,6 +74,7 @@ namespace org {
 
         foreach(PluginMap::value_type s, _plugin_map) {
           LOGDEBUG("Start Service:" << s.first);
+          ((ServicePlugin*) s.second)->setContext(context);
           ((ServicePlugin*) s.second)->startService();
         }
 

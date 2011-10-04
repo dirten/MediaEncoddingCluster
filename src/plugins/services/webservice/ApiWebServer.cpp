@@ -65,7 +65,7 @@ namespace org {
       org::esb::core::OptionsDescription ApiWebServer::getOptionsDescription(){
          org::esb::core::OptionsDescription result("ApiWebServer");
          result.add_options()
-                 ("port",boost::program_options::value<int >()->default_value(8080),"web server port listen on");
+                 ("webservice.port",boost::program_options::value<int >()->default_value(8080),"web server port listen on");
         return result;
       }
 

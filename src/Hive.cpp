@@ -115,7 +115,7 @@ int main(int argc, char * argv[]) {
   //  Config::setProperty("hive.base_path", base_path);
   try {
     po::options_description gen("General options");
-    unsigned int cpu_count=Process::getCpuCount();
+    unsigned int cpu_count = Process::getCpuCount();
     gen.add_options()
             ("help", "produce this message")
             ("version", "Prints the Version")
@@ -172,35 +172,37 @@ int main(int argc, char * argv[]) {
     setupDefaults();
     setupConfig();
     checkDirs();
-    log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT(config::Config::get("hive.base_path")+"/res/logging.properties"));
+    log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT(config::Config::get("hive.base_path") + "/res/logging.properties"));
     log4cplus::helpers::Properties & props = const_cast<log4cplus::helpers::Properties&> (config.getProperties());
-    props.setProperty(LOG4CPLUS_TEXT("appender.MAIN.File"), LOG4CPLUS_TEXT(config::Config::get("log.path")+"/mhive-debug.log"));
-    props.setProperty(LOG4CPLUS_TEXT("appender.ERROR.File"), LOG4CPLUS_TEXT(config::Config::get("log.path")+"/mhive-error.log"));
+    props.setProperty(LOG4CPLUS_TEXT("appender.MAIN.File"), LOG4CPLUS_TEXT(config::Config::get("log.path") + "/mhive-debug.log"));
+    props.setProperty(LOG4CPLUS_TEXT("appender.ERROR.File"), LOG4CPLUS_TEXT(config::Config::get("log.path") + "/mhive-error.log"));
     config.configure();
 
     //std::cout << "logpath"<<getenv("log.path")<<std::endl;
     string base_path = org::esb::config::Config::getProperty("hive.base_path");
-	std::cout << "base_path:"<<base_path<<std::endl;
-        LOGDEBUG("UserDataPath="<<config::Config::get("hive.user_path"))
+    std::cout << "base_path:" << base_path << std::endl;
+    LOGDEBUG("UserDataPath=" << config::Config::get("hive.user_path"))
     //org::esb::util::LogConfigurator * lconfig=new org::esb::util::LogConfigurator();
     //lconfig->configure();
-  //LoggerConfig();  
-  //log4cplus::BasicConfigurator::doConfigure();
-        //Log::open(base_path+"/res");
+    //LoggerConfig();  
+    //log4cplus::BasicConfigurator::doConfigure();
+    //Log::open(base_path+"/res");
     //LOGDEBUG("configure Log opened");
     //return 0;
     setupDatabase();
-    org::esb::core::PluginRegistry::getInstance()->load(base_path+"/plugins");
+    org::esb::core::PluginRegistry::getInstance()->load(base_path + "/plugins");
     foreach(std::list<std::string>::value_type data, org::esb::core::PluginRegistry::getInstance()->getPluginNameList()) {
-    //LOGDEBUG("Plugin List:" << data);
-    org::esb::core::OptionsDescription od = org::esb::core::PluginRegistry::getInstance()->getOptionsDescription(data);
-    all.add(od);
-    /*typedef boost::shared_ptr<boost::program_options::option_description> option;
-    foreach(const option value,od.options()){
-      LOGDEBUG("Option:"<<value->description());
-    }*/
-  }
-
+      //LOGDEBUG("Plugin List:" << data);
+      org::esb::core::OptionsDescription od = org::esb::core::PluginRegistry::getInstance()->getOptionsDescription(data);
+      all.add(od);
+      /*typedef boost::shared_ptr<boost::program_options::option_description> option;
+      foreach(const option value,od.options()){
+        plug.add_options()(value->format_name().c_str(),value->description().c_str());
+        plug.
+        LOGDEBUG("Option:"<<value->description());
+      }*/
+    }
+    //all.add(plug);
 
     po::variables_map vm;
     try {
@@ -213,10 +215,10 @@ int main(int argc, char * argv[]) {
     }
 
     po::notify(vm);
-    config::Config::setProperty("partition", StringUtil::toString(vm["partition"].as<std::string> ()));
+    config::Config::setProperty("partition", StringUtil::toString(vm["partition"].as<std::string > ()));
     config::Config::setProperty("hive.port", StringUtil::toString(vm["hiveport"].as<int> ()));
     config::Config::setProperty("web.port", StringUtil::toString(vm["webport"].as<int> ()));
-    
+
     if (vm.count("help") || argc == 1) {
       cout << all << "\n";
       exit(0);
@@ -284,7 +286,7 @@ int main(int argc, char * argv[]) {
 
     if (vm.count("console")) {
       console();
-     
+
 
     }
     if (vm.count("erlang")) {
@@ -409,7 +411,7 @@ int main(int argc, char * argv[]) {
       //      LOGINFO("shutdown app, this will take some time!");
       //      Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
     }
-    
+
     if (vm.count("mon")) {
 
       // Wait until enter is pressed, then exit
@@ -460,7 +462,7 @@ int main(int argc, char * argv[]) {
 
   org::esb::config::Config::close();
   LOGINFO("MHive is not running anymore!!!")
-  //Log::close();
+          //Log::close();
 
   return 0;
 }
@@ -529,10 +531,10 @@ private:
 
 void client(int argc, char *argv[]) {
   org::esb::lang::Thread::sleep2(3000);
-    org::esb::hive::Node node;
-    node.setData("type", "client");
-    node.setData("version", MHIVE_VERSION);
-    org::esb::hive::NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"), boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
+  org::esb::hive::Node node;
+  node.setData("type", "client");
+  node.setData("version", MHIVE_VERSION);
+  org::esb::hive::NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"), boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
   if (config::Config::get("client.host") == "auto") {
     NodeAgent agent;
     res.setNodeListener(&agent);
@@ -621,7 +623,7 @@ void start() {
   //  Messenger::getInstance().sendMessage(Message(). setProperty("directoryscan", org::esb::hive::START). setProperty("directory", org::esb::config::Config::getProperty("hive.scandir")). setProperty("interval", org::esb::config::Config::getProperty("hive.scaninterval")));
   Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::START));
   //    Messenger::getInstance().sendMessage(Message().setProperty("jobscanner", org::esb::hive::START));
-*/
+   */
   //  }
 
   //  LOGINFO("wait for shutdown!");
@@ -780,11 +782,11 @@ void setupDefaults() {
 void setupConfig() {
   std::string bpath = config::Config::get("hive.base_path");
 #ifdef __WIN32__
-  std::string upath = config::Config::get("APPDATA")+"/mhive";
+  std::string upath = config::Config::get("APPDATA") + "/mhive";
 #elif defined __APPLE__
-  std::string upath = config::Config::get("HOME")+"/.mhive";
+  std::string upath = config::Config::get("HOME") + "/.mhive";
 #elif defined __LINUX__
-  std::string upath = config::Config::get("HOME")+"/.mhive";
+  std::string upath = config::Config::get("HOME") + "/.mhive";
 #else
 #error "plattform not supported"
 #endif
@@ -799,15 +801,15 @@ void setupConfig() {
   config::Config::setProperty("log.path", upath + "/logs");
   config::Config::setProperty("db.url", "database=" + upath + "/data/hive.db");
 #ifdef __WIN32__
-  config::Config::setProperty("PATH", config::Config::get("PATH") + ";"+bpath+"/plugins");
+  config::Config::setProperty("PATH", config::Config::get("PATH") + ";" + bpath + "/plugins");
 #elif defined __APPLE__
-  config::Config::setProperty("DYLD_LIBRARY_PATH", config::Config::get("DYLD_LIBRARY_PATH") + ":"+bpath+"/plugins");
+  config::Config::setProperty("DYLD_LIBRARY_PATH", config::Config::get("DYLD_LIBRARY_PATH") + ":" + bpath + "/plugins");
 #elif defined __LINUX__
-  config::Config::setProperty("LD_LIBRARY_PATH", config::Config::get("LD_LIBRARY_PATH") + ":"+bpath+"/plugins");
+  config::Config::setProperty("LD_LIBRARY_PATH", config::Config::get("LD_LIBRARY_PATH") + ":" + bpath + "/plugins");
 #else
 #error "plattform not supported"
 #endif
-//LOGDEBUG("LIBRARY_PATH="<<config::Config::get("DYLD_LIBRARY_PATH"));
+  //LOGDEBUG("LIBRARY_PATH="<<config::Config::get("DYLD_LIBRARY_PATH"));
   /*
     std::string logpath=std::string("log.path=").append(bpath).append("/logs");
     char * pa=new char[logpath.length()+1];//const_cast<char*>(logpath.c_str());
