@@ -24,6 +24,19 @@ namespace org {
     }
   }
 }
+#define REGISTER_SERVICE(name,type) \
+	class Register##type \
+	        { \
+                        org::esb::core::ServicePlugin* element##type; \
+	                public: \
+	                        Register##type() \
+	                        { \
+                                element##type=new type(); \
+	                        org::esb::core::PluginRegistry::getInstance()->registerService(std::string(name), element##type); \
+	                        } \
+                                ~Register##type(){ \
+                                } \
+	        } Register##type##Instance; 
 
 #endif	/* SERVICEPLUGIN_H */
 

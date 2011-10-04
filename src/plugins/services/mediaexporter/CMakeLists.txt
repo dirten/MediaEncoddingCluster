@@ -15,7 +15,6 @@ add_library (mediaexporter SHARED
 
 TARGET_LINK_LIBRARIES(mediaexporter
 av
-hive
 core
 )
 

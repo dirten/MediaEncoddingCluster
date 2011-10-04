@@ -18,9 +18,8 @@ namespace org {
         void startService();
         void stopService();
         void onMessage(org::esb::signal::Message & msg);
-        Ptr<db::HiveDb> getConnection();
       private:
-        Ptr<db::HiveDb> _connection;
+
       };
       REGISTER_SERVICE("mediaimporter", FileImporter)
     }

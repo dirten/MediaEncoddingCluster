@@ -17,11 +17,9 @@ add_library (jsonapi SHARED
 
 TARGET_LINK_LIBRARIES(jsonapi
   core
-  db
   json
   webservice
   av
-  hive
 )
 SET_TARGET_PROPERTIES( jsonapi PROPERTIES PREFIX "")
 

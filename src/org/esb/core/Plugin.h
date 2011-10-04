@@ -37,7 +37,7 @@ namespace org {
         virtual ~Plugin() {
         };
 
-        static OptionsDescription getOptionsDescription() {
+        virtual OptionsDescription getOptionsDescription() {
           return OptionsDescription();
         }
         //virtual std::map<std::string,std::string> getProperties();
@@ -67,19 +67,6 @@ namespace org {
 	                        } \
 	        } Register##type##Instance; 
 
-#define REGISTER_SERVICE(name,type) \
-	class Register##type \
-	        { \
-                        org::esb::core::ServicePlugin* element##type; \
-	                public: \
-	                        Register##type() \
-	                        { \
-                                element##type=new type(); \
-	                        org::esb::core::PluginRegistry::getInstance()->registerService(std::string(name), element##type); \
-	                        } \
-                                ~Register##type(){ \
-                                } \
-	        } Register##type##Instance; 
 
 #define REGISTER_HOOK_PROVIDER(name,type) \
 	class Register##type \

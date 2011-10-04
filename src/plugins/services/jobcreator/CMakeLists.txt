@@ -16,7 +16,6 @@ add_library (jobcreator SHARED
 
 TARGET_LINK_LIBRARIES(jobcreator
   json
-  hive
   core
 )
 

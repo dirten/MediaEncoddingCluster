@@ -16,7 +16,6 @@ add_library (pufs SHARED
 TARGET_LINK_LIBRARIES(pufs
   core
   av
-  hive
   webservice
 )
 SET_TARGET_PROPERTIES( pufs PROPERTIES PREFIX "")

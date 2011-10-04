@@ -14,10 +14,8 @@ add_library (mediaimporter SHARED
 
 TARGET_LINK_LIBRARIES(mediaimporter
 av
-db
 signal
 core
-hive
 )
 
 SET_TARGET_PROPERTIES( mediaimporter PROPERTIES PREFIX "")

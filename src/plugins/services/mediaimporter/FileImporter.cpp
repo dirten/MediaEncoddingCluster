@@ -77,15 +77,11 @@ namespace org {
 
       FileImporter::FileImporter() {
         //LOGDEBUG("creating FileImporter");
-        if (!_connection) {
-          _connection = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
-        }
         org::esb::signal::Messenger::getInstance().addMessageListener(*this);
       }
 
       void FileImporter::startService() {
         //LOGDEBUG("starting FileImporter");
-
       }
 
       void FileImporter::stopService() {
@@ -114,10 +110,11 @@ namespace org {
       }*/
 
       db::MediaFile FileImporter::import(org::esb::io::File file) {
-        db::MediaFile mediafile(*_connection);
+        db::HiveDb connection("sqlite3", org::esb::config::Config::get("db.url"));
+        db::MediaFile mediafile(connection);
         FormatInputStream fis(&file);
         if (!fis.isValid())return mediafile;
-        _connection->begin();
+        connection.begin();
         PacketInputStream pis(&fis);
         //int id = 0;
         //  try {
@@ -203,7 +200,7 @@ namespace org {
           stream.params().link(sp);
           mediafile.streams().link(stream);
         }
-        _connection->commit();
+        connection.commit();
 
         return mediafile;
 

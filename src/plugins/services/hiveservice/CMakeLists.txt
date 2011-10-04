@@ -17,7 +17,6 @@ add_library (hiveservice SHARED
 
 TARGET_LINK_LIBRARIES(hiveservice
 net
-hive
 core
 mq
 )
