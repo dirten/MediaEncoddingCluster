@@ -11,6 +11,7 @@
 #include "org/esb/core/HookPlugin.h"
 #include "org/esb/util/Foreach.h"
 #include "org/esb/io/File.h"
+#include "org/esb/config/config.h"
 //#include "org/esb/api/ApiWebServer.h"
 namespace org {
   namespace esb {
@@ -76,14 +77,16 @@ namespace org {
           _plugin_data[s.first].name = s.first;
           _plugin_data[s.first].context = new PluginContext();
           _plugin_data[s.first].plugin = s.second;
+          LOGDEBUG("Fill up PluginContext")
           /*fill up PluginContext with Options*/
           OptionsDescription desc = s.second->getOptionsDescription();
           typedef boost::shared_ptr<boost::program_options::option_description> option;
-
-          foreach(const option value, od.options()) {
-            LOGDEBUG("Option:" << value->format_name());
+          foreach(const option value, desc.options()) {
+            LOGDEBUG("Option:" << value->long_name()<<" value "<<org::esb::config::Config::get(value->long_name()));
+            _plugin_data[s.first].context->env[value->long_name()]=org::esb::config::Config::get(value->long_name());
           }
-          ((ServicePlugin*) s.second)->setContext(context);
+          
+          ((ServicePlugin*) s.second)->setContext(_plugin_data[s.first].context);
           ((ServicePlugin*) s.second)->startService();
         }
 

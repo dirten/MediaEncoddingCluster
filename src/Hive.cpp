@@ -167,8 +167,6 @@ int main(int argc, char * argv[]) {
             ;
 
     po::options_description all("all");
-    all.add(gen).add(ser).add(cli).add(inst).add(web).add(queue).add(mon);
-    priv.add(all);
     setupDefaults();
     setupConfig();
     checkDirs();
@@ -190,11 +188,14 @@ int main(int argc, char * argv[]) {
     //LOGDEBUG("configure Log opened");
     //return 0;
     setupDatabase();
+    all.add(gen).add(ser).add(cli).add(inst).add(web).add(queue).add(mon);
     org::esb::core::PluginRegistry::getInstance()->load(base_path + "/plugins");
     foreach(std::list<std::string>::value_type data, org::esb::core::PluginRegistry::getInstance()->getPluginNameList()) {
       org::esb::core::OptionsDescription od = org::esb::core::PluginRegistry::getInstance()->getOptionsDescription(data);
-      all.add(od);
+      if(od.options().size()>0)
+        all.add(od);
     }
+    priv.add(all);
 
     po::variables_map vm;
     try {
@@ -207,6 +208,17 @@ int main(int argc, char * argv[]) {
     }
 
     po::notify(vm);
+    foreach(po::variables_map::value_type & val, vm){
+      LOGDEBUG("setting parameter:"<<val.first);
+      if(vm[val.first].value().type()==typeid(int)){
+        config::Config::setProperty(val.first, StringUtil::toString(vm[val.first].as<int>()));
+      }else
+      if(vm[val.first].value().type()==typeid(double)){
+        config::Config::setProperty(val.first, StringUtil::toString(vm[val.first].as<double>()));
+      }else{
+        config::Config::setProperty(val.first, vm[val.first].as<std::string>());        
+      }
+    }
     config::Config::setProperty("partition", StringUtil::toString(vm["partition"].as<std::string > ()));
     config::Config::setProperty("hive.port", StringUtil::toString(vm["hiveport"].as<int> ()));
     config::Config::setProperty("web.port", StringUtil::toString(vm["webport"].as<int> ()));

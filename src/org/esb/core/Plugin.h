@@ -6,7 +6,8 @@
  */
 #include "PluginRegistry.h"
 #include "HookNotificationCenter.h"
-#include "AppContext.h"
+#include "PluginContext.h"
+
 #include <iostream>
 #include <map>
 #include <boost/bind.hpp>
@@ -25,23 +26,23 @@ namespace org {
       class Plugin {
       public:
 
-        void setContext(AppContext * ac) {
+        void setContext(PluginContext * ac) {
           _ctx = ac;
         }
 
-        org::esb::core::AppContext*getContext() {
+        org::esb::core::PluginContext*getContext() {
           return _ctx;
         }
 
         virtual ~Plugin() {
         };
 
-        virtual OptionsDescription getOptionsDescription() {
+        static OptionsDescription getOptionsDescription() {
           return OptionsDescription();
         }
         //virtual std::map<std::string,std::string> getProperties();
       private:
-        org::esb::core::AppContext*_ctx;
+        org::esb::core::PluginContext*_ctx;
       };
 
       template<typename Interface>

@@ -32,11 +32,11 @@ namespace org {
       char * ApiWebServer::p = new char();
 
       void ApiWebServer::startService() {
-        org::esb::core::AppContext *c = getContext();
-        LOGDEBUG("context parameter port:" << c->env["web.port"]);
-        LOGDEBUG("context parameter docroot:" << c->env["web.docroot"]);
-        port = c->env["web.port"];
-        docroot = c->env["web.docroot"];
+        org::esb::core::PluginContext *c = getContext();
+        LOGDEBUG("context parameter port:" << c->env["webservice.port"]);
+        LOGDEBUG("context parameter docroot:" << c->env["webservice.docroot"]);
+        port = c->env["webservice.port"];
+        docroot = c->env["webservice.docroot"];
 
         if (port.length() == 0)
           port = "8080";
@@ -65,7 +65,8 @@ namespace org {
       org::esb::core::OptionsDescription ApiWebServer::getOptionsDescription(){
          org::esb::core::OptionsDescription result("ApiWebServer");
          result.add_options()
-                 ("webservice.port",boost::program_options::value<int >()->default_value(8080),"web server port listen on");
+                 ("webservice.port",boost::program_options::value<int >()->default_value(8080),"web server port listen on")
+                 ("webservice.docroot",boost::program_options::value<std::string>()->default_value(org::esb::config::Config::get("web.docroot")),"web server document root");
         return result;
       }
 

@@ -27,6 +27,7 @@ add_library (core ${CORE_LINK_TYPE}
 TARGET_LINK_LIBRARIES(core 
   lang
   io
+  hive
 )
 SET_TARGET_PROPERTIES( core PROPERTIES PREFIX "libmhive-")
 
