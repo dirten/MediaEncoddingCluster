@@ -16,27 +16,27 @@ namespace org {
 
       class AV_EXPORT Format {
       public:
-        
-        enum FormatType{
+
+        enum FormatType {
           FORMAT_UNKNOWN,
           FORMAT_VIDEO,
           FORMAT_AUDIO
-        } ;
+        };
         Format();
         Format(FormatType);
         Format(CodecID);
-        FormatType getType()const ;
+        FormatType getType()const;
         void setFormatOption(std::string key, std::string val);
-      //protected:
+        FormatType _type;
+        PixelFormat pixel_format;
+        int width;
+        int height;
+        int channels;
+        int samplerate;
+        SampleFormat sampleformat;
+        protected:
         std::map<std::string, std::string> _options;
         CodecID _codec_id;
-        FormatType _type; 
-        PixelFormat pixel_format;
-      	int width;
-	      int height;
-	      int channels;
-	      int samplerate;
-        SampleFormat sampleformat;
 
       };
     }

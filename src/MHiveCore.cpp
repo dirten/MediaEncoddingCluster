@@ -1,10 +1,10 @@
 
+#include "org/esb/core/PluginRegistry.h"
 #include "config.h"
 #include "org/esb/config/config.h"
 #include "org/esb/io/File.h"
 
 #include "org/esb/lang/CtrlCHitWaiter.h"
-#include "org/esb/core/PluginRegistry.h"
 
 int main(int argc, char** argv) {
     /*initialise the config class*/
