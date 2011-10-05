@@ -8,8 +8,8 @@
 #ifndef SERVICE_H
 #define	SERVICE_H
 #include "org/esb/core/ServicePlugin.h"
-#include "NodeResolver.h"
 #include "org/esb/util/Log.h"
+#include "NodeResolver.h"
 
 class Service : public org::esb::core::ServicePlugin {
   classlogger("org.esb.UdpNodeResolver")
