@@ -7,6 +7,7 @@
 
 #ifndef PLUGINREGISTRY_H
 #define	PLUGINREGISTRY_H
+#include "org/esb/db/hivedb.hpp"
 #include <map>
 #include <set>
 #include <string>
@@ -15,7 +16,6 @@
 #include "org/esb/lang/SharedObjectLoader.h"
 #include "org/esb/util/Log.h"
 #include "PluginContext.h"
-#include "org/esb/db/hivedb.hpp"
 namespace org {
   namespace esb {
     namespace core {
