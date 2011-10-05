@@ -28,7 +28,7 @@ namespace org {
              * @see     FileInputStream
              * @since   ESB-LIB-1.0.1
              */
-            class InputStream {
+            class IO_EXPORT InputStream {
 public:
 
                 /**

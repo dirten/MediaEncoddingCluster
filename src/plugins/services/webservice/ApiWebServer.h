@@ -18,10 +18,10 @@
 
 #ifndef APIWEBSERVICE_H
 #define	APIWEBSERVICE_H
+#include "org/esb/core/ServicePlugin.h"
 #include "mongoose.h"
 #include "org/esb/util/Log.h"
 #include <map>
-#include "org/esb/core/ServicePlugin.h"
 #include "org/esb/core/HookNotificationCenter.h"
 #include "exports.h"
 

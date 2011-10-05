@@ -7,7 +7,6 @@
 
 #ifndef PLUGINREGISTRY_H
 #define	PLUGINREGISTRY_H
-#include "org/esb/db/hivedb.hpp"
 #include <map>
 #include <set>
 #include <string>

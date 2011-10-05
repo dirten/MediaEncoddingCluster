@@ -10,6 +10,7 @@
 #include "AV.h"
 #include "Rational.h"
 #include "exports.h"
+#pragma warning( disable: 4251 )
 namespace org {
   namespace esb {
     namespace av {
