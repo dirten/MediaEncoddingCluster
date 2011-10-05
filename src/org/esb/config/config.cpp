@@ -48,7 +48,8 @@ void Config::close() {
     if(getenv(p.first.c_str())){
       //LOGDEBUG("delete env key"<<p.first.c_str());
       //LOGDEBUG("delete env val"<<getenv(p.first.c_str()));
-      unsetenv(p.first.c_str());
+      /*diese methode ist auf windows nicht verfügbar*/
+      //unsetenv(p.first.c_str());
       delete [] p.second;
     }
   }
