@@ -4,9 +4,9 @@
  * 
  * Created on 5. Oktober 2011, 16:38
  */
+#include "Service.h"
 #include "config.h"
 #include "org/esb/config/config.h"
-#include "Service.h"
 
 Service::Service() {
   _resolver=NULL;
