@@ -1,6 +1,6 @@
 #ifndef ORG_ESB_IO_EXPORTS
 #define ORG_ESB_IO_EXPORTS
-  #if defined(_WIN32) && defined(IO_BUILD_SHARED)
+  #if defined(_WIN32)
     #if defined(io_EXPORTS)
       #define IO_EXPORT __declspec( dllexport )
     #else

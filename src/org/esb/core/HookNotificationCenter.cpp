@@ -34,6 +34,10 @@ namespace org {
       void HookNotificationCenter::postHook(std::string name, Request * req, Response * res) {
         boost::mutex::scoped_lock enqueue_lock(hook_mutex);
         //LOGDEBUG("postHook " << name << " On " << this );
+          foreach(boost::function<void (Request*req, Response * res) > func, _hook_map["*"]) {
+            func(req, res);
+          }
+
         if (_hook_map.count(name) > 0) {
           foreach(boost::function<void (Request*req, Response * res) > func, _hook_map[name]) {
             func(req, res);

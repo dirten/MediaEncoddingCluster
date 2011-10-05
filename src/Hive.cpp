@@ -189,9 +189,10 @@ int main(int argc, char * argv[]) {
     setupDatabase();
     all.add(gen).add(ser).add(cli).add(inst).add(web).add(queue).add(mon);
     org::esb::core::PluginRegistry::getInstance()->load(base_path + "/plugins");
+
     foreach(std::list<std::string>::value_type data, org::esb::core::PluginRegistry::getInstance()->getPluginNameList()) {
       org::esb::core::OptionsDescription od = org::esb::core::PluginRegistry::getInstance()->getOptionsDescription(data);
-      if(od.options().size()>0)
+      if (od.options().size() > 0)
         all.add(od);
     }
     priv.add(all);
@@ -207,14 +208,15 @@ int main(int argc, char * argv[]) {
     }
 
     po::notify(vm);
-    foreach(po::variables_map::value_type & val, vm){
-      if(vm[val.first].value().type()==typeid(int)){
+
+    foreach(po::variables_map::value_type & val, vm) {
+      if (vm[val.first].value().type() == typeid (int)) {
         config::Config::setProperty(val.first, StringUtil::toString(vm[val.first].as<int>()));
-      }else
-      if(vm[val.first].value().type()==typeid(double)){
+      } else
+        if (vm[val.first].value().type() == typeid (double)) {
         config::Config::setProperty(val.first, StringUtil::toString(vm[val.first].as<double>()));
-      }else{
-        config::Config::setProperty(val.first, vm[val.first].as<std::string>());        
+      } else {
+        config::Config::setProperty(val.first, vm[val.first].as<std::string > ());
       }
     }
     config::Config::setProperty("partition", StringUtil::toString(vm["partition"].as<std::string > ()));
@@ -380,7 +382,18 @@ int main(int argc, char * argv[]) {
 
       //org::esb::api::JsonServer server(vm["webport"].as<int> ());
       org::esb::core::PluginRegistry::getInstance()->startServices();
-      listener(argc, argv);
+      std::string port = config::Config::get("web.port");
+      if (!quiet) {
+        std::cout << "mhive server is running, open the url http://localhost:" << port << std::endl;
+        std::cout << "Press ctrl & c to stop the program" << std::endl;
+      }
+      org::esb::lang::CtrlCHitWaiter::wait();
+      if (!quiet) {
+        std::cout << "\rshutdown app, this will take a minute!" << std::endl;
+        ;
+      }
+      org::esb::core::PluginRegistry::getInstance()->stopServices();
+
     }
 
     if (vm.count("client")) {
@@ -459,10 +472,11 @@ int main(int argc, char * argv[]) {
   //  delete[] path;
   //  delete[] base_path;
   org::esb::hive::DatabaseService::stop();
-  org::esb::core::PluginRegistry::getInstance()->stopServices();
   org::esb::core::PluginRegistry::close();
 
   org::esb::config::Config::close();
+  CodecFactory::free();
+  Messenger::free();
   LOGINFO("MHive is not running anymore!!!")
           //Log::close();
 
@@ -641,6 +655,8 @@ void start() {
     std::cout << "\rshutdown app, this will take a minute!" << std::endl;
     ;
   }
+  CodecFactory::free();
+  Messenger::free();
   /*
    *
    * Stopping Application Services from configuration
@@ -658,24 +674,22 @@ void start() {
   Messenger::getInstance().sendRequest(Message().setProperty("databaseservice", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));
    */
-  CodecFactory::free();
-  Messenger::free();
   //  mysql_library_end();
 }
 
 void listener(int argc, char *argv[]) {
   //  LOGDEBUG("here");
   //  org::esb::lang::Thread::sleep2(5000);
-  org::esb::hive::Node node;
+  /*org::esb::hive::Node node;
   node.setData("type", "server");
   node.setData("version", MHIVE_VERSION);
   node.setData("port", org::esb::config::Config::getProperty("client.port", "20200"));
   org::esb::hive::NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"), boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
-  res.start();
+  res.start();*/
 
   /**starting the server main services*/
   start();
-  res.stop();
+  //res.stop();
 
 }
 

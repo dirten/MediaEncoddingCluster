@@ -99,18 +99,7 @@ namespace org {
         //        logdebug("*operator==");
         return _ep == a->_ep;
       }
-      org::esb::core::OptionsDescription NodeResolver::getOptionsDescription(){
-        return org::esb::core::OptionsDescription();
-      }
 
-      NodeResolver::NodeResolver():
-      _node_timeout(5),
-      send_endpoint_(),
-      send_socket_(send_service_, send_endpoint_.protocol()),
-      send_timer_(send_service_),
-      recv_socket_(recv_service_){
-        
-      }
       
       NodeResolver::NodeResolver(const boost::asio::ip::address& listen_address, const boost::asio::ip::address& multicast_address, int port, Node node) :
       _node_timeout(5),
@@ -146,12 +135,6 @@ namespace org {
                 boost::asio::placeholders::bytes_transferred));
 
       }
-        void NodeResolver::startService(){
-          
-        }
-        void NodeResolver::stopService(){
-          
-        }
 
       void NodeResolver::setNode(Node node) {
       }
@@ -277,7 +260,7 @@ namespace org {
         std::list<NodeListener*>::iterator it = _listener.begin();
         for (; it != _listener.end(); it++) {
           if (node._status == Node::NODE_UP) {
-            LOGDEBUG("NotifyNodeUp:"<<node.toString())
+            LOGDEBUG("NotifyNodeUp:"<<node.toString());
             (*it)->onNodeUp(node);
           }
           if (node._status == Node::NODE_DOWN) {

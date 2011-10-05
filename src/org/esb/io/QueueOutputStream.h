@@ -10,6 +10,7 @@
 #include "OutputStream.h"
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/io/exports.h"
+#pragma warning( disable: 4251 )
 namespace safmq{
   class MessageQueue;
 }

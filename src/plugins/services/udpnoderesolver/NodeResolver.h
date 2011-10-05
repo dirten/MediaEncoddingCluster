@@ -44,7 +44,6 @@
 #include <boost/serialization/map.hpp>
 #include <map>
 #include "exports.h"
-#include "org/esb/core/ServicePlugin.h"
 namespace org {
   namespace esb {
     namespace plugin {
@@ -91,11 +90,10 @@ namespace org {
 
       };
 
-      class UDPNODERSOLVER_EXPORT NodeResolver: public org::esb::core::ServicePlugin{
+      class UDPNODERSOLVER_EXPORT NodeResolver{
         classlogger("org.esb.hive.NodeResolver")
       public:
         typedef std::list<Ptr<Node> > NodeList;
-        NodeResolver();
         NodeResolver(const boost::asio::ip::address& listen_address, const boost::asio::ip::address& multicast_address, int, Node);
         void setListenAddress(const boost::asio::ip::address& address);
         void setMulticastAddress(const boost::asio::ip::address& address);
@@ -108,9 +106,6 @@ namespace org {
         void setNodeMessage(std::string msg);
         void setNode(Node);
         static NodeList getNodes();
-        void startService();
-        void stopService();
-      org::esb::core::OptionsDescription getOptionsDescription();
 
       private:
         boost::asio::io_service send_service_;
@@ -149,7 +144,6 @@ namespace org {
         void notifyListener(Node & n);
         boost::mutex notify_mutex;
       };
-      REGISTER_SERVICE("udpnoderesolver", NodeResolver)
     }
   }
 }

@@ -10,6 +10,7 @@
 #include "FileFilter.h"
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/io/exports.h"
+#pragma warning( disable: 4251 )
 namespace org {
   namespace esb {
     namespace io {

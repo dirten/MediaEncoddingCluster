@@ -9,7 +9,8 @@ include_directories (${LOG4CPLUS_DIR}/include/litesql)
 
 
 add_library (udpnoderesolver SHARED
-    NodeResolver.cpp
+  NodeResolver.cpp
+  Service.cpp
  )
 
 TARGET_LINK_LIBRARIES(udpnoderesolver
@@ -19,9 +20,8 @@ TARGET_LINK_LIBRARIES(udpnoderesolver
 SET_TARGET_PROPERTIES( udpnoderesolver PROPERTIES PREFIX "")
 
 
-
+#installation currently disabled
 INSTALL(TARGETS udpnoderesolver
   RUNTIME DESTINATION plugins
   LIBRARY DESTINATION plugins
-  #ARCHIVE DESTINATION plugins
 )
