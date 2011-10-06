@@ -5,6 +5,8 @@
  * Created on 29. August 2011, 14:46
  */
 
+#include "org/esb/db/hivedb.hpp"
+
 #include "PluginRegistry.h"
 #include "ServicePlugin.h"
 #include "introspec.h"

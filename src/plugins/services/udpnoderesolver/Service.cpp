@@ -8,14 +8,33 @@
 #include "config.h"
 #include "org/esb/config/config.h"
 
+class NodeAgent : public org::esb::plugin::NodeListener {
+  classlogger("NodeListener")
+public:
+  NodeAgent() {
+  }
+
+  void onNodeUp(org::esb::plugin::Node & node) {
+    LOGDEBUG("Node up")
+  }
+
+  void onNodeDown(org::esb::plugin::Node & node) {
+    LOGDEBUG("Node down")
+  }
+private:
+};
+
 Service::Service() {
   _resolver=NULL;
+  _agent=NULL;
 }
 
 Service::~Service() {
   LOGDEBUG("Service::~Service()");
   delete _resolver;
   _resolver=NULL;
+  delete _agent;
+  _agent=NULL;
 }
 
 void Service::startService() {
@@ -24,6 +43,8 @@ void Service::startService() {
   node.setData("version", MHIVE_VERSION);
   node.setData("port", org::esb::config::Config::getProperty("client.port", "20200"));
   _resolver = new org::esb::plugin::NodeResolver(boost::asio::ip::address::from_string("0.0.0.0"), boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
+  _agent=new NodeAgent();
+  _resolver->setNodeListener(_agent);
   _resolver->start();
 
 }

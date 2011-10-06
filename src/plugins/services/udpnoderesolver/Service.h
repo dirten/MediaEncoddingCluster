@@ -10,6 +10,7 @@
 #include "org/esb/core/ServicePlugin.h"
 #include "NodeResolver.h"
 #include "org/esb/util/Log.h"
+class NodeAgent;
 
 class Service : public org::esb::core::ServicePlugin {
   classlogger("org.esb.UdpNodeResolver")
@@ -21,7 +22,9 @@ public:
 
   virtual ~Service();
 private:
-        org::esb::plugin::NodeResolver * _resolver;
+  org::esb::plugin::NodeResolver * _resolver;
+  NodeAgent * _agent;
+
 };
 REGISTER_SERVICE("udpnoderesolver", Service)
 
