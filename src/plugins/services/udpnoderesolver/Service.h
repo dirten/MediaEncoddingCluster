@@ -8,8 +8,15 @@
 #ifndef SERVICE_H
 #define	SERVICE_H
 #include "org/esb/core/ServicePlugin.h"
-#include "NodeResolver.h"
+//#include "NodeResolver.h"
 #include "org/esb/util/Log.h"
+namespace org{
+  namespace esb{
+    namespace plugin{
+      class NodeResolver;
+    }
+  }
+}
 class NodeAgent;
 
 class Service : public org::esb::core::ServicePlugin {

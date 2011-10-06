@@ -7,7 +7,7 @@
 #include "Service.h"
 #include "config.h"
 #include "org/esb/config/config.h"
-
+#include "NodeResolver.h"
 class NodeAgent : public org::esb::plugin::NodeListener {
   classlogger("NodeListener")
 public:
