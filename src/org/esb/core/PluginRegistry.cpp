@@ -13,6 +13,7 @@
 #include "org/esb/io/File.h"
 #include "org/esb/config/config.h"
 #include "org/esb/db/hivedb.hpp"
+#include "PluginContext.h"
 //#include "org/esb/api/ApiWebServer.h"
 namespace org {
   namespace esb {

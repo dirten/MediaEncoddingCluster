@@ -8,6 +8,7 @@
 #ifndef SERVICEPLUGIN_H
 #define	SERVICEPLUGIN_H
 #include "Plugin.h"
+#include "PluginRegistry.h"
 namespace org {
   namespace esb {
     namespace core {

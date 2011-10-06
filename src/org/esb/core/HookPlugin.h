@@ -8,6 +8,8 @@
 #ifndef HOOKPLUGIN_H
 #define	HOOKPLUGIN_H
 #include "Plugin.h"
+#include "PluginRegistry.h"
+#include "HookNotificationCenter.h"
 #include "Request.h"
 #include "Response.h"
 

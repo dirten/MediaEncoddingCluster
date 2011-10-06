@@ -8,17 +8,17 @@
 #ifndef PLUGINREGISTRY_H
 #define	PLUGINREGISTRY_H
 #include <map>
-#include <set>
+#include <list>
 #include <string>
 #include "Plugin.h"
-#include "AppContext.h"
 #include "org/esb/lang/SharedObjectLoader.h"
 #include "org/esb/util/Log.h"
-#include "PluginContext.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace core {
       class Plugin;
+      class PluginContext;
       class ServicePlugin;
       class WebservicePlugin;
       class HookPlugin;

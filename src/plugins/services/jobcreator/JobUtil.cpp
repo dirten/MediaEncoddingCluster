@@ -18,6 +18,7 @@
 #include "boost/uuid/uuid_io.hpp"
 #include "boost/lexical_cast.hpp"
 #include "org/esb/signal/Messenger.h"
+#include "org/esb/core/PluginContext.h"
 
 using namespace org::esb::av;
 using namespace org::esb::config;

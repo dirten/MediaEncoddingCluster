@@ -18,7 +18,6 @@ class PluginRegistryTestPlugin : public org::esb::core::Plugin{
 public:
   PluginRegistryTestPlugin();
   virtual ~PluginRegistryTestPlugin();
-  void setContext(org::esb::core::AppContext*);
 private:
 
 };
@@ -29,7 +28,6 @@ public:
   virtual ~PluginRegistryTestPlugin2();
   void startService();
   void stopService();
-  void setContext(org::esb::core::AppContext*);
 private:
 
 };
@@ -38,7 +36,6 @@ class PluginRegistryTestPlugin3 : public org::esb::core::WebservicePlugin{
 public:
   PluginRegistryTestPlugin3();
   virtual ~PluginRegistryTestPlugin3();
-  void setContext(org::esb::core::AppContext*);
   void handle(org::esb::api::ServiceRequest *, org::esb::api::ServiceResponse *);
           void hook(){};
 
@@ -53,7 +50,7 @@ public:
   void hook(void*,void*){}
 };
 
-REGISTER_PLUGIN("test_plugin", PluginRegistryTestPlugin)
+
 REGISTER_SERVICE("test_plugin2", PluginRegistryTestPlugin2)
 //REGISTER_HOOK("webserver.url.hook","/api/v1",PluginRegistryTestPlugin3)
 REGISTER_HOOK("webserver.url.hook",PluginRegistryTestPlugin4,PluginRegistryTestPlugin4::hook,1)

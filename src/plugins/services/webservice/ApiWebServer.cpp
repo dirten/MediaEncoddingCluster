@@ -23,6 +23,7 @@
 #include "boost/lexical_cast.hpp"
 #include "ServiceRequest.h"
 #include "ServiceResponse.h"
+#include "org/esb/core/PluginContext.h"
 
 
 namespace org {

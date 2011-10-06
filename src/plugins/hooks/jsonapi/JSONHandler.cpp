@@ -22,6 +22,8 @@
 #include "org/esb/signal/Message.h"
 #include "org/esb/signal/Messenger.h"
 #include "PresetVerifier.h"
+#include "org/esb/core/PluginContext.h"
+
 //#include "org/esb/hive/FileImporter.h"
 //#include "org/esb/hive/JobUtil.h"
 namespace org {

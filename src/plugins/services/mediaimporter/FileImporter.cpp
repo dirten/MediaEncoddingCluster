@@ -33,6 +33,8 @@
 #include "litesql/database.hpp"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/signal/Messenger.h"
+#include "org/esb/core/PluginContext.h"
+
 using namespace std;
 using namespace org::esb;
 using namespace org::esb::config;

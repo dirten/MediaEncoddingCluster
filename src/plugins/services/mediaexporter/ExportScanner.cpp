@@ -34,6 +34,8 @@
 #include "org/esb/config/config.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/core/PluginContext.h"
+
 namespace org {
   namespace esb {
     namespace plugin {

@@ -20,18 +20,12 @@ PluginRegistryTestPlugin2::PluginRegistryTestPlugin2() {
   std::cout << "hier ist das plugin 2" << std::endl;
 }
 
-void PluginRegistryTestPlugin::setContext(org::esb::core::AppContext*) {
-
-}
 
 PluginRegistryTestPlugin2::~PluginRegistryTestPlugin2() {
   std::cout << "destructor ~PluginRegistryTestPlugin2()" << std::endl;
 
 }
 
-void PluginRegistryTestPlugin2::setContext(org::esb::core::AppContext*) {
-
-}
 
 void PluginRegistryTestPlugin2::startService() {
   std::cout << "hier ist das plugin 2 start signal" << std::endl;
@@ -53,9 +47,6 @@ void PluginRegistryTestPlugin3::handle(org::esb::api::ServiceRequest *, org::esb
 
 }
 
-void PluginRegistryTestPlugin3::setContext(org::esb::core::AppContext*) {
-
-}
 
 
 PluginRegistryTestPlugin4::PluginRegistryTestPlugin4() {
