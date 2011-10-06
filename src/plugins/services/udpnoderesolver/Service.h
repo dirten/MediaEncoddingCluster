@@ -17,7 +17,7 @@ namespace org{
     }
   }
 }
-class NodeAgent;
+class NodeListener;
 
 class Service : public org::esb::core::ServicePlugin {
   classlogger("org.esb.UdpNodeResolver")
@@ -30,7 +30,7 @@ public:
   virtual ~Service();
 private:
   org::esb::plugin::NodeResolver * _resolver;
-  NodeAgent * _agent;
+  NodeListener * _agent;
 
 };
 REGISTER_SERVICE("udpnoderesolver", Service)

@@ -189,6 +189,7 @@ namespace org {
               sp.name = option->name;
               int len = 1000;
               char data[1000];
+              memset(&data,0,1000);
               av_get_string(ctx->streams[a]->codec, option->name, NULL, data, len);
               if (strlen(data) > 0) {
                 sp.val = std::string(data);

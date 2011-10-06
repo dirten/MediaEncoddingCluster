@@ -8,14 +8,15 @@
 #ifndef DEBUGPRINTER_H
 #define	DEBUGPRINTER_H
 #include "org/esb/core/HookPlugin.h"
-class DebugPrinter:public org::esb::core::HookPlugin {
+
+class DebugPrinter : public org::esb::core::HookPlugin {
 public:
   DebugPrinter();
-  void print(org::esb::core::Request*req,org::esb::core::Response*res);
+  void print(org::esb::core::Request*req, org::esb::core::Response*res);
   virtual ~DebugPrinter();
 private:
 
 };
-REGISTER_HOOK("*", DebugPrinter,DebugPrinter::print, 1);
+REGISTER_HOOK("*", DebugPrinter, DebugPrinter::print, 1);
 #endif	/* DEBUGPRINTER_H */
 

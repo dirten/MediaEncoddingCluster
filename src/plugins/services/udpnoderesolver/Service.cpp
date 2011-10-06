@@ -8,10 +8,10 @@
 #include "config.h"
 #include "org/esb/config/config.h"
 #include "NodeResolver.h"
-class NodeAgent : public org::esb::plugin::NodeListener {
+class NodeListener : public org::esb::plugin::NodeListener {
   classlogger("NodeListener")
 public:
-  NodeAgent() {
+  NodeListener() {
   }
 
   void onNodeUp(org::esb::plugin::Node & node) {
@@ -43,7 +43,7 @@ void Service::startService() {
   node.setData("version", MHIVE_VERSION);
   node.setData("port", org::esb::config::Config::getProperty("client.port", "20200"));
   _resolver = new org::esb::plugin::NodeResolver(boost::asio::ip::address::from_string("0.0.0.0"), boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
-  _agent=new NodeAgent();
+  _agent=new NodeListener();
   _resolver->setNodeListener(_agent);
   _resolver->start();
 

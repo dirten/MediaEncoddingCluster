@@ -45,13 +45,13 @@ void Config::close() {
   //std::vector< std::pair< std::string, std::string > >::iterator it=props.begin();
   
   BOOST_FOREACH(row p, _free_map) {
-    if(getenv(p.first.c_str())){
+    //if(getenv(p.first.c_str())){
       //LOGDEBUG("delete env key"<<p.first.c_str());
       //LOGDEBUG("delete env val"<<getenv(p.first.c_str()));
       /*diese methode ist auf windows nicht verfügbar*/
       //unsetenv(p.first.c_str());
       delete [] p.second;
-    }
+    //}
   }
 
   properties->clear();
