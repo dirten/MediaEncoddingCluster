@@ -242,7 +242,7 @@ add_library (net SHARED
 #      net/TcpSocketOutputStream.cpp
 )
 SET_TARGET_PROPERTIES( net PROPERTIES PREFIX "libmhive-")
-TARGET_LINK_LIBRARIES(net util lang )
+TARGET_LINK_LIBRARIES(net util lang io)
   INSTALL(TARGETS net
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}

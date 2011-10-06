@@ -300,9 +300,6 @@ namespace org {
         struct stat status;
         std::string _pathname;
         bool _exist;
-        bool _isUrl;
-        bool http_url_exist(std::string url);
-        size_t http_url_size(std::string url);
       };
     }
   }

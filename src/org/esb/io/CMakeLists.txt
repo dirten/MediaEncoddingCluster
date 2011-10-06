@@ -29,7 +29,6 @@ TARGET_LINK_LIBRARIES(io
     lang
     safmq
     util
-    net
 )
 SET_TARGET_PROPERTIES( io PROPERTIES PREFIX "libmhive-")
 IF(SHARED_IO)
