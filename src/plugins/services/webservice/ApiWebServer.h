@@ -1,4 +1,3 @@
-/*----------------------------------------------------------------------
  *  File    : ApiWebServer.h
  *  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
  *  Purpose :

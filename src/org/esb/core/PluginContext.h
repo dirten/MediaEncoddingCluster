@@ -7,9 +7,9 @@
 
 #ifndef PLUGINCONTEXT_H
 #define	PLUGINCONTEXT_H
+#include "org/esb/db/hivedb.hpp"
 #include <map>
 #include <string>
-#include "org/esb/db/hivedb.hpp"
 namespace org {
   namespace esb {
     namespace core {

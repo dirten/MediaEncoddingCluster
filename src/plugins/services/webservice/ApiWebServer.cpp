@@ -15,6 +15,7 @@
  *
  * ----------------------------------------------------------------------
  */
+#include "org/esb/core/PluginContext.h"
 #include "ApiWebServer.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/config/config.h"
@@ -23,7 +24,6 @@
 #include "boost/lexical_cast.hpp"
 #include "ServiceRequest.h"
 #include "ServiceResponse.h"
-#include "org/esb/core/PluginContext.h"
 
 
 namespace org {
