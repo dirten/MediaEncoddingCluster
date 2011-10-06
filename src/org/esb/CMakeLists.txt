@@ -229,7 +229,8 @@ add_subdirectory (io)
 #TARGET_LINK_LIBRARIES(io ${BOOST_FS_LIB_MT} ${BOOST_SYSTEM_LIB_MT})
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/net)
-add_library (net net/SocketException.cpp 
+add_library (net SHARED
+  net/SocketException.cpp 
 #      net/ServerSocket.cpp 
 #      net/Socket.cpp 
       net/UdpServerSocket.cpp
@@ -240,14 +241,13 @@ add_library (net net/SocketException.cpp
 #      net/TcpSocketInputStream.cpp
 #      net/TcpSocketOutputStream.cpp
 )
-TARGET_LINK_LIBRARIES(net util lang)
-IF(BUILD_SHARED_LIBS)
+SET_TARGET_PROPERTIES( net PROPERTIES PREFIX "libmhive-")
+TARGET_LINK_LIBRARIES(net util lang )
   INSTALL(TARGETS net
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
     RUNTIME DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-ENDIF(BUILD_SHARED_LIBS)
 
 #include_directories (${MEC_SOURCE_DIR}/src/org/esb/sql)
 #include_directories (${MYSQL_DIR}/include/mysql)
