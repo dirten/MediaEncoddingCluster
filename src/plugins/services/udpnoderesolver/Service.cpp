@@ -41,7 +41,7 @@ void Service::startService() {
   org::esb::plugin::Node node;
   node.setData("type", "server");
   node.setData("version", MHIVE_VERSION);
-  node.setData("port", org::esb::config::Config::getProperty("client.port", "20200"));
+  node.setData("port", org::esb::config::Config::getProperty("hiveserver.port", "20200"));
   _resolver = new org::esb::plugin::NodeResolver(boost::asio::ip::address::from_string("0.0.0.0"), boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
   _agent=new NodeListener();
   _resolver->setNodeListener(_agent);

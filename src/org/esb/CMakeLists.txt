@@ -331,6 +331,7 @@ add_library (hive SHARED
 #  hive/xml/Project.cpp
 #  hive/xml/JobCreator.cpp
   config/config.cpp
+  hive/TestLogAppender.cpp
 )
 
 TARGET_LINK_LIBRARIES(hive db net signal av lang json util mq)

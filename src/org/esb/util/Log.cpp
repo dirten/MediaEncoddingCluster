@@ -50,7 +50,6 @@ Log::~Log() {
   _myfile.close();
   delete configureThread;
 }
-
 void Log::open(std::string path) {
   std::cout << "enable logging to "<<path << std::endl;
   if (path.length() == 0) {

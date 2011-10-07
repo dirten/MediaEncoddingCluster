@@ -120,12 +120,13 @@ int main(int argc, char * argv[]) {
             ("version", "Prints the Version")
             ("debug", "switch of the StackDumper and logging goes to the console instead of file")
             ("loglevel", po::value<std::string > ()->default_value("fatal"), "setting the loglevel for this process");
-
+/*
     po::options_description inst("Install options");
     inst.add_options()
             ("hiveport", po::value<int>()->default_value(20200), "on which port will the hive be listen on")
             ("webport", po::value<int>()->default_value(8080), "on which port will the web admin be listen on")
             ;
+ */
     po::options_description ser("Server options");
     ser.add_options()
             //("daemon,d", "start the Hive as Daemon Process")
@@ -144,7 +145,7 @@ int main(int argc, char * argv[]) {
             ("port,p", po::value<int>()->default_value(20200), "Port to connect")
             ("count", po::value<int>()->default_value(cpu_count), "Client Processor Count")
             ;
-
+/*
     po::options_description web("Webserver");
     web.add_options()
             ("web,w", "start the Hive Webserver")
@@ -164,11 +165,13 @@ int main(int argc, char * argv[]) {
             ("console,c", "")
             ("quiet", "")
             ;
-
+*/
     po::options_description all("all");
     setupDefaults();
     setupConfig();
     checkDirs();
+    //log4cplus::spi::AppenderFactoryRegistry& reg = log4cplus::spi::getAppenderFactoryRegistry();
+    //REG_APPENDER (reg, ConsoleAppender);
     log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT(config::Config::get("hive.base_path") + "/res/logging.properties"));
     log4cplus::helpers::Properties & props = const_cast<log4cplus::helpers::Properties&> (config.getProperties());
     props.setProperty(LOG4CPLUS_TEXT("appender.MAIN.File"), LOG4CPLUS_TEXT(config::Config::get("log.path") + "/mhive-debug.log"));
@@ -187,7 +190,7 @@ int main(int argc, char * argv[]) {
     //LOGDEBUG("configure Log opened");
     //return 0;
     setupDatabase();
-    all.add(gen).add(ser).add(cli).add(inst).add(web).add(queue).add(mon);
+    all.add(gen).add(ser).add(cli);
     org::esb::core::PluginRegistry::getInstance()->load(base_path + "/plugins");
 
     foreach(std::list<std::string>::value_type data, org::esb::core::PluginRegistry::getInstance()->getPluginNameList()) {
@@ -195,11 +198,11 @@ int main(int argc, char * argv[]) {
       if (od.options().size() > 0)
         all.add(od);
     }
-    priv.add(all);
+    //priv.add(all);
 
     po::variables_map vm;
     try {
-      po::store(po::parse_command_line(argc, argv, priv), vm);
+      po::store(po::parse_command_line(argc, argv, all), vm);
     } catch (std::exception & ex) {
       //std::cout <<boost::diagnostic_information(ex)<<std::endl;
       std::cout << ex.what() << "!!!" << std::endl << std::endl;
@@ -220,8 +223,8 @@ int main(int argc, char * argv[]) {
       }
     }
     config::Config::setProperty("partition", StringUtil::toString(vm["partition"].as<std::string > ()));
-    config::Config::setProperty("hive.port", StringUtil::toString(vm["hiveport"].as<int> ()));
-    config::Config::setProperty("web.port", StringUtil::toString(vm["webport"].as<int> ()));
+    //config::Config::setProperty("hive.port", StringUtil::toString(vm["hiveport"].as<int> ()));
+    //config::Config::setProperty("web.port", StringUtil::toString(vm["webport"].as<int> ()));
 
     if (vm.count("help") || argc == 1) {
       cout << all << "\n";
@@ -381,7 +384,7 @@ int main(int argc, char * argv[]) {
       //org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
 
       //org::esb::api::JsonServer server(vm["webport"].as<int> ());
-      org::esb::core::PluginRegistry::getInstance()->startServices();
+      org::esb::core::PluginRegistry::getInstance()->startServerServices();
       std::string port = config::Config::get("web.port");
       if (!quiet) {
         std::cout << "mhive server is running, open the url http://localhost:" << port << std::endl;

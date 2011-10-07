@@ -62,29 +62,36 @@ namespace org {
           LOGDEBUG("Export Scanner stopped");
         }
       }
-        void ExportScanner::startService(){
-          LOGDEBUG("Start Request for the ExportScanner");
-          _run = true;
-          boost::thread t(boost::bind(&ExportScanner::start, this));
-          boost::thread(boost::bind(&ExportScanner::restart_failed_exports, this));
-          LOGDEBUG("ExportScanner started");          
+
+      org::esb::core::ServicePlugin::ServiceType ExportScanner::getServiceType() {
+        return org::esb::core::ServicePlugin::SERVICE_TYPE_SERVER;
+      }
+
+      void ExportScanner::startService() {
+        LOGDEBUG("Start Request for the ExportScanner");
+        _run = true;
+        boost::thread t(boost::bind(&ExportScanner::start, this));
+        boost::thread(boost::bind(&ExportScanner::restart_failed_exports, this));
+        LOGDEBUG("ExportScanner started");
+      }
+
+      void ExportScanner::stopService() {
+        LOGDEBUG("Export Scanner stop request received");
+        if (_run) {
+          _run = false;
+          boost::mutex::scoped_lock terminationLock(terminationMutex);
+          termination_wait.wait(terminationLock);
         }
-        void ExportScanner::stopService(){
-          LOGDEBUG("Export Scanner stop request received");
-          if (_run) {
-            _run = false;
-            boost::mutex::scoped_lock terminationLock(terminationMutex);
-            termination_wait.wait(terminationLock);
-          }
-          LOGDEBUG("Export Scanner stopped");
-          
-        }
-      org::esb::core::OptionsDescription ExportScanner::getOptionsDescription(){
+        LOGDEBUG("Export Scanner stopped");
+
+      }
+
+      org::esb::core::OptionsDescription ExportScanner::getOptionsDescription() {
         return org::esb::core::OptionsDescription();
       }
 
       void ExportScanner::start() {
-        db::HiveDb db=*getContext()->database;//("sqlite3", org::esb::config::Config::get("db.url"));
+        db::HiveDb db = *getContext()->database; //("sqlite3", org::esb::config::Config::get("db.url"));
         while (_run) {
           {
             try {

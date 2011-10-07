@@ -26,6 +26,7 @@ namespace org {
 
         void startListener();
         org::esb::core::OptionsDescription getOptionsDescription();
+        org::esb::core::ServicePlugin::ServiceType getServiceType();
       private:
         bool main_nextloop;
         bool is_running;

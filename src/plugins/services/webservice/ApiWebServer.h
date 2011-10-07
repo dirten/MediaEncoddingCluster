@@ -36,6 +36,7 @@ namespace org {
         //bool API_EXPORT addHandler(std::string url,org::esb::core::WebservicePlugin *);
         void WEBSERVICE_EXPORT startService();
         void WEBSERVICE_EXPORT stopService();
+        org::esb::core::ServicePlugin::ServiceType WEBSERVICE_EXPORT getServiceType();
         org::esb::core::OptionsDescription WEBSERVICE_EXPORT getOptionsDescription();
         //void API_EXPORT addHook(std::string hookname, org::esb::core::HookPlugin*);
       private:

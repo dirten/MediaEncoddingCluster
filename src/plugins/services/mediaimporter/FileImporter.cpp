@@ -82,6 +82,10 @@ namespace org {
         org::esb::signal::Messenger::getInstance().addMessageListener(*this);
       }
 
+      org::esb::core::ServicePlugin::ServiceType FileImporter::getServiceType() {
+        return org::esb::core::ServicePlugin::SERVICE_TYPE_SERVER;
+      }
+
       void FileImporter::startService() {
         //LOGDEBUG("starting FileImporter");
       }
@@ -90,17 +94,18 @@ namespace org {
         //LOGDEBUG("stoping FileImporter");
 
       }
-      org::esb::core::OptionsDescription FileImporter::getOptionsDescription(){
+
+      org::esb::core::OptionsDescription FileImporter::getOptionsDescription() {
         return org::esb::core::OptionsDescription();
       }
 
       void FileImporter::onMessage(org::esb::signal::Message & msg) {
         if (msg.getProperty("mediaimporter") == "import") {
-          std::string file=msg.getProperty("file");
-          LOGDEBUG("receive to import file:"<<file);
+          std::string file = msg.getProperty("file");
+          LOGDEBUG("receive to import file:" << file);
           boost::shared_ptr<db::MediaFile> t(new db::MediaFile(import(org::esb::io::File(file))));
-          msg.setProperty("fileid",t->id.value());
-          msg.setProperty("mediafile",t);
+          msg.setProperty("fileid", t->id.value());
+          msg.setProperty("mediafile", t);
         }
       }
 
@@ -115,7 +120,7 @@ namespace org {
       }*/
 
       db::MediaFile FileImporter::import(org::esb::io::File file) {
-        db::HiveDb & connection=*getContext()->database;//("sqlite3", org::esb::config::Config::get("db.url"));
+        db::HiveDb & connection = *getContext()->database; //("sqlite3", org::esb::config::Config::get("db.url"));
         db::MediaFile mediafile(connection);
         FormatInputStream fis(&file);
         if (!fis.isValid())return mediafile;
@@ -189,7 +194,7 @@ namespace org {
               sp.name = option->name;
               int len = 1000;
               char data[1000];
-              memset(&data,0,1000);
+              memset(&data, 0, 1000);
               av_get_string(ctx->streams[a]->codec, option->name, NULL, data, len);
               if (strlen(data) > 0) {
                 sp.val = std::string(data);

@@ -32,7 +32,8 @@ namespace org {
         void CORE_EXPORT registerService(std::string, ServicePlugin*);
         void CORE_EXPORT registerHookPlugin(std::string, HookPlugin*);
         void CORE_EXPORT registerHookProvider(std::string, HookProvider*);
-        void CORE_EXPORT startServices();
+        void CORE_EXPORT startServerServices();
+        void CORE_EXPORT startClientServices();
         void CORE_EXPORT stopServices();
         void CORE_EXPORT load(std::string);
         void CORE_EXPORT initPlugins();

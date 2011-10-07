@@ -16,7 +16,7 @@ namespace org {
   namespace esb {
     namespace plugin {
 
-      class JOBCREATOR_EXPORT JobUtil:public org::esb::core::ServicePlugin, org::esb::signal::MessageListener {
+      class JOBCREATOR_EXPORT JobUtil : public org::esb::core::ServicePlugin, org::esb::signal::MessageListener {
         classlogger("org::esb::plugin::JobUtil");
       public:
         JobUtil();
@@ -24,14 +24,16 @@ namespace org {
         void startService();
         void stopService();
         void onMessage(org::esb::signal::Message & msg);
-      org::esb::core::OptionsDescription getOptionsDescription();
+        org::esb::core::OptionsDescription getOptionsDescription();
+        org::esb::core::ServicePlugin::ServiceType getServiceType();
+
 
       private:
         void createJob(Ptr<db::Project> p);
         int createJob(db::MediaFile, db::Profile, std::string outpath);
         int createJob(db::MediaFile, db::Preset, std::string outpath);
       };
-        REGISTER_SERVICE("jobcreator", JobUtil)
+      REGISTER_SERVICE("jobcreator", JobUtil)
     }
   }
 }

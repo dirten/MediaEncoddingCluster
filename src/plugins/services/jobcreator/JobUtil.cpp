@@ -44,6 +44,11 @@ namespace org {
       JobUtil::~JobUtil() {
 
       }
+
+      org::esb::core::ServicePlugin::ServiceType JobUtil::getServiceType() {
+        return org::esb::core::ServicePlugin::SERVICE_TYPE_SERVER;
+      }
+
       void JobUtil::startService() {
         LOGDEBUG("JobUtil::startService()");
 
@@ -53,19 +58,20 @@ namespace org {
         LOGDEBUG("JobUtil::stopService()");
 
       }
-      org::esb::core::OptionsDescription JobUtil::getOptionsDescription(){
+
+      org::esb::core::OptionsDescription JobUtil::getOptionsDescription() {
         return org::esb::core::OptionsDescription();
       }
 
       void JobUtil::onMessage(org::esb::signal::Message & msg) {
         if (msg.getProperty("jobcreator") == "create") {
-          boost::shared_ptr<db::MediaFile> mediafile=boost::static_pointer_cast<db::MediaFile>(msg.getVoidProperty("mediafile"));
-          boost::shared_ptr<db::Preset> preset=boost::static_pointer_cast<db::Preset>(msg.getVoidProperty("preset"));
-          std::string outfile=msg.getProperty("outfile");
-          int id=createJob(*mediafile.get(), *preset.get(), outfile);
-          LOGDEBUG("created job id="<<id);
+          boost::shared_ptr<db::MediaFile> mediafile = boost::static_pointer_cast<db::MediaFile > (msg.getVoidProperty("mediafile"));
+          boost::shared_ptr<db::Preset> preset = boost::static_pointer_cast<db::Preset > (msg.getVoidProperty("preset"));
+          std::string outfile = msg.getProperty("outfile");
+          int id = createJob(*mediafile.get(), *preset.get(), outfile);
+          LOGDEBUG("created job id=" << id);
           msg.setProperty("jobid", id);
-          LOGDEBUG("receive to create job:"<<outfile);
+          LOGDEBUG("receive to create job:" << outfile);
         }
       }
 
@@ -114,11 +120,11 @@ namespace org {
           LOGERROR("Could not find Output Format");
           return -1;
         }
-        if(ofmt->flags&AVFMT_GLOBALHEADER){
+        if (ofmt->flags & AVFMT_GLOBALHEADER) {
           codecs["video"].insert(std::pair<std::string, std::string > ("global_header", "1"));
           codecs["audio"].insert(std::pair<std::string, std::string > ("global_header", "1"));
         }
-        const litesql::Database db = *getContext()->database;//infile.getDatabase();
+        const litesql::Database db = *getContext()->database; //infile.getDatabase();
         db.begin();
 
         boost::uuids::uuid uuid = boost::uuids::random_generator()();
@@ -198,18 +204,18 @@ namespace org {
                       atoi((*codec.find("width")).second.c_str()) == 0 ||
                       codec.count("height") == 0 ||
                       atoi((*codec.find("height")).second.c_str()) == 0) {
-                if(codec.count("width") > 0)
+                if (codec.count("width") > 0)
                   codec.erase(codec.find("width"));
-                if(codec.count("height") > 0)
+                if (codec.count("height") > 0)
                   codec.erase(codec.find("height"));
                 codec.insert(std::pair<std::string, std::string > ("width", org::esb::util::StringUtil::toString((*sit).width.value())));
                 codec.insert(std::pair<std::string, std::string > ("height", org::esb::util::StringUtil::toString((*sit).height.value())));
               }
-              if (codec.count("time_base") == 0||(*codec.find("time_base")).second.length()==0){
-                if(codec.count("time_base") > 0)
+              if (codec.count("time_base") == 0 || (*codec.find("time_base")).second.length() == 0) {
+                if (codec.count("time_base") > 0)
                   codec.erase(codec.find("time_base"));
                 std::ostringstream oss;
-                oss << (*sit).framerateden.value()<<"/"<<(*sit).frameratenum.value();
+                oss << (*sit).framerateden.value() << "/" << (*sit).frameratenum.value();
                 codec.insert(std::pair<std::string, std::string > ("time_base", oss.str()));
               }
             }

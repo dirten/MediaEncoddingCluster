@@ -132,7 +132,7 @@ namespace org {
       }
       
       org::esb::core::OptionsDescription JSONHandler::getOptionsDescription(){
-         org::esb::core::OptionsDescription result("JSONHandler");
+         org::esb::core::OptionsDescription result("jsonapi");
          result.add_options()
                  ("jsonapi.baseuri",boost::program_options::value<std::string >()->default_value("/api/v1"),"base uri for the api requests");
         return result;

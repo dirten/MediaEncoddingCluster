@@ -58,27 +58,33 @@ namespace org {
 
       }
 
+      org::esb::core::ServicePlugin::ServiceType WEBSERVICE_EXPORT ApiWebServer::getServiceType() {
+        return (org::esb::core::ServicePlugin::ServiceType)getContext()->getEnvironment<int>("webservice.servicetype");
+      }
+
       void ApiWebServer::stopService() {
         LOGTRACEMETHOD("ApiWebServer::stopService()")
-        if(ctx)
+        if (ctx)
           mg_stop(ctx);
       }
-      org::esb::core::OptionsDescription ApiWebServer::getOptionsDescription(){
-         org::esb::core::OptionsDescription result("ApiWebServer");
-         result.add_options()
-                 ("webservice.port",boost::program_options::value<int >()->default_value(8080),"web server port listen on")
-                 ("webservice.docroot",boost::program_options::value<std::string>()->default_value(org::esb::config::Config::get("web.docroot")),"web server document root");
+
+      org::esb::core::OptionsDescription ApiWebServer::getOptionsDescription() {
+        org::esb::core::OptionsDescription result("webservice");
+        result.add_options()
+                ("webservice.port", boost::program_options::value<int >()->default_value(8080), "web server port listen on")
+                ("webservice.docroot", boost::program_options::value<std::string > ()->default_value(org::esb::config::Config::get("web.docroot")), "web server document root")
+                ("webservice.servicetype", boost::program_options::value<int > ()->default_value(1), "start this plugin on the Server/Client or both");
         return result;
       }
 
       ApiWebServer::ApiWebServer() {
         center = org::esb::core::HookNotificationCenter::getInstance();
-        ctx=NULL;
+        ctx = NULL;
       }
 
       ApiWebServer::~ApiWebServer() {
         LOGDEBUG("ApiWebServer::~ApiWebServer()")
-        delete p;
+                delete p;
       }
 
       void * ApiWebServer::event_handler(enum mg_event event,

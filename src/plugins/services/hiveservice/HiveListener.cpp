@@ -32,6 +32,7 @@
 #include "org/esb/lang/Thread.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/signal/Messenger.h"
+#include "org/esb/core/PluginContext.h"
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 //#include "org/esb/lang/Runnable.h"
@@ -51,7 +52,7 @@ namespace org {
       }
 
       HiveListener::~HiveListener() {
-        
+
         delete server;
         server = NULL;
       }
@@ -60,7 +61,7 @@ namespace org {
         if (msg.getProperty("hivelistener") == org::esb::hive::START) {
           //    cout << "Start Message Arrived:"<<endl;
           boost::thread tt(boost::bind(&HiveListener::startListener, this));
-          LOGDEBUG("Hive Listener running on port:" << Config::get("hive.port"));
+          LOGDEBUG("Hive Listener running on port:" << getContext()->getEnvironment<int>("hiveserver.port"));
           //    cout << "Hive Listener running:"<<endl;
           is_running = true;
         } else
@@ -77,12 +78,22 @@ namespace org {
           //    cout << "Stop Message Arrived:"<<endl;
         }
       }
-      org::esb::core::OptionsDescription HiveListener::getOptionsDescription(){
-        return org::esb::core::OptionsDescription();
+
+      org::esb::core::OptionsDescription HiveListener::getOptionsDescription() {
+        org::esb::core::OptionsDescription result("hiveserver");
+        result.add_options()
+                ("hiveserver.port", boost::program_options::value<int >()->default_value(20200), "hiveserver port listen on")
+                ;
+        return result;
       }
+
+      org::esb::core::ServicePlugin::ServiceType HiveListener::getServiceType() {
+        return org::esb::core::ServicePlugin::SERVICE_TYPE_SERVER;
+      }
+
       void HiveListener::startService() {
         boost::thread(boost::bind(&HiveListener::startListener, this));
-        LOGDEBUG("Hive Listener running on port:" << Config::get("hive.port"));
+        LOGDEBUG("Hive Listener running on port:" << getContext()->getEnvironment<std::string > ("hiveserver.port"));
         is_running = true;
 
       }
@@ -100,7 +111,7 @@ namespace org {
       }
 
       void HiveListener::startListener() {
-        int port = atoi(Config::get("hive.port").c_str());
+        int port = getContext()->getEnvironment<int>("hiveserver.port");
         LOGDEBUG(" Start Listening on port " << port);
         server = new TcpServerSocket(port);
         server->bind();

@@ -66,10 +66,22 @@ namespace org {
         //OptionsDescription desc = plugin->getOptionsDescription();
       }
 
-      void CORE_EXPORT PluginRegistry::startServices() {
+      void CORE_EXPORT PluginRegistry::startServerServices() {
         typedef std::map<std::string, Plugin*> PluginMap;
 
         foreach(PluginMap::value_type s, _service_map) {
+          //LOGDEBUG("ServiceName="<<s.first<<" type="<<((ServicePlugin*) s.second)->getServiceType());
+          if(((ServicePlugin*) s.second)->getServiceType()==ServicePlugin::SERVICE_TYPE_SERVER||
+                  ((ServicePlugin*) s.second)->getServiceType()==ServicePlugin::SERVICE_TYPE_ALL)
+          ((ServicePlugin*) s.second)->startService();
+        }
+      }
+      void CORE_EXPORT PluginRegistry::startClientServices() {
+        typedef std::map<std::string, Plugin*> PluginMap;
+
+        foreach(PluginMap::value_type s, _service_map) {
+          if(((ServicePlugin*) s.second)->getServiceType()==ServicePlugin::SERVICE_TYPE_CLIENT||
+                  ((ServicePlugin*) s.second)->getServiceType()==ServicePlugin::SERVICE_TYPE_ALL)
           ((ServicePlugin*) s.second)->startService();
         }
 
