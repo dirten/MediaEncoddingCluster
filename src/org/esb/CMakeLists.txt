@@ -159,7 +159,7 @@ IF(UNIX AND NOT APPLE)
   SET(LIB_PRE lib)
 ENDIF()
 IF(APPLE)
-  SET(LIB_EXT -1.0.4.dylib)
+  SET(LIB_EXT .4.dylib)
   SET(LIB_PRE lib)
 ENDIF()
 
@@ -247,7 +247,8 @@ TARGET_LINK_LIBRARIES(net util lang io)
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
     RUNTIME DESTINATION ${LIB_INSTALL_DIR}
-    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+#    ARCHIVE DESTINATION ${LIB_INSTALL_DIR}
+)
 
 #include_directories (${MEC_SOURCE_DIR}/src/org/esb/sql)
 #include_directories (${MYSQL_DIR}/include/mysql)
