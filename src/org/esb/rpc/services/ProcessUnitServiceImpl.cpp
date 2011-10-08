@@ -33,7 +33,7 @@ namespace org {
         org::esb::signal::Message msg;
         msg.setProperty("processunitcontroller", "GET_PROCESS_UNIT");
         org::esb::signal::Messenger::getInstance().sendRequest(msg);
-        boost::shared_ptr<org::esb::hive::job::ProcessUnit >un = msg.getPtrProperty("processunit");
+        boost::shared_ptr<org::esb::hive::job::ProcessUnit >un = msg.getPtrProperty<org::esb::hive::job::ProcessUnit >("processunit");
         if (!un) {
           controller->SetFailed("could not get the ProcessUnit from the ProcessUnitController");
           return;

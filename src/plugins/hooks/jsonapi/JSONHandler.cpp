@@ -205,6 +205,7 @@ namespace org {
         return result;
       }
       void JSONHandler::init(){
+        LOGDEBUG("initialize json handler");
         _db=getContext()->database;
         base_uri=getContext()->env["jsonapi.baseuri"];
         LOGDEBUG("setting base uri to "<<base_uri);
@@ -683,7 +684,7 @@ namespace org {
               msg.setProperty("file", root["infile"].as_string());
               org::esb::signal::Messenger::getInstance().sendRequest(msg);
               LOGDEBUG("Returned FileId=" << msg.getProperty("fileid"));
-              boost::shared_ptr<db::MediaFile> tmf = boost::static_pointer_cast<db::MediaFile > (msg.getVoidProperty("mediafile"));
+              boost::shared_ptr<db::MediaFile> tmf = msg.getPtrProperty<db::MediaFile >("mediafile");
 
               db::MediaFile infile = *(tmf.get()); // importer.import(org::esb::io::File(root["infile"].as_string()));
               if (infile.id > 0) {
@@ -747,7 +748,7 @@ namespace org {
             msg.setProperty("file", root["infile"].as_string());
             org::esb::signal::Messenger::getInstance().sendRequest(msg);
             LOGDEBUG("Returned FileId=" << msg.getProperty("fileid"));
-            boost::shared_ptr<db::MediaFile> tmf = boost::static_pointer_cast<db::MediaFile > (msg.getVoidProperty("mediafile"));
+            boost::shared_ptr<db::MediaFile> tmf = msg.getPtrProperty<db::MediaFile >("mediafile");
 
             //org::esb::hive::FileImporter importer;
             db::MediaFile infile = *(tmf.get()); // importer.import(org::esb::io::File(root["infile"].as_string()));

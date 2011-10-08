@@ -155,7 +155,7 @@ public:
           Message msg;
           msg.setProperty("processunitcontroller", "GET_AUDIO_PROCESS_UNIT");
           Messenger::getInstance().sendRequest(msg);
-          un = msg.getPtrProperty("processunit");
+          un = msg.getPtrProperty<ProcessUnit >("processunit");
         } else {
           un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
         }
@@ -164,7 +164,7 @@ public:
         Message msg;
         msg.setProperty("processunitcontroller", "GET_AUDIO_PROCESS_UNIT");
         Messenger::getInstance().sendRequest(msg);
-        un = msg.getPtrProperty("processunit");
+        un = msg.getPtrProperty<ProcessUnit >("processunit");
         endpoint2stream.push_back(_own_id);
       }
       if (un && un->_input_packets.size() > 0) {

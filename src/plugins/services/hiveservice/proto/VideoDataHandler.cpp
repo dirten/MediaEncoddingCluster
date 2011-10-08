@@ -127,7 +127,7 @@ public:
       Message msg;
       msg.setProperty("processunitcontroller", "GET_PROCESS_UNIT");
       Messenger::getInstance().sendRequest(msg);
-      un = msg.getPtrProperty("processunit");
+      un = msg.getPtrProperty<ProcessUnit>("processunit");
       if (un.get() != NULL)
         _oos->writeObject(*un.get());
     } else

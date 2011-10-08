@@ -65,8 +65,8 @@ namespace org {
 
       void JobUtil::onMessage(org::esb::signal::Message & msg) {
         if (msg.getProperty("jobcreator") == "create") {
-          boost::shared_ptr<db::MediaFile> mediafile = boost::static_pointer_cast<db::MediaFile > (msg.getVoidProperty("mediafile"));
-          boost::shared_ptr<db::Preset> preset = boost::static_pointer_cast<db::Preset > (msg.getVoidProperty("preset"));
+          boost::shared_ptr<db::MediaFile> mediafile = msg.getPtrProperty<db::MediaFile >("mediafile");
+          boost::shared_ptr<db::Preset> preset =  msg.getPtrProperty<db::Preset >("preset");
           std::string outfile = msg.getProperty("outfile");
           int id = createJob(*mediafile.get(), *preset.get(), outfile);
           LOGDEBUG("created job id=" << id);

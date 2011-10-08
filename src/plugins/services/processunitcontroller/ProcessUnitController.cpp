@@ -61,7 +61,7 @@ namespace org {
         } else if (msg.getProperty("processunitcontroller") == "PUT_PROCESS_UNIT") {
           //LOGDEBUG("PUT_PROCESS_UNIT request");
 
-          boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit = msg.getPtrProperty("processunit");
+          boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit = msg.getPtrProperty<org::esb::hive::job::ProcessUnit>("processunit");
 
           putProcessUnit(unit);
         } else if (msg.getProperty("processunitcontroller") == "STOP_JOB") {

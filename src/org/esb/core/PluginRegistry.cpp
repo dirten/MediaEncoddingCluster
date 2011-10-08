@@ -125,6 +125,7 @@ namespace org {
           OptionsDescription desc = s.second->getOptionsDescription();
           typedef boost::shared_ptr<boost::program_options::option_description> option;
           foreach(const option value, desc.options()) {
+            LOGDEBUG("Key="<<value->long_name()<<" value="<<org::esb::config::Config::get(value->long_name()));
             _plugin_data[s.first].context->env[value->long_name()] = org::esb::config::Config::get(value->long_name());
           }
           s.second->setContext(_plugin_data[s.first].context);
