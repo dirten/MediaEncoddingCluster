@@ -9,19 +9,22 @@
 #define	SERVICEPLUGIN_H
 #include "Plugin.h"
 #include "PluginRegistry.h"
+#ifdef SERVICE_TYPE_ALL
+#undef SERVICE_TYPE_ALL
+#endif
 namespace org {
   namespace esb {
     namespace core {
 
       class ServicePlugin: public org::esb::core::Plugin{
       public:
-        enum ServiceType{
+        virtual void startService()=0;
+        virtual void stopService()=0;
+		  enum ServiceType {
           SERVICE_TYPE_ALL,
           SERVICE_TYPE_SERVER,
           SERVICE_TYPE_CLIENT
-        };
-        virtual void startService()=0;
-        virtual void stopService()=0;
+		  };
         virtual ServiceType getServiceType(){
           return SERVICE_TYPE_ALL;
         }
