@@ -13,7 +13,7 @@ namespace org {
   namespace esb {
     namespace util {
       template <typename T>
-      class UTIL_EXPORT Channel:public Queue<T, 1> {
+      class Channel:public Queue<T, 1> {
       public:
         Channel(){
         }
