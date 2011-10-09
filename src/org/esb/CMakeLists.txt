@@ -159,7 +159,7 @@ IF(UNIX AND NOT APPLE)
   SET(LIB_PRE lib)
 ENDIF()
 IF(APPLE)
-  SET(LIB_EXT .4.dylib)
+  SET(LIB_EXT -1.0.4.dylib)
   SET(LIB_PRE lib)
 ENDIF()
 
