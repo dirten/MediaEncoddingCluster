@@ -39,20 +39,19 @@ namespace org {
         str_props[key] = value;
         return *this;
       }
-
+      
       Message & Message::setProperty(std::string key, int value) {
-        std::ostringstream oss;
-        oss << value;
-        str_props[key] = std::string(oss.str());
+        str_props[key] = value;
         return *this;
       }
-
+      /*
       std::string & Message::getProperty(std::string key) {
         return str_props[key];
-      }
+      }*/
 
       bool Message::containsProperty(std::string key) {
-        return true;
+        return str_props.count(key);
+        //return true;
       }
 
 

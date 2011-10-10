@@ -58,14 +58,14 @@ namespace org {
       }
 
       void HiveListener::onMessage(org::esb::signal::Message & msg) {
-        if (msg.getProperty("hivelistener") == org::esb::hive::START) {
+        if (msg.getProperty<std::string>("hivelistener") == org::esb::hive::START) {
           //    cout << "Start Message Arrived:"<<endl;
           boost::thread tt(boost::bind(&HiveListener::startListener, this));
           LOGDEBUG("Hive Listener running on port:" << getContext()->getEnvironment<int>("hiveserver.port"));
           //    cout << "Hive Listener running:"<<endl;
           is_running = true;
         } else
-          if (msg.getProperty("hivelistener") == org::esb::hive::STOP) {
+          if (msg.getProperty<std::string>("hivelistener") == org::esb::hive::STOP) {
           LOGDEBUG("Hive Listener stopp signal:");
           main_nextloop = false;
           if (server) {

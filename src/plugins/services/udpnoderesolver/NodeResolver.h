@@ -49,7 +49,7 @@ namespace org {
     namespace plugin {
 
       class UDPNODERSOLVER_EXPORT Node {
-        classlogger("org.esb.hive.Node")
+        classlogger("org.esb.plugin.Node")
       public:
         Node();
         Node(boost::asio::ip::udp::endpoint & ep, std::string data);

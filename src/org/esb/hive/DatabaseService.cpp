@@ -50,10 +50,10 @@ namespace org {
       }
 
       void DatabaseService::onMessage(org::esb::signal::Message & msg) {
-        if (msg.getProperty("databaseservice") == org::esb::hive::START) {
+        if (msg.getProperty<std::string>("databaseservice") == org::esb::hive::START) {
           start(_base_path);
         }
-        if (msg.getProperty("databaseservice") == org::esb::hive::STOP) {
+        if (msg.getProperty<std::string>("databaseservice") == org::esb::hive::STOP) {
           stop();
         }
       }

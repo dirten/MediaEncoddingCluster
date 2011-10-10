@@ -45,14 +45,14 @@ namespace org {
       }
 
       void ExportScanner::onMessage(org::esb::signal::Message & msg) {
-        if (msg.getProperty("exportscanner") == "start") {
+        if (msg.getProperty<std::string>("exportscanner") == "start") {
           LOGDEBUG("Start Request for the ExportScanner");
           _run = true;
           boost::thread t(boost::bind(&ExportScanner::start, this));
           boost::thread(boost::bind(&ExportScanner::restart_failed_exports, this));
           LOGDEBUG("ExportScanner started");
         } else
-          if (msg.getProperty("exportscanner") == "stop") {
+          if (msg.getProperty<std::string>("exportscanner") == "stop") {
           LOGDEBUG("Export Scanner stop request received");
           if (_run) {
             _run = false;

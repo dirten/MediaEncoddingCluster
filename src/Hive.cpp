@@ -117,9 +117,10 @@ int main(int argc, char * argv[]) {
     unsigned int cpu_count = Process::getCpuCount();
     gen.add_options()
             ("help", "produce this message")
-            ("version", "Prints the Version")
+            ("version", "Prints the Version");
+    /*
             ("debug", "switch of the StackDumper and logging goes to the console instead of file")
-            ("loglevel", po::value<std::string > ()->default_value("fatal"), "setting the loglevel for this process");
+            ("loglevel", po::value<std::string > ()->default_value("fatal"), "setting the loglevel for this process");**/
 /*
     po::options_description inst("Install options");
     inst.add_options()
@@ -130,21 +131,23 @@ int main(int argc, char * argv[]) {
     po::options_description ser("Server options");
     ser.add_options()
             //("daemon,d", "start the Hive as Daemon Process")
-            ("run,r", "start the Hive as Console Process")
+            ("run,r", "start the Hive as Console Process");
+    /*
             ("auto,a", "start the Hive as Console Process with automatic Client/Server resolving")
             ("base,b", po::value<std::string > ()->default_value(base_path), "defining a base path")
             ("stop", po::value<int > (), "stopping a Process defined by the process id")
-            ;
+            ;*/
 
     po::options_description cli("Client options");
 
     cli.add_options()
-            ("client,i", "start the Hive Client")
+            ("client,i", "start the Hive Client");
+    /*
             ("host,h", po::value<std::string > ()->default_value("auto"), "Host to connect")
             ("partition", po::value<std::string > ()->default_value("global"), "assigned partition")
             ("port,p", po::value<int>()->default_value(20200), "Port to connect")
             ("count", po::value<int>()->default_value(cpu_count), "Client Processor Count")
-            ;
+            ;*/
 /*
     po::options_description web("Webserver");
     web.add_options()
@@ -218,11 +221,13 @@ int main(int argc, char * argv[]) {
       } else
         if (vm[val.first].value().type() == typeid (double)) {
         config::Config::setProperty(val.first, StringUtil::toString(vm[val.first].as<double>()));
-      } else {
+      } else if (vm[val.first].value().type() == typeid (bool)) {
+        config::Config::setProperty(val.first, StringUtil::toString(vm[val.first].as<bool>()));        
+      }else{
         config::Config::setProperty(val.first, vm[val.first].as<std::string > ());
       }
     }
-    config::Config::setProperty("partition", StringUtil::toString(vm["partition"].as<std::string > ()));
+    config::Config::setProperty("partition", "global");
     //config::Config::setProperty("hive.port", StringUtil::toString(vm["hiveport"].as<int> ()));
     //config::Config::setProperty("web.port", StringUtil::toString(vm["webport"].as<int> ()));
 
@@ -384,6 +389,7 @@ int main(int argc, char * argv[]) {
       //org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
 
       //org::esb::api::JsonServer server(vm["webport"].as<int> ());
+      config::Config::setProperty("mode", "server");
       org::esb::core::PluginRegistry::getInstance()->startServerServices();
       std::string port = config::Config::get("web.port");
       if (!quiet) {
@@ -400,10 +406,15 @@ int main(int argc, char * argv[]) {
     }
 
     if (vm.count("client")) {
+      config::Config::setProperty("mode", "client");
+      org::esb::core::PluginRegistry::getInstance()->startClientServices();
+      org::esb::lang::CtrlCHitWaiter::wait();
+      org::esb::core::PluginRegistry::getInstance()->stopServices();
+      /*
       config::Config::setProperty("client.port", Decimal(vm["port"].as<int> ()).toString().c_str());
       config::Config::setProperty("client.count", Decimal(vm["count"].as<int> ()).toString().c_str());
       config::Config::setProperty("client.host", vm["host"].as<std::string > ().c_str());
-      client(argc, argv);
+      client(argc, argv);*/
     }
 
     if (vm.count("auto")) {

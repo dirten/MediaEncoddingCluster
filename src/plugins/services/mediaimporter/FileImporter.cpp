@@ -100,8 +100,8 @@ namespace org {
       }
 
       void FileImporter::onMessage(org::esb::signal::Message & msg) {
-        if (msg.getProperty("mediaimporter") == "import") {
-          std::string file = msg.getProperty("file");
+        if (msg.getProperty<std::string>("mediaimporter") == "import") {
+          std::string file = msg.getProperty<std::string>("file");
           LOGDEBUG("receive to import file:" << file);
           boost::shared_ptr<db::MediaFile> t(new db::MediaFile(import(org::esb::io::File(file))));
           msg.setProperty("fileid", t->id.value());

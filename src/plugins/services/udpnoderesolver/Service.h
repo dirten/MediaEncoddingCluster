@@ -18,7 +18,7 @@ namespace org{
   }
 }
 class NodeListener;
-
+namespace udpnoderesolver {
 class Service : public org::esb::core::ServicePlugin {
   classlogger("org.esb.UdpNodeResolver")
 public:
@@ -34,6 +34,6 @@ private:
 
 };
 REGISTER_SERVICE("udpnoderesolver", Service)
-
+}
 #endif	/* SERVICE_H */
 

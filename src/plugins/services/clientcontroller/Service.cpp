@@ -1,0 +1,87 @@
+/* 
+ * File:   Service.cpp
+ * Author: HoelscJ
+ * 
+ * Created on 10. Oktober 2011, 11:30
+ */
+
+#include "Service.h"
+#include "org/esb/lang/Process.h"
+#include "org/esb/signal/Messenger.h"
+#include "org/esb/core/PluginContext.h"
+#include "org/esb/hive/HiveClient.h"
+#include "org/esb/hive/HiveClientAudio.h"
+namespace clientcontroller {
+
+  Service::Service() {
+  }
+
+  Service::~Service() {
+  }
+
+  void Service::onMessage(org::esb::signal::Message &msg) {
+    if (msg.containsProperty("server_up_event")) {
+      string host = msg.getProperty<std::string > ("host");
+      int port = msg.getProperty<int>("port");
+      startClientNodes(host, port);
+
+    } else if (msg.containsProperty("server_down_event")) {
+      stopClientNodes();
+    }
+  }
+
+  void Service::init() {
+
+  }
+
+  void Service::startService() {
+    if (getContext()->getEnvironment<bool>("clientcontroller.autodiscovery")) {
+      org::esb::signal::Messenger::getInstance().addMessageListener(*this);
+    } else {
+      string host = getContext()->getEnvironment<std::string > ("clientcontroller.host");
+      int port = getContext()->getEnvironment<int>("clientcontroller.port");
+      startClientNodes(host, port);
+    }
+  }
+
+  void Service::stopService() {
+    if (getContext()->getEnvironment<bool>("clientcontroller.autodiscovery")) {
+      org::esb::signal::Messenger::getInstance().removeMessageListener(*this);
+    } else {
+      stopClientNodes();
+    }
+  }
+
+  org::esb::core::OptionsDescription Service::getOptionsDescription() {
+    org::esb::core::OptionsDescription result("clientcontroller");
+    result.add_options()
+            ("clientcontroller.autodiscovery", boost::program_options::value<bool >()->default_value(true), "use autodiscover to connect the client to the hiveserver")
+            ("clientcontroller.port", boost::program_options::value<int >()->default_value(20200), "port the client connects to the hiveserver")
+            ("clientcontroller.host", boost::program_options::value<std::string > ()->default_value("localhost"), "host the client connects to hiveserver")
+            ("clientcontroller.count", boost::program_options::value<int > ()->default_value(org::esb::lang::Process::getCpuCount()), "how many clients to start on this node");
+    return result;
+  }
+
+  void Service::startClientNodes(std::string host, int port) {
+    int count = getContext()->getEnvironment<int>("clientcontroller.count");
+    for (int a = 0; a < count; a++) {
+      org::esb::hive::HiveClient *c = new org::esb::hive::HiveClient(host, port);
+      org::esb::signal::Messenger::getInstance().addMessageListener(*c);
+      boost::thread t(boost::bind(&org::esb::hive::HiveClient::start, c));
+    }
+
+    org::esb::signal::Messenger::getInstance().addMessageListener(*new org::esb::hive::HiveClientAudio(host, port));
+    org::esb::signal::Messenger::getInstance().sendMessage(org::esb::signal::Message().setProperty("hiveclientaudio", org::esb::hive::START));
+
+
+  }
+
+  void Service::stopClientNodes() {
+
+  }
+
+  org::esb::core::ServicePlugin::ServiceType Service::getServiceType() {
+    return SERVICE_TYPE_CLIENT;
+  }
+
+}

@@ -683,7 +683,7 @@ namespace org {
               msg.setProperty("mediaimporter", "import");
               msg.setProperty("file", root["infile"].as_string());
               org::esb::signal::Messenger::getInstance().sendRequest(msg);
-              LOGDEBUG("Returned FileId=" << msg.getProperty("fileid"));
+              LOGDEBUG("Returned FileId=" << msg.getProperty<std::string>("fileid"));
               boost::shared_ptr<db::MediaFile> tmf = msg.getPtrProperty<db::MediaFile >("mediafile");
 
               db::MediaFile infile = *(tmf.get()); // importer.import(org::esb::io::File(root["infile"].as_string()));
@@ -695,9 +695,9 @@ namespace org {
                         setProperty("preset", pp).
                         setProperty("outfile", root["outfile"].as_string());
                 org::esb::signal::Messenger::getInstance().sendRequest(msg_job);
-                LOGDEBUG("Returned job Object:" << msg_job.getProperty("jobid"));
+                LOGDEBUG("Returned job Object:" << msg_job.getProperty<std::string>("jobid"));
 
-                int id = atoi(msg_job.getProperty("jobid").c_str()); //org::esb::hive::JobUtil::createJob(infile, preset, root["outfile"].as_string());
+                int id = msg_job.getProperty<int>("jobid"); //org::esb::hive::JobUtil::createJob(infile, preset, root["outfile"].as_string());
                 LOGDEBUG("Returned job id:" << id);
                 db::Job pre = litesql::select<db::Job > (db, db::Job::Id == id).one();
                 ids.push_back(JSONNode("id", pre.uuid.value()));
@@ -747,7 +747,7 @@ namespace org {
             msg.setProperty("mediaimporter", "import");
             msg.setProperty("file", root["infile"].as_string());
             org::esb::signal::Messenger::getInstance().sendRequest(msg);
-            LOGDEBUG("Returned FileId=" << msg.getProperty("fileid"));
+            LOGDEBUG("Returned FileId=" << msg.getProperty<int>("fileid"));
             boost::shared_ptr<db::MediaFile> tmf = msg.getPtrProperty<db::MediaFile >("mediafile");
 
             //org::esb::hive::FileImporter importer;
@@ -760,9 +760,9 @@ namespace org {
                       setProperty("preset", pp).
                       setProperty("outfile", root["outfile"].as_string());
               org::esb::signal::Messenger::getInstance().sendRequest(msg_job);
-              LOGDEBUG("Returned job Object:" << msg_job.getProperty("jobid"));
+              LOGDEBUG("Returned job Object:" << msg_job.getProperty<int>("jobid"));
 
-              int id = atoi(msg_job.getProperty("jobid").c_str()); //org::esb::hive::JobUtil::createJob(infile, preset, root["outfile"].as_string());
+              int id = msg_job.getProperty<int>("jobid"); //org::esb::hive::JobUtil::createJob(infile, preset, root["outfile"].as_string());
               LOGDEBUG("Returned job id:" << id);
               db::Job pre = litesql::select<db::Job > (db, db::Job::Id == id).one();
 

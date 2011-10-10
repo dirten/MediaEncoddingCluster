@@ -46,11 +46,11 @@ namespace org {
       }
 
       void HiveClient::onMessage(org::esb::signal::Message & msg) {
-        if (msg.getProperty("hiveclient") == "start") {
+        if (msg.getProperty<std::string>("hiveclient") == "start") {
           _t=boost::thread(boost::bind(&HiveClient::start, this));
           _running = true;
         } else
-          if (msg.getProperty("hiveclient") == "stop") {
+          if (msg.getProperty<std::string>("hiveclient") == "stop") {
           _toHalt = true;
           if (_running) {
             LOGDEBUG("StopSignal Received, waiting for all work done!");

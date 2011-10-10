@@ -3,8 +3,11 @@
 #include <string>
 #include <map>
 #include <boost/shared_ptr.hpp>
+#include <boost/any.hpp>
+#include <boost/lexical_cast.hpp>
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/signal/exports.h"
+
 #pragma warning( disable: 4251 )
 namespace org {
   namespace esb {
@@ -23,7 +26,18 @@ namespace org {
         Message & setProperty(std::string key, int value);
         //Message & setProperty(std::string key, boost::shared_ptr<org::esb::hive::job::ProcessUnit>);
         Message & setProperty(std::string key, boost::shared_ptr<void>);
-        std::string & getProperty(std::string key);
+        //std::string & getProperty(std::string key);
+
+        template<typename T>
+        T getProperty(std::string key) {
+          boost::any data;
+          if (containsProperty(key))
+            data = str_props[key];
+          else
+            data=std::string("");
+          return boost::any_cast<T > (data);
+        }
+
         //boost::shared_ptr<org::esb::hive::job::ProcessUnit> getPtrProperty(std::string key);
         //boost::shared_ptr<void> getVoidProperty(std::string key);
 
@@ -34,7 +48,7 @@ namespace org {
         bool containsProperty(std::string key);
         ~Message();
       private:
-        std::map<std::string, std::string> str_props;
+        std::map<std::string, boost::any> str_props;
         std::map<std::string, std::string> int_props;
         std::map<std::string, boost::shared_ptr<org::esb::hive::job::ProcessUnit> > pu_props;
         std::map<std::string, boost::shared_ptr<void> > void_props;

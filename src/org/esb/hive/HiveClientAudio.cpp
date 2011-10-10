@@ -45,11 +45,11 @@ namespace org {
       }
 
       void HiveClientAudio::onMessage(org::esb::signal::Message & msg) {
-        if (msg.getProperty("hiveclientaudio") == "start") {
+        if (msg.getProperty<std::string>("hiveclientaudio") == "start") {
           boost::thread t(boost::bind(&HiveClientAudio::start, this));
           _running = true;
         } else
-          if (msg.getProperty("hiveclientaudio") == "stop") {
+          if (msg.getProperty<std::string>("hiveclientaudio") == "stop") {
           _toHalt = true;
           if (_running) {
             LOGDEBUG("StopSignal Received, waiting for all work done!");

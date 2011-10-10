@@ -40,34 +40,36 @@ namespace org {
 
       void ProcessUnitController::onMessage(org::esb::signal::Message & msg) {
         //LOGDEBUG("Message received:" << msg.getProperty("processunitcontroller"));
-        if (msg.getProperty("processunitcontroller") == "start") {
-          LOGDEBUG("start request");
-          _stop_signal = false;
-          _isRunning = false;
-          boost::thread t(boost::bind(&ProcessUnitController::start, this));
-          LOGDEBUG("started");
-        } else if (msg.getProperty("processunitcontroller") == "stop") {
-          LOGDEBUG("stop request");
-          stop();
-          LOGDEBUG("stopped");
-        } else if (msg.getProperty("processunitcontroller") == "GET_PROCESS_UNIT") {
-          //LOGDEBUG("GET_PROCESS_UNIT request");
-          boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit = getProcessUnit();
-          msg.setProperty("processunit", unit);
-        } else if (msg.getProperty("processunitcontroller") == "GET_AUDIO_PROCESS_UNIT") {
-          //LOGDEBUG("GET_AUDIO_PROCESS_UNIT request");
-          boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit = getAudioProcessUnit();
-          msg.setProperty("processunit", unit);
-        } else if (msg.getProperty("processunitcontroller") == "PUT_PROCESS_UNIT") {
-          //LOGDEBUG("PUT_PROCESS_UNIT request");
+        //if (msg.containsProperty("processunitcontroller")) {
+          if (msg.getProperty<std::string > ("processunitcontroller") == "start") {
+            LOGDEBUG("start request");
+            _stop_signal = false;
+            _isRunning = false;
+            boost::thread t(boost::bind(&ProcessUnitController::start, this));
+            LOGDEBUG("started");
+          } else if (msg.getProperty<std::string > ("processunitcontroller") == "stop") {
+            LOGDEBUG("stop request");
+            stop();
+            LOGDEBUG("stopped");
+          } else if (msg.getProperty<std::string > ("processunitcontroller") == "GET_PROCESS_UNIT") {
+            //LOGDEBUG("GET_PROCESS_UNIT request");
+            boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit = getProcessUnit();
+            msg.setProperty("processunit", unit);
+          } else if (msg.getProperty<std::string > ("processunitcontroller") == "GET_AUDIO_PROCESS_UNIT") {
+            //LOGDEBUG("GET_AUDIO_PROCESS_UNIT request");
+            boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit = getAudioProcessUnit();
+            msg.setProperty("processunit", unit);
+          } else if (msg.getProperty<std::string > ("processunitcontroller") == "PUT_PROCESS_UNIT") {
+            //LOGDEBUG("PUT_PROCESS_UNIT request");
 
-          boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit = msg.getPtrProperty<org::esb::hive::job::ProcessUnit>("processunit");
+            boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit = msg.getPtrProperty<org::esb::hive::job::ProcessUnit > ("processunit");
 
-          putProcessUnit(unit);
-        } else if (msg.getProperty("processunitcontroller") == "STOP_JOB") {
-          LOGDEBUG("STOP_JOB request");
-          _stop_job_id = msg.getProperty("job_id");
-        }
+            putProcessUnit(unit);
+          } else if (msg.getProperty<std::string > ("processunitcontroller") == "STOP_JOB") {
+            LOGDEBUG("STOP_JOB request");
+            _stop_job_id = msg.getProperty<std::string > ("job_id");
+          }
+        //}
       }
 
       org::esb::core::ServicePlugin::ServiceType ProcessUnitController::getServiceType() {

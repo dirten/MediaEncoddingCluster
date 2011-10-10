@@ -64,10 +64,10 @@ namespace org {
       }
 
       void JobUtil::onMessage(org::esb::signal::Message & msg) {
-        if (msg.getProperty("jobcreator") == "create") {
+        if (msg.getProperty<std::string>("jobcreator") == "create") {
           boost::shared_ptr<db::MediaFile> mediafile = msg.getPtrProperty<db::MediaFile >("mediafile");
           boost::shared_ptr<db::Preset> preset =  msg.getPtrProperty<db::Preset >("preset");
-          std::string outfile = msg.getProperty("outfile");
+          std::string outfile = msg.getProperty<std::string>("outfile");
           int id = createJob(*mediafile.get(), *preset.get(), outfile);
           LOGDEBUG("created job id=" << id);
           msg.setProperty("jobid", id);
