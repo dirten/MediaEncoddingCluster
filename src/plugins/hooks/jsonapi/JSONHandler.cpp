@@ -262,7 +262,7 @@ namespace org {
             JSONNode n(JSON_NODE);
         if (req->getMethod() == "POST") {
           JSONNode inode;
-          //try {
+          try {
             std::string postdata;
             req->getInputstream()->read(postdata, &jsonFilter,1);
             LOGDEBUG("charcounter="<<charcounter<< " counter="<<counter<<" first open found = "<<first_open_found);
@@ -291,7 +291,7 @@ namespace org {
               n.push_back(error);
               
             }
-          /*} catch (std::exception &ex) {
+          } catch (std::exception &ex) {
             LOGDEBUG(ex.what());
             JSONNode error(JSON_NODE);
             error.set_name("error");
@@ -299,7 +299,7 @@ namespace org {
             error.push_back(JSONNode("description", "internal error ouccured"));
             n.push_back(error);
             
-          }*/
+          }
 
         } else if (req->getMethod() == "GET") {
           std::string id = req->getParameter("id");

@@ -6,6 +6,8 @@
  */
 
 #include "org/esb/db/hivedb.hpp"
+#include "org/esb/libjson/JSONNode.h"
+#include "org/esb/libjson/libjson.h"
 #include "UserHandler.h"
 #include "plugins/services/webservice/ServiceRequest.h"
 #include "plugins/services/webservice/ServiceResponse.h"
@@ -18,9 +20,63 @@ namespace webauth {
 
   UserHandler::~UserHandler() {
   }
-  void UserHandler::handleRegistration(Request* req, Response* res){
+
+  bool contains(JSONNode& node, std::string name) {
+    bool result = false;
+    int size = node.size();
+    //LOGDEBUG("NodeSize=" << size);
+    if (size > 0) {
+      for (int a = 0; a < size; a++) {
+        JSONNode n = node[a];
+        LOGDEBUG("search for " << name << " iter = " << n.name());
+        if (name == n.name()) {
+          result = true;
+          LOGDEBUG("attribute " << name << " found")
+        }
+      }
+    }
+    return result;
+  }
+  int charcounter = 0;
+  int counter = 0;
+  bool first_open_found = false;
+
+  bool jsonFilter(std::string data) {
+    if (counter == 0 && first_open_found) {
+      return false;
+    }
+    charcounter++;
+    if (data == "{") {
+      counter++;
+      first_open_found = true;
+    }
+    if (data == "}") {
+      counter--;
+    }
+    return true;
+  }
+
+  void UserHandler::handleRegistration(Request* req, Response* res) {
     ServiceRequest * sreq = static_cast<ServiceRequest*> (req);
-    if(sreq->getRequestURI().find("register")!=std::string::npos){
+    if (sreq->getRequestURI().find("register") != std::string::npos) {
+      std::string postdata;
+      sreq->getInputstream()->read(postdata, &jsonFilter, 1);
+      first_open_found = false;
+      counter = 0;
+      if (libjson::is_valid(postdata)) {
+        JSONNode node = libjson::parse(postdata);
+        if(!contains(node,"authname")){
+          return;
+        }else if(!contains(node,"password")){
+          return;
+        }
+        std::string username=node["authname"].as_string();
+        std::string password=node["password"].as_string();
+        db::User user(*getContext()->database);
+        user.authname=username;
+        user.authpass=password;
+        user.update();
+      }
       LOGDEBUG("performing registration");
     }
   }

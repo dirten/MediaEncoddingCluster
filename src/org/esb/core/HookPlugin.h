@@ -35,7 +35,7 @@ namespace org {
 	                        Register##instance##prio() \
 	                        { \
 				element##instance=new instance(); \
-                                std::string tmpname=#instance; \
+                                std::string tmpname=#instance#prio; \
                                 org::esb::core::PluginRegistry::getInstance()->registerHookPlugin(tmpname, element##instance); \
                                 org::esb::core::HookNotificationCenter::getInstance()->addObserver(name,boost::bind(&function, element##instance,_1,_2),prio); \
 	                        } \
