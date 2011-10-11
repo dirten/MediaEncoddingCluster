@@ -121,7 +121,7 @@ namespace org {
       std::string ServiceRequest::getHeader(std::string name) {
         std::string result;
         for (int a = 0; a < _request_info->num_headers; a++) {
-          if(strcmp(_request_info->http_headers[a].name,name.c_str())){
+          if(strcmp(_request_info->http_headers[a].name,name.c_str())==0){
             result=_request_info->http_headers[a].value;
             break;
           }
@@ -132,8 +132,10 @@ namespace org {
 
       bool ServiceRequest::hasHeader(std::string name) {
         bool result=false;
+        LOGDEBUG("HeaderCount="<<_request_info->num_headers);
         for (int a = 0; a < _request_info->num_headers; a++) {
-          if(strcmp(_request_info->http_headers[a].name,name.c_str())){
+          LOGDEBUG("header "<<_request_info->http_headers[a].name<<" = "<<_request_info->http_headers[a].value);
+          if(strcmp(_request_info->http_headers[a].name,name.c_str())==0){
             result=true;
             break;
           }

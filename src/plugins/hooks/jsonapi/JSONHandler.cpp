@@ -212,6 +212,8 @@ namespace org {
       }
       void JSONHandler::handleRequest(Request * req, Response*res) {
         ServiceRequest*sreq = ((ServiceRequest*) req);
+        if(sreq->hasUserObject())
+                LOGDEBUG("User="<<sreq->getUserObject<db::User>());
         if (sreq->getRequestURI().find(base_uri + "/encoding") == 0) {
           handleEncoding(sreq, (ServiceResponse*) res);
         } else if (sreq->getRequestURI().find(base_uri + "/profile") == 0) {

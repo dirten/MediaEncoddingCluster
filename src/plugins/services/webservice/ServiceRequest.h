@@ -12,7 +12,7 @@
 #include "exports.h"
 #include "mongoose.h"
 #include "boost/function.hpp"
-
+#include "boost/any.hpp"
 namespace org {
   namespace esb {
     namespace api {
@@ -48,11 +48,20 @@ namespace org {
         bool hasParameter(std::string);
         std::string getHeader(std::string);
         bool hasHeader(std::string);
+        void setUserObject(boost::any d){userobject=d;};
+        template<typename T>
+        T getUserObject() {
+          return boost::any_cast<T > (userobject);
+        }
+        bool hasUserObject(){
+          return !userobject.empty();
+        }
+
       private:
         ServiceInputStream * _inputstream;
         mg_connection *_conn;
         const mg_request_info *_request_info;
-
+        boost::any userobject;
       };
     }
   }

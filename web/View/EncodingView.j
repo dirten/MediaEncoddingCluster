@@ -5,6 +5,7 @@ EncodingDoubleClicked = @"EncodingDoubleClicked";
 EncodingClicked = @"EncodingClicked";
 @implementation EncodingView :CPScrollView
   {
+    id _response
     id jsonData;
     id selectedid;
     CPTableView  tableView;
@@ -214,11 +215,14 @@ if([tableColumn identifier]==8){
 {
   //this method is called when the network request returns. the data is the returned
   //information from flickr. we set the array of photo urls as the data to our collection view
+  CPLog.debug("status==200 : "+[_response statusCode]==200);
 
-
-  jsonData=[data objectFromJSON];
-  //CPLog.debug("json="+jsonData.requestId);
-  [tableView reloadData];
+  if([_response statusCode]==200){
+    jsonData=[data objectFromJSON];
+    [tableView reloadData];
+  }else{
+    //alert(data);
+  }
 }
 - (void)connection:(CPURLConnection)aConnection didReceiveResponse:(CPHTTPURLResponse)response
 {
@@ -226,7 +230,10 @@ if([tableColumn identifier]==8){
   //information from flickr. we set the array of photo urls as the data to our collection view
 
   //[self addImageList:data.photos.photo withIdentifier:lastIdentifier];
-  //CPLog.debug(response);
+  _response=response;
+  CPLog.debug("status="+[_response statusCode]);
+  CPLog.debug("Response");
+  CPLog.debug(response);
 }
 
 - (void)connection:(CPURLConnection)aConnection didFailWithError:(CPString)error
