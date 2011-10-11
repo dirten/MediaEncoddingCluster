@@ -1,4 +1,5 @@
 
 add_subdirectory (jsonapi)
-add_subdirectory (pufs)
-add_subdirectory (debugprinter)
+add_subdirectory (webauth)
+#add_subdirectory (pufs)
+#add_subdirectory (debugprinter)

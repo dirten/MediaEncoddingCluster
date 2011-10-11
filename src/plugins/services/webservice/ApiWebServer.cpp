@@ -95,6 +95,10 @@ namespace org {
           ServiceResponse * res = new ServiceResponse(conn, request_info);
           ServiceRequest * req = new ServiceRequest(conn, request_info);
           center->postHook("web.api.Auth", req, res);
+          if (res->_status == ServiceResponse::FORBIDDEN){
+            //processed = p;
+            return p;
+          }
           /*
           static const char *reply_start =
                   "HTTP/1.1 200 OK\r\n"
