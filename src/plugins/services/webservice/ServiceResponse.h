@@ -10,6 +10,7 @@
 #include "org/esb/core/Response.h"
 #include "exports.h"
 #include <string>
+#include <map>
 //#include "mongoose.h"
 struct mg_connection;
 struct mg_request_info;
@@ -22,10 +23,13 @@ namespace org {
         ServiceOutputStream(mg_connection *conn,ServiceResponse*);
         ~ServiceOutputStream();
         int write(std::string data);
+        void setHeader(std::string key, std::string value);
       private:
         mg_connection *_conn;
         bool _sent_header;
         ServiceResponse*_response;
+        typedef std::map<std::string, std::string> Header;
+        Header _header;
       };
             
       class WEBSERVICE_EXPORT ServiceResponse : public org::esb::core::Response {

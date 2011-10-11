@@ -8,12 +8,14 @@
 #include "ServiceResponse.h"
 #include "mongoose.h"
 #include "org/esb/util/StringUtil.h"
+#include "org/esb/util/Foreach.h"
+
 namespace org {
   namespace esb {
     namespace api {
 
       ServiceOutputStream::ServiceOutputStream(mg_connection *conn, ServiceResponse*res) : _conn(conn), _response(res) {
-        _sent_header=false;
+        _sent_header = false;
       }
 
       ServiceOutputStream::~ServiceOutputStream() {
@@ -30,6 +32,10 @@ namespace org {
           header += "Cache: no-cache\r\n";
           header += "Content-Type: ";
           header += _response->getMimetype() + "; charset=utf-8\r\n";
+
+          foreach(Header::value_type & h, _header) {
+            header += h.first + ":" + h.second + "\r\n";
+          }
           header += "\r\n";
           header += "";
 
@@ -37,6 +43,10 @@ namespace org {
           _sent_header = true;
         }
         return mg_write(_conn, data.c_str(), data.length());
+      }
+
+      void ServiceOutputStream::setHeader(std::string key, std::string value) {
+        _header[key]=value;
       }
 
       ServiceResponse::ServiceResponse(mg_connection *conn, const mg_request_info *request_info) {

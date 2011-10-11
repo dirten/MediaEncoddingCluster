@@ -134,7 +134,8 @@ ProfileChanged=@"ProfileChanged";
 }
 - (void)connection:(CPURLConnection)aConnection didReceiveResponse:(CPHTTPURLResponse)response
 {
-  //CPLog.debug(response);
+  CPLog.debug("Get Response");
+  CPLog.debug(response);
 }
 
 - (void)connection:(CPURLConnection)aConnection didFailWithError:(CPString)error

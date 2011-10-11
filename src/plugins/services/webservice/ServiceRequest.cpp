@@ -25,8 +25,8 @@ namespace org {
 
       int ServiceInputStream::read(string& str, int max) {
         int bytes = 0, recv = 0;
-        size_t size=min(10000,max);
-        char * buffer=new char[size];
+        size_t size = min(10000, max);
+        char * buffer = new char[size];
 
         while (max > 0 && (bytes = mg_read(_conn, buffer, size)) > 0) {
           str = str.append(buffer, bytes);
@@ -39,10 +39,10 @@ namespace org {
 
       int ServiceInputStream::read(string & str, boost::function<bool (std::string data) > func, int size) {
         std::string tmp;
-        while(read(tmp,size)){
-          if(func(tmp)){
+        while (read(tmp, size)) {
+          if (func(tmp)) {
             str.append(tmp);
-          }else{
+          } else {
             break;
           }
           tmp.clear();
@@ -117,6 +117,30 @@ namespace org {
         }
         return result;
       }
+
+      std::string ServiceRequest::getHeader(std::string name) {
+        std::string result;
+        for (int a = 0; a < _request_info->num_headers; a++) {
+          if(strcmp(_request_info->http_headers[a].name,name.c_str())){
+            result=_request_info->http_headers[a].value;
+            break;
+          }
+        }
+        return result;
+
+      }
+
+      bool ServiceRequest::hasHeader(std::string name) {
+        bool result=false;
+        for (int a = 0; a < _request_info->num_headers; a++) {
+          if(strcmp(_request_info->http_headers[a].name,name.c_str())){
+            result=true;
+            break;
+          }
+        }
+        return result;
+      }
+
     }
   }
 }

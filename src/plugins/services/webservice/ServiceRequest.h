@@ -46,6 +46,8 @@ namespace org {
         std::string getUUID();
         std::string getParameter(std::string);
         bool hasParameter(std::string);
+        std::string getHeader(std::string);
+        bool hasHeader(std::string);
       private:
         ServiceInputStream * _inputstream;
         mg_connection *_conn;

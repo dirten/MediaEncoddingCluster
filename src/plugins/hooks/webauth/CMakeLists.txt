@@ -6,6 +6,7 @@ add_library (webauth SHARED
 
 TARGET_LINK_LIBRARIES(webauth
   core
+  webservice
 )
 SET_TARGET_PROPERTIES( webauth PROPERTIES PREFIX "")
 

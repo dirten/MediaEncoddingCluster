@@ -8,6 +8,8 @@
 #ifndef USERHANDLER_H
 #define	USERHANDLER_H
 #include "org/esb/core/HookPlugin.h"
+#include <map>
+#include <list>
 namespace webauth {
   using namespace org::esb::core;
   class UserHandler:public HookPlugin {
@@ -19,7 +21,8 @@ namespace webauth {
     void init();
 
   private:
-
+    std::map<std::string, int> _user_map;
+    std::list<std::string> _protected_uris;
   };
   REGISTER_HOOK("web.api.Auth",UserHandler, UserHandler::handleRequest, 1);
 }

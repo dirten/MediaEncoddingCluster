@@ -111,7 +111,7 @@ namespace org {
           center->postHook("web.api.PostProcess", req, res);
           if (res->_status != ServiceResponse::NONE)
             processed = p;
-          //res->flush();
+          res->flush();
           delete res;
           delete req;
         }
