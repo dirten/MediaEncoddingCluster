@@ -40,6 +40,7 @@
         </os>
       </activation>
       <properties>
+      <win32/>
         <my.family>win32</my.family>
         <target>ntx86</target>
         <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
@@ -55,6 +56,7 @@
         </os>
       </activation>
       <properties>
+        <unix/>
         <my.family>linux</my.family>
         <target>linuxx86</target>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
@@ -69,6 +71,7 @@
         </os>
       </activation>
       <properties>
+      <unix/>
         <my.family>mac</my.family>
         <target>macosxx86</target>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
@@ -138,8 +141,35 @@
         <executions>
           <execution>
             <phase>compile</phase>
+            <id>buildwin32</id>
             <configuration>
-              <tasks>
+              <tasks if="win32">
+                <mkdir dir="source"/>
+                <mkdir dir="source/build"/>
+                <get src="http://downloads.sourceforge.net/project/poco/sources/poco-1.4.2/poco-1.4.2p1-all.tar.gz"
+                     dest="source/poco-1.4.2p1-all.tar.gz"
+                     verbose="true" usetimestamp="true"/>
+                <gunzip src="source/poco-1.4.2p1-all.tar.gz" dest="source"/>
+                <exec executable="tar" dir="source">
+                  <arg line="-xf poco-1.4.2p1-all.tar"/>
+                </exec>
+
+              <pathconvert property="mybasedir" targetos="unix">
+                  <path location="${project.basedir}"/>
+                </pathconvert>
+                <exec executable="build_vcexpress2008.cmd" dir="source/poco-1.4.2p1-all" failonerror="yes">
+                </exec>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>compile</phase>
+            <id>buildunix</id>
+            <configuration>
+              <tasks if="unix">
                 <mkdir dir="source"/>
                 <mkdir dir="source/build"/>
                 <get src="http://downloads.sourceforge.net/project/poco/sources/poco-1.4.2/poco-1.4.2p1-all.tar.gz"
@@ -154,11 +184,11 @@
                   <path location="${project.basedir}"/>
                 </pathconvert>
                 <exec executable="sh" dir="source/poco-1.4.2p1-all" failonerror="yes">
-                  <arg line="${mybasedir}/source/poco-1.4.2p1-all/configure --prefix=${mybasedir}/source/build --static --omit=Data/MySQL,Data/ODBC"/>
+                  <arg line="${mybasedir}/source/poco-1.4.2p1-all/configure --prefix=${mybasedir}/source/build --omit=Data/MySQL,Data/ODBC"/>
                 </exec>
 
                 <exec executable="make" dir="source/poco-1.4.2p1-all" failonerror="yes">
-            	    <arg line="install"/>
+            	<arg line="install"/>
                 </exec>
               </tasks>
             </configuration>
