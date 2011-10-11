@@ -17,6 +17,7 @@ namespace webauth {
     UserHandler();
     virtual ~UserHandler();
     void handleRequest(Request * req, Response*res);
+    void handleRegistration(Request * req, Response*res);
     OptionsDescription getOptionsDescription();
     void init();
 
@@ -24,7 +25,8 @@ namespace webauth {
     std::map<std::string, int> _user_map;
     std::list<std::string> _protected_uris;
   };
-  REGISTER_HOOK("web.api.Auth",UserHandler, UserHandler::handleRequest, 1);
+  REGISTER_HOOK("web.api.Auth",UserHandler, UserHandler::handleRegistration, 1);
+  REGISTER_HOOK("web.api.Auth",UserHandler, UserHandler::handleRequest, 2);
 }
 
 #endif	/* USERHANDLER_H */

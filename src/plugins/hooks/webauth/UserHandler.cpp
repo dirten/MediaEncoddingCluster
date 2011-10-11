@@ -18,6 +18,12 @@ namespace webauth {
 
   UserHandler::~UserHandler() {
   }
+  void UserHandler::handleRegistration(Request* req, Response* res){
+    ServiceRequest * sreq = static_cast<ServiceRequest*> (req);
+    if(sreq->getRequestURI().find("register")!=std::string::npos){
+      LOGDEBUG("performing registration");
+    }
+  }
 
   void UserHandler::handleRequest(Request * req, Response*res) {
     ServiceRequest * sreq = static_cast<ServiceRequest*> (req);

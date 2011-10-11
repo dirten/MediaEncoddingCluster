@@ -28,22 +28,22 @@ namespace org {
   }
 }
 #define REGISTER_HOOK(name,instance, function, prio) \
-	class Register##instance##id \
+	class Register##instance##prio \
 	        { \
 			instance * element##instance; \
 	                public: \
-	                        Register##instance##id() \
+	                        Register##instance##prio() \
 	                        { \
 				element##instance=new instance(); \
                                 std::string tmpname=#instance; \
                                 org::esb::core::PluginRegistry::getInstance()->registerHookPlugin(tmpname, element##instance); \
                                 org::esb::core::HookNotificationCenter::getInstance()->addObserver(name,boost::bind(&function, element##instance,_1,_2),prio); \
 	                        } \
-	                        ~Register##instance##id() \
+	                        ~Register##instance##prio() \
 	                        { \
 				delete element##instance; \
 	                        } \
-	        } Register##instance##Instance##id; 
+	        } Register##instance##Instance##prio; 
 
 
 #endif	/* HOOKPLUGIN_H */
