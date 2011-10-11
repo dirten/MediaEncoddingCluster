@@ -5,10 +5,10 @@
  * Created on 11. Oktober 2011, 11:02
  */
 
+#include "org/esb/db/hivedb.hpp"
 #include "UserHandler.h"
 #include "plugins/services/webservice/ServiceRequest.h"
 #include "plugins/services/webservice/ServiceResponse.h"
-#include "org/esb/db/hivedb.hpp"
 #include "org/esb/core/PluginContext.h"
 namespace webauth {
   using namespace org::esb::api;
