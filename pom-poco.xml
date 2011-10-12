@@ -153,12 +153,16 @@
                 <exec executable="tar" dir="source">
                   <arg line="-xf poco-1.4.2p1-all.tar"/>
                 </exec>
-
-              <pathconvert property="mybasedir" targetos="unix">
-                  <path location="${project.basedir}"/>
+		<path id="vcinstalldir">
+		  <pathelement location="${env.VCINSTALLDIR}/bin"/>
+		</path>
+		
+              <pathconvert property="vcbasedir" targetos="unix" refid="vcinstalldir">
+                  <map from="c:" to="/c"/>
                 </pathconvert>
                 <exec executable="cmd" dir="source/poco-1.4.2p1-all" failonerror="yes">
                   <arg line="/c build_vcexpress2008"/>
+                  <env key="PATH" path="${vcbasedir}:${env.PATH}:"/>
                 </exec>
               </tasks>
             </configuration>
