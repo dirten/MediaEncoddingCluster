@@ -137,7 +137,16 @@
             <artifactId>ant-junit</artifactId>
             <version>1.8.1</version>
           </dependency>
-        </dependencies>
+<dependency> 
+                        <groupId>ant-contrib</groupId> 
+                        <artifactId>ant-contrib</artifactId> 
+                        <version>1.0b3</version> 
+                    </dependency> 
+                    <dependency> 
+                        <groupId>ant</groupId> 
+                        <artifactId>ant-optional</artifactId> 
+                        <version>1.5.3-1</version> 
+                    </dependency>         </dependencies>
         <executions>
           <execution>
             <phase>compile</phase>
@@ -153,16 +162,17 @@
                 <exec executable="tar" dir="source">
                   <arg line="-xf poco-1.4.2p1-all.tar"/>
                 </exec>
-		<path id="vcinstalldir">
-		  <pathelement location="${env.VCINSTALLDIR}/bin"/>
-		</path>
-              <pathconvert property="vcbasedir" targetos="unix" refid="vcinstalldir">
-                  <map from="c:" to="/c"/>
+              <pathconvert property="mybasedir" targetos="unix">
+                  <path location="${project.basedir}"/>
                 </pathconvert>
-                <echo>using path for visual studio ${vcbasedir}</echo>
-                <exec executable="cmd" dir="source/poco-1.4.2p1-all" failonerror="yes">
+
+		     <copy file="${mybasedir}/src/patch/build_poco.sh" tofile="${mybasedir}/source/poco-1.4.2p1-all/build_poco.sh" failonerror="yes"/>
+
+                <!--<exec executable="cmd" dir="source/poco-1.4.2p1-all" failonerror="yes">
                   <arg line="/c build_vcexpress2008"/>
-                  <env key="PATH" path='"${vcbasedir}":${env.PATH}:'/>
+                </exec>-->
+                <exec executable="sh" dir="source/poco-1.4.2p1-all" failonerror="yes">
+                  <arg line="build_poco.sh"/>
                 </exec>
               </tasks>
             </configuration>
@@ -185,7 +195,8 @@
                   <arg line="-xf poco-1.4.2p1-all.tar"/>
                 </exec>
 
-              <pathconvert property="mybasedir" targetos="unix">
+
+              <pathconvert property="mybasedir" targetos="unix">
                   <path location="${project.basedir}"/>
                 </pathconvert>
                 <exec executable="sh" dir="source/poco-1.4.2p1-all" failonerror="yes">
