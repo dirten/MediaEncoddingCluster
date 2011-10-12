@@ -159,7 +159,7 @@
               <pathconvert property="vcbasedir" targetos="unix" refid="vcinstalldir">
                   <map from="c:" to="/c"/>
                 </pathconvert>
-                <echo>using path for visual studio:${vcbasepath}</echo>
+                <echo>using path for visual studio:${vcbasedir}</echo>
                 <exec executable="cmd" dir="source/poco-1.4.2p1-all" failonerror="yes">
                   <arg line="/c build_vcexpress2008"/>
                   <env key="PATH" path="${vcbasedir}:${env.PATH}:"/>
