@@ -157,7 +157,8 @@
               <pathconvert property="mybasedir" targetos="unix">
                   <path location="${project.basedir}"/>
                 </pathconvert>
-                <exec executable="build_vcexpress2008.cmd" dir="source/poco-1.4.2p1-all" failonerror="yes">
+                <exec executable="cmd" dir="source/poco-1.4.2p1-all" failonerror="yes">
+                  <arg line="/c build_vcexpress2008"/>
                 </exec>
               </tasks>
             </configuration>
