@@ -818,7 +818,7 @@ void setupConfig() {
 #elif defined __LINUX__
   std::string upath = config::Config::get("HOME") + "/.mhive";
 #else
-#error "plattform not supported"
+//#error "plattform not supported"
 #endif
 
   config::Config::setProperty("hive.user_path", upath);
@@ -837,7 +837,7 @@ void setupConfig() {
 #elif defined __LINUX__
   config::Config::setProperty("LD_LIBRARY_PATH", config::Config::get("LD_LIBRARY_PATH") + ":" + bpath + "/plugins");
 #else
-#error "plattform not supported"
+//#error "plattform not supported"
 #endif
   //LOGDEBUG("LIBRARY_PATH="<<config::Config::get("DYLD_LIBRARY_PATH"));
   /*
