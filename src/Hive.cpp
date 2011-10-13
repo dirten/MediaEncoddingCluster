@@ -69,6 +69,15 @@
 #include "org/esb/rpc/rpc.pb.h"
 #include "MHiveConsole.cpp"
 #include "org/esb/core/PluginRegistry.h"
+/*
+#include "Poco/Net/HTTPClientSession.h"
+#include "Poco/Net/HTTPRequest.h"
+#include "Poco/Net/HTTPResponse.h"
+ */
+#include "boost/uuid/uuid_generators.hpp"
+#include "boost/uuid/uuid_io.hpp"
+#include "boost/lexical_cast.hpp"
+
 #define TO_STRING(s) #s
 using namespace org::esb;
 using namespace org::esb::net;
@@ -105,6 +114,14 @@ int main(int argc, char * argv[]) {
   //isatty(0);
   /*setting default path to Program*/
   //log4cplus::BasicConfigurator conf;
+  /*
+  Poco::Net::HTTPClientSession session("www.google.de",80);
+  Poco::Net::HTTPRequest req(Poco::Net::HTTPRequest::HTTP_GET,"/",Poco::Net::HTTPRequest::HTTP_1_1);
+  Poco::Net::HTTPResponse res;
+  session.sendRequest(req);
+  std::istream& t = session.receiveResponse(res);
+  std::cout << res.getStatus();
+   */
   org::esb::io::File f(argv[0]);
   std::string base_path = org::esb::io::File(f.getParent()).getParent();
   //log4cplus::BasicConfigurator::doConfigure();
@@ -741,16 +758,33 @@ void start_auto(int argc, char *argv[]) {
   }
   res.stop();
 }
-
 bool setupDatabase() {
   org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
   if (!DatabaseService::databaseExist()) {
     DatabaseService::createDatabase();
     DatabaseService::createTables();
     DatabaseService::updateTables();
-    DatabaseService::loadPresets();
+    //DatabaseService::loadPresets();
     {
       db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
+        org::esb::io::File dir(config::Config::get("hive.base_path") + "/presets");
+        org::esb::io::FileList presets = dir.listFiles();
+        foreach(org::esb::io::FileList::value_type p, presets) {
+          org::esb::io::FileInputStream fis(p.get());
+          std::string data;
+          fis.read(data);
+          try{
+          JSONNode d = libjson::parse(data);
+          boost::uuids::uuid uuid = boost::uuids::random_generator()();
+          std::string uuidstr = boost::lexical_cast<std::string > (uuid);
+          db::Preset preset(db);
+          preset.data = data;
+          preset.uuid = uuidstr;
+          preset.name = d["name"].as_string();
+          preset.update();
+          }catch(...){}
+        }
+
       std::map<std::string, std::string> conf;
       conf["hive.mode"] = "server";
       conf["hive.port"] = config::Config::getProperty("hive.port"); //StringUtil::toString(vm["hiveport"].as<int> ());

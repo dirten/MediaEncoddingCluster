@@ -1,38 +1,36 @@
-<?xml version="1.0"?>
-<preset name="Ipod x264(320x240) aac(128kb 44.1kHz stereo)">
-    <format id="ipod">
-	<param name="fileExtension" value="m4v"/>
-    </format>
-    <codec type="video" id="libx264">
-	<param name="b" value="768000"/>
-	<param name="g" value="250"/>
-	<param name="qmin" value="10"/>
-	<param name="qmax" value="51"/>
-	<param name="qdiff" value="4"/>
-	<param name="coder" value="0"/>
-	<param name="bf" value="0"/>
-	<param name="wpred" value="0"/>
-	<param name="dct8x8" value="0"/>
-	<param name="level" value="13"/>
-	<param name="maxrate" value="768000"/>
-	<param name="bufsize" value="300000"/>
-	<param name="wpredp" value="0"/>
-	<param name="me_range" value="16"/>
-	<param name="time_base" value="1/25"/>
-	<param name="global_header" value="1"/>
-	<param name="aspect" value="64/45"/>
-    </codec>
-    <codec type="audio" id="aac">
-	<param name="ab" value="128000"/>
-	<param name="ac" value="2"/>
-	<param name="ar" value="44100"/>
-	<param name="global_header" value="1"/>
-    </codec>
-    <filters>
-	<filter id="resize">
-	    <param name="scales" value="320x240"/>
-    	    <param name="width" value="320"/>
-    	    <param name="height" value="240"/>
-	</filter>
-    </filters>
-</preset>
+{
+    "name":"Ipod x264(320x240) aac(128kb 44.1kHz stereo)",
+    "format":{ 
+	"id":"ipod",
+	"fileExtension":"m4v"
+	},
+    "video":{
+	"id":"libx264",
+	"b":"768",
+	"g":"250",
+	"qmin":"10",
+	"qmax":"51",
+	"qdiff":"4",
+	"coder":"0",
+	"bf":"0",
+	"wpred":"0",
+	"dct8x8":"0",
+	"level":"13",
+	"maxrate":"768",
+	"bufsize":"300",
+	"wpredp":"0",
+	"me_range":"16",
+	"time_base":"1/25",
+	"global_header":"1",
+	"aspect":"64/45",
+	"width":"320",
+	"height":"240"
+	},
+	"audio":{
+	    "id":"aac",
+	    "ab":"128000",
+	    "ac":"2",
+	    "ar":"44100",
+	    "global_header":"1"
+	}
+}

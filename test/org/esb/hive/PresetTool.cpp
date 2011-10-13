@@ -192,7 +192,7 @@ int encode(int argc, char** argv) {
   videoEncoder2->setOutputStream(&pos);
   audioEncoder2->setOutputStream(&pos);
   int c=0;
-  while (pis.readPacket(p)==0&&c++<5000) {
+  while (pis.readPacket(p)==0/*&&c++<5000*/) {
     Packet * encodedPacket = convert(p);
   }
   pos.close();

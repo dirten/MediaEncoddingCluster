@@ -501,6 +501,7 @@ namespace org {
           if (id.length() > 0) {
             litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (*_db, db::Preset::Uuid == id);
             if (s.count() > 0) {
+              try{
               db::Preset preset = s.one();
               JSONNode data = libjson::parse(preset.data);
               data.set_name("data");
@@ -514,6 +515,15 @@ namespace org {
               //LOGDEBUG(data.write_formatted());
               response = JSONNode(JSON_NODE);
               response.push_back(data);
+              }catch(std::exception &ex){
+            LOGDEBUG(ex.what());
+            JSONNode error(JSON_NODE);
+            error.set_name("error");
+            error.push_back(JSONNode("code", "parse_error"));
+            error.push_back(JSONNode("description", "no valid json format from database"));
+            response.push_back(error);
+                
+              }
             } else {
               JSONNode error(JSON_NODE);
               error.set_name("error");
@@ -522,7 +532,7 @@ namespace org {
               response.push_back(error);
             }
           } else {
-            vector<db::Preset> presets = litesql::select<db::Preset > (*_db).all();
+            vector<db::Preset> presets = litesql::select<db::Preset > (*_db).orderBy(db::Preset::Name).all();
             JSONNode c(JSON_ARRAY);
             c.set_name("data");
 

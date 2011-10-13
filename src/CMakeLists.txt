@@ -260,8 +260,10 @@ target_link_libraries (mhive
   mq
   rpc
   core
+
   ${Boost_LIBRARIES}
 #  log4cplus
+#  PocoNet
 )
 IF(WIN32)
   IF(CMAKE_BUILD_TYPE MATCHES "debug")
@@ -457,6 +459,8 @@ ELSE(APPLE)
       ${FFMPEG_DIR}/lib/libavutil.so.51
 #      ${FFMPEG_DIR}/lib/libavcore.so
       ${FFMPEG_DIR}/lib/libswscale.so.2
+#      ${FFMPEG_DIR}/lib/libPocoNet.so.11
+#      ${FFMPEG_DIR}/lib/libPocoFoundation.so.11
     DESTINATION ${LIB_INSTALL_DIR}
     )
     #INSTALL(CODE "CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/mectl ${CMAKE_INSTALL_PREFIX}/bin/mectl)")

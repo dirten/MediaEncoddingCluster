@@ -184,18 +184,6 @@
             <phase>compile</phase>
             <id>dowload-support</id>
             <configuration>
-              <tasks if="unix">
-                <get src="http://codergrid.de/repository/inttypes/inttypes.h" dest="${project.build.directory}/dependency/include" verbose="true" usetimestamp="true"/>
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-          <execution>
-            <phase>compile</phase>
-            <id>dowload-support</id>
-            <configuration>
               <tasks if="win32">
                 <get src="http://codergrid.de/repository/inttypes/inttypes.h" dest="${project.build.directory}/dependency/include" verbose="true" usetimestamp="true"/>
                 <get src="http://codergrid.de/repository/inttypes/stdint.h" dest="${project.build.directory}/dependency/include" verbose="true" usetimestamp="true"/>
@@ -398,13 +386,6 @@
       <classifier>${my.family}-${build_type}</classifier>
     </dependency>
     <dependency>
-      <groupId>org.esb.wxwidgets</groupId>
-      <artifactId>wxwidgets</artifactId>
-      <version>2.9.1</version>
-      <type>zip</type>
-      <classifier>${my.family}-${build_type}</classifier>
-    </dependency>
-    <dependency>
       <groupId>org.esb.breakpad</groupId>
       <artifactId>breakpad</artifactId>
       <version>1.5</version>
@@ -464,6 +445,13 @@
       <groupId>org.esb.jhive</groupId>
       <artifactId>jhive-test-fixtures</artifactId>
       <version>1.0</version>
+      <type>zip</type>
+    </dependency>
+    <dependency>
+	<groupId>org.esb.poco</groupId>
+	<artifactId>libpoco</artifactId>
+	<version>1.4.2p1</version>
+      <classifier>${my.family}</classifier>
       <type>zip</type>
     </dependency>
   </dependencies>
