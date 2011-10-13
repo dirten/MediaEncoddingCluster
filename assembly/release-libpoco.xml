@@ -13,10 +13,87 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>source/poco-1.4.2p1-all/</directory>
+      <directory>source/poco-1.4.2p1-all/Crypto/include</directory>
       <outputDirectory>include/</outputDirectory>
       <includes>
-        <include>**/include/**/*.h</include>
+        <include>**/*.h</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>source/poco-1.4.2p1-all/DOM/include</directory>
+      <outputDirectory>include/</outputDirectory>
+      <includes>
+        <include>**/*.h</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>source/poco-1.4.2p1-all/Data/include</directory>
+      <outputDirectory>include/</outputDirectory>
+      <includes>
+        <include>**/*.h</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>source/poco-1.4.2p1-all/Data/MySQL/include</directory>
+      <outputDirectory>include/</outputDirectory>
+      <includes>
+        <include>**/*.h</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>source/poco-1.4.2p1-all/Data/ODBC/include</directory>
+      <outputDirectory>include/</outputDirectory>
+      <includes>
+        <include>**/*.h</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>source/poco-1.4.2p1-all/Data/SQLite/include</directory>
+      <outputDirectory>include/</outputDirectory>
+      <includes>
+        <include>**/*.h</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>source/poco-1.4.2p1-all/Foundation/include</directory>
+      <outputDirectory>include/</outputDirectory>
+      <includes>
+        <include>**/*.h</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>source/poco-1.4.2p1-all/Net/include</directory>
+      <outputDirectory>include/</outputDirectory>
+      <includes>
+        <include>**/*.h</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>source/poco-1.4.2p1-all/NetSSL_OpenSSL/include</directory>
+      <outputDirectory>include/</outputDirectory>
+      <includes>
+        <include>**/*.h</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>source/poco-1.4.2p1-all/Util/include</directory>
+      <outputDirectory>include/</outputDirectory>
+      <includes>
+        <include>**/*.h</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>source/poco-1.4.2p1-all/XML/include</directory>
+      <outputDirectory>include/</outputDirectory>
+      <includes>
+        <include>**/*.h</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>source/poco-1.4.2p1-all/Zip/include</directory>
+      <outputDirectory>include/</outputDirectory>
+      <includes>
+        <include>**/*.h</include>
       </includes>
     </fileSet>
     <fileSet>
