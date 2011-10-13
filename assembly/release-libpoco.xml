@@ -16,7 +16,7 @@
       <directory>source/poco-1.4.2p1-all/</directory>
       <outputDirectory>include/</outputDirectory>
       <includes>
-        <include>**/*.h</include>
+        <include>**/include/**/*.h</include>
       </includes>
     </fileSet>
     <fileSet>
