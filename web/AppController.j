@@ -21,6 +21,9 @@
 @import "View/EncodingEditView.j"
 @import "View/DetailWebView.j"
 
+TOP_MARGIN=0.0;
+TOOLBAR_TOP_MARGIN=0.0;
+
 var SliderToolbarItemIdentifier = "SliderToolbarItemIdentifier",
 AddToolbarItemIdentifier = "AddToolbarItemIdentifier",
 RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
@@ -397,7 +400,7 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
                     //[toolbarItem setAction:@selector(remove:)];
                     //[toolbarItem setLabel:"Add Encoding"];
 
-                    //[toolbarItem setMinSize:CGSizeMake(32, 32)];
+                    //[toolbarItem setMinSize:CGSizeMake(100, 50)];
                     //[toolbarItem setMaxSize:CGSizeMake(32, 32)];
                 }
 
