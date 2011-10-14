@@ -33,9 +33,9 @@ int main(int argc, char** argv) {
   }else{
     org::esb::hive::DatabaseService::createTables();
   }
-    org::esb::hive::DatabaseService::loadPresets();
+    //org::esb::hive::DatabaseService::loadPresets();
 
-  {
+/*  {
 
     db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
 
@@ -74,6 +74,7 @@ int main(int argc, char** argv) {
   }
 //  org::esb::hive::DatabaseService::dropDatabase();
   org::esb::hive::DatabaseService::stop();
+ */
   Log::close();
   return 0;
 }

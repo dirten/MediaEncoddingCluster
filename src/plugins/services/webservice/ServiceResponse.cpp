@@ -9,7 +9,7 @@
 #include "mongoose.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/util/Foreach.h"
-
+#include <stdio.h>
 namespace org {
   namespace esb {
     namespace api {
@@ -84,6 +84,7 @@ namespace org {
 
       void ServiceResponse::flush() {
         _outputstream->write("");
+        fflush(NULL);
       }
     }
   }
