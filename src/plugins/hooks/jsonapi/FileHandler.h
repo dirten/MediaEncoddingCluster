@@ -19,10 +19,12 @@ namespace filehandler {
     virtual ~FileHandler();
     void handleRequest(org::esb::core::Request * req, org::esb::core::Response*res);
     org::esb::core::OptionsDescription getOptionsDescription();
+    void init();
   private:
     void handleFile(org::esb::core::Request * req, org::esb::core::Response*res);
     void handleMedia(org::esb::core::Request * req, org::esb::core::Response*res);
     void buildFile(org::esb::io::File &, JSONNode & node);
+    std::string _base;
   };
   REGISTER_HOOK("web.api.Service",FileHandler, FileHandler::handleRequest,1);
 }

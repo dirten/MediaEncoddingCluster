@@ -12,6 +12,7 @@
 #include "introspec.h"
 #include "org/esb/core/HookPlugin.h"
 #include "org/esb/util/Foreach.h"
+#include "org/esb/util/StringUtil.h"
 #include "org/esb/io/File.h"
 #include "org/esb/config/config.h"
 #include "org/esb/db/hivedb.hpp"
@@ -71,18 +72,19 @@ namespace org {
 
         foreach(PluginMap::value_type s, _service_map) {
           //LOGDEBUG("ServiceName="<<s.first<<" type="<<((ServicePlugin*) s.second)->getServiceType());
-          if(((ServicePlugin*) s.second)->getServiceType()==ServicePlugin::SERVICE_TYPE_SERVER||
-                  ((ServicePlugin*) s.second)->getServiceType()==ServicePlugin::SERVICE_TYPE_ALL)
-          ((ServicePlugin*) s.second)->startService();
+          if (((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_SERVER ||
+                  ((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_ALL)
+            ((ServicePlugin*) s.second)->startService();
         }
       }
+
       void CORE_EXPORT PluginRegistry::startClientServices() {
         typedef std::map<std::string, Plugin*> PluginMap;
 
         foreach(PluginMap::value_type s, _service_map) {
-          if(((ServicePlugin*) s.second)->getServiceType()==ServicePlugin::SERVICE_TYPE_CLIENT||
-                  ((ServicePlugin*) s.second)->getServiceType()==ServicePlugin::SERVICE_TYPE_ALL)
-          ((ServicePlugin*) s.second)->startService();
+          if (((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_CLIENT ||
+                  ((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_ALL)
+            ((ServicePlugin*) s.second)->startService();
         }
 
       }
@@ -121,22 +123,57 @@ namespace org {
           _plugin_data[s.first].context = new PluginContext();
           _plugin_data[s.first].plugin = s.second;
           _plugin_data[s.first].context->database = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
+
           /*fill up PluginContext with Options*/
           OptionsDescription desc = s.second->getOptionsDescription();
           typedef boost::shared_ptr<boost::program_options::option_description> option;
+
           foreach(const option value, desc.options()) {
-            LOGDEBUG("Key="<<value->long_name()<<" value="<<org::esb::config::Config::get(value->long_name()));
+            boost::any data;
+            value->semantic()->apply_default(data);
+            std::string def;
+            if (data.type() == typeid (int)) {
+              def = org::esb::util::StringUtil::toString(boost::any_cast<int>(data));
+            } else if (data.type() == typeid (double)) {
+              def = org::esb::util::StringUtil::toString(boost::any_cast<double>(data));
+            } else if (data.type() == typeid (bool)) {
+              def = org::esb::util::StringUtil::toString(boost::any_cast<bool>(data));
+            } else {
+              def = org::esb::util::StringUtil::toString(boost::any_cast<std::string > (data));
+            }
+            LOGDEBUG("Key=" << value->long_name() << " Default=" << def << " Value=" << org::esb::config::Config::get(value->long_name()));
             _plugin_data[s.first].context->env[value->long_name()] = org::esb::config::Config::get(value->long_name());
+            _config_data[value->long_name()] = org::esb::config::Config::get(value->long_name());
+            if (org::esb::config::Config::get(value->long_name()) == def) {
+              litesql::DataSource<db::Config> confs = litesql::select<db::Config > (*_plugin_data[s.first].context->database, db::Config::Configkey == value->long_name());
+              if (confs.count() > 0) {
+                db::Config c = confs.one();
+                if (c.configval.value().length() > 0) {
+                  _plugin_data[s.first].context->env[value->long_name()] = c.configval.value();
+                  _config_data[value->long_name()] = c.configval.value();
+                  LOGDEBUG("Load from db Key=" << value->long_name() << "Default=" << def << " Value=" << c.configval.value());
+                }
+              }
+            }
           }
           s.second->setContext(_plugin_data[s.first].context);
           s.second->init();
         }
       }
 
+      std::string PluginRegistry::getConfigData(std::string key) {
+        std::string result;
+        if (_config_data.count(key) > 0) {
+          result = _config_data[key];
+        }
+        return result;
+      }
+
       void PluginRegistry::load(std::string file) {
         org::esb::io::File plugin_dir(file);
 
         if (plugin_dir.isDirectory()) {
+
           org::esb::io::FileList plugin_list = plugin_dir.listFiles();
           plugin_list.sort(compare_webservice);
 
@@ -145,6 +182,7 @@ namespace org {
               load(f->getPath());
           }
         } else if (plugin_dir.isFile()) {
+
           loadFile(plugin_dir.getPath());
         }
 
@@ -163,13 +201,15 @@ namespace org {
       }
 
       PluginRegistry::~PluginRegistry() {
+
         LOGDEBUG("PluginRegistry::~PluginRegistry()");
 
         typedef std::map<std::string, org::esb::lang::SharedObjectLoader*> SharedObjectMap;
-        
+
         typedef std::map<std::string, PluginData> PluginDataMap;
 
         foreach(PluginDataMap::value_type s, _plugin_data) {
+
           delete s.second.context->database;
           delete s.second.context;
         }

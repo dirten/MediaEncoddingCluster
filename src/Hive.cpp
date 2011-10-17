@@ -138,13 +138,13 @@ int main(int argc, char * argv[]) {
     /*
             ("debug", "switch of the StackDumper and logging goes to the console instead of file")
             ("loglevel", po::value<std::string > ()->default_value("fatal"), "setting the loglevel for this process");**/
-/*
-    po::options_description inst("Install options");
-    inst.add_options()
-            ("hiveport", po::value<int>()->default_value(20200), "on which port will the hive be listen on")
-            ("webport", po::value<int>()->default_value(8080), "on which port will the web admin be listen on")
-            ;
- */
+    /*
+        po::options_description inst("Install options");
+        inst.add_options()
+                ("hiveport", po::value<int>()->default_value(20200), "on which port will the hive be listen on")
+                ("webport", po::value<int>()->default_value(8080), "on which port will the web admin be listen on")
+                ;
+     */
     po::options_description ser("Server options");
     ser.add_options()
             //("daemon,d", "start the Hive as Daemon Process")
@@ -165,27 +165,27 @@ int main(int argc, char * argv[]) {
             ("port,p", po::value<int>()->default_value(20200), "Port to connect")
             ("count", po::value<int>()->default_value(cpu_count), "Client Processor Count")
             ;*/
-/*
-    po::options_description web("Webserver");
-    web.add_options()
-            ("web,w", "start the Hive Webserver")
-            ;
-    po::options_description mon("mon");
-    mon.add_options()
-            ("mon,m", "start the Mongoose Webserver(an alternative web server)")
-            ;
-    po::options_description queue("Webserver");
-    queue.add_options()
-            ("queue,q", "start the Hive Queue Server")
-            ("test", "test function")
-            ;
-    po::options_description priv("");
-    priv.add_options()
-            ("erlang", "")
-            ("console,c", "")
-            ("quiet", "")
-            ;
-*/
+    /*
+        po::options_description web("Webserver");
+        web.add_options()
+                ("web,w", "start the Hive Webserver")
+                ;
+        po::options_description mon("mon");
+        mon.add_options()
+                ("mon,m", "start the Mongoose Webserver(an alternative web server)")
+                ;
+        po::options_description queue("Webserver");
+        queue.add_options()
+                ("queue,q", "start the Hive Queue Server")
+                ("test", "test function")
+                ;
+        po::options_description priv("");
+        priv.add_options()
+                ("erlang", "")
+                ("console,c", "")
+                ("quiet", "")
+                ;
+     */
     po::options_description all("all");
     setupDefaults();
     setupConfig();
@@ -235,12 +235,11 @@ int main(int argc, char * argv[]) {
     foreach(po::variables_map::value_type & val, vm) {
       if (vm[val.first].value().type() == typeid (int)) {
         config::Config::setProperty(val.first, StringUtil::toString(vm[val.first].as<int>()));
-      } else
-        if (vm[val.first].value().type() == typeid (double)) {
+      } else if (vm[val.first].value().type() == typeid (double)) {
         config::Config::setProperty(val.first, StringUtil::toString(vm[val.first].as<double>()));
       } else if (vm[val.first].value().type() == typeid (bool)) {
-        config::Config::setProperty(val.first, StringUtil::toString(vm[val.first].as<bool>()));        
-      }else{
+        config::Config::setProperty(val.first, StringUtil::toString(vm[val.first].as<bool>()));
+      } else {
         config::Config::setProperty(val.first, vm[val.first].as<std::string > ());
       }
     }
@@ -758,6 +757,7 @@ void start_auto(int argc, char *argv[]) {
   }
   res.stop();
 }
+
 bool setupDatabase() {
   org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
   if (!DatabaseService::databaseExist()) {
@@ -767,13 +767,14 @@ bool setupDatabase() {
     //DatabaseService::loadPresets();
     {
       db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
-        org::esb::io::File dir(config::Config::get("hive.base_path") + "/presets");
-        org::esb::io::FileList presets = dir.listFiles();
-        foreach(org::esb::io::FileList::value_type p, presets) {
-          org::esb::io::FileInputStream fis(p.get());
-          std::string data;
-          fis.read(data);
-          try{
+      org::esb::io::File dir(config::Config::get("hive.base_path") + "/presets");
+      org::esb::io::FileList presets = dir.listFiles();
+
+      foreach(org::esb::io::FileList::value_type p, presets) {
+        org::esb::io::FileInputStream fis(p.get());
+        std::string data;
+        fis.read(data);
+        try {
           JSONNode d = libjson::parse(data);
           boost::uuids::uuid uuid = boost::uuids::random_generator()();
           std::string uuidstr = boost::lexical_cast<std::string > (uuid);
@@ -782,8 +783,9 @@ bool setupDatabase() {
           preset.uuid = uuidstr;
           preset.name = d["name"].as_string();
           preset.update();
-          }catch(...){}
+        } catch (...) {
         }
+      }
 
       std::map<std::string, std::string> conf;
       conf["hive.mode"] = "server";
@@ -852,7 +854,7 @@ void setupConfig() {
 #elif defined __LINUX__
   std::string upath = config::Config::get("HOME") + "/.mhive";
 #else
-//#error "plattform not supported"
+  //#error "plattform not supported"
 #endif
 
   config::Config::setProperty("hive.user_path", upath);
@@ -871,7 +873,7 @@ void setupConfig() {
 #elif defined __LINUX__
   config::Config::setProperty("LD_LIBRARY_PATH", config::Config::get("LD_LIBRARY_PATH") + ":" + bpath + "/plugins");
 #else
-//#error "plattform not supported"
+  //#error "plattform not supported"
 #endif
   //LOGDEBUG("LIBRARY_PATH="<<config::Config::get("DYLD_LIBRARY_PATH"));
   /*

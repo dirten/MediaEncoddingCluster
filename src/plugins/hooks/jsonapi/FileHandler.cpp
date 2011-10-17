@@ -11,12 +11,17 @@
 #include "org/esb/util/Foreach.h"
 #include "org/esb/av/Rational.h"
 #include "org/esb/av/FormatInputStream.h"
+#include "org/esb/core/PluginContext.h"
 namespace filehandler {
 
   FileHandler::FileHandler() {
   }
 
   FileHandler::~FileHandler() {
+  }
+
+  void FileHandler::init() {
+    _base = getContext()->getEnvironment<std::string > ("fileapi.baseuri");
   }
 
   org::esb::core::OptionsDescription FileHandler::getOptionsDescription() {
@@ -28,10 +33,10 @@ namespace filehandler {
 
   void FileHandler::handleRequest(org::esb::core::Request * req, org::esb::core::Response*res) {
     org::esb::api::ServiceRequest * sreq = static_cast<org::esb::api::ServiceRequest *> (req);
-    if (sreq->getRequestURI().find("/api/v1/file") == 0) {
+    if (sreq->getRequestURI().find(_base+"/file") == 0) {
       handleFile(req, res);
     } else
-      if (sreq->getRequestURI().find("/api/v1/media") == 0) {
+      if (sreq->getRequestURI().find(_base+"/media") == 0) {
       handleMedia(req, res);
     }
   }
@@ -47,13 +52,13 @@ namespace filehandler {
       JSONNode error(JSON_NODE);
       error.set_name("error");
       error.push_back(JSONNode("code", "file_not_found"));
-      error.push_back(JSONNode("description", std::string("file not found:")+infile.getPath()));
+      error.push_back(JSONNode("description", std::string("file not found:") + infile.getPath()));
       result.push_back(error);
     } else if (!infile.canRead()) {
       JSONNode error(JSON_NODE);
       error.set_name("error");
       error.push_back(JSONNode("code", "file_not_readable"));
-      error.push_back(JSONNode("description", std::string("file could not be read:")+infile.getPath()));
+      error.push_back(JSONNode("description", std::string("file could not be read:") + infile.getPath()));
       result.push_back(error);
     } else {
       org::esb::av::FormatInputStream fis(&infile);
@@ -61,7 +66,7 @@ namespace filehandler {
         JSONNode error(JSON_NODE);
         error.set_name("error");
         error.push_back(JSONNode("code", "file_not_mediafile"));
-        error.push_back(JSONNode("description", std::string("file is not a media file:")+infile.getPath()));
+        error.push_back(JSONNode("description", std::string("file is not a media file:") + infile.getPath()));
         result.push_back(error);
       } else {
         JSONNode data(JSON_NODE);

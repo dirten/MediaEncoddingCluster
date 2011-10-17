@@ -40,7 +40,7 @@ namespace org {
         
         OptionsDescription CORE_EXPORT getOptionsDescription(std::string);
         std::list<std::string> CORE_EXPORT getPluginNameList();
-        
+        std::string getConfigData(std::string key);
         
       private:
         PluginRegistry();
@@ -59,6 +59,7 @@ namespace org {
         std::map<std::string, HookPlugin*> _hook_map;
         std::map<std::string, org::esb::lang::SharedObjectLoader*> _shared_objects;
         std::map<std::string,PluginData> _plugin_data;
+        std::map<std::string,std::string> _config_data;
       };
     }
   }

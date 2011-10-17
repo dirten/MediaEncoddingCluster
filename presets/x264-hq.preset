@@ -46,7 +46,7 @@
 	"global_header":"1",
 	"width":"320",
 	"height":"240"
-    }
+    },
     "audio":{ 
 	"id":"libmp3lame",
 	"ab":"128000",

@@ -23,6 +23,7 @@ namespace org {
           return boost::lexical_cast<T>(env[key]);
         }
         std::map<std::string, std::string> env;
+        
       private:
         friend class PluginRegistry;
         PluginContext();
