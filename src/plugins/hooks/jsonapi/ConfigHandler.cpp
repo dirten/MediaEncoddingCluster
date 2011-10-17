@@ -51,7 +51,7 @@ namespace api {
       result.set_name("error");
       result.push_back(JSONNode("status", "error"));
       result.push_back(JSONNode("desc", "url not parsable"));
-      sres->setStatus(org::esb::api::ServiceResponse::NOT_FOUND);
+      sres->setStatus(org::esb::api::ServiceResponse::BAD_REQUEST);
     } else {
       std::string key = sreq->getRequestURI().substr(_uri_len);
       LOGDEBUG("config key:" << key);

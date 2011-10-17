@@ -83,8 +83,8 @@ namespace org {
       }
 
       ApiWebServer::~ApiWebServer() {
-        LOGDEBUG("ApiWebServer::~ApiWebServer()")
-                delete p;
+        LOGDEBUG("ApiWebServer::~ApiWebServer()");
+        delete p;
       }
 
       void * ApiWebServer::event_handler(enum mg_event event,
@@ -95,21 +95,13 @@ namespace org {
           ServiceResponse * res = new ServiceResponse(conn, request_info);
           ServiceRequest * req = new ServiceRequest(conn, request_info);
           center->postHook("web.api.Auth", req, res);
-          if (res->_status == ServiceResponse::FORBIDDEN){
-            //processed = p;
+          if (res->_status != ServiceResponse::NONE) {
             return p;
           }
-          /*
-          static const char *reply_start =
-                  "HTTP/1.1 200 OK\r\n"
-                  "Cache: no-cache\r\n"
-                  "Content-Type: text/plain; charset=utf-8\r\n"
-                  "\r\n";
-           */
           center->postHook("web.api.PreProcess", req, res);
           center->postHook("web.api.Service", req, res);
           center->postHook("web.api.PostProcess", req, res);
-          if (res->_status != ServiceResponse::NONE){
+          if (res->_status != ServiceResponse::NONE) {
             processed = p;
             res->flush();
           }
@@ -119,11 +111,6 @@ namespace org {
 
         return processed;
       }
-      /*
-      bool ApiWebServer::addHandler(std::string url, org::esb::core::WebservicePlugin * handler) {
-        _urlhandler[url] = handler;
-        return true;
-      }*/
     }
   }
 }

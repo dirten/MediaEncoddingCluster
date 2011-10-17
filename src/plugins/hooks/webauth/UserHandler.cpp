@@ -12,6 +12,9 @@
 #include "plugins/services/webservice/ServiceRequest.h"
 #include "plugins/services/webservice/ServiceResponse.h"
 #include "org/esb/core/PluginContext.h"
+#include "org/esb/util/Base64.h"
+#include "org/esb/util/StringUtil.h"
+#include "org/esb/util/StringTokenizer.h"
 namespace webauth {
   using namespace org::esb::api;
 
@@ -65,57 +68,77 @@ namespace webauth {
       counter = 0;
       if (libjson::is_valid(postdata)) {
         JSONNode node = libjson::parse(postdata);
-        if(!contains(node,"authname")){
+        if (!contains(node, "authname")) {
           return;
-        }else if(!contains(node,"password")){
+        } else if (!contains(node, "password")) {
           return;
         }
-        std::string username=node["authname"].as_string();
-        std::string password=node["password"].as_string();
+        std::string username = node["authname"].as_string();
+        std::string password = node["password"].as_string();
         db::User user(*getContext()->database);
-        user.authname=username;
-        user.authpass=password;
+        user.authname = username;
+        user.authpass = password;
         user.update();
       }
       LOGDEBUG("performing registration");
     }
   }
 
-  void UserHandler::handleRequest(Request * req, Response*res) {
+  void UserHandler::handleUpdate(Request * req, Response*res) {
+    
+  }
+  void UserHandler::handleAuthorization(Request * req, Response*res) {
     ServiceRequest * sreq = static_cast<ServiceRequest*> (req);
     if (sreq->getRequestURI().find(getContext()->getEnvironment<std::string > ("webauth.protecturi")) == std::string::npos) {
       return;
     }
     ServiceResponse * sres = static_cast<ServiceResponse*> (res);
-    std::string username = sreq->getParameter("user");
-    std::string passwd = sreq->getParameter("passwd");
-    if (sreq->hasHeader("Authentication-Token")) {
-      std::string token = sreq->getHeader("Authentication-Token");
-      LOGDEBUG("Token = " << token);
-      if (_user_map.count(token) > 0) {
-        sres->setStatus(ServiceResponse::OK);
-        sres->getOutputStream()->setHeader("Authentication-Token", token);
-        litesql::DataSource<db::User> userlist = litesql::select<db::User > (*getContext()->database, db::User::Id == _user_map[token]);
+    if (sreq->hasHeader("Authorization")) {
+      std::string header = sreq->getHeader("Authorization");
+      header = org::esb::util::StringUtil::replace(header, "Basic", "");
+      header = org::esb::util::StringUtil::trim(header);
+      header=org::esb::util::Base64::decode(header);
+      
+      org::esb::util::StringTokenizer t(header, ":");
+      if (t.countTokens() == 2) {
+        std::string username = t.nextToken();
+        std::string passwd = t.nextToken();
+        litesql::DataSource<db::User> userlist = litesql::select<db::User > (*getContext()->database, db::User::Authname == username && db::User::Authpass == passwd);
         if (userlist.count() == 1) {
           db::User u = userlist.one();
           sreq->setUserObject(u);
+          return;
         }
-        return;
+      }
+    } else {
+      std::string username = sreq->getParameter("user");
+      std::string passwd = sreq->getParameter("passwd");
+      if (sreq->hasHeader("Authentication-Token")) {
+        std::string token = sreq->getHeader("Authentication-Token");
+        if (_user_map.count(token) > 0) {
+          sres->getOutputStream()->setHeader("Authentication-Token", token);
+          litesql::DataSource<db::User> userlist = litesql::select<db::User > (*getContext()->database, db::User::Id == _user_map[token]);
+          if (userlist.count() == 1) {
+            db::User u = userlist.one();
+            sreq->setUserObject(u);
+          }
+          return;
+        }
+      }
+      if (username.length() > 0 && passwd.length() > 0) {
+        litesql::DataSource<db::User> userlist = litesql::select<db::User > (*getContext()->database, db::User::Authname == username && db::User::Authpass == passwd);
+        if (userlist.count() == 1) {
+          db::User u = userlist.one();
+          sreq->setUserObject(u);
+          std::string token = sreq->getUUID();
+          _user_map[token] = u.id.value();
+          sres->getOutputStream()->setHeader("Authentication-Token", token);
+          return;
+        }
       }
     }
-    if (username.length() > 0 && passwd.length() > 0) {
-      litesql::DataSource<db::User> userlist = litesql::select<db::User > (*getContext()->database, db::User::Authname == username && db::User::Authpass == passwd);
-      if (userlist.count() == 1) {
-        db::User u = userlist.one();
-        sreq->setUserObject(u);
-        sres->setStatus(ServiceResponse::OK);
-        std::string token = sreq->getUUID();
-        _user_map[token] = u.id.value();
-        sres->getOutputStream()->setHeader("Authentication-Token", token);
-        return;
-      }
-    }
-    sres->setStatus(ServiceResponse::FORBIDDEN);
+    sres->getOutputStream()->setHeader("WWW-Authenticate", "Basic realm=\"Media Encoding Cluster\"");
+    sres->setStatus(ServiceResponse::UNAUTHORIZED);
     sres->getOutputStream()->write("not authorized");
 
   }
