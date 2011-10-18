@@ -815,6 +815,10 @@ void checkDirs() {
   if (!datadir.exists())
     datadir.mkdir();
 
+  org::esb::io::File confdir(config::Config::get("hive.config_path"));
+  if (!confdir.exists())
+    confdir.mkdir();
+
   org::esb::io::File logdir(config::Config::get("log.path"));
   if (!logdir.exists())
     logdir.mkdir();
@@ -838,7 +842,7 @@ void setupConfig() {
 
   config::Config::setProperty("hive.user_path", upath);
   config::Config::setProperty("web.docroot", bpath + "/web");
-  config::Config::setProperty("hive.config_path", upath + "/.mhive.cfg");
+  config::Config::setProperty("hive.config_path", upath + "/conf");
   config::Config::setProperty("hive.dump_path", upath + "/dmp");
   config::Config::setProperty("hive.tmp_path", upath + "/tmp");
   config::Config::setProperty("hive.data_path", upath + "/data");
