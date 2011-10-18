@@ -40,7 +40,7 @@ namespace org {
         
         OptionsDescription CORE_EXPORT getOptionsDescription(std::string);
         std::list<std::string> CORE_EXPORT getPluginNameList();
-        std::string CORE_EXPORTgetConfigData(std::string key);
+        std::string CORE_EXPORT getConfigData(std::string key);
         
       private:
         PluginRegistry();
