@@ -60,6 +60,7 @@ namespace webauth {
   }
 
   void UserHandler::handleRegistration(Request* req, Response* res) {
+    if(!getContext()->getEnvironment<bool>("webauth.enabled"))return;
     ServiceRequest * sreq = static_cast<ServiceRequest*> (req);
     if (sreq->getRequestURI().find("register") != std::string::npos) {
       std::string postdata;
@@ -85,9 +86,11 @@ namespace webauth {
   }
 
   void UserHandler::handleUpdate(Request * req, Response*res) {
+    if(!getContext()->getEnvironment<bool>("webauth.enabled"))return;
     
   }
   void UserHandler::handleAuthorization(Request * req, Response*res) {
+    if(!getContext()->getEnvironment<bool>("webauth.enabled"))return;
     ServiceRequest * sreq = static_cast<ServiceRequest*> (req);
     if (sreq->getRequestURI().find(getContext()->getEnvironment<std::string > ("webauth.protecturi")) == std::string::npos) {
       return;
@@ -146,7 +149,8 @@ namespace webauth {
   OptionsDescription UserHandler::getOptionsDescription() {
     org::esb::core::OptionsDescription result("webauth");
     result.add_options()
-            ("webauth.protecturi", boost::program_options::value<std::string > ()->default_value("/api/v1"), "protected uri for the api requests");
+            ("webauth.protecturi", boost::program_options::value<std::string > ()->default_value("/api/v1"), "protected uri for the api requests")
+            ("webauth.enabled", boost::program_options::value<bool> ()->default_value(false), "enable/disable webauth module");
     return result;
 
   }
