@@ -27,27 +27,29 @@ namespace org {
       HookNotificationCenter * HookNotificationCenter::getInstance() {
         if (_instance == NULL)
           _instance = new HookNotificationCenter();
-        //LOGDEBUG("NotificationCenter:" << _instance);
         return _instance;
       }
 
       void HookNotificationCenter::postHook(std::string name, Request * req, Response * res) {
         boost::mutex::scoped_lock enqueue_lock(hook_mutex);
-        //LOGDEBUG("postHook " << name << " On " << this );
-          foreach(FuncMap::value_type & data, _hook_map["*"]) {
-            data.second(req, res);
+        foreach(FuncMap::value_type & data, _hook_map["*"]) {
+          foreach(FuncList::value_type & list, data.second) {
+            list(req, res);
           }
+        }
 
         if (_hook_map.count(name) > 0) {
           foreach(FuncMap::value_type & data, _hook_map[name]) {
-            data.second(req, res);
+            foreach(FuncList::value_type & list, data.second) {
+              list(req, res);
+            }
           }
         }
       }
 
       void HookNotificationCenter::addObserver(std::string name, boost::function<void (Request*req, Response*res) > func, int prio) {
-        LOGDEBUG( "AddObserver" << name << " On " << this );
-        _hook_map[name][prio]=func;
+        LOGDEBUG("AddObserver" << name << " On " << this);
+        _hook_map[name][prio].push_back(func);
       }
     }
   }

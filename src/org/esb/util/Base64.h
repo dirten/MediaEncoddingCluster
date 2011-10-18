@@ -8,11 +8,12 @@
 #ifndef BASE64_H
 #define	BASE64_H
 #include <string>
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace util {
 
-      class Base64 {
+      class UTIL_EXPORT Base64 {
       public:
         static std::string decode(std::string);
         static std::string encode(std::string);

@@ -28,7 +28,8 @@ namespace org {
         void  postHook(std::string name,Request  * object1=NULL,Response * object2=NULL);
         void  addObserver(std::string name, boost::function<void (Request*, Response*)> func, int prio);
       private:
-        typedef std::map<int,boost::function<void (Request*req, Response*res)> > FuncMap;
+        typedef std::list<boost::function<void (Request*req, Response*res)> > FuncList;
+        typedef std::map<int, FuncList > FuncMap;
         static HookNotificationCenter * _instance;
         std::map<std::string, FuncMap > _hook_map;
         
