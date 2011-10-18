@@ -54,7 +54,7 @@ SET(BUILD_MHIVECLIENT Off)
 SET(BUILD_MHIVECORE Off)
 include_directories (${MEC_SOURCE_DIR})
 include_directories (${MEC_SOURCE_DIR}/src)
-include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
+#include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
 include_directories (${MEC_SOURCE_DIR}/target/dependency/include/litesql)
 
 include_directories (${WT_DIR}/include)
@@ -191,7 +191,6 @@ IF(BUILD_MHIVEMASTER)
       util
       io
       hive
-      mq
     )
     INSTALL(TARGETS mhivemaster
         RUNTIME DESTINATION ${BIN_INSTALL_DIR}
@@ -208,7 +207,7 @@ ENDIF(BUILD_MHIVEGRIDNODE)
 
 IF(BUILD_MHIVEQUEUE)
     add_executable (mhivequeue MHiveQueue.cpp)
-    target_link_libraries (mhivequeue mq)
+    target_link_libraries (mhivequeue)
     INSTALL(TARGETS mhivequeue
         RUNTIME DESTINATION ${BIN_INSTALL_DIR}
         LIBRARY DESTINATION ${LIB_INSTALL_DIR}
@@ -257,7 +256,6 @@ target_link_libraries (mhive
   signal 
   io 
   net
-  mq
   rpc
   core
 

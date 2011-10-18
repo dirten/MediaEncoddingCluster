@@ -25,7 +25,7 @@ include_directories (${FFMPEG_INCLUDE_DIR})
 include_directories (${LOG4CPLUS_DIR}/litesql)
 include_directories (${LOG4CPLUS_DIR}/include/litesql)
 include_directories (${MEC_SOURCE_DIR}target/dependency/include)
-include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
+#include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
 
 #link_directories (/c/bruteripper/target/dependency/lib)
 
@@ -120,7 +120,7 @@ add_subdirectory (core)
 add_subdirectory (libjson)
 add_subdirectory (av)
 add_subdirectory (lang)
-add_subdirectory (mq)
+#add_subdirectory (mq)
 #add_subdirectory (grid)
 add_subdirectory (rpc)
 #add_subdirectory (api)
@@ -338,7 +338,7 @@ add_library (hive SHARED
   hive/TestLogAppender.cpp
 )
 
-TARGET_LINK_LIBRARIES(hive db net signal av lang json util mq)
+TARGET_LINK_LIBRARIES(hive db net signal av lang json util)
 
 INSTALL(TARGETS hive
     RUNTIME DESTINATION bin

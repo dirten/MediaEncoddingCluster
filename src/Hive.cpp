@@ -53,8 +53,8 @@
 #include <strsafe.h>
 #include "client/windows/handler/exception_handler.h"
 #endif  // !_WIN32
-#include "org/esb/mq/QueueManager.h"
-#include "org/esb/mq/QueueConnection.h"
+//#include "org/esb/mq/QueueManager.h"
+//#include "org/esb/mq/QueueConnection.h"
 #include "org/esb/util/LoggerConfig.cpp"
 #include "org/esb/util/Log.h"
 #include "org/esb/util/LogConfigurator.cpp"
@@ -400,8 +400,6 @@ int main(int argc, char * argv[]) {
 
     if (vm.count("run")) {
       LOGDEBUG("start mhive server");
-      org::esb::mq::QueueManager man;
-      man.start();
       //org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
 
       //org::esb::api::JsonServer server(vm["webport"].as<int> ());
@@ -465,25 +463,6 @@ int main(int argc, char * argv[]) {
 
     }
 
-    if (vm.count("queue")) {
-      LOGDEBUG("start mhive Queue Server");
-      org::esb::mq::QueueManager man;
-      man.start();
-      org::esb::lang::Thread::sleep2(500);
-      {
-        //    LOGDEBUG("QueueUrl:"<<man.getUrl())
-        org::esb::mq::QueueConnection con(man.getUrl());
-        if (!con.queueExist("punitin"))
-          con.createQueue("punitin");
-        if (!con.queueExist("punitout"))
-          con.createQueue("punitout");
-        if (!con.queueExist("system"))
-          con.createQueue("system");
-      }
-
-      org::esb::lang::CtrlCHitWaiter::wait();
-      man.stop();
-    }
 
     if (vm.count("version")) {
       cout << "MediaEncodingCluster " << MHIVE_VERSION << endl;
