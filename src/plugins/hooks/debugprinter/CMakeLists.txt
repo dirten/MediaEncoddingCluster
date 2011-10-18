@@ -13,6 +13,7 @@ add_library (debugprinter SHARED
 
 TARGET_LINK_LIBRARIES(debugprinter
   core
+  json
 )
 SET_TARGET_PROPERTIES( debugprinter PROPERTIES PREFIX "")
 
