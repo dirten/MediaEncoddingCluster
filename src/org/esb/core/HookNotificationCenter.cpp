@@ -34,20 +34,20 @@ namespace org {
       void HookNotificationCenter::postHook(std::string name, Request * req, Response * res) {
         boost::mutex::scoped_lock enqueue_lock(hook_mutex);
         //LOGDEBUG("postHook " << name << " On " << this );
-          foreach(boost::function<void (Request*req, Response * res) > func, _hook_map["*"]) {
-            func(req, res);
+          foreach(FuncMap::value_type & data, _hook_map["*"]) {
+            data.second(req, res);
           }
 
         if (_hook_map.count(name) > 0) {
-          foreach(boost::function<void (Request*req, Response * res) > func, _hook_map[name]) {
-            func(req, res);
+          foreach(FuncMap::value_type & data, _hook_map[name]) {
+            data.second(req, res);
           }
         }
       }
 
       void HookNotificationCenter::addObserver(std::string name, boost::function<void (Request*req, Response*res) > func, int prio) {
         LOGDEBUG( "AddObserver" << name << " On " << this );
-        _hook_map[name].push_back(func);
+        _hook_map[name][prio]=func;
       }
     }
   }
