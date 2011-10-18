@@ -17,7 +17,6 @@
 
 #include "org/esb/lang/Ptr.h"
 
-#include "org/esb/io/QueueOutputStream.h"
 #include "org/esb/io/ObjectOutputStream.h"
 #include "exports.h"
 namespace org {
@@ -70,10 +69,6 @@ namespace org {
           Ptr<db::Job> current_job;
           std::string _stop_job_id;
           bool stopJob();
-#ifdef USE_SAFMQ
-          org::esb::io::QueueOutputStream _queue;
-          org::esb::io::ObjectOutputStream _oos;
-#endif
         };
         REGISTER_SERVICE("processunitcontroller", ProcessUnitController)
 

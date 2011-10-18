@@ -11,9 +11,9 @@
 #include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/io/StringInputStream.h"
 #include "org/esb/io/ObjectInputStream.h"
-#include "MQFactory.h"
-#include "MessageQueue.h"
-#include "safmq.h"
+//#include "MQFactory.h"
+//#include "MessageQueue.h"
+//#include "safmq.h"
 #include "org/esb/util/Foreach.h"
 namespace org {
   namespace esb {
@@ -40,7 +40,7 @@ namespace org {
       }
 
       PartitionManager::PartitionManager() {
-        _con = new org::esb::mq::QueueConnection("safmq://admin:@localhost:20202");
+        //_con = new org::esb::mq::QueueConnection("safmq://admin:@localhost:20202");
       }
 
       PartitionManager::~PartitionManager() {
@@ -101,7 +101,7 @@ namespace org {
       }
 
       void PartitionManager::putProcessUnit(std::string partition, boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, Type type) {
-        
+        /*
         int stream_index = unit->_source_stream;
         std::string queue_name = org::esb::util::StringUtil::toString(stream_index);
         if (_partition_streams.count(stream_index) == 0) {
@@ -127,10 +127,12 @@ namespace org {
         msg.getBufferStream()->write(data.c_str(), data.length());
         safmq::ErrorCode er;
         _con->enqueue(queue_name, msg);
+         */
       }
 
       boost::shared_ptr<org::esb::hive::job::ProcessUnit>PartitionManager::getProcessUnit(boost::asio::ip::tcp::endpoint ep) {
         boost::shared_ptr<org::esb::hive::job::ProcessUnit> result = boost::shared_ptr<org::esb::hive::job::ProcessUnit > (new org::esb::hive::job::ProcessUnit());        
+        /*
         LOGDEBUG("Endpoint="<<ep);
         if (_endpoints.count(ep)>0) {
           if (_endpoints[ep].stream == 0) {
@@ -173,7 +175,7 @@ namespace org {
             org::esb::io::ObjectInputStream ois(&sis);
             ois.readObject(*result.get());
           }
-          if(result->_last_process_unit /*_streams[_endpoints[ep].stream].count==0*/){
+          if(result->_last_process_unit ){
             LOGDEBUG("last process unit==true unit="<<result->_process_unit <<" endpoint = "<<ep);
             _partition_stream_map[_endpoints[ep].partition].remove(_streams[_endpoints[ep].stream]);
             
@@ -187,7 +189,7 @@ namespace org {
         }else{
           LOGDEBUG("unknown endpoint");
         }
-
+        */
         return result;
       }
       /*

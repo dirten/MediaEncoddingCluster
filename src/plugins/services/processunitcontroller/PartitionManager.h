@@ -11,7 +11,7 @@
 #include <boost/asio/ip/tcp.hpp>
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/lang/Ptr.h"
-#include "org/esb/mq/QueueConnection.h"
+//#include "org/esb/mq/QueueConnection.h"
 #include <map>
 #include <list>
 namespace org {
@@ -102,7 +102,7 @@ namespace org {
         std::map<int, int > _stream_max_endpoints;
         std::map<int, std::string > _partition_streams;
         std::map<std::string, int> _partition_sizes;
-        org::esb::mq::QueueConnection * _con;//(man.getUrl());
+        //org::esb::mq::QueueConnection * _con;//(man.getUrl());
 
       };
     }

@@ -6,7 +6,7 @@
  */
 
 #include "org/esb/db/hivedb.hpp"
-#include "PartitionManager.h"
+//#include "PartitionManager.h"
 #include "ProcessUnitController.h"
 #include "ProcessUnitBuilder.h"
 #include "org/esb/config/config.h"
@@ -99,10 +99,6 @@ namespace org {
       ProcessUnitController::ProcessUnitController() :
       _dbCon("sqlite3", org::esb::config::Config::get("db.url")),
       _dbJobCon("sqlite3", org::esb::config::Config::get("db.url"))
-#ifdef USE_SAFMQ
-      , _queue("safmq://admin:@localhost:20200/punitout")
-      , _oos(&_queue)
-#endif
       {
         LOGTRACEMETHOD("ProcessUnitController::ProcessUnitController()");
         _stop_signal = false;
@@ -114,10 +110,6 @@ namespace org {
       ProcessUnitController::ProcessUnitController(const ProcessUnitController& orig) :
       _dbCon(orig._dbCon),
       _dbJobCon(orig._dbJobCon)
-#ifdef USE_SAFMQ
-      , _queue(orig._queue)
-      , _oos(orig._oos)
-#endif
       {
 
       }
@@ -389,25 +381,6 @@ namespace org {
       }
 
       void ProcessUnitController::putToQueue(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit) {
-#ifdef USE_SAFMQ
-        db::ProcessUnit dbunit(_dbCon);
-        dbunit.sorcestream = unit->_source_stream;
-        dbunit.targetstream = unit->_target_stream;
-        dbunit.timebasenum = unit->_input_packets.front()->getTimeBase().num;
-        dbunit.timebaseden = unit->_input_packets.front()->getTimeBase().den;
-        dbunit.startts = (double) unit->_input_packets.front()->getDts();
-        dbunit.endts = (double) unit->_input_packets.back()->getDts();
-        dbunit.framecount = (int) unit->_input_packets.size();
-        {
-          boost::mutex::scoped_lock scoped_lock(db_con_mutex);
-          dbunit.update();
-          dbunit.recv = -1;
-          dbunit.update();
-        }
-        unit->_process_unit = dbunit.id;
-
-        _oos.writeObject(*unit.get());
-#else
         //PartitionManager::getInstance()->putProcessUnit("global", unit);
         //return;
         LOGDEBUG("putting pu packet size:" << unit->_input_packets.size());
@@ -418,8 +391,6 @@ namespace org {
           LOGDEBUG("puQueue.enqueue(unit);")
           puQueue.enqueue(unit);
         }
-#endif
-
       }
 
       boost::shared_ptr<org::esb::hive::job::ProcessUnit> ProcessUnitController::getProcessUnit() {
@@ -432,11 +403,7 @@ namespace org {
         if (puQueue.size() == 0 || _stop_signal)
           return boost::shared_ptr<org::esb::hive::job::ProcessUnit > (new org::esb::hive::job::ProcessUnit());
 
-#ifdef USE_SAFMQ
-
-#else
         u = puQueue.dequeue();
-#endif
         db::ProcessUnit dbunit(_dbCon);
         dbunit.sorcestream = u->_source_stream;
         dbunit.targetstream = u->_target_stream;
@@ -492,13 +459,9 @@ namespace org {
 
         if (audioQueue.size() == 0 || _stop_signal)
           return boost::shared_ptr<org::esb::hive::job::ProcessUnit > (new org::esb::hive::job::ProcessUnit());
-#ifdef USE_SAFMQ
-
-#else
         u = audioQueue.dequeue();
         if ((audioQueue.size() == 0 && _isWaitingForFinish) || _stop_signal)
           u->_last_process_unit = true;
-#endif
         db::ProcessUnit dbunit(_dbCon);
         dbunit.sorcestream = u->_source_stream;
         dbunit.targetstream = u->_target_stream;

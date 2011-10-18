@@ -1,6 +1,5 @@
 
 include_directories (${MEC_SOURCE_DIR})
-include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
 
 add_executable (DatabaseBootstrapTest db/DatabaseBootstrapTest.cpp)
 
@@ -21,7 +20,7 @@ add_subdirectory (av)
 add_subdirectory (hive)
 #add_subdirectory (web)
 add_subdirectory (rpc)
-add_subdirectory (mq)
+#add_subdirectory (mq)
 #add_subdirectory (grid)
 
 
