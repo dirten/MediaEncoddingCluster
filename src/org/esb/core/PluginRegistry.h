@@ -45,6 +45,9 @@ namespace org {
         
         OptionsDescription CORE_EXPORT getOptionsDescription(std::string);
         std::list<std::string> CORE_EXPORT getPluginNameList();
+
+        std::list<std::string> CORE_EXPORT getTaskNameList();
+        OptionsDescription CORE_EXPORT getTaskOptionsDescription(std::string);
         std::string CORE_EXPORT getConfigData(std::string key);
         Ptr<Task>createTask(std::string name,std::string cfg);
         
@@ -66,7 +69,9 @@ namespace org {
         std::map<std::string, org::esb::lang::SharedObjectLoader*> _shared_objects;
         std::map<std::string,PluginData> _plugin_data;
         //std::map<std::string,Ptr<TaskFactory> > _task_factories;
-        std::map<std::string,TaskFactory *> _task_factories;
+        typedef std::map<std::string,TaskFactory *> TaskFactoryMap;
+
+        TaskFactoryMap _task_factories;
         std::map<std::string,std::string> _config_data;
       };
     }

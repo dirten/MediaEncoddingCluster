@@ -110,6 +110,25 @@ namespace org {
       void PluginRegistry::registerTaskFactory(std::string name, TaskFactory *factory) {
         _task_factories[name] = factory;
       }
+
+      std::list<std::string> PluginRegistry::getTaskNameList() {
+        std::list<std::string> result;
+
+        foreach(TaskFactoryMap::value_type s, _task_factories) {
+          result.push_back(s.first);
+        }
+        return result;
+
+      }
+
+      OptionsDescription PluginRegistry::getTaskOptionsDescription(std::string name) {
+        if (_task_factories.count(name) > 0) {
+          return _task_factories[name]->getOptionsDescription();
+        }
+        return OptionsDescription();
+
+      }
+
       /*
       void PluginRegistry::registerTaskFactory(std::string name, Ptr<TaskFactory> factory) {
         _task_factories[name] = factory;
@@ -123,22 +142,22 @@ namespace org {
       PluginRegistry::PluginRegistry() {
       }
 
-      Ptr<Task>PluginRegistry::createTask(std::string name,std::string cfg) {
-        Ptr<Task>result=_task_factories[name]->create();
+      Ptr<Task>PluginRegistry::createTask(std::string name, std::string cfg) {
+        Ptr<Task>result = _task_factories[name]->create();
         result->setContext(new PluginContext());
-        org::esb::util::StringTokenizer tok(cfg,";");
-        while(tok.hasMoreTokens()){
-          std::string line=tok.nextToken();
-          org::esb::util::StringTokenizer tok2(line,"=");
-          if(tok2.countTokens()==2){
-            std::string key=tok2.nextToken();
-            std::string val=tok2.nextToken();
-            LOGDEBUG("Setting plugin Context : "<<key<<"="<<val);
-            result->getContext()->env[key]=val;
-          }else{
-            LOGERROR("line : "<<line);
+        org::esb::util::StringTokenizer tok(cfg, ";");
+        while (tok.hasMoreTokens()) {
+          std::string line = tok.nextToken();
+          org::esb::util::StringTokenizer tok2(line, "=");
+          if (tok2.countTokens() == 2) {
+            std::string key = tok2.nextToken();
+            std::string val = tok2.nextToken();
+            LOGDEBUG("Setting plugin Context : " << key << "=" << val);
+            result->getContext()->env[key] = val;
+          } else {
+            LOGERROR("line : " << line);
           }
-        }        
+        }
         return result;
       }
 

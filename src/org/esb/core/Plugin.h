@@ -32,7 +32,7 @@ namespace org {
         virtual ~Plugin() {
         };
 
-        virtual OptionsDescription getOptionsDescription() {
+        static OptionsDescription getOptionsDescription() {
           return OptionsDescription();
         };
 
@@ -47,6 +47,7 @@ namespace org {
       class Factory {
       public:
         virtual Ptr<Interface> create() = 0;
+        virtual OptionsDescription getOptionsDescription()=0;
       };
       typedef Factory<Task> TaskFactory;
 

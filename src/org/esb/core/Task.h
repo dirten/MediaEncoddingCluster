@@ -38,7 +38,10 @@ class RegisterTaskFactory##instance : public org::esb::core::TaskFactory { \
                 Ptr<org::esb::core::Task> create() { \
                         return Ptr<org::esb::core::Task>(new instance()); \
                 } \
-} RegisterTask##instance##Instance##prio; 
+                org::esb::core::OptionsDescription getOptionsDescription() { \
+                return ##instance::getOptionsDescription(); \
+                } \
+} RegisterTask##instance##Instance; 
 
 
 
