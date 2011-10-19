@@ -33,11 +33,11 @@ namespace org {
       char * ApiWebServer::p = new char();
 
       void ApiWebServer::startService() {
-        org::esb::core::PluginContext *c = getContext();
-        LOGDEBUG("context parameter port:" << c->getEnvironment<std::string>("webservice.port"));
-        LOGDEBUG("context parameter docroot:" << c->getEnvironment<std::string>("webservice.docroot"));
-        port = c->getEnvironment<std::string>("webservice.port");
-        docroot = c->getEnvironment<std::string>("webservice.docroot");
+         
+        LOGDEBUG("context parameter port:" << getContext()->getEnvironment<std::string>("webservice.port"));
+        LOGDEBUG("context parameter docroot:" << getContext()->getEnvironment<std::string>("webservice.docroot"));
+        port = getContext()->getEnvironment<std::string>("webservice.port");
+        docroot = getContext()->getEnvironment<std::string>("webservice.docroot");
 
         if (port.length() == 0)
           port = "8080";
