@@ -11,6 +11,7 @@
 #include <map>
 #include <string>
 #include <boost/lexical_cast.hpp>
+#include <boost/shared_ptr.hpp>
 namespace org {
   namespace esb {
     namespace core {
@@ -22,12 +23,11 @@ namespace org {
         T getEnvironment(std::string key){
           return boost::lexical_cast<T>(env[key]);
         }
+        virtual ~PluginContext();
       private:
         friend class PluginRegistry;
         PluginContext();
-        virtual ~PluginContext();
         std::map<std::string, std::string> env;
-        
       };
     }
   }

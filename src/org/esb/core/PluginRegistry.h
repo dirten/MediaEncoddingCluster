@@ -12,6 +12,7 @@
 #include <string>
 #include "Plugin.h"
 #include "org/esb/lang/SharedObjectLoader.h"
+#include "org/esb/lang/Ptr.h"
 #include "org/esb/util/Log.h"
 #include "exports.h"
 namespace org {
@@ -24,6 +25,7 @@ namespace org {
       class HookPlugin;
       class HookProvider;
       class Task;
+      
       class PluginRegistry {
         classlogger("org.esb.core.PluginRegistry")
       public:
@@ -33,7 +35,8 @@ namespace org {
         void CORE_EXPORT registerService(std::string, ServicePlugin*);
         void CORE_EXPORT registerHookPlugin(std::string, HookPlugin*);
         void CORE_EXPORT registerHookProvider(std::string, HookProvider*);
-        void CORE_EXPORT registerTask(std::string, Task*);
+        //void CORE_EXPORT registerTaskFactory(std::string,Ptr<TaskFactory>);
+        void CORE_EXPORT registerTaskFactory(std::string,TaskFactory*);
         void CORE_EXPORT startServerServices();
         void CORE_EXPORT startClientServices();
         void CORE_EXPORT stopServices();
@@ -43,6 +46,7 @@ namespace org {
         OptionsDescription CORE_EXPORT getOptionsDescription(std::string);
         std::list<std::string> CORE_EXPORT getPluginNameList();
         std::string CORE_EXPORT getConfigData(std::string key);
+        Ptr<Task>createTask(std::string name,std::string cfg);
         
       private:
         PluginRegistry();
@@ -61,6 +65,8 @@ namespace org {
         std::map<std::string, HookPlugin*> _hook_map;
         std::map<std::string, org::esb::lang::SharedObjectLoader*> _shared_objects;
         std::map<std::string,PluginData> _plugin_data;
+        //std::map<std::string,Ptr<TaskFactory> > _task_factories;
+        std::map<std::string,TaskFactory *> _task_factories;
         std::map<std::string,std::string> _config_data;
       };
     }

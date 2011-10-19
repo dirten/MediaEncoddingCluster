@@ -1,0 +1,90 @@
+############################################################
+#
+# Find the mysql library
+#
+# This file sets:
+# - POCO_INCLUDE_DIR
+# - POCO_LIB_DIR
+# - POCO_LIBS
+############################################################
+
+SET(POCO_LIB_DIR ${POCO_DIR}/lib)
+SET(POCO_INCLUDE_DIR ${POCO_DIR}/include)
+
+IF(CMAKE_BUILD_TYPE STREQUAL debug)
+    SET(DBG_SUFFIX d)
+ENDIF(CMAKE_BUILD_TYPE STREQUAL debug)
+
+FIND_LIBRARY(POCO_LIB_FOUNDATION
+    NAMES
+      PocoFoundation${DBG_SUFFIX}
+      libPocoFoundation${DBG_SUFFIX}
+    PATHS
+      ${POCO_LIB_DIR}
+    NO_DEFAULT_PATH
+  )
+FIND_LIBRARY(POCO_LIB_CRYPTO
+    NAMES
+      PocoCrypto${DBG_SUFFIX}
+      libPocoCrypto${DBG_SUFFIX}
+    PATHS
+      ${POCO_LIB_DIR}
+    NO_DEFAULT_PATH
+  )
+FIND_LIBRARY(POCO_LIB_DATA
+    NAMES
+      PocoData${DBG_SUFFIX}
+      libPocoData${DBG_SUFFIX}
+    PATHS
+      ${POCO_LIB_DIR}
+    NO_DEFAULT_PATH
+  )
+FIND_LIBRARY(POCO_LIB_DATA_SQLITE
+    NAMES
+      PocoDataSQLite${DBG_SUFFIX}
+      libPocoDataSQLite${DBG_SUFFIX}
+    PATHS
+      ${POCO_LIB_DIR}
+    NO_DEFAULT_PATH
+  )
+FIND_LIBRARY(POCO_LIB_NET
+    NAMES
+      PocoNet${DBG_SUFFIX}
+      libPocoNet${DBG_SUFFIX}
+    PATHS
+      ${POCO_LIB_DIR}
+    NO_DEFAULT_PATH
+  )
+FIND_LIBRARY(POCO_LIB_NET_SSL
+    NAMES
+      PocoNetSSL${DBG_SUFFIX}
+      libPocoNetSSL${DBG_SUFFIX}
+    PATHS
+      ${POCO_LIB_DIR}
+    NO_DEFAULT_PATH
+  )
+FIND_LIBRARY(POCO_LIB_NET_UTIL
+    NAMES
+      PocoUtil${DBG_SUFFIX}
+      libPocoUtil${DBG_SUFFIX}
+    PATHS
+      ${POCO_LIB_DIR}
+    NO_DEFAULT_PATH
+  )
+FIND_LIBRARY(POCO_LIB_XML
+    NAMES
+      PocoXML${DBG_SUFFIX}
+      libPocoXML${DBG_SUFFIX}
+    PATHS
+      ${POCO_LIB_DIR}
+    NO_DEFAULT_PATH
+  )
+FIND_LIBRARY(POCO_LIB_ZIP
+    NAMES
+      PocoZip${DBG_SUFFIX}
+      libPocoZip${DBG_SUFFIX}
+    PATHS
+      ${POCO_LIB_DIR}
+    NO_DEFAULT_PATH
+  )
+

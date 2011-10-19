@@ -106,9 +106,14 @@ namespace org {
       void PluginRegistry::registerHookProvider(std::string name, HookProvider*plugin) {
         _hook_provider_map[name] = plugin;
       }
-      void PluginRegistry::registerTask(std::string name, Task*task) {
-        
+
+      void PluginRegistry::registerTaskFactory(std::string name, TaskFactory *factory) {
+        _task_factories[name] = factory;
       }
+      /*
+      void PluginRegistry::registerTaskFactory(std::string name, Ptr<TaskFactory> factory) {
+        _task_factories[name] = factory;
+      }*/
 
       void PluginRegistry::close() {
         delete _instance;
@@ -116,6 +121,25 @@ namespace org {
       }
 
       PluginRegistry::PluginRegistry() {
+      }
+
+      Ptr<Task>PluginRegistry::createTask(std::string name,std::string cfg) {
+        Ptr<Task>result=_task_factories[name]->create();
+        result->setContext(new PluginContext());
+        org::esb::util::StringTokenizer tok(cfg,";");
+        while(tok.hasMoreTokens()){
+          std::string line=tok.nextToken();
+          org::esb::util::StringTokenizer tok2(line,"=");
+          if(tok2.countTokens()==2){
+            std::string key=tok2.nextToken();
+            std::string val=tok2.nextToken();
+            LOGDEBUG("Setting plugin Context : "<<key<<"="<<val);
+            result->getContext()->env[key]=val;
+          }else{
+            LOGERROR("line : "<<line);
+          }
+        }        
+        return result;
       }
 
       void PluginRegistry::initPlugins() {

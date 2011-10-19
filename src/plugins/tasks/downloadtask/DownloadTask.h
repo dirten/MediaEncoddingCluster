@@ -8,20 +8,22 @@
 #ifndef DOWNLOADTASK_H
 #define	DOWNLOADTASK_H
 #include "org/esb/core/Task.h"
+#include "exports.h"
 namespace plugin {
 
-  class DownloadTask : public org::esb::core::Task {
+  class DLTASK_EXPORT DownloadTask : public org::esb::core::Task {
   public:
     DownloadTask();
     virtual ~DownloadTask();
     void prepare();
     void execute();
+    org::esb::core::OptionsDescription getOptionsDescription();
+
   private:
     std::string _srcuristr;
     std::string _trguristr;
   };
   REGISTER_TASK("DownloadTask", DownloadTask)
-
 }
 #endif	/* DOWNLOADTASK_H */
 

@@ -9,7 +9,7 @@
 #define	TASK_H
 #include "Plugin.h"
 #include "PluginRegistry.h"
-
+#include "org/esb/lang/Ptr.h"
 #include "exports.h"
 namespace org {
   namespace esb {
@@ -28,21 +28,17 @@ namespace org {
   }
 }
 #define REGISTER_TASK(name,instance) \
-	class RegisterTask##instance \
-	        { \
-			instance * element##instance; \
-	                public: \
-	                        RegisterTask##instance() \
-	                        { \
-				element##instance=new instance(); \
-                                std::string tmpname=#instance; \
-                                org::esb::core::PluginRegistry::getInstance()->registerTask(tmpname, element##instance); \
-	                        } \
-	                        ~RegisterTask##instance() \
-	                        { \
-				delete element##instance; \
-	                        } \
-	        } RegisterTask##instance##Instance##prio; 
+class RegisterTaskFactory##instance : public org::esb::core::TaskFactory { \
+        public: \
+                RegisterTaskFactory##instance() { \
+                        std::string tmpname=#instance; \
+                        org::esb::core::PluginRegistry::getInstance()->registerTaskFactory(tmpname, this); \
+	        } \
+	        ~RegisterTaskFactory##instance() { } \
+                Ptr<org::esb::core::Task> create() { \
+                        return Ptr<org::esb::core::Task>(new instance()); \
+                } \
+} RegisterTask##instance##Instance##prio; 
 
 
 
