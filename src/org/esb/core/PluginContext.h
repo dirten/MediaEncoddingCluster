@@ -22,13 +22,12 @@ namespace org {
         T getEnvironment(std::string key){
           return boost::lexical_cast<T>(env[key]);
         }
-        std::map<std::string, std::string> env;
-        
       private:
         friend class PluginRegistry;
         PluginContext();
         virtual ~PluginContext();
-
+        std::map<std::string, std::string> env;
+        
       };
     }
   }

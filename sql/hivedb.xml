@@ -241,6 +241,16 @@
         <field name="deleted" type="integer" default="0"/>
     </object>
 
+    <object name="Task">
+        <field name="name" type="string"/>
+        <field name="parameter" type="string"/>
+    </object>
+    
+    <relation id="JobTask">
+        <relate object="Task" handle="job"/>
+        <relate object="Job" handle="tasks"/>
+    </relation>
+
     <object name="JobLog">
         <field name="created" type="datetime" default="0"/>
         <field name="message" type="string"/>

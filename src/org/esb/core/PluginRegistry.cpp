@@ -17,6 +17,7 @@
 #include "org/esb/config/config.h"
 #include "org/esb/db/hivedb.hpp"
 #include "PluginContext.h"
+#include "Task.h"
 //#include "org/esb/api/ApiWebServer.h"
 namespace org {
   namespace esb {
@@ -104,6 +105,9 @@ namespace org {
 
       void PluginRegistry::registerHookProvider(std::string name, HookProvider*plugin) {
         _hook_provider_map[name] = plugin;
+      }
+      void PluginRegistry::registerTask(std::string name, Task*task) {
+        
       }
 
       void PluginRegistry::close() {

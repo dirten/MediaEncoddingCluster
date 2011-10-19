@@ -16,6 +16,7 @@ class CodecPreset;
 class CodecPresetParameter;
 class Config;
 class Job;
+class Task;
 class JobLog;
 class JobDetail;
 class Watchfolder;
@@ -342,6 +343,25 @@ public:
     static void unlink(const litesql::Database& db, const db::CodecPreset& o0, const db::Profile& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     static litesql::DataSource<CodecPresetProfileRelationAudioCodecPreset2Profile::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
+class JobTaskRelationJobTask {
+public:
+    class Row {
+    public:
+        litesql::Field<int> task;
+        litesql::Field<int> job;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType Job;
+    static const litesql::FieldType Task;
+    static void link(const litesql::Database& db, const db::Job& o0, const db::Task& o1);
+    static void unlink(const litesql::Database& db, const db::Job& o0, const db::Task& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<JobTaskRelationJobTask::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 ;
 ;
@@ -1618,6 +1638,15 @@ public:
     public:
         static const litesql::FieldType Id;
     };
+    class TasksHandle : public litesql::RelationHandle<Job> {
+    public:
+        TasksHandle(const Job& owner);
+        void link(const Task& o0);
+        void unlink(const Task& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Task> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<JobTaskRelationJobTask::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     class JoblogHandle : public litesql::RelationHandle<Job> {
     public:
         JoblogHandle(const Job& owner);
@@ -1712,6 +1741,7 @@ public:
     Job(const litesql::Database& db, const litesql::Record& rec);
     Job(const Job& obj);
     const Job& operator=(const Job& obj);
+    Job::TasksHandle tasks();
     Job::JoblogHandle joblog();
     Job::InputfileHandle inputfile();
     Job::OutputfileHandle outputfile();
@@ -1736,6 +1766,58 @@ public:
     std::auto_ptr<Job> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, Job o);
+class Task : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    class JobHandle : public litesql::RelationHandle<Task> {
+    public:
+        JobHandle(const Task& owner);
+        void link(const Job& o0);
+        void unlink(const Job& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Job> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<JobTaskRelationJobTask::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType Name;
+    litesql::Field<std::string> name;
+    static const litesql::FieldType Parameter;
+    litesql::Field<std::string> parameter;
+protected:
+    void defaults();
+public:
+    Task(const litesql::Database& db);
+    Task(const litesql::Database& db, const litesql::Record& rec);
+    Task(const Task& obj);
+    const Task& operator=(const Task& obj);
+    Task::JobHandle job();
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<Task> upcast();
+    std::auto_ptr<Task> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, Task o);
 class JobLog : public litesql::Persistent {
 public:
     class Own {

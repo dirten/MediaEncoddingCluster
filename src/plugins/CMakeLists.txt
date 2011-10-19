@@ -5,3 +5,4 @@ INCLUDE_DIRECTORIES (${MEC_SOURCE_DIR}/target/dependency/include/litesql)
 
 add_subdirectory (services)
 add_subdirectory (hooks)
+add_subdirectory (tasks)

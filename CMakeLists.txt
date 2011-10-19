@@ -30,6 +30,7 @@ if(USE_SAFMQ)
     add_definitions(-DUSE_SAFMQ)
 ENDIF(USE_SAFMQ)
 
+SET(POCO_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Use poco in directory")
 SET(LIBJSON_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 #SET(X264_DIR ${PROJECT_SOURCE_DIR}/target/dependency )
@@ -101,6 +102,7 @@ INCLUDE(cmake/HiveFindFFmpeg.txt)
 INCLUDE(cmake/HiveFindBreakpad.txt)
 INCLUDE(cmake/HiveFindProtobuf.txt)
 INCLUDE(cmake/HiveFindLibJson.txt)
+INCLUDE(cmake/HiveFindPoco.txt)
 
 
 #add_custom_target(

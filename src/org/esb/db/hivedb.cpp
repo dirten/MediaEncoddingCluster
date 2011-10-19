@@ -834,6 +834,55 @@ template <> litesql::DataSource<db::Profile> CodecPresetProfileRelationAudioCode
     sel.where(srcExpr);
     return DataSource<db::Profile>(db, db::Profile::Id.in(sel) && expr);
 }
+JobTaskRelationJobTask::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : task(JobTaskRelationJobTask::Task), job(JobTaskRelationJobTask::Job) {
+    switch(rec.size()) {
+    case 2:
+        task = rec[1];
+    case 1:
+        job = rec[0];
+    }
+}
+const std::string JobTaskRelationJobTask::table__("Job_Task_JobTask");
+const litesql::FieldType JobTaskRelationJobTask::Job("Job1","INTEGER",table__);
+const litesql::FieldType JobTaskRelationJobTask::Task("Task2","INTEGER",table__);
+void JobTaskRelationJobTask::link(const litesql::Database& db, const db::Job& o0, const db::Task& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(Job.name());
+    values.push_back(o0.id);
+    fields.push_back(Task.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void JobTaskRelationJobTask::unlink(const litesql::Database& db, const db::Job& o0, const db::Task& o1) {
+    db.delete_(table__, (Job == o0.id && Task == o1.id));
+}
+void JobTaskRelationJobTask::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<JobTaskRelationJobTask::Row> JobTaskRelationJobTask::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(Job.fullName());
+    sel.result(Task.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<JobTaskRelationJobTask::Row>(db, sel);
+}
+template <> litesql::DataSource<db::Job> JobTaskRelationJobTask::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Job.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Job>(db, db::Job::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::Task> JobTaskRelationJobTask::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Task.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Task>(db, db::Task::Id.in(sel) && expr);
+}
 JobJobLogRelationJobJobLog::Row::Row(const litesql::Database& db, const litesql::Record& rec)
          : jobLog(JobJobLogRelationJobJobLog::JobLog), job(JobJobLogRelationJobJobLog::Job) {
     switch(rec.size()) {
@@ -4854,6 +4903,24 @@ std::ostream & operator<<(std::ostream& os, Config o) {
     return os;
 }
 const litesql::FieldType Job::Own::Id("id_","INTEGER","Job_");
+Job::TasksHandle::TasksHandle(const Job& owner)
+         : litesql::RelationHandle<Job>(owner) {
+}
+void Job::TasksHandle::link(const Task& o0) {
+    JobTaskRelationJobTask::link(owner->getDatabase(), *owner, o0);
+}
+void Job::TasksHandle::unlink(const Task& o0) {
+    JobTaskRelationJobTask::unlink(owner->getDatabase(), *owner, o0);
+}
+void Job::TasksHandle::del(const litesql::Expr& expr) {
+    JobTaskRelationJobTask::del(owner->getDatabase(), expr && JobTaskRelationJobTask::Job == owner->id);
+}
+litesql::DataSource<Task> Job::TasksHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return JobTaskRelationJobTask::get<Task>(owner->getDatabase(), expr, (JobTaskRelationJobTask::Job == owner->id) && srcExpr);
+}
+litesql::DataSource<JobTaskRelationJobTask::Row> Job::TasksHandle::getRows(const litesql::Expr& expr) {
+    return JobTaskRelationJobTask::getRows(owner->getDatabase(), expr && (JobTaskRelationJobTask::Job == owner->id));
+}
 Job::JoblogHandle::JoblogHandle(const Job& owner)
          : litesql::RelationHandle<Job>(owner) {
 }
@@ -5056,6 +5123,9 @@ const Job& Job::operator=(const Job& obj) {
     litesql::Persistent::operator=(obj);
     return *this;
 }
+Job::TasksHandle Job::tasks() {
+    return Job::TasksHandle(*this);
+}
 Job::JoblogHandle Job::joblog() {
     return Job::JoblogHandle(*this);
 }
@@ -5177,6 +5247,7 @@ void Job::delRecord() {
     deleteFromTable(table__, id);
 }
 void Job::delRelations() {
+    JobTaskRelationJobTask::del(*db, (JobTaskRelationJobTask::Job == id));
     JobJobLogRelationJobJobLog::del(*db, (JobJobLogRelationJobJobLog::Job == id));
     JobMediaFileRelationJobInFile::del(*db, (JobMediaFileRelationJobInFile::Job == id));
     JobMediaFileRelationJobOutFile::del(*db, (JobMediaFileRelationJobOutFile::Job == id));
@@ -5253,6 +5324,170 @@ std::ostream & operator<<(std::ostream& os, Job o) {
     os << o.fps.name() << " = " << o.fps << std::endl;
     os << o.data.name() << " = " << o.data << std::endl;
     os << o.deleted.name() << " = " << o.deleted << std::endl;
+    os << "-------------------------------------" << std::endl;
+    return os;
+}
+const litesql::FieldType Task::Own::Id("id_","INTEGER","Task_");
+Task::JobHandle::JobHandle(const Task& owner)
+         : litesql::RelationHandle<Task>(owner) {
+}
+void Task::JobHandle::link(const Job& o0) {
+    JobTaskRelationJobTask::link(owner->getDatabase(), o0, *owner);
+}
+void Task::JobHandle::unlink(const Job& o0) {
+    JobTaskRelationJobTask::unlink(owner->getDatabase(), o0, *owner);
+}
+void Task::JobHandle::del(const litesql::Expr& expr) {
+    JobTaskRelationJobTask::del(owner->getDatabase(), expr && JobTaskRelationJobTask::Task == owner->id);
+}
+litesql::DataSource<Job> Task::JobHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return JobTaskRelationJobTask::get<Job>(owner->getDatabase(), expr, (JobTaskRelationJobTask::Task == owner->id) && srcExpr);
+}
+litesql::DataSource<JobTaskRelationJobTask::Row> Task::JobHandle::getRows(const litesql::Expr& expr) {
+    return JobTaskRelationJobTask::getRows(owner->getDatabase(), expr && (JobTaskRelationJobTask::Task == owner->id));
+}
+const std::string Task::type__("Task");
+const std::string Task::table__("Task_");
+const std::string Task::sequence__("Task_seq");
+const litesql::FieldType Task::Id("id_","INTEGER",table__);
+const litesql::FieldType Task::Type("type_","TEXT",table__);
+const litesql::FieldType Task::Name("name_","TEXT",table__);
+const litesql::FieldType Task::Parameter("parameter_","TEXT",table__);
+void Task::defaults() {
+    id = 0;
+}
+Task::Task(const litesql::Database& db)
+     : litesql::Persistent(db), id(Id), type(Type), name(Name), parameter(Parameter) {
+    defaults();
+}
+Task::Task(const litesql::Database& db, const litesql::Record& rec)
+     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name), parameter(Parameter) {
+    defaults();
+    size_t size = (rec.size() > 4) ? 4 : rec.size();
+    switch(size) {
+    case 4: parameter = convert<const std::string&, std::string>(rec[3]);
+        parameter.setModified(false);
+    case 3: name = convert<const std::string&, std::string>(rec[2]);
+        name.setModified(false);
+    case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
+    case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
+    }
+}
+Task::Task(const Task& obj)
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name), parameter(obj.parameter) {
+}
+const Task& Task::operator=(const Task& obj) {
+    if (this != &obj) {
+        id = obj.id;
+        type = obj.type;
+        name = obj.name;
+        parameter = obj.parameter;
+    }
+    litesql::Persistent::operator=(obj);
+    return *this;
+}
+Task::JobHandle Task::job() {
+    return Task::JobHandle(*this);
+}
+std::string Task::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
+    tables.push_back(table__);
+    litesql::Record fields;
+    litesql::Record values;
+    fields.push_back(id.name());
+    values.push_back(id);
+    id.setModified(false);
+    fields.push_back(type.name());
+    values.push_back(type);
+    type.setModified(false);
+    fields.push_back(name.name());
+    values.push_back(name);
+    name.setModified(false);
+    fields.push_back(parameter.name());
+    values.push_back(parameter);
+    parameter.setModified(false);
+    fieldRecs.push_back(fields);
+    valueRecs.push_back(values);
+    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
+}
+void Task::create() {
+    litesql::Record tables;
+    litesql::Records fieldRecs;
+    litesql::Records valueRecs;
+    type = type__;
+    std::string newID = insert(tables, fieldRecs, valueRecs);
+    if (id == 0)
+        id = newID;
+}
+void Task::addUpdates(Updates& updates) {
+    prepareUpdate(updates, table__);
+    updateField(updates, table__, id);
+    updateField(updates, table__, type);
+    updateField(updates, table__, name);
+    updateField(updates, table__, parameter);
+}
+void Task::addIDUpdates(Updates& updates) {
+}
+void Task::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
+    ftypes.push_back(Id);
+    ftypes.push_back(Type);
+    ftypes.push_back(Name);
+    ftypes.push_back(Parameter);
+}
+void Task::delRecord() {
+    deleteFromTable(table__, id);
+}
+void Task::delRelations() {
+    JobTaskRelationJobTask::del(*db, (JobTaskRelationJobTask::Task == id));
+}
+void Task::update() {
+    if (!inDatabase) {
+        create();
+        return;
+    }
+    Updates updates;
+    addUpdates(updates);
+    if (id != oldKey) {
+        if (!typeIsCorrect()) 
+            upcastCopy()->addIDUpdates(updates);
+    }
+    litesql::Persistent::update(updates);
+    oldKey = id;
+}
+void Task::del() {
+    if (typeIsCorrect() == false) {
+        std::auto_ptr<Task> p(upcastCopy());
+        p->delRelations();
+        p->onDelete();
+        p->delRecord();
+    } else {
+        onDelete();
+        delRecord();
+    }
+    inDatabase = false;
+}
+bool Task::typeIsCorrect() {
+    return type == type__;
+}
+std::auto_ptr<Task> Task::upcast() {
+    return auto_ptr<Task>(new Task(*this));
+}
+std::auto_ptr<Task> Task::upcastCopy() {
+    Task* np = new Task(*this);
+    np->id = id;
+    np->type = type;
+    np->name = name;
+    np->parameter = parameter;
+    np->inDatabase = inDatabase;
+    return auto_ptr<Task>(np);
+}
+std::ostream & operator<<(std::ostream& os, Task o) {
+    os << "-------------------------------------" << std::endl;
+    os << o.id.name() << " = " << o.id << std::endl;
+    os << o.type.name() << " = " << o.type << std::endl;
+    os << o.name.name() << " = " << o.name << std::endl;
+    os << o.parameter.name() << " = " << o.parameter << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -6981,6 +7216,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
         res.push_back(Database::SchemaItem("CodecPresetParameter_seq","sequence","CREATE SEQUENCE CodecPresetParameter_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Config_seq","sequence","CREATE SEQUENCE Config_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Job_seq","sequence","CREATE SEQUENCE Job_seq START 1 INCREMENT 1"));
+        res.push_back(Database::SchemaItem("Task_seq","sequence","CREATE SEQUENCE Task_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("JobLog_seq","sequence","CREATE SEQUENCE JobLog_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("JobDetail_seq","sequence","CREATE SEQUENCE JobDetail_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Watchfolder_seq","sequence","CREATE SEQUENCE Watchfolder_seq START 1 INCREMENT 1"));
@@ -7004,6 +7240,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("CodecPresetParameter_","table","CREATE TABLE CodecPresetParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT)"));
     res.push_back(Database::SchemaItem("Config_","table","CREATE TABLE Config_ (id_ " + backend->getRowIDType() + ",type_ TEXT,configkey_ TEXT,configval_ TEXT)"));
     res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,created_ INTEGER,begintime_ INTEGER,endtime_ INTEGER,status_ TEXT,infile_ TEXT,outfile_ TEXT,starttime_ DOUBLE,duration_ DOUBLE,progress_ INTEGER,fps_ INTEGER,data_ TEXT,deleted_ INTEGER)"));
+    res.push_back(Database::SchemaItem("Task_","table","CREATE TABLE Task_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,parameter_ TEXT)"));
     res.push_back(Database::SchemaItem("JobLog_","table","CREATE TABLE JobLog_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,message_ TEXT)"));
     res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + backend->getRowIDType() + ",type_ TEXT,lastpts_ DOUBLE,lastdts_ DOUBLE,deinterlace_ INTEGER)"));
     res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,infolder_ TEXT,outfolder_ TEXT,outfiletemplate_ TEXT,extensionfilter_ TEXT,interval_ TEXT)"));
@@ -7029,6 +7266,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("_165bce89be0b4f99d8ddeba7a26a23a7","table","CREATE TABLE _165bce89be0b4f99d8ddeba7a26a23a7 (CodecPreset1 INTEGER,CodecPresetParameter2 INTEGER)"));
     res.push_back(Database::SchemaItem("_b477e426317c3764439827c70cd95621","table","CREATE TABLE _b477e426317c3764439827c70cd95621 (CodecPreset1 INTEGER,Profile2 INTEGER)"));
     res.push_back(Database::SchemaItem("_c47426250800c92cff81a427efb64c83","table","CREATE TABLE _c47426250800c92cff81a427efb64c83 (CodecPreset1 INTEGER,Profile2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Job_Task_JobTask","table","CREATE TABLE Job_Task_JobTask (Job1 INTEGER,Task2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_JobLog_JobJobLog","table","CREATE TABLE Job_JobLog_JobJobLog (Job1 INTEGER,JobLog2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_MediaFile_JobInFile","table","CREATE TABLE Job_MediaFile_JobInFile (Job1 INTEGER,MediaFile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_MediaFile_JobOutFile","table","CREATE TABLE Job_MediaFile_JobOutFile (Job1 INTEGER,MediaFile2 INTEGER)"));
@@ -7090,6 +7328,9 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("_efe8a74240af68bddaa5a9c3ba3b73ed","index","CREATE INDEX _efe8a74240af68bddaa5a9c3ba3b73ed ON _c47426250800c92cff81a427efb64c83 (CodecPreset1)"));
     res.push_back(Database::SchemaItem("_09971e97639d319f4ec1431219d6bd95","index","CREATE INDEX _09971e97639d319f4ec1431219d6bd95 ON _c47426250800c92cff81a427efb64c83 (Profile2)"));
     res.push_back(Database::SchemaItem("_28d7cd21f284513124537c322d33330b","index","CREATE INDEX _28d7cd21f284513124537c322d33330b ON _c47426250800c92cff81a427efb64c83 (CodecPreset1,Profile2)"));
+    res.push_back(Database::SchemaItem("Job_Task_JobTaskJob1idx","index","CREATE INDEX Job_Task_JobTaskJob1idx ON Job_Task_JobTask (Job1)"));
+    res.push_back(Database::SchemaItem("Job_Task_JobTaskTask2idx","index","CREATE INDEX Job_Task_JobTaskTask2idx ON Job_Task_JobTask (Task2)"));
+    res.push_back(Database::SchemaItem("Job_Task_JobTask_all_idx","index","CREATE INDEX Job_Task_JobTask_all_idx ON Job_Task_JobTask (Job1,Task2)"));
     res.push_back(Database::SchemaItem("Job_JobLog_JobJobLogJob1idx","index","CREATE INDEX Job_JobLog_JobJobLogJob1idx ON Job_JobLog_JobJobLog (Job1)"));
     res.push_back(Database::SchemaItem("Job_JobLog_JobJobLogJobLog2idx","index","CREATE INDEX Job_JobLog_JobJobLogJobLog2idx ON Job_JobLog_JobJobLog (JobLog2)"));
     res.push_back(Database::SchemaItem("Job_JobLog_JobJobLog_all_idx","index","CREATE INDEX Job_JobLog_JobJobLog_all_idx ON Job_JobLog_JobJobLog (Job1,JobLog2)"));

@@ -208,7 +208,7 @@ namespace org {
       void JSONHandler::init(){
         LOGDEBUG("initialize json handler");
         _db=getContext()->database;
-        base_uri=getContext()->env["jsonapi.baseuri"];
+        base_uri=getContext()->getEnvironment<std::string>("jsonapi.baseuri");
         LOGDEBUG("setting base uri to "<<base_uri);
       }
       void JSONHandler::handleRequest(Request * req, Response*res) {

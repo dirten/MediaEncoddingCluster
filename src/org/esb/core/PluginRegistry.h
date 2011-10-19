@@ -23,6 +23,7 @@ namespace org {
       class WebservicePlugin;
       class HookPlugin;
       class HookProvider;
+      class Task;
       class PluginRegistry {
         classlogger("org.esb.core.PluginRegistry")
       public:
@@ -32,6 +33,7 @@ namespace org {
         void CORE_EXPORT registerService(std::string, ServicePlugin*);
         void CORE_EXPORT registerHookPlugin(std::string, HookPlugin*);
         void CORE_EXPORT registerHookProvider(std::string, HookProvider*);
+        void CORE_EXPORT registerTask(std::string, Task*);
         void CORE_EXPORT startServerServices();
         void CORE_EXPORT startClientServices();
         void CORE_EXPORT stopServices();
