@@ -23,7 +23,7 @@ namespace plugin {
     std::string _srcuristr;
     std::string _trguristr;
   };
-  REGISTER_TASK("DownloadTask", DownloadTask)
+  //REGISTER_TASK("DownloadTask", DownloadTask)
 }
 #endif	/* DOWNLOADTASK_H */
 

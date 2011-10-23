@@ -43,6 +43,7 @@
       <win32/>
         <my.family>win32</my.family>
         <target>ntx86</target>
+        <extra_configure_flags></extra_configure_flags>
         <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"NMake Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
@@ -59,6 +60,7 @@
         <unix/>
         <my.family>linux</my.family>
         <target>linuxx86</target>
+        <extra_configure_flags></extra_configure_flags>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
@@ -74,6 +76,7 @@
       <unix/>
         <my.family>mac</my.family>
         <target>macosxx86</target>
+        <extra_configure_flags>--config=Darwin32</extra_configure_flags>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
@@ -200,7 +203,7 @@
                   <path location="${project.basedir}"/>
                 </pathconvert>
                 <exec executable="sh" dir="source/poco-1.4.2p1-all" failonerror="yes">
-                  <arg line="${mybasedir}/source/poco-1.4.2p1-all/configure --prefix=${mybasedir}/source/build --omit=Data/MySQL,Data/ODBC,PageCompiler --static --no-tests --no-samples"/>
+                  <arg line="${mybasedir}/source/poco-1.4.2p1-all/configure ${extra_configure_flags} --prefix=${mybasedir}/source/build --omit=Data/MySQL,Data/ODBC,PageCompiler --static --no-tests --no-samples"/>
                 </exec>
 
                 <exec executable="make" dir="source/poco-1.4.2p1-all" failonerror="yes">
