@@ -133,8 +133,8 @@ namespace jobhandler {
             break;
           }
           std::string key = value->long_name();
-          std::string value = root[key].as_string();
-          parameter += key + "=" + value + ";";
+          std::string v = root[key].as_string();
+          parameter += key + "=" + v + ";";
         }
         LOGDEBUG("Task Found: " << root["name"].as_string());
         db::Task t(*getContext()->database);
