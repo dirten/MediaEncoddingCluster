@@ -59,6 +59,7 @@ namespace org {
         void init(std::string filename);
       private:
         std::string _sourceFile;
+        org::esb::io::File * _file_object;
         bool _isValid;
         //                std::map<int, int> _streamMap;
         //                std::map<int, int> _streamReverseMap;
@@ -66,7 +67,7 @@ namespace org {
         AVFormatContext * formatCtx;
         map<int, StreamInfo*> _stream_info_map;
         static boost::mutex file_open_mutex;
-
+        
       };
     }
   }

@@ -14,16 +14,20 @@ namespace org {
       boost::mutex FormatInputStream::file_open_mutex;
 
       FormatInputStream::FormatInputStream(File * source) {
+        _file_object=NULL;
         init(source->getPath());
       }
 
       FormatInputStream::FormatInputStream(std::string source) {
+        _file_object=NULL;
         init(source);
       }
       
       void FormatInputStream::init(std::string source) {
 	//boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         LOGINFO("opening InputFile: " << source);
+        _file_object=new org::esb::io::File(source);
+
         _isValid = false;
         _sourceFile = source;
 
@@ -119,7 +123,7 @@ namespace org {
       }
 
       long long int FormatInputStream::getFileSize() {
-        return formatCtx->file_size;
+        return _file_object->length();//formatCtx->file_size;
       }
 
       int FormatInputStream::read() {
