@@ -11,10 +11,10 @@
 #include "exports.h"
 namespace plugin {
 
-  class DLTASK_EXPORT DownloadTask : public org::esb::core::Task {
+  class ENCTASK_EXPORT EncodingTask : public org::esb::core::Task {
   public:
-    DownloadTask();
-    virtual ~DownloadTask();
+    EncodingTask();
+    virtual ~EncodingTask();
     void prepare();
     void execute();
     org::esb::core::OptionsDescription getOptionsDescription();

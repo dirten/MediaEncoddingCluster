@@ -11,17 +11,15 @@
 #include "exports.h"
 namespace plugin {
 
-  class DLTASK_EXPORT DownloadTask : public org::esb::core::Task {
+  class EXPTASK_EXPORT ExportTask : public org::esb::core::Task {
   public:
-    DownloadTask();
-    virtual ~DownloadTask();
+    ExportTask();
+    virtual ~ExportTask();
     void prepare();
     void execute();
     org::esb::core::OptionsDescription getOptionsDescription();
 
   private:
-    std::string _srcuristr;
-    std::string _trguristr;
   };
 //  REGISTER_TASK("DownloadTask", DownloadTask)
 }
