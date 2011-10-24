@@ -77,6 +77,8 @@
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
 #include "boost/lexical_cast.hpp"
+#include "Poco/Net/HTTPStreamFactory.h"
+#include "Poco/Net/FTPStreamFactory.h"
 
 #define TO_STRING(s) #s
 using namespace org::esb;
@@ -114,6 +116,9 @@ int main(int argc, char * argv[]) {
   //isatty(0);
   /*setting default path to Program*/
   //log4cplus::BasicConfigurator conf;
+    Poco::Net::HTTPStreamFactory::registerFactory();
+    Poco::Net::FTPStreamFactory::registerFactory();
+
   /*
   Poco::Net::HTTPClientSession session("www.google.de",80);
   Poco::Net::HTTPRequest req(Poco::Net::HTTPRequest::HTTP_GET,"/",Poco::Net::HTTPRequest::HTTP_1_1);

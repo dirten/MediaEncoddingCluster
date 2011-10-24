@@ -16,13 +16,33 @@ namespace org {
     namespace core {
 
       class CORE_EXPORT Task : public Plugin {
+      protected:
+        void setProgressLength(int);
+        void setProgress(int);
+        enum STATUS{
+          NONE,
+          PREPARE,
+          EXECUTE,
+          CLEANUP,
+          DONE,
+          INTERRUPT,
+          INTERRUPTED
+        };
+        
       public:
         Task();
         virtual ~Task();
         virtual void prepare();
         virtual void execute();
+        virtual void cleanup();
+        virtual int getProgress();
+        virtual void interrupt();
+        virtual STATUS getStatus();
       private:
-
+        int _progress;
+        int _progress_length;
+        STATUS _status;
+        void setStatus(STATUS);
       };
     }
   }
@@ -39,7 +59,8 @@ class RegisterTaskFactory##instance : public org::esb::core::TaskFactory { \
                         return Ptr<org::esb::core::Task>(new instance()); \
                 } \
                 org::esb::core::OptionsDescription getOptionsDescription() { \
-                return ##instance::getOptionsDescription(); \
+                Ptr<org::esb::core::Task> t = Ptr<org::esb::core::Task>(new instance()); \
+                return t->getOptionsDescription(); \
                 } \
 } RegisterTask##instance##Instance; 
 

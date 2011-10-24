@@ -143,19 +143,22 @@ namespace org {
       }
 
       Ptr<Task>PluginRegistry::createTask(std::string name, std::string cfg) {
-        Ptr<Task>result = _task_factories[name]->create();
-        result->setContext(new PluginContext());
-        org::esb::util::StringTokenizer tok(cfg, ";");
-        while (tok.hasMoreTokens()) {
-          std::string line = tok.nextToken();
-          org::esb::util::StringTokenizer tok2(line, "=");
-          if (tok2.countTokens() == 2) {
-            std::string key = tok2.nextToken();
-            std::string val = tok2.nextToken();
-            LOGDEBUG("Setting plugin Context : " << key << "=" << val);
-            result->getContext()->env[key] = val;
-          } else {
-            LOGERROR("line : " << line);
+        Ptr<Task>result;
+        if (_task_factories.count(name) > 0) {
+          result = _task_factories[name]->create();
+          result->setContext(new PluginContext());
+          org::esb::util::StringTokenizer tok(cfg, ";");
+          while (tok.hasMoreTokens()) {
+            std::string line = tok.nextToken();
+            org::esb::util::StringTokenizer tok2(line, "=");
+            if (tok2.countTokens() == 2) {
+              std::string key = tok2.nextToken();
+              std::string val = tok2.nextToken();
+              LOGDEBUG("Setting plugin Context : " << key << "=" << val);
+              result->getContext()->env[key] = val;
+            } else {
+              LOGERROR("line : " << line);
+            }
           }
         }
         return result;

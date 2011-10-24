@@ -32,7 +32,7 @@ namespace org {
         virtual ~Plugin() {
         };
 
-        static OptionsDescription getOptionsDescription() {
+        virtual OptionsDescription getOptionsDescription() {
           return OptionsDescription();
         };
 

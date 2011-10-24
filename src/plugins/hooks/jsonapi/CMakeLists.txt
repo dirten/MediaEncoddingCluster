@@ -14,7 +14,8 @@ add_library (jsonapi SHARED
   JSONHandler.cpp
   FileHandler.cpp
   PresetVerifier.cpp
-ConfigHandler.cpp
+  ConfigHandler.cpp
+  JobHandler.cpp
 )
 
 TARGET_LINK_LIBRARIES(jsonapi

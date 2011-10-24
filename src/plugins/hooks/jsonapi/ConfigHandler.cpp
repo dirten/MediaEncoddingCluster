@@ -4,7 +4,7 @@
  * 
  * Created on 17. Oktober 2011, 10:46
  */
-
+#include "org/esb/db/hivedb.hpp"
 #include "org/esb/core/PluginContext.h"
 #include "ConfigHandler.h"
 #include "plugins/services/webservice/ServiceRequest.h"
