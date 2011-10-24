@@ -77,8 +77,10 @@ namespace org {
             push_back(profile);
             //profileid=profile["id"].as_string();
           }
-          db::Preset preset=job.preset().get().one();
-          push_back(JSONNode("profileid",preset.uuid));
+          if(job.preset().get().count()>0){
+                db::Preset preset=job.preset().get().one();
+                push_back(JSONNode("profileid",preset.uuid));
+          }
         }
       }
 

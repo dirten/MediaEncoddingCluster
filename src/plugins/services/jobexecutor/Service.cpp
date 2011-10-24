@@ -56,9 +56,10 @@ namespace clientcontroller {
             _current_task->cleanup();
           }
         }
-      }else{
-        org::esb::lang::Thread::sleep2(getContext()->getEnvironment<int>("jobexecutor.intervall"));
       }
+      //else{
+        org::esb::lang::Thread::sleep2(getContext()->getEnvironment<int>("jobexecutor.intervall")*1000);
+      //}
     }
     _status=STOPPED;
   }

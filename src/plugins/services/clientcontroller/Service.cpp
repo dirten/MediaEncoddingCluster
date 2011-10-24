@@ -9,8 +9,7 @@
 #include "Service.h"
 #include "org/esb/lang/Process.h"
 #include "org/esb/signal/Messenger.h"
-#include "org/esb/hive/HiveClient.h"
-#include "org/esb/hive/HiveClientAudio.h"
+#include "org/esb/util/Foreach.h"
 namespace clientcontroller {
 
   Service::Service() {
@@ -65,19 +64,26 @@ namespace clientcontroller {
   void Service::startClientNodes(std::string host, int port) {
     int count = getContext()->getEnvironment<int>("clientcontroller.count");
     for (int a = 0; a < count; a++) {
-      org::esb::hive::HiveClient *c = new org::esb::hive::HiveClient(host, port);
-      org::esb::signal::Messenger::getInstance().addMessageListener(*c);
-      boost::thread t(boost::bind(&org::esb::hive::HiveClient::start, c));
+      Ptr<org::esb::hive::HiveClient>c = new org::esb::hive::HiveClient(host, port);
+      _client_list.push_back(c);
+      boost::thread t(boost::bind(&org::esb::hive::HiveClient::start, c.get()));
     }
-
-    org::esb::signal::Messenger::getInstance().addMessageListener(*new org::esb::hive::HiveClientAudio(host, port));
-    org::esb::signal::Messenger::getInstance().sendMessage(org::esb::signal::Message().setProperty("hiveclientaudio", org::esb::hive::START));
-
+    _client_audio=new org::esb::hive::HiveClientAudio(host, port);
+    boost::thread t(boost::bind(&org::esb::hive::HiveClientAudio::start, _client_audio.get()));
+    
+    //org::esb::signal::Messenger::getInstance().sendMessage(org::esb::signal::Message().setProperty("hiveclientaudio", org::esb::hive::START));
+    
 
   }
 
   void Service::stopClientNodes() {
-
+    foreach(Ptr<org::esb::hive::HiveClient> client, _client_list){
+      client->stop();
+      client.reset();
+    }
+    _client_list.clear();
+    _client_audio->stop();
+    _client_audio.reset();
   }
 
   org::esb::core::ServicePlugin::ServiceType Service::getServiceType() {

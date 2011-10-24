@@ -152,6 +152,7 @@ namespace org {
         if (_task_factories.count(name) > 0) {
           result = _task_factories[name]->create();
           result->setContext(new PluginContext());
+          result->getContext()->database = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
           org::esb::util::StringTokenizer tok(cfg, ";");
           while (tok.hasMoreTokens()) {
             std::string line = tok.nextToken();

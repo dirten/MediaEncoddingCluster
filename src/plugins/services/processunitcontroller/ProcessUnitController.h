@@ -70,7 +70,7 @@ namespace org {
           std::string _stop_job_id;
           bool stopJob();
         };
-        //REGISTER_SERVICE("processunitcontroller", ProcessUnitController)
+        REGISTER_SERVICE("processunitcontroller", ProcessUnitController)
 
       }
     }

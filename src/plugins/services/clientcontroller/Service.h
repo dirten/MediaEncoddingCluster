@@ -9,6 +9,9 @@
 #define	SERVICE_H
 #include "org/esb/signal/MessageListener.h"
 #include "org/esb/core/ServicePlugin.h"
+#include "org/esb/hive/HiveClient.h"
+#include "org/esb/hive/HiveClientAudio.h"
+
 #include <list>
 namespace clientcontroller {
 
@@ -26,7 +29,8 @@ namespace clientcontroller {
   private:
     void startClientNodes(std::string host, int port);
     void stopClientNodes();
-    //std::list<HiveClient*>
+    std::list<Ptr<org::esb::hive::HiveClient> > _client_list;
+    Ptr<org::esb::hive::HiveClientAudio> _client_audio;
   };
   REGISTER_SERVICE("clientcontroller", Service);
 }
