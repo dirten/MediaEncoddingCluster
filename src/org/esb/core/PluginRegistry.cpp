@@ -18,6 +18,8 @@
 #include "org/esb/db/hivedb.hpp"
 #include "PluginContext.h"
 #include "Task.h"
+#include "Poco/Net/HTTPStreamFactory.h"
+#include "Poco/Net/FTPStreamFactory.h"
 //#include "org/esb/api/ApiWebServer.h"
 namespace org {
   namespace esb {
@@ -140,6 +142,9 @@ namespace org {
       }
 
       PluginRegistry::PluginRegistry() {
+        Poco::Net::HTTPStreamFactory::registerFactory();
+        Poco::Net::FTPStreamFactory::registerFactory();
+
       }
 
       Ptr<Task>PluginRegistry::createTask(std::string name, std::string cfg) {
