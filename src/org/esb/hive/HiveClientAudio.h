@@ -45,6 +45,7 @@ namespace org {
                 bool _swap_codecs;
                 std::string _host;
                 int _port;
+                boost::thread _t;
                 org::esb::io::ObjectInputStream * _ois;
                 org::esb::io::ObjectOutputStream * _oos;
                 org::esb::net::TcpSocket * _sock;

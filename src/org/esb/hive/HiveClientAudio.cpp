@@ -46,19 +46,12 @@ namespace org {
 
       void HiveClientAudio::onMessage(org::esb::signal::Message & msg) {
         if (msg.getProperty<std::string>("hiveclientaudio") == "start") {
-          boost::thread t(boost::bind(&HiveClientAudio::start, this));
+          _t=boost::thread(boost::bind(&HiveClientAudio::start, this));
           _running = true;
         } else
           if (msg.getProperty<std::string>("hiveclientaudio") == "stop") {
-          _toHalt = true;
-          if (_running) {
-            LOGDEBUG("StopSignal Received, waiting for all work done!");
-            _toHalt = true;
-            boost::mutex::scoped_lock terminationLock(terminationMutex);
-            ctrlCHit.wait(terminationLock);
-            LOGDEBUG("stopping done!")
+            stop();
           }
-        }
       }
 
       void HiveClientAudio::start() {
@@ -68,7 +61,12 @@ namespace org {
       }
 
       void HiveClientAudio::stop() {
-        //        _toHalt=true;
+          _toHalt = true;
+          if (_running) {
+            LOGDEBUG("StopSignal Received, waiting for all work done!");
+            _t.join();
+            LOGDEBUG("stopping done!")
+          }
       }
 
       void HiveClientAudio::connect() {

@@ -51,15 +51,7 @@ namespace org {
           _running = true;
         } else
           if (msg.getProperty<std::string>("hiveclient") == "stop") {
-          _toHalt = true;
-          if (_running) {
-            LOGDEBUG("StopSignal Received, waiting for all work done!");
-            //_toHalt = true;
-            //boost::mutex::scoped_lock terminationLock(terminationMutex);
-            //ctrlCHit.wait(terminationLock);
-            _t.join();
-            LOGDEBUG("stopping done!")
-          }
+            stop();
         }
       }
 
@@ -70,7 +62,12 @@ namespace org {
       }
 
       void HiveClient::stop() {
-        //        _toHalt=true;
+          _toHalt = true;
+          if (_running) {
+            LOGDEBUG("StopSignal Received, waiting for all work done!");
+            _t.join();
+            LOGDEBUG("stopping done!")
+          }
       }
 
       void HiveClient::connect() {
