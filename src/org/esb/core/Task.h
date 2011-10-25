@@ -11,6 +11,9 @@
 #include "PluginRegistry.h"
 #include "org/esb/lang/Ptr.h"
 #include "exports.h"
+#ifdef ERROR
+#undef ERROR
+#endif
 namespace org {
   namespace esb {
     namespace core {
