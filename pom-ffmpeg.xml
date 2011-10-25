@@ -205,8 +205,8 @@
                   <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
 
-                <exec executable="sh" dir="source/x264" failonerror="yes">
-                  <arg line="./configure --prefix=${mybasedir}/source/build --enable-static --disable-shared "/>
+                <exec executable="bash" dir="source/x264" failonerror="yes">
+                  <arg line="./configure --prefix=${mybasedir}/source/build --enable-static --disable-shared"/>
                   <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/x264" failonerror="yes">
