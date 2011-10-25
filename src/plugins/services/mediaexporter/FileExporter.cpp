@@ -53,7 +53,7 @@ namespace org {
           log.message = message;
           log.update();
           job.joblog().link(log);
-          job.status = "exists";
+          job.status = db::Job::Status::Error;
           job.update();
           return;
         }
@@ -111,7 +111,7 @@ namespace org {
           log.message = message;
           log.update();
           job.joblog().link(log);
-          job.status = "warning";
+          job.status = db::Job::Status::Error;
           job.update();
           //    return;
         }
@@ -216,7 +216,7 @@ namespace org {
           log.update();
           job.joblog().link(log);
 
-          job.status = "exported";
+          job.status = db::Job::Status::Completed;
           job.update();
         }
         pos->close();
@@ -235,7 +235,7 @@ namespace org {
           log.update();
           job.joblog().link(log);
 
-          job.status = "warning";
+          job.status = db::Job::Status::Error;
           job.update();
 
         }

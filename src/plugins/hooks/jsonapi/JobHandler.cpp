@@ -101,7 +101,7 @@ namespace jobhandler {
     if (!contains(root, "name")) {
       result = "task has no defined name";
     } else {
-      Ptr<org::esb::core::Task>task = org::esb::core::PluginRegistry::getInstance()->createTask(root["name"].as_string());
+      Ptr<org::esb::core::Task>task = org::esb::core::PluginRegistry::getInstance()->createTask(root["name"].as_string(), std::map<std::string, std::string>());
       if (!task) {
         result = std::string("could not find a definition for task with name ").append(root["name"].as_string());
       } else {

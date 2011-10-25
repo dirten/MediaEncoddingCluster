@@ -44,7 +44,7 @@ namespace clientcontroller {
   void Service::run() {
     LOGTRACEMETHOD("void ProcessUnitController::start() ")
     while (_status == RUNNING) {
-      litesql::DataSource<db::Job> source = litesql::select<db::Job > (*getContext()->database, db::Job::Endtime <= 1 && (db::Job::Status == "queued" || db::Job::Status == "running"));
+      litesql::DataSource<db::Job> source = litesql::select<db::Job > (*getContext()->database, db::Job::Endtime <= 1 && (db::Job::Status == db::Job::Status::Waiting || db::Job::Status == db::Job::Status::Processing));
       if (source.count() > 0) {
         db::Job job = source.one();
         if (job.tasks().get().count() > 0) {
@@ -75,7 +75,7 @@ namespace clientcontroller {
             dbtask.update();
           }
         }
-        job.status="compete";
+        job.status=job.Status.Completed;
         job.update();
       }
       //else{

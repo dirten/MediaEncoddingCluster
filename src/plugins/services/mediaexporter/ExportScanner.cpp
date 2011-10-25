@@ -95,7 +95,7 @@ namespace org {
         while (_run) {
           {
             try {
-              std::vector<db::Job> completed_jobs = litesql::select<db::Job > (db, db::Job::Status == "completed").all();
+              std::vector<db::Job> completed_jobs = litesql::select<db::Job > (db, db::Job::Status == db::Job::Status::Completed).all();
               std::vector<db::Job>::iterator job_it = completed_jobs.begin();
               for (; job_it != completed_jobs.end(); job_it++) {
                 db::MediaFile mfile = (*job_it).outputfile().get().one();
@@ -108,7 +108,7 @@ namespace org {
 
                   (*job_it).joblog().link(log);
 
-                  (*job_it).status = "exporting";
+                  (*job_it).status = db::Job::Status::Exporting;
                   (*job_it).update();
                   FileExporter::exportFile(mfile);
                 } catch (boost::filesystem::filesystem_error & e) {
@@ -122,7 +122,7 @@ namespace org {
 
                   (*job_it).joblog().link(log);
 
-                  (*job_it).status = "failed";
+                  (*job_it).status = db::Job::Status::Error;
                   (*job_it).update();
                 }
               }
@@ -140,13 +140,13 @@ namespace org {
       void ExportScanner::restart_failed_exports() {
         db::HiveDb db("sqlite3", org::esb::config::Config::get("db.url"));
         while (_run) {
-          std::vector<db::Job> completed_jobs = litesql::select<db::Job > (db, db::Job::Status == "exists").all();
+          std::vector<db::Job> completed_jobs = litesql::select<db::Job > (db, db::Job::Status == db::Job::Status::Error).all();
           std::vector<db::Job>::iterator job_it = completed_jobs.begin();
           for (; job_it != completed_jobs.end(); job_it++) {
             db::MediaFile mfile = (*job_it).outputfile().get().one();
             org::esb::io::File f(mfile.path + "/" + mfile.filename);
             if (!f.exists()) {
-              (*job_it).status = "completed";
+              (*job_it).status = db::Job::Status::Completed;
               (*job_it).update();
             }
           }

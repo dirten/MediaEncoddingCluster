@@ -49,7 +49,7 @@ namespace org {
         std::list<std::string> CORE_EXPORT getTaskNameList();
         OptionsDescription CORE_EXPORT getTaskOptionsDescription(std::string);
         std::string CORE_EXPORT getConfigData(std::string key);
-        Ptr<Task> CORE_EXPORT createTask(std::string name,std::map<std::string,std::string> cfg=std::map<std::string, std::string>());
+        Ptr<Task> CORE_EXPORT createTask(std::string name,std::map<std::string,std::string> cfg);
         
       private:
         PluginRegistry();
