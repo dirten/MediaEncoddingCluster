@@ -230,7 +230,16 @@
         <field name="created" type="datetime" default="-1"/>
         <field name="begintime" type="datetime" default="-1"/>
         <field name="endtime" type="datetime" default="-1"/>
-        <field name="status" type="string"/>
+        <field name="status" type="integer">
+          <value name="Waiting" value="0"/>
+          <value name="Processing" value="1"/>
+          <value name="Error" value="2"/>
+          <value name="Stopping" value="3"/>
+          <value name="Stopped" value="4"/>
+          <value name="Exporting" value="5"/>
+          <value name="Completed" value="6"/>
+          <value name="Deleted" value="7"/>
+        </field>
         <field name="infile" type="string"/>
         <field name="outfile" type="string"/>
         <field name="starttime" type="double"/>
@@ -242,8 +251,15 @@
     </object>
 
     <object name="Task">
+        <field name="uuid" type="string"/>
         <field name="name" type="string"/>
         <field name="parameter" type="string"/>
+        <field name="progress" type="integer"/>
+        <field name="status" type="integer" default="0">
+          <value name="Waiting" value="0"/>
+          <value name="Error" value="1"/>
+          <value name="Complete" value="2"/>
+        </field>
     </object>
     
     <relation id="JobTask">

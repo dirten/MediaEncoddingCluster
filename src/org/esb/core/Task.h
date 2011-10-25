@@ -26,8 +26,11 @@ namespace org {
           CLEANUP,
           DONE,
           INTERRUPT,
-          INTERRUPTED
+          INTERRUPTED,
+          ERROR
         };
+        void setStatus(STATUS);
+        void setStatusMessage(std::string);
         
       public:
         Task();
@@ -38,11 +41,12 @@ namespace org {
         virtual int getProgress();
         virtual void interrupt();
         virtual STATUS getStatus();
+        virtual std::string getStatusMessage();
       private:
         int _progress;
         int _progress_length;
         STATUS _status;
-        void setStatus(STATUS);
+        std::string _status_message;
       };
     }
   }

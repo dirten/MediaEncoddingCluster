@@ -9,7 +9,7 @@
 #define	DOWNLOADTASK_H
 #include "org/esb/core/Task.h"
 #include "exports.h"
-namespace plugin {
+namespace encodingtask {
 
   class ENCTASK_EXPORT EncodingTask : public org::esb::core::Task {
   public:

@@ -28,7 +28,7 @@ namespace org {
         _running = false;
         _conv = NULL;
         _swap_codecs = false;
-        _sock = NULL;//new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
+        _sock = NULL; //new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
         org::esb::av::FormatBaseStream::initialize();
         //        avcodec_register_all();
         //        av_register_all();
@@ -45,13 +45,13 @@ namespace org {
       }
 
       void HiveClientAudio::onMessage(org::esb::signal::Message & msg) {
-        if (msg.getProperty<std::string>("hiveclientaudio") == "start") {
-          _t=boost::thread(boost::bind(&HiveClientAudio::start, this));
+        if (msg.getProperty<std::string > ("hiveclientaudio") == "start") {
+          _t = boost::thread(boost::bind(&HiveClientAudio::start, this));
           _running = true;
         } else
-          if (msg.getProperty<std::string>("hiveclientaudio") == "stop") {
-            stop();
-          }
+          if (msg.getProperty<std::string > ("hiveclientaudio") == "stop") {
+          stop();
+        }
       }
 
       void HiveClientAudio::start() {
@@ -61,12 +61,12 @@ namespace org {
       }
 
       void HiveClientAudio::stop() {
-          _toHalt = true;
-          if (_running) {
-            LOGDEBUG("StopSignal Received, waiting for all work done!");
-            _t.join();
-            LOGDEBUG("stopping done!")
-          }
+        _toHalt = true;
+        if (_running) {
+          LOGDEBUG("StopSignal Received, waiting for all work done!");
+          _t.join();
+          LOGDEBUG("stopping done!")
+        }
       }
 
       void HiveClientAudio::connect() {
@@ -78,12 +78,12 @@ namespace org {
           delete _oos;
           _ois = new org::esb::io::ObjectInputStream(_sock->getInputStream());
           _oos = new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
-          std::cout << "Audio Processor connected to Server " <<_host<< ":" << _port<<std::endl;
+          std::cout << "Audio Processor connected to Server " << _host << ":" << _port << std::endl;
           LOGINFO("Server " << _host << " connected!!!");
         } catch (exception & ex) {
           LOGERROR("cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what());
-          std::cout <<"cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what()<<std::endl;
-	  std::cout <<"retry it in 5 seconds."<<std::endl;
+          std::cout << "cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what() << std::endl;
+          std::cout << "retry it in 5 seconds." << std::endl;
         }
       }
 
@@ -111,17 +111,17 @@ namespace org {
                 delete unit;
                 break;
               }
-              if(_swap_codec_list.find(unit->_source_stream)==_swap_codec_list.end()){
-                _swap_codec_list[unit->_source_stream]=false;
+              if (_swap_codec_list.find(unit->_source_stream) == _swap_codec_list.end()) {
+                _swap_codec_list[unit->_source_stream] = false;
               }
-              
+
               if (_swap_codec_list[unit->_source_stream]) {
                 unit->_decoder = _decoder_list[unit->_source_stream];
                 unit->_encoder = _encoder_list[unit->_target_stream];
                 unit->_converter = _converter_list[unit->_target_stream];
               }
-              _swap_codec_list[unit->_source_stream]=true;
-              
+              _swap_codec_list[unit->_source_stream] = true;
+
               unit->process();
 
               if (_swap_codec_list[unit->_source_stream]) {
@@ -149,8 +149,8 @@ namespace org {
                 _swap_codec_list.clear();
                 _decoder_list.clear();
                 _encoder_list.clear();
-                std::map<int, org::esb::av::FrameConverter *  >::iterator it=_converter_list.begin();
-                for(;it!=_converter_list.end();it++){
+                std::map<int, org::esb::av::FrameConverter * >::iterator it = _converter_list.begin();
+                for (; it != _converter_list.end(); it++) {
                   delete (*it).second;
                 }
                 _converter_list.clear();

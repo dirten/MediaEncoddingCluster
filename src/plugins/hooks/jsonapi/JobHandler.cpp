@@ -79,7 +79,7 @@ namespace jobhandler {
       db::Job job(*getContext()->database);
 
       job.uuid = boost::lexical_cast<std::string > (boost::uuids::random_generator()());
-      job.status = "queued";
+      job.status = db::Job::Status::Waiting;
       job.update();
       int s = root["tasks"].size();
       LOGDEBUG("Array Size=" << s);
@@ -101,7 +101,7 @@ namespace jobhandler {
     if (!contains(root, "name")) {
       result = "task has no defined name";
     } else {
-      Ptr<org::esb::core::Task>task = org::esb::core::PluginRegistry::getInstance()->createTask(root["name"].as_string(), "");
+      Ptr<org::esb::core::Task>task = org::esb::core::PluginRegistry::getInstance()->createTask(root["name"].as_string());
       if (!task) {
         result = std::string("could not find a definition for task with name ").append(root["name"].as_string());
       } else {

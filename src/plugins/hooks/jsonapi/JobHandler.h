@@ -18,6 +18,7 @@
 namespace jobhandler {
 
   class JSONAPI_EXPORT JobHandler : public org::esb::core::HookPlugin {
+    classlogger("jsonapi.JobHandler")
   public:
     JobHandler();
     virtual ~JobHandler();

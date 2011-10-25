@@ -147,24 +147,16 @@ namespace org {
 
       }
 
-      Ptr<Task>PluginRegistry::createTask(std::string name, std::string cfg) {
+      Ptr<Task>PluginRegistry::createTask(std::string name, std::map<std::string, std::string> cfg) {
         Ptr<Task>result;
         if (_task_factories.count(name) > 0) {
           result = _task_factories[name]->create();
           result->setContext(new PluginContext());
           result->getContext()->database = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
-          org::esb::util::StringTokenizer tok(cfg, ";");
-          while (tok.hasMoreTokens()) {
-            std::string line = tok.nextToken();
-            org::esb::util::StringTokenizer tok2(line, "=");
-            if (tok2.countTokens() == 2) {
-              std::string key = tok2.nextToken();
-              std::string val = tok2.nextToken();
-              LOGDEBUG("Setting plugin Context : " << key << "=" << val);
-              result->getContext()->env[key] = val;
-            } else {
-              LOGERROR("line : " << line);
-            }
+          typedef std::map<std::string, std::string> stringmap;
+          foreach(stringmap::value_type config, cfg) {
+            result->getContext()->env[config.first] = config.second;
+            LOGDEBUG("Setting plugin Context : " << config.first << "=" << config.second);
           }
         }
         return result;

@@ -136,7 +136,7 @@ namespace org {
         job.endtime = 1;
         job.starttime = infile.starttime;
         job.duration = infile.duration;
-        job.status = "queued";
+        job.status = db::Job::Status::Waiting;
         job.infile = infile.path.value() + "/" + infile.filename.value();
         job.data = preset.data.value();
         job.uuid = uuidstr;

@@ -315,7 +315,7 @@ namespace org {
               litesql::DataSource<db::Job>s = litesql::select<db::Job > (*_db, db::Job::Uuid == id);
               if (s.count() == 1) {
                 db::Job job = s.one();
-                if (job.status == "running") {
+                if (job.status == db::Job::Status::Processing) {
                   JSONNode error(JSON_NODE);
                   error.set_name("error");
                   error.push_back(JSONNode("code", "is_running"));
@@ -328,7 +328,7 @@ namespace org {
                   ok.push_back(JSONNode("code", "encoding_deleted"));
                   ok.push_back(JSONNode("description", "encoding succesful deleted."));
                   n.push_back(ok);
-                  job.status = "deleted";
+                  job.status = db::Job::Status::Deleted;
                   job.update();
                 }
               } else {
@@ -352,7 +352,7 @@ namespace org {
               litesql::DataSource<db::Job>s = litesql::select<db::Job > (*_db, db::Job::Uuid == id);
               if (s.count() == 1) {
                 db::Job job = s.one();
-                job.status = job.status == "running" ? "stopping" : "stopped";
+                job.status = job.status == db::Job::Status::Processing ? db::Job::Status::Stopping : db::Job::Status::Stopped;
                 job.update();
                 std::string job_id = org::esb::util::StringUtil::toString(job.id);
                 org::esb::signal::Messenger::getInstance().sendMessage(org::esb::signal::Message().setProperty("processunitcontroller", "STOP_JOB").setProperty("job_id", job_id));
@@ -379,7 +379,7 @@ namespace org {
             }
           } else if (id.length() > 0) {
             //LOGDEBUG("loading encoding data for id " << id);
-            litesql::DataSource<db::Job>s = litesql::select<db::Job > (*_db, db::Job::Uuid == id && db::Job::Status != "deleted");
+            litesql::DataSource<db::Job>s = litesql::select<db::Job > (*_db, db::Job::Uuid == id && db::Job::Status != db::Job::Status::Deleted);
             if (s.count() > 0) {
               //LOGDEBUG("Encoding found");
               db::Job job = s.one();
@@ -392,7 +392,7 @@ namespace org {
               n.push_back(error);
             }
           } else {
-            std::vector<db::Job> jobs = litesql::select<db::Job > (*_db, db::Job::Status != "deleted").orderBy(db::Job::Id, false).all();
+            std::vector<db::Job> jobs = litesql::select<db::Job > (*_db, db::Job::Status != db::Job::Status::Deleted).orderBy(db::Job::Id, false).all();
             JSONNode c(JSON_ARRAY);
             c.set_name("data");
             std::vector<db::Job>::iterator jobit = jobs.begin();

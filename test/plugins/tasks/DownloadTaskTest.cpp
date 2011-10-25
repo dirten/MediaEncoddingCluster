@@ -19,7 +19,9 @@ int main(int argc, char** argv) {
   Log::open();
   org::esb::core::PluginRegistry::getInstance()->load(DOWNLOADTASK_PLUGIN);
   org::esb::core::PluginRegistry::getInstance()->initPlugins();
-  std::string cfg = "downloadtask.src=http://www.google.de;downloadtask.trg=/tmp/index.html";
+  std::map<std::string, std::string> cfg;
+  cfg["downloadtask.src"]="http://www.google.de";
+  cfg["downloadtask.trg"]="/tmp/index.html";
   {
     Ptr<org::esb::core::Task> task = org::esb::core::PluginRegistry::getInstance()->createTask("DownloadTask", cfg);
     if (task) {

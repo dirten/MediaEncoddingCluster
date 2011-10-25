@@ -135,7 +135,7 @@ namespace org {
                 //              org::esb::hive::DatabaseService::thread_init();
         while (!_stop_signal) {
           //_dbJobCon.begin();
-          litesql::DataSource<db::Job> source = litesql::select<db::Job > (_dbJobCon, db::Job::Endtime <= 1 && (db::Job::Status == "queued" || db::Job::Status == "running"));
+          litesql::DataSource<db::Job> source = litesql::select<db::Job > (_dbJobCon, db::Job::Endtime <= 1 && (db::Job::Status == db::Job::Status::Waiting || db::Job::Status == db::Job::Status::Processing));
           if (source.count() > 0) {
             db::Job job = source.one();
             //db::Job job = job_ctrl.getJob();
@@ -148,7 +148,7 @@ namespace org {
 
             } catch (litesql::NotFound ex) {
               LOGDEBUG("error while processing job : " << ex.what());
-              job.status = "error";
+              job.status = db::Job::Status::Error;
               job.update();
               org::esb::lang::Thread::sleep2(1000);
             }
@@ -165,7 +165,7 @@ namespace org {
           puQueue.flush();
           audioQueue.flush();
           result = true;
-          current_job->status = "stopped";
+          current_job->status = db::Job::Status::Stopped;//"stopped";
           current_job->update();
           queue_empty_wait_condition.notify_all();
           _stop_job_id = "";
@@ -187,7 +187,7 @@ namespace org {
         if (fis.isValid()) {
           LOGDEBUG("valid file");
           job.begintime = 0;
-          job.status = "running";
+          job.status = db::Job::Status::Processing;//"running";
           {
             boost::mutex::scoped_lock scoped_lock(db_con_mutex);
             job.update();
@@ -326,7 +326,7 @@ namespace org {
           }
           LOGDEBUG("File complete : " << job << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
           job.endtime = 0;
-          job.status = "completed";
+          job.status = db::Job::Status::Completed;//"completed";
           {
             db::JobLog log(job.getDatabase());
             std::string message = "Encoding completed for the file ";
@@ -344,7 +344,7 @@ namespace org {
         } else {
           LOGERROR("Error Opening Input Streams from " << filename);
           job.endtime = 0;
-          job.status = "failed";
+          job.status = db::Job::Status::Error;//"failed";
           db::JobLog log(job.getDatabase());
           std::string message = "failed to open the file ";
           message += filename;

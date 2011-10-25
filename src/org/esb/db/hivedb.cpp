@@ -4903,6 +4903,25 @@ std::ostream & operator<<(std::ostream& os, Config o) {
     return os;
 }
 const litesql::FieldType Job::Own::Id("id_","INTEGER","Job_");
+const int Job::StatusType::Waiting(0);
+const int Job::StatusType::Processing(1);
+const int Job::StatusType::Error(2);
+const int Job::StatusType::Stopping(3);
+const int Job::StatusType::Stopped(4);
+const int Job::StatusType::Exporting(5);
+const int Job::StatusType::Completed(6);
+const int Job::StatusType::Deleted(7);
+Job::StatusType::StatusType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals)
+         : litesql::FieldType(n,t,tbl,vals) {
+}
+const int Job::Status::Waiting(0);
+const int Job::Status::Processing(1);
+const int Job::Status::Error(2);
+const int Job::Status::Stopping(3);
+const int Job::Status::Stopped(4);
+const int Job::Status::Exporting(5);
+const int Job::Status::Completed(6);
+const int Job::Status::Deleted(7);
 Job::TasksHandle::TasksHandle(const Job& owner)
          : litesql::RelationHandle<Job>(owner) {
 }
@@ -5038,20 +5057,33 @@ const litesql::FieldType Job::Uuid("uuid_","TEXT",table__);
 const litesql::FieldType Job::Created("created_","INTEGER",table__);
 const litesql::FieldType Job::Begintime("begintime_","INTEGER",table__);
 const litesql::FieldType Job::Endtime("endtime_","INTEGER",table__);
-const litesql::FieldType Job::Status("status_","TEXT",table__);
-const litesql::FieldType Job::Infile("infile_","TEXT",table__);
-const litesql::FieldType Job::Outfile("outfile_","TEXT",table__);
-const litesql::FieldType Job::Starttime("starttime_","DOUBLE",table__);
-const litesql::FieldType Job::Duration("duration_","DOUBLE",table__);
-const litesql::FieldType Job::Progress("progress_","INTEGER",table__);
-const litesql::FieldType Job::Fps("fps_","INTEGER",table__);
-const litesql::FieldType Job::Data("data_","TEXT",table__);
-const litesql::FieldType Job::Deleted("deleted_","INTEGER",table__);
+std::vector < std::pair< std::string, std::string > > Job::status_values;
+const Job::StatusType Job::Status("status_","INTEGER",table__,status_values);
+const Job::StatusType Job::Infile("infile_","TEXT",table__);
+const Job::StatusType Job::Outfile("outfile_","TEXT",table__);
+const Job::StatusType Job::Starttime("starttime_","DOUBLE",table__);
+const Job::StatusType Job::Duration("duration_","DOUBLE",table__);
+const Job::StatusType Job::Progress("progress_","INTEGER",table__);
+const Job::StatusType Job::Fps("fps_","INTEGER",table__);
+const Job::StatusType Job::Data("data_","TEXT",table__);
+const Job::StatusType Job::Deleted("deleted_","INTEGER",table__);
+void Job::initValues() {
+    status_values.clear();
+    status_values.push_back(make_pair<std::string, std::string>("Waiting","0"));
+    status_values.push_back(make_pair<std::string, std::string>("Processing","1"));
+    status_values.push_back(make_pair<std::string, std::string>("Error","2"));
+    status_values.push_back(make_pair<std::string, std::string>("Stopping","3"));
+    status_values.push_back(make_pair<std::string, std::string>("Stopped","4"));
+    status_values.push_back(make_pair<std::string, std::string>("Exporting","5"));
+    status_values.push_back(make_pair<std::string, std::string>("Completed","6"));
+    status_values.push_back(make_pair<std::string, std::string>("Deleted","7"));
+}
 void Job::defaults() {
     id = 0;
     created = -1;
     begintime = -1;
     endtime = -1;
+    status = 0;
     starttime = 0.0;
     duration = 0.0;
     progress = 0;
@@ -5083,7 +5115,7 @@ Job::Job(const litesql::Database& db, const litesql::Record& rec)
         outfile.setModified(false);
     case 8: infile = convert<const std::string&, std::string>(rec[7]);
         infile.setModified(false);
-    case 7: status = convert<const std::string&, std::string>(rec[6]);
+    case 7: status = convert<const std::string&, int>(rec[6]);
         status.setModified(false);
     case 6: endtime = convert<const std::string&, litesql::DateTime>(rec[5]);
         endtime.setModified(false);
@@ -5328,6 +5360,15 @@ std::ostream & operator<<(std::ostream& os, Job o) {
     return os;
 }
 const litesql::FieldType Task::Own::Id("id_","INTEGER","Task_");
+const int Task::StatusType::Waiting(0);
+const int Task::StatusType::Error(1);
+const int Task::StatusType::Complete(2);
+Task::StatusType::StatusType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals)
+         : litesql::FieldType(n,t,tbl,vals) {
+}
+const int Task::Status::Waiting(0);
+const int Task::Status::Error(1);
+const int Task::Status::Complete(2);
 Task::JobHandle::JobHandle(const Task& owner)
          : litesql::RelationHandle<Task>(owner) {
 }
@@ -5355,19 +5396,30 @@ const litesql::FieldType Task::Uuid("uuid_","TEXT",table__);
 const litesql::FieldType Task::Name("name_","TEXT",table__);
 const litesql::FieldType Task::Parameter("parameter_","TEXT",table__);
 const litesql::FieldType Task::Progress("progress_","INTEGER",table__);
+std::vector < std::pair< std::string, std::string > > Task::status_values;
+const Task::StatusType Task::Status("status_","INTEGER",table__,status_values);
+void Task::initValues() {
+    status_values.clear();
+    status_values.push_back(make_pair<std::string, std::string>("Waiting","0"));
+    status_values.push_back(make_pair<std::string, std::string>("Error","1"));
+    status_values.push_back(make_pair<std::string, std::string>("Complete","2"));
+}
 void Task::defaults() {
     id = 0;
     progress = 0;
+    status = 0;
 }
 Task::Task(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), uuid(Uuid), name(Name), parameter(Parameter), progress(Progress) {
+     : litesql::Persistent(db), id(Id), type(Type), uuid(Uuid), name(Name), parameter(Parameter), progress(Progress), status(Status) {
     defaults();
 }
 Task::Task(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), uuid(Uuid), name(Name), parameter(Parameter), progress(Progress) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), uuid(Uuid), name(Name), parameter(Parameter), progress(Progress), status(Status) {
     defaults();
-    size_t size = (rec.size() > 6) ? 6 : rec.size();
+    size_t size = (rec.size() > 7) ? 7 : rec.size();
     switch(size) {
+    case 7: status = convert<const std::string&, int>(rec[6]);
+        status.setModified(false);
     case 6: progress = convert<const std::string&, int>(rec[5]);
         progress.setModified(false);
     case 5: parameter = convert<const std::string&, std::string>(rec[4]);
@@ -5383,7 +5435,7 @@ Task::Task(const litesql::Database& db, const litesql::Record& rec)
     }
 }
 Task::Task(const Task& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), uuid(obj.uuid), name(obj.name), parameter(obj.parameter), progress(obj.progress) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), uuid(obj.uuid), name(obj.name), parameter(obj.parameter), progress(obj.progress), status(obj.status) {
 }
 const Task& Task::operator=(const Task& obj) {
     if (this != &obj) {
@@ -5393,6 +5445,7 @@ const Task& Task::operator=(const Task& obj) {
         name = obj.name;
         parameter = obj.parameter;
         progress = obj.progress;
+        status = obj.status;
     }
     litesql::Persistent::operator=(obj);
     return *this;
@@ -5422,6 +5475,9 @@ std::string Task::insert(litesql::Record& tables, litesql::Records& fieldRecs, l
     fields.push_back(progress.name());
     values.push_back(progress);
     progress.setModified(false);
+    fields.push_back(status.name());
+    values.push_back(status);
+    status.setModified(false);
     fieldRecs.push_back(fields);
     valueRecs.push_back(values);
     return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
@@ -5443,6 +5499,7 @@ void Task::addUpdates(Updates& updates) {
     updateField(updates, table__, name);
     updateField(updates, table__, parameter);
     updateField(updates, table__, progress);
+    updateField(updates, table__, status);
 }
 void Task::addIDUpdates(Updates& updates) {
 }
@@ -5453,6 +5510,7 @@ void Task::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Name);
     ftypes.push_back(Parameter);
     ftypes.push_back(Progress);
+    ftypes.push_back(Status);
 }
 void Task::delRecord() {
     deleteFromTable(table__, id);
@@ -5500,6 +5558,7 @@ std::auto_ptr<Task> Task::upcastCopy() {
     np->name = name;
     np->parameter = parameter;
     np->progress = progress;
+    np->status = status;
     np->inDatabase = inDatabase;
     return auto_ptr<Task>(np);
 }
@@ -5511,6 +5570,7 @@ std::ostream & operator<<(std::ostream& os, Task o) {
     os << o.name.name() << " = " << o.name << std::endl;
     os << o.parameter.name() << " = " << o.parameter << std::endl;
     os << o.progress.name() << " = " << o.progress << std::endl;
+    os << o.status.name() << " = " << o.status << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -7262,8 +7322,8 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("CodecPreset_","table","CREATE TABLE CodecPreset_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,codecid_ INTEGER,preset_ TEXT)"));
     res.push_back(Database::SchemaItem("CodecPresetParameter_","table","CREATE TABLE CodecPresetParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT)"));
     res.push_back(Database::SchemaItem("Config_","table","CREATE TABLE Config_ (id_ " + backend->getRowIDType() + ",type_ TEXT,configkey_ TEXT,configval_ TEXT)"));
-    res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,created_ INTEGER,begintime_ INTEGER,endtime_ INTEGER,status_ TEXT,infile_ TEXT,outfile_ TEXT,starttime_ DOUBLE,duration_ DOUBLE,progress_ INTEGER,fps_ INTEGER,data_ TEXT,deleted_ INTEGER)"));
-    res.push_back(Database::SchemaItem("Task_","table","CREATE TABLE Task_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,name_ TEXT,parameter_ TEXT,progress_ INTEGER)"));
+    res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,created_ INTEGER,begintime_ INTEGER,endtime_ INTEGER,status_ INTEGER,infile_ TEXT,outfile_ TEXT,starttime_ DOUBLE,duration_ DOUBLE,progress_ INTEGER,fps_ INTEGER,data_ TEXT,deleted_ INTEGER)"));
+    res.push_back(Database::SchemaItem("Task_","table","CREATE TABLE Task_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,name_ TEXT,parameter_ TEXT,progress_ INTEGER,status_ INTEGER)"));
     res.push_back(Database::SchemaItem("JobLog_","table","CREATE TABLE JobLog_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,message_ TEXT)"));
     res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + backend->getRowIDType() + ",type_ TEXT,lastpts_ DOUBLE,lastdts_ DOUBLE,deinterlace_ INTEGER)"));
     res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,infolder_ TEXT,outfolder_ TEXT,outfiletemplate_ TEXT,extensionfilter_ TEXT,interval_ TEXT)"));
@@ -7391,5 +7451,7 @@ void HiveDb::initialize() {
     if (initialized)
         return;
     initialized = true;
+    Job::initValues();
+    Task::initValues();
 }
 }

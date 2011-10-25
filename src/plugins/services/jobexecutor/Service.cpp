@@ -14,10 +14,11 @@
 #include "org/esb/hive/HiveClient.h"
 #include "org/esb/hive/HiveClientAudio.h"
 #include "org/esb/util/Foreach.h"
+#include "org/esb/util/StringTokenizer.h"
 namespace clientcontroller {
 
   Service::Service() {
-    _status=NONE;
+    _status = NONE;
   }
 
   Service::~Service() {
@@ -32,36 +33,56 @@ namespace clientcontroller {
   }
 
   void Service::startService() {
-    _status=RUNNING;
+    _status = RUNNING;
     go(Service::run, this);
   }
 
   void Service::stopService() {
-    _status=STOPPING;
+    _status = STOPPING;
   }
 
   void Service::run() {
     LOGTRACEMETHOD("void ProcessUnitController::start() ")
-    while (_status==RUNNING) {
+    while (_status == RUNNING) {
       litesql::DataSource<db::Job> source = litesql::select<db::Job > (*getContext()->database, db::Job::Endtime <= 1 && (db::Job::Status == "queued" || db::Job::Status == "running"));
       if (source.count() > 0) {
         db::Job job = source.one();
-        if(job.tasks().get().count()>0){
-          std::vector<db::Task> tasks=job.tasks().get().all();
-          foreach(db::Task & dbtask, tasks){
-            LOGDEBUG("Executing Task : "<<dbtask.name <<" with parameter : "<<dbtask.parameter);
-            _current_task=org::esb::core::PluginRegistry::getInstance()->createTask(dbtask.name, dbtask.parameter);
+        if (job.tasks().get().count() > 0) {
+          std::vector<db::Task> tasks = job.tasks().get().all();
+          std::map<std::string, std::string> cfg;
+
+          foreach(db::Task & dbtask, tasks) {
+            LOGDEBUG("Executing Task : " << dbtask.name << " with parameter : " << dbtask.parameter);
+            org::esb::util::StringTokenizer tok(dbtask.parameter, ";");
+            while (tok.hasMoreTokens()) {
+              std::string line = tok.nextToken();
+              org::esb::util::StringTokenizer tok2(line, "=");
+              if (tok2.countTokens() == 2) {
+                std::string key = tok2.nextToken();
+                std::string val = tok2.nextToken();
+                cfg[key] = val;
+                LOGDEBUG("Setting plugin Context : " << key << "=" << val);
+              } else {
+                LOGERROR("line : " << line);
+              }
+            }
+            _current_task = org::esb::core::PluginRegistry::getInstance()->createTask(dbtask.name, cfg);
             _current_task->prepare();
             _current_task->execute();
             _current_task->cleanup();
+            dbtask.progress=100;
+            dbtask.status=dbtask.Status.Complete;
+            dbtask.update();
           }
         }
+        job.status="compete";
+        job.update();
       }
       //else{
-        org::esb::lang::Thread::sleep2(getContext()->getEnvironment<int>("jobexecutor.intervall")*1000);
+      org::esb::lang::Thread::sleep2(getContext()->getEnvironment<int>("jobexecutor.intervall")*1000);
       //}
     }
-    _status=STOPPED;
+    _status = STOPPED;
   }
 
   org::esb::core::OptionsDescription Service::getOptionsDescription() {

@@ -1638,6 +1638,29 @@ public:
     public:
         static const litesql::FieldType Id;
     };
+    class StatusType : public litesql::FieldType {
+    public:
+        static const int Waiting;
+        static const int Processing;
+        static const int Error;
+        static const int Stopping;
+        static const int Stopped;
+        static const int Exporting;
+        static const int Completed;
+        static const int Deleted;
+        StatusType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
+    };
+    class Status {
+    public:
+        static const int Waiting;
+        static const int Processing;
+        static const int Error;
+        static const int Stopping;
+        static const int Stopped;
+        static const int Exporting;
+        static const int Completed;
+        static const int Deleted;
+    };
     class TasksHandle : public litesql::RelationHandle<Job> {
     public:
         TasksHandle(const Job& owner);
@@ -1716,24 +1739,28 @@ public:
     litesql::Field<litesql::DateTime> begintime;
     static const litesql::FieldType Endtime;
     litesql::Field<litesql::DateTime> endtime;
-    static const litesql::FieldType Status;
-    litesql::Field<std::string> status;
-    static const litesql::FieldType Infile;
+protected:
+    static std::vector < std::pair< std::string, std::string > > status_values;
+public:
+    static const Job::StatusType Status;
+    litesql::Field<int> status;
+    static const Job::StatusType Infile;
     litesql::Field<std::string> infile;
-    static const litesql::FieldType Outfile;
+    static const Job::StatusType Outfile;
     litesql::Field<std::string> outfile;
-    static const litesql::FieldType Starttime;
+    static const Job::StatusType Starttime;
     litesql::Field<double> starttime;
-    static const litesql::FieldType Duration;
+    static const Job::StatusType Duration;
     litesql::Field<double> duration;
-    static const litesql::FieldType Progress;
+    static const Job::StatusType Progress;
     litesql::Field<int> progress;
-    static const litesql::FieldType Fps;
+    static const Job::StatusType Fps;
     litesql::Field<int> fps;
-    static const litesql::FieldType Data;
+    static const Job::StatusType Data;
     litesql::Field<std::string> data;
-    static const litesql::FieldType Deleted;
+    static const Job::StatusType Deleted;
     litesql::Field<int> deleted;
+    static void initValues();
 protected:
     void defaults();
 public:
@@ -1772,6 +1799,19 @@ public:
     public:
         static const litesql::FieldType Id;
     };
+    class StatusType : public litesql::FieldType {
+    public:
+        static const int Waiting;
+        static const int Error;
+        static const int Complete;
+        StatusType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
+    };
+    class Status {
+    public:
+        static const int Waiting;
+        static const int Error;
+        static const int Complete;
+    };
     class JobHandle : public litesql::RelationHandle<Task> {
     public:
         JobHandle(const Task& owner);
@@ -1796,6 +1836,12 @@ public:
     litesql::Field<std::string> parameter;
     static const litesql::FieldType Progress;
     litesql::Field<int> progress;
+protected:
+    static std::vector < std::pair< std::string, std::string > > status_values;
+public:
+    static const Task::StatusType Status;
+    litesql::Field<int> status;
+    static void initValues();
 protected:
     void defaults();
 public:

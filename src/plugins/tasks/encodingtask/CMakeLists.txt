@@ -2,6 +2,7 @@
 
 add_library (encodingtask SHARED
   EncodingTask.cpp
+  Packetizer.cpp
 )
 
 TARGET_LINK_LIBRARIES(encodingtask
