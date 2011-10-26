@@ -13,10 +13,10 @@ namespace org {
   namespace esb {
     namespace util {
 
-      class UTIL_EXPORT UUID {
+      class UTIL_EXPORT PUUID {
       public:
-        UUID();
-        virtual ~UUID();
+        PUUID();
+        virtual ~PUUID();
         operator std::string() const { return _uuid; }
       private:
         std::string _uuid;

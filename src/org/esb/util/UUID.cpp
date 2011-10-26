@@ -14,12 +14,12 @@ namespace org {
   namespace esb {
     namespace util {
 
-      UUID::UUID() {
+      PUUID::PUUID() {
         boost::uuids::uuid uuid = boost::uuids::random_generator()();
         _uuid = boost::lexical_cast<std::string > (uuid);
       }
 
-      UUID::~UUID() {
+      PUUID::~PUUID() {
       }
     }
   }

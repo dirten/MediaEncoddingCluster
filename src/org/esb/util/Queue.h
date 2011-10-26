@@ -210,7 +210,7 @@ namespace org {
         bool enqueue(T obj) {
           std::string name=_directory;
           name+="/";
-          std::string uuid=UUID();
+          std::string uuid=PUUID();
           name+=uuid;
 
           org::esb::io::File out(name.c_str());
