@@ -234,6 +234,7 @@ namespace org {
           org::esb::io::FileInputStream fis(&infile);
           org::esb::io::ObjectInputStream ois(&fis);
           ois.readObject(object);
+          infile.deleteFile();
           return object;
         }
         int size() {

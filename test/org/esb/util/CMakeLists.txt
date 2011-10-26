@@ -12,7 +12,7 @@ add_executable (LogTest LogTest.cpp)
 
 target_link_libraries (TestStringUtil io util lang )
 target_link_libraries (TestQueue lang util )
-target_link_libraries (TestFileQueue lang util )
+target_link_libraries (TestFileQueue lang util io)
 target_link_libraries (TestBoostQueue lang util )
 target_link_libraries (PropertyTreeTest lang util )
 target_link_libraries (RapidXmlTest lang util io)

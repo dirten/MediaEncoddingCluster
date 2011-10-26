@@ -105,7 +105,7 @@ namespace partitionservice {
         if (_partition_streams.count(stream_index) == 0) {
           _partition_streams[stream_index] = partition;
           if(_stream_queues.count(stream_index)==0)
-                _stream_queues[stream_index]=new org::esb::util::FileQueue<boost::shared_ptr<org::esb::hive::job::ProcessUnit> >("");
+                _stream_queues[stream_index]=new org::esb::util::FileQueue<boost::shared_ptr<org::esb::hive::job::ProcessUnit> >("partition");
           Stream s;
           s.index = stream_index;
           s.partition = partition;
