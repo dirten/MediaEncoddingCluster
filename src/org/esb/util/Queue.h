@@ -220,7 +220,7 @@ namespace org {
           ous.writeObject(obj);
           ous.close();
           _uuid_q.enqueue(uuid);
-
+          return true;
         }
         
         T dequeue() {
