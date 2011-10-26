@@ -12,6 +12,7 @@
 #include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/io/ObjectInputStream.h"
 #include "org/esb/io/FileInputStream.h"
+#include "org/esb/io/FileOutputStream.h"
 #include "UUID.h"
 namespace org {
   namespace esb {
