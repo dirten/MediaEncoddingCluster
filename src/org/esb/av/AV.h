@@ -6,8 +6,6 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-#undef FF_API_FLAC_GLOBAL_OPTS
-#define FF_API_FLAC_GLOBAL_OPTS 0
   
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
@@ -23,16 +21,5 @@ extern "C" {
 #include "boost/thread/mutex.hpp"
 
 #undef USE_TIME_BASE_Q
-#ifndef ORG_ESB_AV_FFMPEGMUTEX_H
-#define ORG_ESB_AV_FFMPEGMUTEX_H
-namespace org {
-  namespace esb {
-    namespace av {
-      //static boost::mutex ffmpeg_mutex;
-    }
-  }
-}
-
-#endif
 #endif
 

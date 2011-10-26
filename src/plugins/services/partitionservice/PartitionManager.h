@@ -15,8 +15,9 @@
 #include "org/esb/util/Queue.h"
 #include <map>
 #include <list>
+#include "exports.h"
 namespace partitionservice {
-      class PartitionManager {
+      class PARTSERVICE_EXPORT PartitionManager {
       public:
         enum Result {
           OK,
