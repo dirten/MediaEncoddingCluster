@@ -9,6 +9,8 @@
 #define	DOWNLOADTASK_H
 #include "org/esb/core/Task.h"
 #include "exports.h"
+#include "org/esb/hive/PresetReaderJson.h"
+
 namespace encodingtask {
 
   class ENCTASK_EXPORT EncodingTask : public org::esb::core::Task {
@@ -22,6 +24,10 @@ namespace encodingtask {
   private:
     std::string _srcuristr;
     std::string _trguristr;
+    org::esb::hive::PresetReaderJson::CodecList _codecs;
+    org::esb::hive::PresetReaderJson::FilterList _filters;
+    org::esb::hive::PresetReaderJson::Preset _preset ;
+
   };
 //  REGISTER_TASK("DownloadTask", DownloadTask)
 }

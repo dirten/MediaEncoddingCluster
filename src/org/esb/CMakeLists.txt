@@ -150,6 +150,7 @@ add_library (util ${UTIL_LINK_TYPE}
   util/PropertyTree.cpp
 #  util/Queue.cpp
   util/Base64.cpp
+  util/UUID.cpp
 )
 
 TARGET_LINK_LIBRARIES(util ${Boost_LIBRARIES} )

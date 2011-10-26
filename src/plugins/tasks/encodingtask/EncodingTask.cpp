@@ -7,12 +7,14 @@
 
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/core/PluginContext.h"
+#include "org/esb/util/Foreach.h"
 #include "EncodingTask.h"
 #include "org/esb/lang/Ptr.h"
 #include "StreamData.h"
-
+#include "Packetizer.h"
+#include "ProcessUnitBuilder.h"
 #include "org/esb/av/FormatInputStream.h"
-#include "org/esb/hive/PresetReaderJson.h"
+#include "org/esb/av/PacketInputStream.h"
 namespace encodingtask {
 
   EncodingTask::EncodingTask() {
@@ -23,20 +25,16 @@ namespace encodingtask {
 
   void EncodingTask::prepare() {
     _srcuristr = getContext()->getEnvironment<std::string > ("encodingtask.src");
-    std::string preset_id = getContext()->getEnvironment<std::string > ("encodingtask.profile");
-    litesql::DataSource<db::Preset>profileds = litesql::select<db::Preset > (*getContext()->database, db::Preset::Uuid == preset_id);
-    if (profileds.count() == 1) {
-      db::Preset preset = profileds.one();
-      org::esb::hive::PresetReaderJson reader(preset.data);
-      org::esb::hive::PresetReaderJson::CodecList codecs = reader.getCodecList();
-      org::esb::hive::PresetReaderJson::FilterList filters = reader.getFilterList();
-      org::esb::hive::PresetReaderJson::Preset pre = reader.getPreset();
-
-    } else {
+    std::string profile = getContext()->getEnvironment<std::string > ("encodingtask.profile");
+    try {
+      org::esb::hive::PresetReaderJson reader(profile);
+      _codecs = reader.getCodecList();
+      _filters = reader.getFilterList();
+      _preset = reader.getPreset();
+    } catch (std::exception & ex) {
       setStatus(Task::ERROR);
-      setStatusMessage(std::string("Profile with id ").append(preset_id).append(" not found!"));
+      setStatusMessage("Error while parsing JSON Profile");
     }
-
   }
 
   org::esb::core::OptionsDescription EncodingTask::getOptionsDescription() {
@@ -48,6 +46,9 @@ namespace encodingtask {
   }
 
   void EncodingTask::execute() {
+    /*check if we had some errors before*/
+    if (getStatus() == Task::ERROR)
+      return;
     /*open the input file*/
     org::esb::av::FormatInputStream fis(_srcuristr);
 
@@ -72,8 +73,78 @@ namespace encodingtask {
       sdata.decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is));
       sdata.pass2decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is));
 
+      /*create the encoder objects*/
+      typedef std::map<std::string, std::string> Parameter;
+      if (sdata.decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
+        if (_codecs["video"].count("codec_id") != 0) {
+          sdata.encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["video"]["codec_id"]));
+          sdata.pass2encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["video"]["codec_id"]));
 
+          foreach(Parameter::value_type param, _codecs["video"]) {
+            LOGDEBUG("Parameter key=" << param.first << " value=" << param.second);
+            sdata.encoder->setCodecOption(param.first, param.second);
+            sdata.pass2encoder->setCodecOption(param.first, param.second);
+          }
+        } else {
+          LOGERROR("Profile does not define a video codec");
+        }
+      }
+      if (sdata.decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+        if (_codecs["audio"].count("codec_id") != 0) {
+          sdata.encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["audio"]["codec_id"]));
+          sdata.pass2encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["audio"]["codec_id"]));
+
+          foreach(Parameter::value_type param, _codecs["audio"]) {
+            LOGDEBUG("Parameter key=" << param.first << " value=" << param.second);
+            sdata.encoder->setCodecOption(param.first, param.second);
+            sdata.pass2encoder->setCodecOption(param.first, param.second);
+          }
+        } else {
+          LOGERROR("Profile does not define an audio codec");
+        }
+      }
+      sdata.encoder->open();
     }
+
+    org::esb::av::PacketInputStream pis(&fis);
+
+    Packetizer packetizer(stream_map);
+    ProcessUnitBuilder builder(stream_map);
+    Packet * packet;
+
+    while (getStatus() != Task::INTERRUPT && (packet = pis.readPacket()) != NULL) {
+      /**
+       * building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
+       */
+      boost::shared_ptr<Packet> pPacket(packet);
+      /**
+       * if the actuall stream not mapped then discard this and continue with next packet
+       */
+      if (stream_map.find(packet->packet->stream_index) == stream_map.end())
+        continue;
+      /**
+       * if the actual packets dts is lower than the last packet.dts encoded, then discard this packet
+       * this is for the behaviour that the server process restarts an unfinished encoding
+       * @TODO: writing detailed tests for this !!!
+       */
+      if (stream_map[packet->packet->stream_index].last_start_dts > packet->packet->dts)
+        continue;
+      //              LOGTRACE("Packet DTS:"<<packet->toString());
+      //pPacket->setStreamIndex(stream_map[pPacket->getStreamIndex()].outstream);
+      if (packetizer.putPacket(pPacket)) {
+        LOGDEBUG("PacketizerListPtr ready, build ProcessUnit");
+        if (getStatus() == Task::INTERRUPT) {
+          setStatus(Task::INTERRUPTED);
+          return;
+        }
+        PacketListPtr packets = packetizer.removePacketList();
+        boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit = builder.build(packets);
+        //putToQueue(unit);
+        //wait_for_queue = true;
+      }
+    }
+
+
   }
 
   REGISTER_TASK("EncodingTask", EncodingTask);

@@ -28,6 +28,7 @@
 #define	_PACKETIZER_H
 #include <boost/shared_ptr.hpp>
 #include "org/esb/av/Packet.h"
+#include "StreamData.h"
 #include "exports.h"
 //#include "org/esb/hive/job/ProcessUnit.h"
 
@@ -49,7 +50,7 @@ namespace org {
 
         class ENCTASK_EXPORT Packetizer {
         private:
-
+/*
           enum State {
             STATE_NOP,
             STATE_START_I_FRAME,
@@ -58,8 +59,7 @@ namespace org {
             STATE_END_PACKETGROUP
           };
 
-        public:
-
+          
           struct StreamData {
             org::esb::av::PacketListPtr packets;
 //            CodecType codec_type;
@@ -69,6 +69,8 @@ namespace org {
             State state;
             unsigned int min_packet_count;
           };
+ */
+        public:
           Packetizer(std::map<int, StreamData>);
           ~Packetizer();
           bool putPacket(org::esb::av::PacketPtr);

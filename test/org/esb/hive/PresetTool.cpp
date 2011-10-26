@@ -128,10 +128,10 @@ int encode(int argc, char** argv) {
   PresetReaderJson::FilterList flist = pr.getFilterList();
   PresetReaderJson::FilterList::iterator flist_it = flist.begin();
   for (; flist_it != flist.end(); flist_it++) {
-    std::multimap<std::string, std::string> param = (*flist_it).second;
+    std::map<std::string, std::string> param = (*flist_it).second;
     if((*flist_it).first=="resize"){
-      clist["video"].insert(std::pair<std::string, std::string>("width",param.find("width")->second));
-      clist["video"].insert(std::pair<std::string, std::string>("height",param.find("height")->second));
+      clist["video"]["width"]=param.find("width")->second;//.insert(std::pair<std::string, std::string>("width",param.find("width")->second));
+      clist["video"]["height"]=param.find("height")->second;//.insert(std::pair<std::string, std::string>("height",param.find("height")->second));
       //clist["video"]["height"]=param["height"];
     }
   }
@@ -140,10 +140,10 @@ int encode(int argc, char** argv) {
 
   (*clist["video"].find("codec_id")).second=org::esb::util::StringUtil::toString(vcodec->id);
   (*clist["audio"].find("codec_id")).second=org::esb::util::StringUtil::toString(acodec->id);
-  boost::shared_ptr<Encoder> videoEncoder2 = CodecFactory::getStreamEncoder(clist["video"]);
+  boost::shared_ptr<Encoder> videoEncoder2 = boost::shared_ptr<Encoder>(new Encoder(clist["video"]["codec_id"]));//CodecFactory::getStreamEncoder(clist["video"]);
   if(!videoEncoder2->open())
     exit(1);
-  boost::shared_ptr<Encoder> audioEncoder2 = CodecFactory::getStreamEncoder(clist["audio"]);
+  boost::shared_ptr<Encoder> audioEncoder2 = boost::shared_ptr<Encoder>(new Encoder(clist["audio"]["codec_id"]));//CodecFactory::getStreamEncoder(clist["audio"]);
   if(!audioEncoder2->open())
     exit(1);
   
@@ -232,7 +232,7 @@ int check(int argc, char**argv){
     if(!vcodec)
       LOGDEBUG("could not find codec by name");
     (*(*cit).second.find("codec_id")).second=org::esb::util::StringUtil::toString(vcodec->id);
-    boost::shared_ptr<Encoder> encoder = CodecFactory::getStreamEncoder((*cit).second);
+    boost::shared_ptr<Encoder> encoder = boost::shared_ptr<Encoder>(new Encoder((*(*cit).second.find("codec_id")).second));//CodecFactory::getStreamEncoder((*cit).second);
     //encoder->ctx->crf=0.0;
     //encoder->setFlag(CODEC_FLAG_PASS2);
     if(!encoder->open())

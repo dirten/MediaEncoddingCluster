@@ -152,7 +152,7 @@ namespace org {
         if (_task_factories.count(name) > 0) {
           result = _task_factories[name]->create();
           result->setContext(new PluginContext());
-          result->getContext()->database = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
+          //result->getContext()->database = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
           typedef std::map<std::string, std::string> stringmap;
           foreach(stringmap::value_type config, cfg) {
             result->getContext()->env[config.first] = config.second;
@@ -170,7 +170,7 @@ namespace org {
           _plugin_data[s.first].name = s.first;
           _plugin_data[s.first].context = new PluginContext();
           _plugin_data[s.first].plugin = s.second;
-          _plugin_data[s.first].context->database = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
+          //_plugin_data[s.first].context->database = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
 
           /*fill up PluginContext with Options*/
           OptionsDescription desc = s.second->getOptionsDescription();
@@ -258,7 +258,7 @@ namespace org {
 
         foreach(PluginDataMap::value_type s, _plugin_data) {
 
-          delete s.second.context->database;
+          //delete s.second.context->database;
           delete s.second.context;
         }
 

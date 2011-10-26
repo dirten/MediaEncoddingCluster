@@ -17,6 +17,14 @@
 
 namespace encodingtask {
 
+  enum State {
+    STATE_NOP,
+    STATE_START_I_FRAME,
+    STATE_END_I_FRAME,
+    STATE_START_PACKETGROUP,
+    STATE_END_PACKETGROUP
+  };
+
   struct StreamData {
     int instream;
     int outstream;
@@ -31,13 +39,14 @@ namespace encodingtask {
 
     org::esb::av::PacketListPtr packets;
     int packet_count;
-    int min_packet_count;
+    unsigned int min_packet_count;
     int64_t last_bytes_offset;
     int process_unit_count;
     double frameRateCompensateBase;
     AVRational stream_time_base;
     int deinterlace;
     int keep_aspect_ratio;
+    State state;
     //                        int64_t last_process_unit_id;
   };
 

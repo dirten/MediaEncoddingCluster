@@ -17,7 +17,7 @@ namespace org {
 
       class HIVE_EXPORT PresetReaderJson {
       public:
-        typedef std::map<std::string, std::multimap<std::string, std::string> > CodecList;
+        typedef std::map<std::string, std::map<std::string, std::string> > CodecList;
         typedef CodecList FilterList;
         typedef std::map<std::string, std::string> Preset;
         PresetReaderJson(std::string filename);

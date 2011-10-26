@@ -8,12 +8,18 @@
 #include "Log.h"
 #include "org/esb/lang/Thread.h"
 #include "exports.h"
+
+#include "org/esb/io/ObjectOutputStream.h"
+#include "org/esb/io/ObjectInputStream.h"
+#include "org/esb/io/FileInputStream.h"
+#include "UUID.h"
 namespace org {
   namespace esb {
     namespace util {
 
+
       template<typename T, int MAXSIZE = 10 >
-              class  Queue {
+              class Queue {
         classlogger("org.esb.util.Queue");
       private:
         std::deque<T> _q;
@@ -26,7 +32,7 @@ namespace org {
         boost::condition dequeue_condition;
         boost::condition stop_condition;
         bool _is_waiting;
-        public:
+      public:
         bool _closed;
       public:
 
@@ -48,7 +54,8 @@ namespace org {
           LOGDEBUG("waiting Threads notified" << &queue_condition);
           _closed = false;
         }
-        bool closed(){
+
+        bool closed() {
           return _closed;
         }
 
@@ -71,7 +78,7 @@ namespace org {
           //LOGTRACE("after mutex");
           bool result = false;
           //bool first_item=_q.empty();
-          while (_q.size() >= MAXSIZE) {
+          while (MAXSIZE!=0 && _q.size() >= MAXSIZE) {
             //LOGDEBUG("Waiting in enqueuelock:"<<_q.size());
             enqueue_condition.wait(enqueue_lock);
             //LOGDEBUG("condition enqueuelock");
@@ -111,16 +118,16 @@ namespace org {
           enqueue_condition.notify_one();
           return object;
         }
-        
-        bool dequeueLock(){
+
+        bool dequeueLock() {
           queue_mutex.lock();
         }
-        
-        bool dequeueUnLock(){
+
+        bool dequeueUnLock() {
           queue_mutex.unlock();
         }
-        
-        T lookup(){
+
+        T lookup() {
           T object;
           {
             boost::mutex::scoped_lock queue_lock(queue_mutex);
@@ -128,7 +135,7 @@ namespace org {
           }
           return object;
         }
-        
+
         bool dequeue(T & object) {
           //LOGTRACEMETHOD("dequeue(T & object)");
           boost::mutex::scoped_lock dequeue_lock(dequeue_mutex);
@@ -175,15 +182,64 @@ namespace org {
           boost::mutex::scoped_lock dequeue_lock(queue_mutex);
           return _q.size();
         }
+
         /*
         void setSize(int size){
           MAXSIZE=size;
         }
-*/
+         */
         void setQueueListener(QueueListener * listener) {
           _listener = listener;
         }
       };
+
+      template<typename T >
+              class FileQueue {
+        std::string _directory;
+        Queue<std::string,0> _uuid_q;
+        public:
+        FileQueue(std::string dirname){
+          _directory=dirname;
+          org::esb::io::File dir(_directory.c_str());
+          if (!dir.exists()) {
+            dir.mkdir();
+          }
+        }
+        
+        bool enqueue(T obj) {
+          std::string name=_directory;
+          name+="/";
+          std::string uuid=UUID();
+          name+=uuid;
+
+          org::esb::io::File out(name.c_str());
+          org::esb::io::FileOutputStream fos(&out);
+          org::esb::io::ObjectOutputStream ous(&fos);
+          
+          ous.writeObject(obj);
+          ous.close();
+          _uuid_q.enqueue(uuid);
+
+        }
+        
+        T dequeue() {
+          T object;
+          std::string name=_directory;
+          name+="/";
+          std::string uuid=_uuid_q.dequeue();
+          name+=uuid;
+          
+          org::esb::io::File infile(name.c_str());
+          org::esb::io::FileInputStream fis(&infile);
+          org::esb::io::ObjectInputStream ois(&fis);
+          ois.readObject(object);
+          return object;
+        }
+        int size() {
+          return _uuid_q.size();
+        }
+      };
+
     }
   }
 }

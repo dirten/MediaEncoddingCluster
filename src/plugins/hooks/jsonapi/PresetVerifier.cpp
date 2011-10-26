@@ -82,8 +82,8 @@ namespace org {
 
         }
 
-        boost::shared_ptr<org::esb::av::Encoder> venc = org::esb::hive::CodecFactory::getStreamEncoder(codecs["video"]);
-        boost::shared_ptr<org::esb::av::Encoder> aenc = org::esb::hive::CodecFactory::getStreamEncoder(codecs["audio"]);
+        boost::shared_ptr<org::esb::av::Encoder> venc = boost::shared_ptr<org::esb::av::Encoder>(new org::esb::av::Encoder(codecs["video"]["codec_id"]));//org::esb::hive::CodecFactory::getStreamEncoder(codecs["video"]);
+        boost::shared_ptr<org::esb::av::Encoder> aenc = boost::shared_ptr<org::esb::av::Encoder>(new org::esb::av::Encoder(codecs["audio"]["codec_id"]));//org::esb::hive::CodecFactory::getStreamEncoder(codecs["audio"]);
 
         foreach(rowtype::value_type & row, codecs["video"]) {
           venc->setCodecOption(row.first, row.second);

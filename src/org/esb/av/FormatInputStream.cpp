@@ -95,6 +95,7 @@ namespace org {
 
       FormatInputStream::~FormatInputStream() {
         close();
+        delete _file_object;
       }
 
       int FormatInputStream::getStreamCount() {

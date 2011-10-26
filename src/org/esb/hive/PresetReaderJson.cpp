@@ -36,7 +36,7 @@ namespace org {
             value+="000";
           LOGDEBUG("Name="<<name<<" val="<<value);
 
-          _codecs[type].insert(std::pair<std::string, std::string>(name,value));
+          _codecs[type][name]=value;//.insert(std::pair<std::string, std::string>(name,value));
         }
         
         type="audio";
@@ -49,7 +49,7 @@ namespace org {
             //AVCodec * codec=avcodec_find_encoder_by_name(n.as_string().c_str());
             //n=JSONNode("codec_id",codec->id);
           }
-          _codecs[type].insert(std::pair<std::string, std::string>(n.name(),n.as_string()));
+          _codecs[type][n.name()]=n.as_string();//.insert(std::pair<std::string, std::string>(n.name(),n.as_string()));
         }
       }
 

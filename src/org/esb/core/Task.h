@@ -19,10 +19,8 @@ namespace org {
     namespace core {
 
       class CORE_EXPORT Task : public Plugin {
-      protected:
-        void setProgressLength(int);
-        void setProgress(int);
-        enum STATUS{
+      public:
+        enum STATUS {
           NONE,
           PREPARE,
           EXECUTE,
@@ -32,9 +30,13 @@ namespace org {
           INTERRUPTED,
           ERROR
         };
+
+      protected:
+        void setProgressLength(int);
+        void setProgress(int);
         void setStatus(STATUS);
         void setStatusMessage(std::string);
-        
+
       public:
         Task();
         virtual ~Task();

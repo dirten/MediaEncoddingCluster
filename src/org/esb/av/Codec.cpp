@@ -125,10 +125,12 @@ namespace org {
         _bytes_discard = 0;
         _frame_rate.num = 0;
         _frame_rate.den = 0;
+        fifo = NULL;
       }
 
       Codec::Codec(std::string codec_name, int mode) {
         _codec_resolved = false;
+        _opened = false;
         _mode = mode;
         setCodecOption("codec_name", codec_name);
         ctx = avcodec_alloc_context();
@@ -139,6 +141,11 @@ namespace org {
           ctx->codec_id = _codec->id;
           setContextDefaults();
         }
+        fifo = NULL;
+        _pre_allocated = false;
+        _frame_rate.num = 0;
+        _frame_rate.den = 0;
+
       }
 
       Codec::Codec(const CodecID codecId, int mode) {
@@ -146,6 +153,7 @@ namespace org {
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         _codec_resolved = false;
         _mode = mode;
+        _opened = false;
         ctx = avcodec_alloc_context();
         ctx->codec_id = codecId;
         if (codecId>-1) {

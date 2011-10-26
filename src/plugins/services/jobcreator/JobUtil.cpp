@@ -193,8 +193,8 @@ namespace org {
            */
           {
             std::string stype = type == AVMEDIA_TYPE_VIDEO ? "video" : "audio";
-            std::multimap<std::string, std::string> codec = codecs[stype];
-            std::multimap<std::string, std::string>::iterator sdata = codec.begin();
+            std::map<std::string, std::string> codec = codecs[stype];
+            std::map<std::string, std::string>::iterator sdata = codec.begin();
             /*
              * handling width and height
              */
