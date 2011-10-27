@@ -207,7 +207,7 @@ namespace org {
           }
         }
         
-        bool enqueue(T obj) {
+        std::string enqueue(T obj) {
           std::string name=_directory;
           name+="/";
           std::string uuid=PUUID();
@@ -220,7 +220,7 @@ namespace org {
           ous.writeObject(obj);
           ous.close();
           _uuid_q.enqueue(uuid);
-          return true;
+          return uuid;
         }
         
         T dequeue() {

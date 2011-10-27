@@ -189,7 +189,7 @@ namespace encodingtask {
     partitionservice::PartitionManager::getInstance()->putProcessUnit(_partition, unit, t);
   }
 
-  void EncodingTask::putToQueue(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast) {
+  void EncodingTask::enQueue(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast) {
     unit->setJobId(_job->uuid.value());
 
     partitionservice::PartitionManager::Type t = partitionservice::PartitionManager::TYPE_UNKNOWN;
@@ -202,6 +202,16 @@ namespace encodingtask {
     /*create unique stream index*/
     unit->_source_stream = unit->_input_packets.front()->getStreamIndex();
     unit->_last_process_unit = isLast;
+  }
+
+  boost::shared_ptr<org::esb::hive::job::ProcessUnit> EncodingTask::getProcessUnit() {
+            boost::shared_ptr<org::esb::hive::job::ProcessUnit> u;
+        //u = puQueue.dequeue();
+
+  }
+
+  void EncodingTask::putProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>) {
+
   }
 
   REGISTER_TASK("EncodingTask", EncodingTask);

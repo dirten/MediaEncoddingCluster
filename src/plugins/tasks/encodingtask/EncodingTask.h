@@ -24,7 +24,9 @@ namespace encodingtask {
     void prepare();
     void execute();
     org::esb::core::OptionsDescription getOptionsDescription();
-
+    boost::shared_ptr<org::esb::hive::job::ProcessUnit> getProcessUnit();
+    void putProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>);
+    
   private:
     std::string _srcuristr;
     std::string _partition;
@@ -35,8 +37,9 @@ namespace encodingtask {
     Ptr<db::Job> _job;
     
     void putToPartition(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast=false);
-    void putToQueue(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast=false);
+    void enQueue(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast=false);
     std::map<int, Ptr<org::esb::util::FileQueue<boost::shared_ptr<org::esb::hive::job::ProcessUnit> > > > _stream_queues;
+    std::list<std::string> _running_pus;
   };
 //  REGISTER_TASK("DownloadTask", DownloadTask)
 }

@@ -13,6 +13,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/any.hpp>
+#include "exports.h"
 namespace db{
   class HiveDb;
 }
@@ -20,7 +21,7 @@ namespace org {
   namespace esb {
     namespace core {
 
-      class PluginContext {
+      class CORE_EXPORT PluginContext {
       public:
         db::HiveDb * database;
         template<typename T>
