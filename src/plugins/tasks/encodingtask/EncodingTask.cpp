@@ -207,7 +207,7 @@ namespace encodingtask {
   boost::shared_ptr<org::esb::hive::job::ProcessUnit> EncodingTask::getProcessUnit() {
             boost::shared_ptr<org::esb::hive::job::ProcessUnit> u;
         //u = puQueue.dequeue();
-
+            return u;
   }
 
   void EncodingTask::putProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>) {
