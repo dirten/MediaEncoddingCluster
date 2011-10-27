@@ -20,6 +20,8 @@ namespace plugin {
     org::esb::core::OptionsDescription getOptionsDescription();
 
   private:
+    std::string _job_id;
+    std::string _target_file;
   };
 //  REGISTER_TASK("DownloadTask", DownloadTask)
 }

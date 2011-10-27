@@ -5,7 +5,6 @@
  * Created on 19. Oktober 2011, 11:41
  */
 
-#include "org/esb/db/hivedb.hpp"
 #include "org/esb/core/PluginContext.h"
 #include "org/esb/util/Foreach.h"
 #include "EncodingTask.h"
@@ -15,6 +14,8 @@
 #include "ProcessUnitBuilder.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
+#include "plugins/services/partitionservice/PartitionManager.h"
+
 namespace encodingtask {
 
   EncodingTask::EncodingTask() {
@@ -25,7 +26,15 @@ namespace encodingtask {
 
   void EncodingTask::prepare() {
     _srcuristr = getContext()->getEnvironment<std::string > ("encodingtask.src");
+    _partition = getContext()->getEnvironment<std::string > ("encodingtask.partition");
     std::string profile = getContext()->getEnvironment<std::string > ("encodingtask.profile");
+    if (getContext()->contains("job")) {
+      _job = Ptr<db::Job > (new db::Job(getContext()->get<db::Job > ("job")));
+    } else {
+      setStatus(Task::ERROR);
+      setStatusMessage("there is no associated job to this encoding task");
+    }
+
     try {
       org::esb::hive::PresetReaderJson reader(profile);
       _codecs = reader.getCodecList();
@@ -41,6 +50,7 @@ namespace encodingtask {
     org::esb::core::OptionsDescription result("encodingtask");
     result.add_options()
             ("encodingtask.src", boost::program_options::value<std::string > ()->default_value(""), "Encoding task source")
+            ("encodingtask.partition", boost::program_options::value<std::string > ()->default_value("global"), "Encoding task partition")
             ("encodingtask.profile", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile");
     return result;
   }
@@ -103,7 +113,12 @@ namespace encodingtask {
           LOGERROR("Profile does not define an audio codec");
         }
       }
-      sdata.encoder->open();
+      if (sdata.encoder) {
+        sdata.encoder->open();
+      } else {
+        stream_map.erase(is->index);
+        LOGERROR("Codec not found")
+      }
     }
 
     org::esb::av::PacketInputStream pis(&fis);
@@ -112,7 +127,7 @@ namespace encodingtask {
     ProcessUnitBuilder builder(stream_map);
     Packet * packet;
 
-    while (getStatus() != Task::INTERRUPT && (packet = pis.readPacket()) != NULL) {
+    while (getStatus() != Task::INTERRUPT && getStatus() != Task::ERROR && (packet = pis.readPacket()) != NULL) {
       /**
        * building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
        */
@@ -139,12 +154,54 @@ namespace encodingtask {
         }
         PacketListPtr packets = packetizer.removePacketList();
         boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit = builder.build(packets);
+        putToPartition(unit);
+
         //putToQueue(unit);
         //wait_for_queue = true;
       }
     }
+    /*calling flush Method in the Packetizer to get the last pending packets from the streams*/
+    packetizer.flushStreams();
+    int pc = packetizer.getPacketListCount();
+    for (int a = 0; a < pc; a++) {
+      PacketListPtr packets = packetizer.removePacketList();
+      if (packets.size() > 0) {
 
+        boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit = builder.build(packets);
+        putToPartition(unit, true);
+      }
+    }
+  }
 
+  void EncodingTask::putToPartition(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast) {
+    unit->setJobId(_job->uuid.value());
+
+    partitionservice::PartitionManager::Type t = partitionservice::PartitionManager::TYPE_UNKNOWN;
+
+    if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+      t = partitionservice::PartitionManager::TYPE_AUDIO;
+    } else if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
+      t = partitionservice::PartitionManager::TYPE_VIDEO;
+    }
+    /*create unique stream index*/
+    unit->_source_stream = unit->_input_packets.front()->getStreamIndex();
+    unit->_last_process_unit = isLast;
+    partitionservice::PartitionManager::getInstance()->putProcessUnit(_partition, unit, t);
+  }
+
+  void EncodingTask::putToQueue(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast) {
+    unit->setJobId(_job->uuid.value());
+
+    partitionservice::PartitionManager::Type t = partitionservice::PartitionManager::TYPE_UNKNOWN;
+
+    if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+      t = partitionservice::PartitionManager::TYPE_AUDIO;
+    } else if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
+      t = partitionservice::PartitionManager::TYPE_VIDEO;
+    }
+    /*create unique stream index*/
+    unit->_source_stream = unit->_input_packets.front()->getStreamIndex();
+    unit->_last_process_unit = isLast;
   }
 
   REGISTER_TASK("EncodingTask", EncodingTask);

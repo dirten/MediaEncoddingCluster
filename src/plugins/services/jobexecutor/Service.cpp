@@ -66,6 +66,7 @@ namespace clientcontroller {
                 LOGERROR("line : " << line);
               }
             }
+            _current_task->getContext()->_props["job"]=job;
             _current_task = org::esb::core::PluginRegistry::getInstance()->createTask(dbtask.name, cfg);
             _current_task->prepare();
             _current_task->execute();

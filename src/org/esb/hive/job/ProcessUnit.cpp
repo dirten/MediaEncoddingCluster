@@ -80,39 +80,47 @@ ProcessUnit::ProcessUnit() {
 ProcessUnit::~ProcessUnit() {
 }
 
+void ProcessUnit::setJobId(std::string uuid) {
+  _job_id = uuid;
+}
+
+std::string ProcessUnit::getJobId() {
+  return _job_id;
+}
+
 void ProcessUnit::process() {
   std::ostringstream oss;
-  if(_encoder->getCodecOption("multipass")=="1"||_encoder->getCodecOption("multipass")=="true"){
+  if (_encoder->getCodecOption("multipass") == "1" || _encoder->getCodecOption("multipass") == "true") {
     LOGDEBUG("Two Pass Enabled");
-    setProperty("2pass","true");
-	oss<<org::esb::config::Config::get("hive.tmp_path");
-	oss<<"/";
-    oss<<boost::this_thread::get_id();
+    setProperty("2pass", "true");
+    oss << org::esb::config::Config::get("hive.tmp_path");
+    oss << "/";
+    oss << boost::this_thread::get_id();
   }
-  
-  if(hasProperty("2pass")){
+
+  if (hasProperty("2pass")) {
     LOGDEBUG("Performing Pass 1");
-    _encoder->setCodecOption("flags","pass1");
+    _encoder->setCodecOption("flags", "pass1");
     //_encoder->setCodecOption("g", org::esb::util::StringUtil::toString(_input_packets.size()));
-    LOGDEBUG("Thread pass1:"<<oss.str());
-    _encoder->setCodecOption("passlogfile",oss.str());
+    LOGDEBUG("Thread pass1:" << oss.str());
+    _encoder->setCodecOption("passlogfile", oss.str());
     _encoder->setFlag(CODEC_FLAG_PASS1);
   }
 
   processInternal();
-  
-  if(hasProperty("2pass")){
+
+  if (hasProperty("2pass")) {
     LOGDEBUG("Performing Pass 2");
     delete _converter;
     _output_packets.clear();
-    _converter=NULL;
-    _decoder=_2passdecoder;
+    _converter = NULL;
+    _decoder = _2passdecoder;
 
-    _encoder=_2passencoder;
+    _encoder = _2passencoder;
     //_encoder->setCodecID(CODEC_ID_LIBXVID);
-    _encoder->setCodecOption("flags","pass2");
+    _encoder->setCodecOption("flags", "pass2");
     //_encoder->setCodecOption("g", org::esb::util::StringUtil::toString(_input_packets.size()));
-    _encoder->setCodecOption("passlogfile",oss.str());
+    _encoder->setCodecOption("passlogfile", oss.str());
     _encoder->setFlag(CODEC_FLAG_PASS2);
     processInternal();
   }
@@ -151,7 +159,7 @@ void ProcessUnit::processInternal() {
   _encoder->setOutputStream(NULL);
 
   /*configure the reference decoder to compute the psnr for video mages*/
-  if ( false&& _encoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
+  if (false && _encoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
     std::map<std::string, std::string>opt = _encoder->getCodecOptions();
     _refdecoder = boost::shared_ptr<Decoder > (new Decoder(_encoder->getCodecId()));
     std::map<std::string, std::string>::iterator opit = opt.begin();
@@ -267,7 +275,7 @@ void ProcessUnit::processInternal() {
     int ret = _encoder->encode(*f);
     LOGTRACE("Frame Encoded");
     //LOGDEBUG("Stats="<<_encoder->ctx->stats_out);
-    if (false&&_encoder->getCodecType() == AVMEDIA_TYPE_VIDEO&&sink.getList().size()>0) {
+    if (false && _encoder->getCodecType() == AVMEDIA_TYPE_VIDEO && sink.getList().size() > 0) {
       boost::shared_ptr<Packet>enc_packet = sink.getList().back();
       Frame * tmpf = _refdecoder->decode2(*enc_packet.get());
       if (tmpf->isFinished()) {
@@ -291,12 +299,12 @@ void ProcessUnit::processInternal() {
   _output_packets = sink.getList();
   if (_expected_frame_count != -1 && _output_packets.size() != _expected_frame_count)
     LOGWARN("PUID=" << _process_unit << " Expected Frame count diff from resulting Frame count: expected=" << _expected_frame_count << " got=" << _output_packets.size())
-//  _encoder->close();
-//  _decoder->close();
-//      delete _converter;
-//    _converter=NULL;
+    //  _encoder->close();
+    //  _decoder->close();
+    //      delete _converter;
+    //    _converter=NULL;
 
-}
+  }
 
 boost::shared_ptr<Decoder> ProcessUnit::getDecoder() {
   return _decoder;

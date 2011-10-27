@@ -8,7 +8,7 @@ add_executable (DownloadTaskTest DownloadTaskTest.cpp)
 add_executable (EncodingTaskTest EncodingTaskTest.cpp)
 
 target_link_libraries (DownloadTaskTest downloadtask)
-target_link_libraries (EncodingTaskTest encodingtask)
+target_link_libraries (EncodingTaskTest encodingtask exporttask)
 
 get_target_property(DOWNLOADTASK_PLUGIN downloadtask LOCATION)
 ADD_DEFINITIONS(-DDOWNLOADTASK_PLUGIN="${DOWNLOADTASK_PLUGIN}")

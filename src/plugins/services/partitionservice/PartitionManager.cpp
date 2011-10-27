@@ -63,7 +63,19 @@ namespace partitionservice {
         }
         return result;
       }
-
+      int PartitionManager::getSize(std::string partition){
+        /**
+         * @TODO: implementing only Partition Size, currently there will be a count af all partitions
+         * @param partition
+         * @return 
+         */
+        int result=0;
+        typedef std::map<int, Ptr<org::esb::util::FileQueue<boost::shared_ptr<org::esb::hive::job::ProcessUnit> > > > S;
+        foreach(S::value_type q,_stream_queues){
+          result+=q.second->size();
+        }
+        return result;
+      }
       PartitionManager::Result PartitionManager::leavePartition(std::string name, boost::asio::ip::tcp::endpoint ep) {
         PartitionManager::Result result = PartitionManager::OK;
         if (_endpoints.count(ep)>0) {
@@ -133,7 +145,7 @@ namespace partitionservice {
       }
 
       boost::shared_ptr<org::esb::hive::job::ProcessUnit>PartitionManager::getProcessUnit(boost::asio::ip::tcp::endpoint ep) {
-        boost::shared_ptr<org::esb::hive::job::ProcessUnit> result = boost::shared_ptr<org::esb::hive::job::ProcessUnit > (new org::esb::hive::job::ProcessUnit());        
+        boost::shared_ptr<org::esb::hive::job::ProcessUnit> result ;        
         
         LOGDEBUG("Endpoint="<<ep);
         if (_endpoints.count(ep)>0) {
@@ -162,7 +174,9 @@ namespace partitionservice {
             LOGDEBUG("endpoint->stream != 0 : "<<_endpoints[ep].stream);
           }
           if (_endpoints[ep].stream>0&&_streams[_endpoints[ep].stream].count>0) {
+            result=boost::shared_ptr<org::esb::hive::job::ProcessUnit>(new org::esb::hive::job::ProcessUnit());
             _streams[_endpoints[ep].stream].count--;
+            
             result=_stream_queues[_endpoints[ep].stream]->dequeue();
             /*
             std::string queue_name = org::esb::util::StringUtil::toString(_endpoints[ep].stream);
@@ -179,7 +193,7 @@ namespace partitionservice {
             ois.readObject(*result.get());
              */
           }
-          if(result->_last_process_unit ){
+          if(result&& result->_last_process_unit ){
             LOGDEBUG("last process unit==true unit="<<result->_process_unit <<" endpoint = "<<ep);
             _partition_stream_map[_endpoints[ep].partition].remove(_streams[_endpoints[ep].stream]);
             

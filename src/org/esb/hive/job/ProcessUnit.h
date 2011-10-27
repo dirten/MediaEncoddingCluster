@@ -58,6 +58,8 @@ namespace org {
                     boost::shared_ptr<Encoder> getEncoder();
                     std::list<boost::shared_ptr<Packet> > getInputPacketList();
                     std::list<boost::shared_ptr<Packet> > getOutputPacketList();
+                    void setJobId(std::string uuid);
+                    std::string getJobId();
                     int getGopSize();
                     int getExpectedFrameCount();
                     std::string toString();
@@ -82,6 +84,7 @@ namespace org {
                     int _frame_count;
                     int _process_unit;
                     int id;
+                    std::string _job_id;
                     double _frameRateCompensateBase;
                     int _gop_size;
                    
@@ -111,6 +114,7 @@ namespace org {
                         ar & _keep_aspect_ratio;
                         ar & _discard_audio_bytes;
                         ar & _properties;
+                        ar & _job_id;
                     }
                 private:
                   Frame * convertToRgb(Frame *);

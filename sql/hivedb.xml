@@ -339,6 +339,11 @@
         <field name="recv" type="datetime"/>
     </object>
 
+    <relation id="ProcessUnitJob">
+        <relate object="ProcessUnit" handle="job"/>
+        <relate object="Job" handle="processUnits"/>
+    </relation>
+
     <object name="User">
         <field name="authname" type="string"/>
         <field name="authpass" type="string"/>

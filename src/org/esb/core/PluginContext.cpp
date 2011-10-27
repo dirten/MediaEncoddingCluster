@@ -22,6 +22,10 @@ namespace org {
       PluginContext::~PluginContext() {
         delete database;
       }
+      
+      bool PluginContext::contains(std::string key) {
+        return _props.count(key)>0;
+      }
     }
   }
 }

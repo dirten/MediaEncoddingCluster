@@ -152,6 +152,27 @@ namespace org {
         if (_task_factories.count(name) > 0) {
           result = _task_factories[name]->create();
           result->setContext(new PluginContext());
+          
+          /*fill up PluginContext with default Options*/
+          OptionsDescription desc = result->getOptionsDescription();
+          typedef boost::shared_ptr<boost::program_options::option_description> option;
+
+          foreach(const option value, desc.options()) {
+            boost::any data;
+            value->semantic()->apply_default(data);
+            std::string def;
+            if (data.type() == typeid (int)) {
+              def = org::esb::util::StringUtil::toString(boost::any_cast<int>(data));
+            } else if (data.type() == typeid (double)) {
+              def = org::esb::util::StringUtil::toString(boost::any_cast<double>(data));
+            } else if (data.type() == typeid (bool)) {
+              def = org::esb::util::StringUtil::toString(boost::any_cast<bool>(data));
+            } else if (data.type() == typeid (std::string)){
+              def = org::esb::util::StringUtil::toString(boost::any_cast<std::string > (data));
+            }
+            result->getContext()->env[value->long_name()] = def;
+          }
+
           //result->getContext()->database = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
           typedef std::map<std::string, std::string> stringmap;
           foreach(stringmap::value_type config, cfg) {

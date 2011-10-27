@@ -43,6 +43,7 @@ namespace partitionservice {
 
         void putProcessUnit(std::string partition, boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, Type=TYPE_UNKNOWN);
         boost::shared_ptr<org::esb::hive::job::ProcessUnit>getProcessUnit(boost::asio::ip::tcp::endpoint ep);
+        int getSize(std::string partition);
       private:
         class Endpoint{
         public:

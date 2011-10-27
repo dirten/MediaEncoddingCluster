@@ -1,5 +1,5 @@
-#ifndef ORG_ESB_WEBSERVICE_EXPORTS
-#define ORG_ESB_WEBSERVICE_EXPORTS
+#ifndef ORG_ESB_PARTSERVICE_EXPORTS
+#define ORG_ESB_PARTSERVICE_EXPORTS
   #if defined(_WIN32)
     #if defined(partitionservice_EXPORTS)
       #define PARTSERVICE_EXPORT __declspec( dllexport )

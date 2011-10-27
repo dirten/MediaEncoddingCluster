@@ -3,6 +3,7 @@
 
 add_library (partitionservice SHARED
   PartitionManager.cpp
+  ProcessUnitCollector.cpp
  )
 
 TARGET_LINK_LIBRARIES(partitionservice
