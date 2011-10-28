@@ -13,6 +13,8 @@
 #include "org/esb/lang/Ptr.h"
 //#include "org/esb/mq/QueueConnection.h"
 #include "org/esb/util/Queue.h"
+#include "Partition.h"
+
 #include <map>
 #include <list>
 #include "exports.h"
@@ -45,6 +47,7 @@ namespace partitionservice {
         boost::shared_ptr<org::esb::hive::job::ProcessUnit>getProcessUnit(boost::asio::ip::tcp::endpoint ep);
         int getSize(std::string partition);
       private:
+        /*
         class Endpoint{
         public:
           boost::asio::ip::tcp::endpoint ep;
@@ -61,7 +64,8 @@ namespace partitionservice {
           std::list<Endpoint> endpoints;
           int count;
           bool operator==(const Stream&a)const;
-        };
+        };*/
+        /*
         class Partition{
         public:
           Partition():name(""),max_size(-1){};
@@ -71,6 +75,7 @@ namespace partitionservice {
           std::list<Endpoint> endpoints;
           bool operator==(const Partition&a)const;
         };
+         */
         friend class PartitionManagerTest;
         PartitionManager();
         virtual ~PartitionManager();
@@ -95,7 +100,6 @@ namespace partitionservice {
 
         std::map<boost::asio::ip::tcp::endpoint,Endpoint> _endpoints;
         std::map<int,Stream> _streams;
-        std::map<std::string,Partition> _partitions;
         
         //std::map<int, std::list<boost::asio::ip::tcp::endpoint> > _stream_endpoint;
         std::map<boost::asio::ip::tcp::endpoint, int > _endpoint_stream;
@@ -105,6 +109,9 @@ namespace partitionservice {
         std::map<int, Ptr<org::esb::util::FileQueue<boost::shared_ptr<org::esb::hive::job::ProcessUnit> > > > _stream_queues;
         //org::esb::mq::QueueConnection * _con;//(man.getUrl());
 
+        /*new partition implmenentation*/
+        typedef std::map<std::string,Partition> PartitionMap;
+        PartitionMap _partitions;
       };
     }
 

@@ -2,6 +2,9 @@
 
 
 add_library (partitionservice SHARED
+  Endpoint.cpp
+  Partition.cpp
+  Stream.cpp
   PartitionManager.cpp
   ProcessUnitCollector.cpp
  )
