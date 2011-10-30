@@ -8,7 +8,7 @@
 using namespace org::esb::util;
 using namespace org::esb::lang;
 
-  FileQueue<int> q("partition/1");
+  FileQueue<int> q("partition");
 
 void queue_receiver(int msgcount, int wait){
   for(int a=0;a<msgcount;a++){

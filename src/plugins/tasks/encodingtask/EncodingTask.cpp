@@ -78,7 +78,8 @@ namespace encodingtask {
 
       /*create a stream data element for each stream from the input file*/
       StreamData & sdata = stream_map[is->index];
-
+      sdata.last_start_dts=0;
+      sdata.min_packet_count=0;
       /*create the decoder objects*/
       sdata.decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is));
       sdata.pass2decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is));
@@ -146,6 +147,7 @@ namespace encodingtask {
         continue;
       //              LOGTRACE("Packet DTS:"<<packet->toString());
       //pPacket->setStreamIndex(stream_map[pPacket->getStreamIndex()].outstream);
+      //LOGDEBUG("PacketStreamIndex:"<<packet->getStreamIndex());
       if (packetizer.putPacket(pPacket)) {
         LOGDEBUG("PacketizerListPtr ready, build ProcessUnit");
         if (getStatus() == Task::INTERRUPT) {
@@ -160,6 +162,7 @@ namespace encodingtask {
         //wait_for_queue = true;
       }
     }
+    LOGDEBUG("Flush streams");
     /*calling flush Method in the Packetizer to get the last pending packets from the streams*/
     packetizer.flushStreams();
     int pc = packetizer.getPacketListCount();
@@ -177,7 +180,7 @@ namespace encodingtask {
     unit->setJobId(_job->uuid.value());
 
     partitionservice::PartitionManager::Type t = partitionservice::PartitionManager::TYPE_UNKNOWN;
-
+    LOGDEBUG("CodecType:"<<unit->_decoder->getCodecType());
     if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
       t = partitionservice::PartitionManager::TYPE_AUDIO;
     } else if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
@@ -187,6 +190,7 @@ namespace encodingtask {
     unit->_source_stream = unit->_input_packets.front()->getStreamIndex();
     unit->_last_process_unit = isLast;
     partitionservice::PartitionManager::getInstance()->putProcessUnit(_partition, unit, t);
+    setProgressLength(getProgressLength()+1);
   }
 
   void EncodingTask::enQueue(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast) {

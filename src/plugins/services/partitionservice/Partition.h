@@ -16,11 +16,12 @@ namespace partitionservice {
     typedef std::list<Stream> StreamList;
     typedef std::list<Endpoint> EndpointList;
 
+    Partition();
     Partition(std::string id);
     virtual ~Partition();
     void addStream(Stream );
     bool containStream(std::string id);
-    Stream getStream(std::string id);
+    Stream & getStream(std::string id);
     StreamList getStreams();
     std::string getId();
     
@@ -28,6 +29,7 @@ namespace partitionservice {
     
     EndpointList getEndpoints();
     void removeEndpoint(Endpoint );
+    void removeStream(Stream );
   private:
     StreamList _streams;
     EndpointList _endpoints;

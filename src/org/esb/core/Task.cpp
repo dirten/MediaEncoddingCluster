@@ -42,8 +42,12 @@ namespace org {
         _progress=(_progress_length*100)/p;
       }
       
-      void Task::setProgressLength(int l) {
+      void Task::setProgressLength(unsigned int l) {
         _progress_length=l;
+      }
+
+      unsigned int Task::getProgressLength() {
+        return _progress_length;
       }
       
       void Task::interrupt() {

@@ -38,7 +38,7 @@ namespace partitionservice {
 
 
         static PartitionManager * getInstance();
-        Result joinPartition(std::string name, boost::asio::ip::tcp::endpoint ep,Type=TYPE_UNKNOWN);
+        Result joinPartition(std::string name, Endpoint ep,Type=TYPE_UNKNOWN);
         Result leavePartition(std::string name, boost::asio::ip::tcp::endpoint ep);
         Result createPartition(std::string name, int size=-1);
         Result deletePartition(std::string name);
@@ -91,12 +91,11 @@ namespace partitionservice {
         bool getPartition(std::string name, PartitionManager::Partition & result);
         */
         static PartitionManager * _instance;
-        typedef std::list<boost::asio::ip::tcp::endpoint> EndpointList;
         typedef std::list<Stream> StreamList;
-        typedef std::map<std::string, EndpointList> PartitionEndpointMap;
-        typedef std::map<std::string, StreamList> PartitionStreamMap;
-        PartitionEndpointMap _partition_map;
-        PartitionStreamMap _partition_stream_map;
+        //typedef std::map<std::string, EndpointList> PartitionEndpointMap;
+        //typedef std::map<std::string, StreamList> PartitionStreamMap;
+        //PartitionEndpointMap _partition_map;
+        //PartitionStreamMap _partition_stream_map;
 
         std::map<boost::asio::ip::tcp::endpoint,Endpoint> _endpoints;
         std::map<int,Stream> _streams;
@@ -111,7 +110,13 @@ namespace partitionservice {
 
         /*new partition implmenentation*/
         typedef std::map<std::string,Partition> PartitionMap;
+        typedef std::map<Endpoint, Stream> EndpointStreamMap;
+        typedef std::list<boost::asio::ip::tcp::endpoint> EndpointList;
         PartitionMap _partitions;
+        EndpointStreamMap _ep_stream;
+        EndpointList _endpoint_pool;
+        boost::mutex _partition_mutex;
+
       };
     }
 

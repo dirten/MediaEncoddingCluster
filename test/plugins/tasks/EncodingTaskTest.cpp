@@ -26,7 +26,10 @@ void process(boost::asio::ip::tcp::endpoint e1, partitionservice::ProcessUnitCol
   do {
     pu = man->getProcessUnit(e1);
     if (pu) {
+      //if(pu->getDecoder()->getCodecType()==AVMEDIA_TYPE_AUDIO)
+      //  org::esb::lang::Thread::sleep2(10*1000);
       pu->process();
+      pu->_input_packets.clear();
       col.putProcessUnit(pu);
     }
   } while (pu);
@@ -48,7 +51,8 @@ int main(int argc, char** argv) {
   org::esb::core::PluginRegistry::getInstance()->initPlugins();
   std::map<std::string, std::string> cfg;
   //cfg["encodingtask.src"]=std::string(MEC_SOURCE_DIR).append("/test.dvd");
-  cfg["encodingtask.src"] = "/media/video/ChocolateFactory.ts";
+  cfg["encodingtask.src"]=std::string(argv[1]);
+  //cfg["encodingtask.src"] = "/media/video/ChocolateFactory.ts";
   cfg["encodingtask.profile"] = profile_data;
   db::HiveDb database("sqlite3", "database=test.db");
   database.create();
@@ -64,6 +68,7 @@ int main(int argc, char** argv) {
       task->cleanup();
     }
   }
+  //return 0;
   partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
   boost::asio::ip::tcp::endpoint e1(boost::asio::ip::address_v4::from_string("127.0.0.1"), 6000);
   boost::asio::ip::tcp::endpoint e2(boost::asio::ip::address_v4::from_string("127.0.0.1"), 6001);
@@ -83,7 +88,7 @@ int main(int argc, char** argv) {
   go(process, e4, col);
   go(process, e5, col);
   while (man->getSize("global") > 0) {
-    org::esb::lang::Thread::sleep2(1 * 1000);
+    org::esb::lang::Thread::sleep2(50 * 1000);
   }
 
   /*encoding is ready*/

@@ -9,6 +9,9 @@
 #include "org/esb/util/Foreach.h"
 namespace partitionservice {
 
+  Partition::Partition() {
+  }
+  
   Partition::Partition(std::string id) {
     _id = id;
   }
@@ -31,14 +34,17 @@ namespace partitionservice {
 
   }
 
-  Stream Partition::getStream(std::string id) {
+  Stream & Partition::getStream(std::string id) {
     Stream result;
 
-    foreach(Stream s, _streams) {
+    foreach(Stream & s, _streams) {
       if (s.getId() == id)
-        result = s;
+        return s;
     }
     return result;
+  }
+  Partition::StreamList Partition::getStreams() {
+    return _streams;
   }
 
   std::string Partition::getId() {
@@ -51,6 +57,9 @@ namespace partitionservice {
 
   void Partition::removeEndpoint(Endpoint e) {
     _endpoints.remove(e);
+  }
+  void Partition::removeStream(Stream s) {
+    _streams.remove(s);
   }
 
 

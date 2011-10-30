@@ -19,12 +19,12 @@ namespace plugin {
   }
 
   void ExportTask::prepare() {
-    if(getContext()->contains("exporttask.jobid")){
+    if(true||getContext()->contains("exporttask.jobid")){
         _job_id=getContext()->getEnvironment<std::string>("exporttask.jobid");
     }else{
       setStatus(Task::ERROR);
     }
-    if(getContext()->contains("exporttask.trg")){
+    if(true||getContext()->contains("exporttask.trg")){
         _target_file=getContext()->getEnvironment<std::string>("exporttask.trg");
     }else{
       setStatus(Task::ERROR);      
@@ -41,7 +41,10 @@ namespace plugin {
 
   
   void ExportTask::execute() {
-    if(getStatus()==Task::ERROR)return;
+    if(getStatus()==Task::ERROR){
+      LOGERROR("ExportTask have error");
+      return;
+    }
     
     org::esb::io::File inputdir(_job_id);
     org::esb::io::FileList filelist = inputdir.listFiles();

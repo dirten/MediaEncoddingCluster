@@ -32,7 +32,8 @@ namespace org {
         };
 
       protected:
-        void setProgressLength(int);
+        void setProgressLength(unsigned int);
+        unsigned int getProgressLength();
         void setProgress(int);
         void setStatus(STATUS);
         void setStatusMessage(std::string);
@@ -48,8 +49,8 @@ namespace org {
         virtual STATUS getStatus();
         virtual std::string getStatusMessage();
       private:
-        int _progress;
-        int _progress_length;
+        unsigned int _progress;
+        unsigned int _progress_length;
         STATUS _status;
         std::string _status_message;
       };

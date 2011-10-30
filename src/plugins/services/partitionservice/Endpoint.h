@@ -17,6 +17,8 @@ namespace partitionservice {
     Endpoint(boost::asio::ip::tcp::endpoint);
     virtual ~Endpoint();
     bool operator==(const Endpoint&a)const;
+    bool operator<(const Endpoint&a)const;
+    bool operator>(const Endpoint&a)const;
   private:
     boost::asio::ip::tcp::endpoint _ep;
 

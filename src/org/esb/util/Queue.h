@@ -196,6 +196,7 @@ namespace org {
 
       template<typename T >
               class FileQueue {
+        boost::mutex queue_mutex;
         std::string _directory;
         Queue<std::string,0> _uuid_q;
         public:
@@ -208,6 +209,8 @@ namespace org {
         }
         
         std::string enqueue(T obj) {
+          //boost::mutex::scoped_lock queue_lock(queue_mutex);
+
           std::string name=_directory;
           name+="/";
           std::string uuid=PUUID();
@@ -224,6 +227,8 @@ namespace org {
         }
         
         T dequeue() {
+          //boost::mutex::scoped_lock queue_lock(queue_mutex);
+
           T object;
           std::string name=_directory;
           name+="/";

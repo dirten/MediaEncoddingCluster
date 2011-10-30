@@ -13,14 +13,20 @@ namespace partitionservice {
 
   Stream::Stream(std::string id, TYPE t) {
     _id = id;
-    _type=t;
+    _type = t;
+    _queue = new org::esb::util::FileQueue<boost::shared_ptr<ProcessUnit> >(id);
+    _max_endpoint_count=4;
   }
 
   Stream::~Stream() {
   }
 
-  void Stream::enqueue(Ptr<ProcessUnit>) {
+  void Stream::enqueue(Ptr<ProcessUnit> unit) {
+    _queue->enqueue(unit);
+  }
 
+  boost::shared_ptr<ProcessUnit> Stream::dequeue() {
+    return _queue->dequeue();
   }
 
   void Stream::setType(TYPE t) {
@@ -35,8 +41,26 @@ namespace partitionservice {
     return _id;
   }
 
-  Stream::EndpointList Stream::getEndpoints() {
+  void Stream::addEndpoint(Endpoint e) {
+    _endpoints.push_back(e);
+  }
+  
+  //void Stream::removeEndpoint(Endpoint e) {
+  //  _endpoints.erase(e);
+  //}
+  int Stream::getSize(){
+    return _queue->size();
+  }
+  Stream::EndpointList & Stream::getEndpoints() {
     return _endpoints;
+  }
+
+  unsigned int Stream::getMaxEndpointCount() {
+
+  }
+
+  void Stream::setMaxEndpointCount(unsigned int) {
+
   }
 
   bool Stream::operator==(const Stream & a)const {

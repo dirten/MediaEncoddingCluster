@@ -12,6 +12,7 @@
 #include "Endpoint.h"
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/lang/Ptr.h"
+#include "org/esb/util/Queue.h"
 using namespace org::esb::hive::job;
 
 namespace partitionservice {
@@ -28,16 +29,23 @@ namespace partitionservice {
     Stream(std::string id, TYPE);
     virtual ~Stream();
     void enqueue(Ptr<ProcessUnit>);
+    boost::shared_ptr<ProcessUnit> dequeue();
     void setType(TYPE);
     TYPE getType();
     std::string getId();
-    EndpointList getEndpoints();
-    
+    EndpointList & getEndpoints();
+    void addEndpoint(Endpoint);
+    //void removeEndpoint(Endpoint);
+    unsigned int getMaxEndpointCount();
+    void setMaxEndpointCount(unsigned int);
+    int getSize();
     bool operator==(const Stream&a)const;
   private:
     std::string _id;
     EndpointList _endpoints;
-    TYPE _type;    
+    TYPE _type;   
+    Ptr<org::esb::util::FileQueue<boost::shared_ptr<ProcessUnit> > >_queue;
+    unsigned int _max_endpoint_count;
   };
 }
 #endif	/* STREAM_H */

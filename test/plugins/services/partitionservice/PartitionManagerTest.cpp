@@ -93,55 +93,65 @@ void test_partitioning() {
     assert(gu11->_process_unit == 1);
 
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> gu21 = man->getProcessUnit(e2);
-    assert(gu21->_source_stream == 1);
-    assert(gu21->_process_unit == 2);
+    assert(gu21->_source_stream == 2);
+    assert(gu21->_process_unit == 4);
 
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> gu12 = man->getProcessUnit(e1);
     assert(gu12->_source_stream == 1);
-    assert(gu12->_process_unit == 3);
+    assert(gu12->_process_unit == 2);
 
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> gu22 = man->getProcessUnit(e2);
-    assert(gu22->_source_stream == 0);
-    assert(gu22->_process_unit == 0);
+    assert(gu22->_source_stream == 2);
+    assert(gu22->_process_unit == 5);
 
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> gu13 = man->getProcessUnit(e1);
-    assert(gu13->_source_stream == 0);
-    assert(gu13->_process_unit == 0);
+    assert(gu13->_source_stream == 1);
+    assert(gu13->_process_unit == 3);
 
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> gu31 = man->getProcessUnit(e3);
-    assert(gu31->_source_stream == 2);
-    assert(gu31->_process_unit == 4);
+    assert(gu31->_source_stream == 3);
+    assert(gu31->_process_unit == 7);
 
 
-    boost::shared_ptr<org::esb::hive::job::ProcessUnit> gu41 = man->getProcessUnit(e4);
-    assert(gu41->_source_stream == 3);
-    assert(gu41->_process_unit == 7);
+    boost::shared_ptr<org::esb::hive::job::ProcessUnit> gu41 = man->getProcessUnit(e2);
+    
+    assert(gu41->_source_stream == 2);
+    assert(gu41->_process_unit == 6);
 
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> gu32 = man->getProcessUnit(e3);
-    assert(gu32->_source_stream == 2);
-    assert(gu32->_process_unit == 5);
+    assert(gu32->_source_stream == 3);
+    assert(gu32->_process_unit == 8);
 
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> gu42 = man->getProcessUnit(e4);
-    assert(gu42->_source_stream == 3);
-    assert(gu42->_process_unit == 8);
+    assert(!gu42);
+    //assert(gu42->_source_stream == 3);
+    //assert(gu42->_process_unit == 8);
 
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> gu33 = man->getProcessUnit(e3);
-    assert(gu33->_source_stream == 2);
-    assert(gu33->_process_unit == 6);
+    assert(gu33->_source_stream == 3);
+    assert(gu33->_process_unit == 9);
 
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> gu43 = man->getProcessUnit(e4);
-    assert(gu43->_source_stream == 3);
-    assert(gu43->_process_unit == 9);
+    assert(!gu43);
+    //assert(gu43->_source_stream == 3);
+    //assert(gu43->_process_unit == 9);
 
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> gu34 = man->getProcessUnit(e3);
-    assert(gu34->_source_stream == 0);
-    assert(gu34->_process_unit == 0);
+    assert(!gu34);
+    //assert(gu34->_source_stream == 0);
+    //assert(gu34->_process_unit == 0);
 
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> gu44 = man->getProcessUnit(e4);
-    assert(gu44->_source_stream == 0);
-    assert(gu44->_process_unit == 0);
+    assert(!gu44);
+    //assert(gu44->_source_stream == 0);
+    //assert(gu44->_process_unit == 0);
   }
-
+  man->leavePartition("", e1);
+  man->leavePartition("", e2);
+  man->leavePartition("", e2);
+  man->leavePartition("", e3);
+  man->leavePartition("", e4);
+  return;
   {
     pu1->_source_stream = 4;
     pu2->_source_stream = 5;
@@ -235,6 +245,107 @@ void test_partitioning() {
   }
 }
 
+
+void endpoint_reader(boost::asio::ip::tcp::endpoint ep, int sid){
+  LOGDEBUG("starting endpoint_reader for endpoint:"<<ep<<" and stream:"<<sid);
+  partitionservice::PartitionManager *man = partitionservice::PartitionManager::getInstance();
+
+  bool action=true;
+  boost::shared_ptr<org::esb::hive::job::ProcessUnit> pu;
+  do{
+    pu = man->getProcessUnit(ep);
+    if(pu){
+        //assert(pu->_source_stream == sid);
+        action=false;
+        LOGDEBUG("Receive ProcessUnit:"<<pu->_process_unit);
+        org::esb::lang::Thread::sleep2(sid*10);
+    }
+  }while(pu);
+  LOGDEBUG("leaving endpoint_reader for endpoint:"<<ep<<" and stream:"<<sid);
+}
+
+void test_partitioning_2() {
+  boost::asio::ip::tcp::endpoint e1(boost::asio::ip::address_v4::from_string("127.0.0.1"), 6000);
+  boost::asio::ip::tcp::endpoint e2(boost::asio::ip::address_v4::from_string("127.0.0.1"), 6001);
+  boost::asio::ip::tcp::endpoint e3(boost::asio::ip::address_v4::from_string("127.0.0.1"), 6002);
+  boost::asio::ip::tcp::endpoint e4(boost::asio::ip::address_v4::from_string("127.0.0.1"), 6003);
+  
+  
+    boost::shared_ptr<org::esb::hive::job::ProcessUnit> pu = boost::shared_ptr<org::esb::hive::job::ProcessUnit > (new org::esb::hive::job::ProcessUnit());
+  partitionservice::PartitionManager *man = partitionservice::PartitionManager::getInstance();
+
+    pu->_source_stream = 1;
+
+    int a = 0;
+    for(;a<1000;a++){
+      pu->_last_process_unit = false;
+      pu->_process_unit = a;
+      man->putProcessUnit("test", pu, partitionservice::PartitionManager::TYPE_VIDEO);      
+    }
+    pu->_last_process_unit = true;
+    pu->_process_unit = a;
+    man->putProcessUnit("test", pu, partitionservice::PartitionManager::TYPE_VIDEO);      
+    
+    
+    pu->_source_stream = 2;
+    for(;a<1000*2;a++){
+      pu->_last_process_unit = false;
+      pu->_process_unit = a;
+      man->putProcessUnit("test", pu, partitionservice::PartitionManager::TYPE_AUDIO);      
+    }
+    pu->_last_process_unit = true;
+    pu->_process_unit = a;
+    man->putProcessUnit("test", pu, partitionservice::PartitionManager::TYPE_AUDIO);      
+
+    pu->_source_stream = 3;
+    for(;a<1000*3;a++){
+      pu->_last_process_unit = false;
+      pu->_process_unit = a;
+      man->putProcessUnit("test", pu, partitionservice::PartitionManager::TYPE_AUDIO);      
+    }
+    pu->_last_process_unit = true;
+    pu->_process_unit = a;
+    man->putProcessUnit("test", pu, partitionservice::PartitionManager::TYPE_AUDIO);      
+    /*
+    pu->_source_stream = 4;
+    for(;a<1000*4;a++){
+      pu->_last_process_unit = false;
+      pu->_process_unit = a;
+      man->putProcessUnit("test", pu, partitionservice::PartitionManager::TYPE_AUDIO);      
+    }
+    pu->_last_process_unit = true;
+    pu->_process_unit = a;
+    man->putProcessUnit("test", pu, partitionservice::PartitionManager::TYPE_AUDIO);      
+    pu->_source_stream = 5;
+    for(;a<1000*5;a++){
+      pu->_last_process_unit = false;
+      pu->_process_unit = a;
+      man->putProcessUnit("test", pu, partitionservice::PartitionManager::TYPE_AUDIO);      
+    }
+    pu->_last_process_unit = true;
+    pu->_process_unit = a;
+    man->putProcessUnit("test", pu, partitionservice::PartitionManager::TYPE_AUDIO);      
+    pu->_source_stream = 6;
+    for(;a<1000*6;a++){
+      pu->_last_process_unit = false;
+      pu->_process_unit = a;
+      man->putProcessUnit("test", pu, partitionservice::PartitionManager::TYPE_AUDIO);      
+    }
+    pu->_last_process_unit = true;
+    pu->_process_unit = a;
+    man->putProcessUnit("test", pu, partitionservice::PartitionManager::TYPE_AUDIO);      
+*/
+  
+  go(endpoint_reader, e1, 1);
+  go(endpoint_reader, e2, 2);
+  go(endpoint_reader, e3, 3);
+  go(endpoint_reader, e4, 4);
+  
+  while(partitionservice::PartitionManager::getInstance()->getSize("test")>0)
+        org::esb::lang::Thread::sleep2(1000);
+}
+
+
 /*
  * 
  */
@@ -244,6 +355,7 @@ int main(int argc, char** argv) {
   test_simple_create_and_delete();
   test_simple_join_and_leave();
   test_partitioning();
+  test_partitioning_2();
   return 0;
 
   partitionservice::PartitionManager *man = partitionservice::PartitionManager::getInstance();
