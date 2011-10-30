@@ -33,7 +33,11 @@ namespace partitionservice {
     return result;
 
   }
-
+  /**
+   * @TODO: ugly code, returning temporary object :-(
+   * @param id
+   * @return 
+   */
   Stream & Partition::getStream(std::string id) {
     Stream result;
 

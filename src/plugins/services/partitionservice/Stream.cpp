@@ -56,11 +56,11 @@ namespace partitionservice {
   }
 
   unsigned int Stream::getMaxEndpointCount() {
-
+    return _max_endpoint_count;
   }
 
-  void Stream::setMaxEndpointCount(unsigned int) {
-
+  void Stream::setMaxEndpointCount(unsigned int c) {
+        _max_endpoint_count=c;
   }
 
   bool Stream::operator==(const Stream & a)const {
