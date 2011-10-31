@@ -4,7 +4,7 @@
 namespace org{
 namespace esb{
 namespace signal{
-class MessageListener{
+class SIGNAL_EXPORT MessageListener{
   public:
     virtual void onMessage(Message & msg)=0;
     virtual ~MessageListener(){};

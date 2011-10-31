@@ -9,9 +9,10 @@
 #define	PROCESSUNITCOLLECTOR_H
 #include <boost/shared_ptr.hpp>
 #include "org/esb/hive/job/ProcessUnit.h"
+#include "exports.h"
 namespace partitionservice {
 
-  class ProcessUnitCollector {
+  class PARTSERVICE_EXPORT ProcessUnitCollector {
   public:
     ProcessUnitCollector(std::string );
     virtual ~ProcessUnitCollector();
