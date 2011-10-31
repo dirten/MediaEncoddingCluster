@@ -25,22 +25,21 @@ namespace org {
         return _timebase;
       }
 
-      bool TimeStamp::operator==(TimeStamp ts) {
+      bool TimeStamp::operator==(TimeStamp ts)const {
         return ts._timestamp == _timestamp && av_cmp_q(ts._timebase, _timebase)==0;
       }
 
-      bool TimeStamp::operator!=(TimeStamp ts) {
+      bool TimeStamp::operator!=(TimeStamp ts)const {
         return !(*this==ts);
       }
 
-      bool TimeStamp::operator>(TimeStamp ts) {
+      bool TimeStamp::operator>(TimeStamp ts)const {
         return av_compare_ts(_timestamp, _timebase,ts._timestamp,ts._timebase)==1;
       }
 
-      bool TimeStamp::operator<(TimeStamp ts) {
+      bool TimeStamp::operator<(TimeStamp ts)const {
         return av_compare_ts(_timestamp, _timebase,ts._timestamp,ts._timebase)==-1;
       }
-
       std::string TimeStamp::toString() {
         std::stringstream t;
         t << "TimeStamp=";
@@ -60,6 +59,11 @@ namespace org {
 
       TimeStamp::~TimeStamp() {
       }
+      std::ostream& operator<<(std::ostream&out,TimeStamp & t){
+        out<<t.toString();
+        return out;
+      }
+
     }
   }
 }

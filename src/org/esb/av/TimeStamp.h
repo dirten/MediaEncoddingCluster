@@ -22,10 +22,11 @@ namespace org {
         Rational getTimeBase();
         int64_t getTime();
         double toDouble();
-        bool operator==(TimeStamp t);
-        bool operator!=(TimeStamp t);
-        bool operator>(TimeStamp t);
-        bool operator<(TimeStamp t);
+        bool operator==(TimeStamp t)const;
+        bool operator!=(TimeStamp t)const;
+        bool operator>(TimeStamp t)const;
+        bool operator<(TimeStamp t)const;
+        friend std::ostream& operator<<(std::ostream&out,TimeStamp & t);
         std::string toString();
       private:
         int64_t _timestamp;

@@ -152,8 +152,9 @@ namespace partitionservice {
     LOGDEBUG("PartitionManager::putProcessUnit partition=" << partition << " unitid=" << unit->_process_unit);
     //if (unit->_input_packets.size() == 0)return;
 
-    int stream_index = unit->_source_stream; //_input_packets.front()->getStreamIndex();
-    std::string stream_id = org::esb::util::StringUtil::toString(stream_index);
+     //_input_packets.front()->getStreamIndex();
+    std::string stream_index = org::esb::util::StringUtil::toString(unit->_source_stream);
+    std::string stream_id=partition+"/"+stream_index;
 
     if (_partitions.count(partition) > 0) {
       Partition & part = _partitions[partition];

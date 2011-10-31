@@ -15,10 +15,12 @@
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "plugins/services/partitionservice/PartitionManager.h"
+#include "org/esb/av/CodecPropertyTransformer.h"
 
 namespace encodingtask {
 
   EncodingTask::EncodingTask() {
+    _sequence_counter=0;
   }
 
   EncodingTask::~EncodingTask() {
@@ -80,18 +82,22 @@ namespace encodingtask {
       StreamData & sdata = stream_map[is->index];
       sdata.last_start_dts=0;
       sdata.min_packet_count=0;
+      sdata.outstream=a;
       /*create the decoder objects*/
       sdata.decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is));
       sdata.pass2decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is));
-
+      sdata.decoder->reset();
+      sdata.pass2decoder->reset();
       /*create the encoder objects*/
       typedef std::map<std::string, std::string> Parameter;
       if (sdata.decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
         if (_codecs["video"].count("codec_id") != 0) {
           sdata.encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["video"]["codec_id"]));
           sdata.pass2encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["video"]["codec_id"]));
+            org::esb::av::CodecPropertyTransformer transformer(_codecs["video"]);
+            std::map<std::string, std::string> params = transformer.getCodecProperties();
 
-          foreach(Parameter::value_type param, _codecs["video"]) {
+          foreach(Parameter::value_type param, params) {
             LOGDEBUG("Parameter key=" << param.first << " value=" << param.second);
             sdata.encoder->setCodecOption(param.first, param.second);
             sdata.pass2encoder->setCodecOption(param.first, param.second);
@@ -116,6 +122,7 @@ namespace encodingtask {
       }
       if (sdata.encoder) {
         sdata.encoder->open();
+        LOGDEBUG(sdata.encoder->toString());
       } else {
         stream_map.erase(is->index);
         LOGERROR("Codec not found")
@@ -177,6 +184,7 @@ namespace encodingtask {
   }
 
   void EncodingTask::putToPartition(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast) {
+    unit->_sequence=_sequence_counter++;
     unit->setJobId(_job->uuid.value());
 
     partitionservice::PartitionManager::Type t = partitionservice::PartitionManager::TYPE_UNKNOWN;

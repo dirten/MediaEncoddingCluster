@@ -195,6 +195,7 @@ class SampleFormat;*/
           
           if (_mode == Codec::DECODER) {
             ar & ctx->extradata_size;
+            //LOGDEBUG("Extra data"<<ctx->extradata_size);
             if (ctx->extradata_size > 0) {
               ctx->extradata = static_cast<boost::uint8_t*> (av_malloc(ctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE));
               memset(ctx->extradata, 0, ctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);

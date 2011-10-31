@@ -28,7 +28,7 @@ add_library (av SHARED
   PPSWriter.cpp
   PGMUtil.cpp
   BMPUtil.cpp
-#  AVInputStream.cpp
+  CodecPropertyTransformer.cpp
   FormatStreamFactory.cpp
   StreamInfo.cpp
   FrameProcessor.cpp

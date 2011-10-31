@@ -55,6 +55,7 @@ int main(int argc, char** argv) {
   //cfg["encodingtask.src"] = "/media/video/ChocolateFactory.ts";
   cfg["encodingtask.profile"] = profile_data;
   db::HiveDb database("sqlite3", "database=test.db");
+  database.drop();
   database.create();
   db::Job job(database);
   job.uuid = (std::string)org::esb::util::PUUID();
@@ -82,15 +83,19 @@ int main(int argc, char** argv) {
   assert(man->joinPartition("global", e3, partitionservice::PartitionManager::TYPE_AUDIO) == partitionservice::PartitionManager::OK);
   assert(man->joinPartition("global", e4, partitionservice::PartitionManager::TYPE_AUDIO) == partitionservice::PartitionManager::OK);
   partitionservice::ProcessUnitCollector col("collector");
-  go(process, e1, col);
-  go(process, e2, col);
-  go(process, e3, col);
-  go(process, e4, col);
-  go(process, e5, col);
+  boost::thread t1=go(process, e1, col);
+  boost::thread t2=go(process, e2, col);
+  boost::thread t3=go(process, e3, col);
+  boost::thread t4=go(process, e4, col);
+  boost::thread t5=go(process, e5, col);
   while (man->getSize("global") > 0) {
     org::esb::lang::Thread::sleep2(50 * 1000);
   }
-
+  t1.join();
+  t2.join();
+  t3.join();
+  t4.join();
+  t5.join();
   /*encoding is ready*/
   std::map<std::string, std::string> expcfg;
   //cfg["encodingtask.src"]=std::string(MEC_SOURCE_DIR).append("/test.dvd");

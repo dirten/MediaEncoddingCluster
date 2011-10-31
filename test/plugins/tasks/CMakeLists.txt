@@ -6,14 +6,19 @@ include_directories (${MYSQL_DIR}/include)
 
 add_executable (DownloadTaskTest DownloadTaskTest.cpp)
 add_executable (EncodingTaskTest EncodingTaskTest.cpp)
+add_executable (ExportTaskTest ExportTaskTest.cpp)
 
 target_link_libraries (DownloadTaskTest downloadtask)
 target_link_libraries (EncodingTaskTest encodingtask exporttask)
+target_link_libraries (ExportTaskTest encodingtask exporttask)
 
 get_target_property(DOWNLOADTASK_PLUGIN downloadtask LOCATION)
 ADD_DEFINITIONS(-DDOWNLOADTASK_PLUGIN="${DOWNLOADTASK_PLUGIN}")
 
 get_target_property(ENCODINGTASK_PLUGIN encodingtask LOCATION)
 ADD_DEFINITIONS(-DENCODINGTASK_PLUGIN="${ENCODINGTASK_PLUGIN}")
+
+get_target_property(EXPORTTASK_PLUGIN exporttask LOCATION)
+ADD_DEFINITIONS(-DEXPORTTASK_PLUGIN="${EXPORTTASK_PLUGIN}")
 
 

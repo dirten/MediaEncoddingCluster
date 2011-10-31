@@ -79,6 +79,10 @@ bool File::mkdir() {
   return fs::create_directory(_full_path);
 }
 
+bool File::mkdirs() {
+  return fs::create_directories(_full_path);
+}
+
 bool File::createNewFile() {
   bool result = false;
   FILE* fh = fopen(getPath().c_str(), "a");

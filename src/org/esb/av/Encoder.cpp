@@ -168,6 +168,8 @@ int Encoder::encodeVideo(AVFrame * inframe) {
           pac.packet->flags |= AV_PKT_FLAG_KEY;
         }
         pac.packet->pts = ctx->coded_frame->pts;
+        pac.setPtsTimeStamp(TimeStamp(ctx->coded_frame->pts,ctx->time_base));
+        pac._pict_type=ctx->coded_frame->pict_type;
       }
 #ifdef USE_TIME_BASE_Q
       pac.setTimeBase(AV_TIME_BASE_Q);
@@ -183,6 +185,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
 #endif
 
       pac.packet->dts = _last_dts;
+      pac.setDtsTimeStamp(TimeStamp(_last_dts, ctx->time_base));
       LOGDEBUG(pac.toString());
       if (ctx->flags & CODEC_FLAG_PSNR) {
         LOGDEBUG("ERROR0========" << ctx->coded_frame->error[0]);

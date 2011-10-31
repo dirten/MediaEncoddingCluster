@@ -2,6 +2,7 @@
 
 add_library (exporttask SHARED
   ExportTask.cpp
+  ProcessUnitData.cpp
 )
 
 TARGET_LINK_LIBRARIES(exporttask

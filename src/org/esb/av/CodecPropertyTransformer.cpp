@@ -91,6 +91,8 @@ namespace org {
       void CodecPropertyTransformer::init() {
         /** this will be only enabled when support for 2pass encoding is well tested*/
         _result["multipass"] = "0";
+        _result["width"] = "0";
+        _result["height"] = "0";
         const AVOption * option = NULL;
         AVCodecContext * codec = avcodec_alloc_context2(AVMEDIA_TYPE_UNKNOWN);
         std::map<std::string, std::string> unit2name;

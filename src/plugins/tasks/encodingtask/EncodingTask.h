@@ -40,6 +40,7 @@ namespace encodingtask {
     void enQueue(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast=false);
     std::map<int, Ptr<org::esb::util::FileQueue<boost::shared_ptr<org::esb::hive::job::ProcessUnit> > > > _stream_queues;
     std::list<std::string> _running_pus;
+    int _sequence_counter;
   };
 //  REGISTER_TASK("DownloadTask", DownloadTask)
 }

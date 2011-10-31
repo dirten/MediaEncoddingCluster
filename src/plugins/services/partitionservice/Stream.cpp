@@ -19,6 +19,7 @@ namespace partitionservice {
   }
 
   Stream::~Stream() {
+    
   }
 
   void Stream::enqueue(Ptr<ProcessUnit> unit) {

@@ -204,7 +204,7 @@ namespace org {
           _directory=dirname;
           org::esb::io::File dir(_directory.c_str());
           if (!dir.exists()) {
-            dir.mkdir();
+            dir.mkdirs();
           }
         }
         

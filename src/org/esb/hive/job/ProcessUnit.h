@@ -93,6 +93,7 @@ namespace org {
                     int _deinterlace;
                     int _keep_aspect_ratio;
                     int64_t _discard_audio_bytes;
+                    int _sequence;
                     template<class Archive>
                     void serialize(Archive & ar, const unsigned int version) {
                         ar & _input_packets;
@@ -115,6 +116,7 @@ namespace org {
                         ar & _discard_audio_bytes;
                         ar & _properties;
                         ar & _job_id;
+                        ar & _sequence;
                     }
                 private:
                   Frame * convertToRgb(Frame *);
