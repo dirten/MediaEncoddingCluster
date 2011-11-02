@@ -5,6 +5,7 @@
  * Created on 2. November 2011, 13:22
  */
 
+#include "DatabaseService.h"
 #include "Environment.h"
 #include "org/esb/io/File.h"
 #include "org/esb/config/config.h"
@@ -12,7 +13,6 @@
 #include "org/esb/util/UUID.h"
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/libjson/libjson.h"
-#include "DatabaseService.h"
 namespace org {
   namespace esb {
     namespace hive {
