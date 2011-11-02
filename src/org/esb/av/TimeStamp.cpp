@@ -59,7 +59,8 @@ namespace org {
 
       TimeStamp::~TimeStamp() {
       }
-      std::ostream& operator<<(std::ostream&out,TimeStamp & t){
+      
+      std::ostream& AV_EXPORT operator<<(std::ostream&out,TimeStamp & t){
         out<<t.toString();
         return out;
       }
