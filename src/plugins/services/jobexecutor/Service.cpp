@@ -40,12 +40,21 @@ namespace clientcontroller {
   void Service::stopService() {
     _status = STOPPING;
   }
+  void Service::actualizeProgress(Ptr<org::esb::core::Task> task,db::Task&dbtask){
+    while(task->getStatus()!=org::esb::core::Task::DONE&&task->getStatus()!=org::esb::core::Task::ERROR){
+      LOGDEBUG("Reading Progress");
+      dbtask.progress=task->getProgress();
+      dbtask.update();
+      org::esb::lang::Thread::sleep2(1000);
+    }
+  }
 
   void Service::run() {
     LOGTRACEMETHOD("void ProcessUnitController::start() ")
     while (_status == RUNNING) {
-      litesql::DataSource<db::Job> source = litesql::select<db::Job > (*getContext()->database, db::Job::Endtime <= 1 && (db::Job::Status == db::Job::Status::Waiting || db::Job::Status == db::Job::Status::Processing));
+      litesql::DataSource<db::Job> source = litesql::select<db::Job > (*getContext()->database, db::Job::Status == db::Job::Status::Waiting);
       if (source.count() > 0) {
+        LOGDEBUG("New Job found!!!");
         db::Job job = source.one();
         if (job.tasks().get().count() > 0) {
           std::vector<db::Task> tasks = job.tasks().get().all();
@@ -66,11 +75,30 @@ namespace clientcontroller {
                 LOGERROR("line : " << line);
               }
             }
-            _current_task->getContext()->_props["job"]=job;
             _current_task = org::esb::core::PluginRegistry::getInstance()->createTask(dbtask.name, cfg);
+            _current_task->getContext()->_props["job"]=job;
+            go(Service::actualizeProgress, this, _current_task,dbtask);
             _current_task->prepare();
+            if(_current_task->getStatus()==org::esb::core::Task::ERROR){
+              dbtask.status=dbtask.Status.Error;
+              dbtask.statustext=_current_task->getStatusMessage();
+              dbtask.update();
+              break;
+            }
             _current_task->execute();
+            if(_current_task->getStatus()==org::esb::core::Task::ERROR){
+              dbtask.status=dbtask.Status.Error;
+              dbtask.statustext=_current_task->getStatusMessage();
+              dbtask.update();
+              break;
+            }
             _current_task->cleanup();
+            if(_current_task->getStatus()==org::esb::core::Task::ERROR){
+              dbtask.status=dbtask.Status.Error;
+              dbtask.statustext=_current_task->getStatusMessage();
+              dbtask.update();
+              break;
+            }
             dbtask.progress=100;
             dbtask.status=dbtask.Status.Complete;
             dbtask.update();
@@ -78,6 +106,8 @@ namespace clientcontroller {
         }
         job.status=job.Status.Completed;
         job.update();
+      }else{
+        LOGDEBUG("no new job found");
       }
       //else{
       org::esb::lang::Thread::sleep2(getContext()->getEnvironment<int>("jobexecutor.intervall")*1000);

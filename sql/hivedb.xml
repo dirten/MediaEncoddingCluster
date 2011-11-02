@@ -248,17 +248,20 @@
         <field name="fps" type="integer"/>
         <field name="data" type="string"/>
         <field name="deleted" type="integer" default="0"/>
+        <field name="partition" type="string"/>
     </object>
 
     <object name="Task">
         <field name="uuid" type="string"/>
         <field name="name" type="string"/>
         <field name="parameter" type="string"/>
+        <field name="statustext" type="string"/>
         <field name="progress" type="integer"/>
         <field name="status" type="integer" default="0">
           <value name="Waiting" value="0"/>
           <value name="Error" value="1"/>
           <value name="Complete" value="2"/>
+          <value name="Processing" value="3"/>
         </field>
     </object>
     

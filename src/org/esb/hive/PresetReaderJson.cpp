@@ -16,7 +16,7 @@ namespace org {
       PresetReaderJson::PresetReaderJson(std::string data) {
         LOGDEBUG("Preset Data:"<<data);
         JSONNode node=libjson::parse(data);
-
+        
         _preset["id"]=node["format"]["id"].as_string();
         std::string type;
         type="video";

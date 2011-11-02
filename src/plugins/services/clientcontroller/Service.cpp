@@ -68,8 +68,8 @@ namespace clientcontroller {
       _client_list.push_back(c);
       boost::thread t(boost::bind(&org::esb::hive::HiveClient::start, c.get()));
     }
-    _client_audio=new org::esb::hive::HiveClientAudio(host, port);
-    boost::thread t(boost::bind(&org::esb::hive::HiveClientAudio::start, _client_audio.get()));
+    //_client_audio=new org::esb::hive::HiveClientAudio(host, port);
+    //boost::thread t(boost::bind(&org::esb::hive::HiveClientAudio::start, _client_audio.get()));
     
     //org::esb::signal::Messenger::getInstance().sendMessage(org::esb::signal::Message().setProperty("hiveclientaudio", org::esb::hive::START));
     
@@ -82,8 +82,8 @@ namespace clientcontroller {
       client.reset();
     }
     _client_list.clear();
-    _client_audio->stop();
-    _client_audio.reset();
+    //_client_audio->stop();
+    //_client_audio.reset();
   }
 
   org::esb::core::ServicePlugin::ServiceType Service::getServiceType() {

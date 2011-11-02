@@ -1275,6 +1275,55 @@ template <> litesql::DataSource<db::Watchfolder> PresetWatchfolderRelationWatchf
     sel.where(srcExpr);
     return DataSource<db::Watchfolder>(db, db::Watchfolder::Id.in(sel) && expr);
 }
+JobProcessUnitRelationProcessUnitJob::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : processUnit(JobProcessUnitRelationProcessUnitJob::ProcessUnit), job(JobProcessUnitRelationProcessUnitJob::Job) {
+    switch(rec.size()) {
+    case 2:
+        processUnit = rec[1];
+    case 1:
+        job = rec[0];
+    }
+}
+const std::string JobProcessUnitRelationProcessUnitJob::table__("Job_ProcessUnit_ProcessUnitJob");
+const litesql::FieldType JobProcessUnitRelationProcessUnitJob::Job("Job1","INTEGER",table__);
+const litesql::FieldType JobProcessUnitRelationProcessUnitJob::ProcessUnit("ProcessUnit2","INTEGER",table__);
+void JobProcessUnitRelationProcessUnitJob::link(const litesql::Database& db, const db::Job& o0, const db::ProcessUnit& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(Job.name());
+    values.push_back(o0.id);
+    fields.push_back(ProcessUnit.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void JobProcessUnitRelationProcessUnitJob::unlink(const litesql::Database& db, const db::Job& o0, const db::ProcessUnit& o1) {
+    db.delete_(table__, (Job == o0.id && ProcessUnit == o1.id));
+}
+void JobProcessUnitRelationProcessUnitJob::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<JobProcessUnitRelationProcessUnitJob::Row> JobProcessUnitRelationProcessUnitJob::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(Job.fullName());
+    sel.result(ProcessUnit.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<JobProcessUnitRelationProcessUnitJob::Row>(db, sel);
+}
+template <> litesql::DataSource<db::Job> JobProcessUnitRelationProcessUnitJob::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Job.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Job>(db, db::Job::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::ProcessUnit> JobProcessUnitRelationProcessUnitJob::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(ProcessUnit.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::ProcessUnit>(db, db::ProcessUnit::Id.in(sel) && expr);
+}
 UserUserGroupRelationUser2UserGroup::Row::Row(const litesql::Database& db, const litesql::Record& rec)
          : userGroup(UserUserGroupRelationUser2UserGroup::UserGroup), user(UserUserGroupRelationUser2UserGroup::User) {
     switch(rec.size()) {
@@ -5030,6 +5079,24 @@ litesql::DataSource<JobDetail> Job::JobdetailsHandle::get(const litesql::Expr& e
 litesql::DataSource<JobJobDetailRelationJobJobDetail::Row> Job::JobdetailsHandle::getRows(const litesql::Expr& expr) {
     return JobJobDetailRelationJobJobDetail::getRows(owner->getDatabase(), expr && (JobJobDetailRelationJobJobDetail::Job == owner->id));
 }
+Job::ProcessUnitsHandle::ProcessUnitsHandle(const Job& owner)
+         : litesql::RelationHandle<Job>(owner) {
+}
+void Job::ProcessUnitsHandle::link(const ProcessUnit& o0) {
+    JobProcessUnitRelationProcessUnitJob::link(owner->getDatabase(), *owner, o0);
+}
+void Job::ProcessUnitsHandle::unlink(const ProcessUnit& o0) {
+    JobProcessUnitRelationProcessUnitJob::unlink(owner->getDatabase(), *owner, o0);
+}
+void Job::ProcessUnitsHandle::del(const litesql::Expr& expr) {
+    JobProcessUnitRelationProcessUnitJob::del(owner->getDatabase(), expr && JobProcessUnitRelationProcessUnitJob::Job == owner->id);
+}
+litesql::DataSource<ProcessUnit> Job::ProcessUnitsHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return JobProcessUnitRelationProcessUnitJob::get<ProcessUnit>(owner->getDatabase(), expr, (JobProcessUnitRelationProcessUnitJob::Job == owner->id) && srcExpr);
+}
+litesql::DataSource<JobProcessUnitRelationProcessUnitJob::Row> Job::ProcessUnitsHandle::getRows(const litesql::Expr& expr) {
+    return JobProcessUnitRelationProcessUnitJob::getRows(owner->getDatabase(), expr && (JobProcessUnitRelationProcessUnitJob::Job == owner->id));
+}
 Job::PartitionHandle::PartitionHandle(const Job& owner)
          : litesql::RelationHandle<Job>(owner) {
 }
@@ -5173,6 +5240,9 @@ Job::PresetHandle Job::preset() {
 Job::JobdetailsHandle Job::jobdetails() {
     return Job::JobdetailsHandle(*this);
 }
+Job::ProcessUnitsHandle Job::processUnits() {
+    return Job::ProcessUnitsHandle(*this);
+}
 Job::PartitionHandle Job::partition() {
     return Job::PartitionHandle(*this);
 }
@@ -5285,6 +5355,7 @@ void Job::delRelations() {
     JobMediaFileRelationJobOutFile::del(*db, (JobMediaFileRelationJobOutFile::Job == id));
     JobPresetRelation::del(*db, (JobPresetRelation::Job == id));
     JobJobDetailRelationJobJobDetail::del(*db, (JobJobDetailRelationJobJobDetail::Job == id));
+    JobProcessUnitRelationProcessUnitJob::del(*db, (JobProcessUnitRelationProcessUnitJob::Job == id));
     JobPartitionRelationJob2Partition::del(*db, (JobPartitionRelationJob2Partition::Job == id));
 }
 void Job::update() {
@@ -5395,6 +5466,7 @@ const litesql::FieldType Task::Type("type_","TEXT",table__);
 const litesql::FieldType Task::Uuid("uuid_","TEXT",table__);
 const litesql::FieldType Task::Name("name_","TEXT",table__);
 const litesql::FieldType Task::Parameter("parameter_","TEXT",table__);
+const litesql::FieldType Task::Statustext("statustext_","TEXT",table__);
 const litesql::FieldType Task::Progress("progress_","INTEGER",table__);
 std::vector < std::pair< std::string, std::string > > Task::status_values;
 const Task::StatusType Task::Status("status_","INTEGER",table__,status_values);
@@ -5410,18 +5482,20 @@ void Task::defaults() {
     status = 0;
 }
 Task::Task(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), uuid(Uuid), name(Name), parameter(Parameter), progress(Progress), status(Status) {
+     : litesql::Persistent(db), id(Id), type(Type), uuid(Uuid), name(Name), parameter(Parameter), statustext(Statustext), progress(Progress), status(Status) {
     defaults();
 }
 Task::Task(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), uuid(Uuid), name(Name), parameter(Parameter), progress(Progress), status(Status) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), uuid(Uuid), name(Name), parameter(Parameter), statustext(Statustext), progress(Progress), status(Status) {
     defaults();
-    size_t size = (rec.size() > 7) ? 7 : rec.size();
+    size_t size = (rec.size() > 8) ? 8 : rec.size();
     switch(size) {
-    case 7: status = convert<const std::string&, int>(rec[6]);
+    case 8: status = convert<const std::string&, int>(rec[7]);
         status.setModified(false);
-    case 6: progress = convert<const std::string&, int>(rec[5]);
+    case 7: progress = convert<const std::string&, int>(rec[6]);
         progress.setModified(false);
+    case 6: statustext = convert<const std::string&, std::string>(rec[5]);
+        statustext.setModified(false);
     case 5: parameter = convert<const std::string&, std::string>(rec[4]);
         parameter.setModified(false);
     case 4: name = convert<const std::string&, std::string>(rec[3]);
@@ -5435,7 +5509,7 @@ Task::Task(const litesql::Database& db, const litesql::Record& rec)
     }
 }
 Task::Task(const Task& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), uuid(obj.uuid), name(obj.name), parameter(obj.parameter), progress(obj.progress), status(obj.status) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), uuid(obj.uuid), name(obj.name), parameter(obj.parameter), statustext(obj.statustext), progress(obj.progress), status(obj.status) {
 }
 const Task& Task::operator=(const Task& obj) {
     if (this != &obj) {
@@ -5444,6 +5518,7 @@ const Task& Task::operator=(const Task& obj) {
         uuid = obj.uuid;
         name = obj.name;
         parameter = obj.parameter;
+        statustext = obj.statustext;
         progress = obj.progress;
         status = obj.status;
     }
@@ -5472,6 +5547,9 @@ std::string Task::insert(litesql::Record& tables, litesql::Records& fieldRecs, l
     fields.push_back(parameter.name());
     values.push_back(parameter);
     parameter.setModified(false);
+    fields.push_back(statustext.name());
+    values.push_back(statustext);
+    statustext.setModified(false);
     fields.push_back(progress.name());
     values.push_back(progress);
     progress.setModified(false);
@@ -5498,6 +5576,7 @@ void Task::addUpdates(Updates& updates) {
     updateField(updates, table__, uuid);
     updateField(updates, table__, name);
     updateField(updates, table__, parameter);
+    updateField(updates, table__, statustext);
     updateField(updates, table__, progress);
     updateField(updates, table__, status);
 }
@@ -5509,6 +5588,7 @@ void Task::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Uuid);
     ftypes.push_back(Name);
     ftypes.push_back(Parameter);
+    ftypes.push_back(Statustext);
     ftypes.push_back(Progress);
     ftypes.push_back(Status);
 }
@@ -5557,6 +5637,7 @@ std::auto_ptr<Task> Task::upcastCopy() {
     np->uuid = uuid;
     np->name = name;
     np->parameter = parameter;
+    np->statustext = statustext;
     np->progress = progress;
     np->status = status;
     np->inDatabase = inDatabase;
@@ -5569,6 +5650,7 @@ std::ostream & operator<<(std::ostream& os, Task o) {
     os << o.uuid.name() << " = " << o.uuid << std::endl;
     os << o.name.name() << " = " << o.name << std::endl;
     os << o.parameter.name() << " = " << o.parameter << std::endl;
+    os << o.statustext.name() << " = " << o.statustext << std::endl;
     os << o.progress.name() << " = " << o.progress << std::endl;
     os << o.status.name() << " = " << o.status << std::endl;
     os << "-------------------------------------" << std::endl;
@@ -6159,6 +6241,24 @@ std::ostream & operator<<(std::ostream& os, Watchfolder o) {
     return os;
 }
 const litesql::FieldType ProcessUnit::Own::Id("id_","INTEGER","ProcessUnit_");
+ProcessUnit::JobHandle::JobHandle(const ProcessUnit& owner)
+         : litesql::RelationHandle<ProcessUnit>(owner) {
+}
+void ProcessUnit::JobHandle::link(const Job& o0) {
+    JobProcessUnitRelationProcessUnitJob::link(owner->getDatabase(), o0, *owner);
+}
+void ProcessUnit::JobHandle::unlink(const Job& o0) {
+    JobProcessUnitRelationProcessUnitJob::unlink(owner->getDatabase(), o0, *owner);
+}
+void ProcessUnit::JobHandle::del(const litesql::Expr& expr) {
+    JobProcessUnitRelationProcessUnitJob::del(owner->getDatabase(), expr && JobProcessUnitRelationProcessUnitJob::ProcessUnit == owner->id);
+}
+litesql::DataSource<Job> ProcessUnit::JobHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return JobProcessUnitRelationProcessUnitJob::get<Job>(owner->getDatabase(), expr, (JobProcessUnitRelationProcessUnitJob::ProcessUnit == owner->id) && srcExpr);
+}
+litesql::DataSource<JobProcessUnitRelationProcessUnitJob::Row> ProcessUnit::JobHandle::getRows(const litesql::Expr& expr) {
+    return JobProcessUnitRelationProcessUnitJob::getRows(owner->getDatabase(), expr && (JobProcessUnitRelationProcessUnitJob::ProcessUnit == owner->id));
+}
 const std::string ProcessUnit::type__("ProcessUnit");
 const std::string ProcessUnit::table__("ProcessUnit_");
 const std::string ProcessUnit::sequence__("ProcessUnit_seq");
@@ -6237,6 +6337,9 @@ const ProcessUnit& ProcessUnit::operator=(const ProcessUnit& obj) {
     }
     litesql::Persistent::operator=(obj);
     return *this;
+}
+ProcessUnit::JobHandle ProcessUnit::job() {
+    return ProcessUnit::JobHandle(*this);
 }
 std::string ProcessUnit::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
     tables.push_back(table__);
@@ -6321,6 +6424,7 @@ void ProcessUnit::delRecord() {
     deleteFromTable(table__, id);
 }
 void ProcessUnit::delRelations() {
+    JobProcessUnitRelationProcessUnitJob::del(*db, (JobProcessUnitRelationProcessUnitJob::ProcessUnit == id));
 }
 void ProcessUnit::update() {
     if (!inDatabase) {
@@ -7323,7 +7427,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("CodecPresetParameter_","table","CREATE TABLE CodecPresetParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT)"));
     res.push_back(Database::SchemaItem("Config_","table","CREATE TABLE Config_ (id_ " + backend->getRowIDType() + ",type_ TEXT,configkey_ TEXT,configval_ TEXT)"));
     res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,created_ INTEGER,begintime_ INTEGER,endtime_ INTEGER,status_ INTEGER,infile_ TEXT,outfile_ TEXT,starttime_ DOUBLE,duration_ DOUBLE,progress_ INTEGER,fps_ INTEGER,data_ TEXT,deleted_ INTEGER)"));
-    res.push_back(Database::SchemaItem("Task_","table","CREATE TABLE Task_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,name_ TEXT,parameter_ TEXT,progress_ INTEGER,status_ INTEGER)"));
+    res.push_back(Database::SchemaItem("Task_","table","CREATE TABLE Task_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,name_ TEXT,parameter_ TEXT,statustext_ TEXT,progress_ INTEGER,status_ INTEGER)"));
     res.push_back(Database::SchemaItem("JobLog_","table","CREATE TABLE JobLog_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,message_ TEXT)"));
     res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + backend->getRowIDType() + ",type_ TEXT,lastpts_ DOUBLE,lastdts_ DOUBLE,deinterlace_ INTEGER)"));
     res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,infolder_ TEXT,outfolder_ TEXT,outfiletemplate_ TEXT,extensionfilter_ TEXT,interval_ TEXT)"));
@@ -7358,6 +7462,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("JobDetail_Stream_JobOutStream","table","CREATE TABLE JobDetail_Stream_JobOutStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
     res.push_back(Database::SchemaItem("JobDetail_Stream_JobInStream","table","CREATE TABLE JobDetail_Stream_JobInStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
     res.push_back(Database::SchemaItem("_d1e3a283b0d5df23ce3b0c3b593c5899","table","CREATE TABLE _d1e3a283b0d5df23ce3b0c3b593c5899 (Preset1 INTEGER,Watchfolder2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Job_ProcessUnit_ProcessUnitJob","table","CREATE TABLE Job_ProcessUnit_ProcessUnitJob (Job1 INTEGER,ProcessUnit2 INTEGER)"));
     res.push_back(Database::SchemaItem("User_UserGroup_User2UserGroup","table","CREATE TABLE User_UserGroup_User2UserGroup (User1 INTEGER,UserGroup2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_Partition_Job2Partition","table","CREATE TABLE Job_Partition_Job2Partition (Job1 INTEGER,Partition2 INTEGER)"));
     res.push_back(Database::SchemaItem("_864f17f6c9c6e1560a3b610198ace17e","index","CREATE INDEX _864f17f6c9c6e1560a3b610198ace17e ON Filter_FilterParameter_ (Filter1)"));
@@ -7438,6 +7543,9 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("_23fe4d10039fd5617d46e8ab6d1a3142","index","CREATE INDEX _23fe4d10039fd5617d46e8ab6d1a3142 ON _d1e3a283b0d5df23ce3b0c3b593c5899 (Preset1)"));
     res.push_back(Database::SchemaItem("_5fa6d489e97f40455a10e71fba89f9ef","index","CREATE INDEX _5fa6d489e97f40455a10e71fba89f9ef ON _d1e3a283b0d5df23ce3b0c3b593c5899 (Watchfolder2)"));
     res.push_back(Database::SchemaItem("_22f14859565a9c62395b62d1ad4cbac4","index","CREATE INDEX _22f14859565a9c62395b62d1ad4cbac4 ON _d1e3a283b0d5df23ce3b0c3b593c5899 (Preset1,Watchfolder2)"));
+    res.push_back(Database::SchemaItem("_9f8888b43cecb8b250e2fd4abb15139c","index","CREATE INDEX _9f8888b43cecb8b250e2fd4abb15139c ON Job_ProcessUnit_ProcessUnitJob (Job1)"));
+    res.push_back(Database::SchemaItem("_8b431085e85ff3115326e1168a6f12b0","index","CREATE INDEX _8b431085e85ff3115326e1168a6f12b0 ON Job_ProcessUnit_ProcessUnitJob (ProcessUnit2)"));
+    res.push_back(Database::SchemaItem("_0a3fce10cdd119bf165601c22bf632b5","index","CREATE INDEX _0a3fce10cdd119bf165601c22bf632b5 ON Job_ProcessUnit_ProcessUnitJob (Job1,ProcessUnit2)"));
     res.push_back(Database::SchemaItem("_7d9412c26ff790b82599d91e1132a1dc","index","CREATE INDEX _7d9412c26ff790b82599d91e1132a1dc ON User_UserGroup_User2UserGroup (User1)"));
     res.push_back(Database::SchemaItem("_40cd0fdddf07c1c128bb446a7faa6e3e","index","CREATE INDEX _40cd0fdddf07c1c128bb446a7faa6e3e ON User_UserGroup_User2UserGroup (UserGroup2)"));
     res.push_back(Database::SchemaItem("_5db0c50747293a6fc42d73635c3adb01","index","CREATE INDEX _5db0c50747293a6fc42d73635c3adb01 ON User_UserGroup_User2UserGroup (User1,UserGroup2)"));

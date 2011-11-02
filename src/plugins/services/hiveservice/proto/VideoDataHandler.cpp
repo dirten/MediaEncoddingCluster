@@ -14,7 +14,7 @@
 
 #include "org/esb/signal/Message.h"
 #include "org/esb/signal/Messenger.h"
-
+#include "plugins/services/partitionservice/PartitionManager.h"
 #include <map>
 #include <string>
 using namespace org::esb::hive::job;
@@ -45,11 +45,13 @@ private:
   //  boost::shared_ptr<boost::thread> _timer_thread;
   //  boost::asio::deadline_timer t2;
   boost::shared_ptr<ProcessUnit> un;
+  boost::asio::ip::tcp::endpoint _ep;
   bool shutdown;
 
 public:
 
   VideoDataHandler(InputStream * is, OutputStream * os, boost::asio::ip::tcp::endpoint e) {
+    _ep=e;
     _oos = new io::ObjectOutputStream(os);
     _ois = new io::ObjectInputStream(is);
     _own_id = e.address().to_string();
@@ -124,20 +126,16 @@ public:
   void process(char * command) {
     if (_oos == NULL || _ois == NULL)return;
     if (strcmp(command, GET_UNIT) == 0) {
-      Message msg;
-      msg.setProperty("processunitcontroller", "GET_PROCESS_UNIT");
-      Messenger::getInstance().sendRequest(msg);
-      un = msg.getPtrProperty<ProcessUnit>("processunit");
-      if (un.get() != NULL)
-        _oos->writeObject(*un.get());
+      partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
+      un = man->getProcessUnit(_ep);
+      LOGDEBUG("GET_UNIT:::");
+      _oos->writeObject(un);
     } else
       if (strcmp(command, PUT_UNIT) == 0) {
-      un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-      _ois->readObject(*un.get());
-      Message msg;
-      msg.setProperty("processunitcontroller", "PUT_PROCESS_UNIT");
-      msg.setProperty("processunit", un);
-      Messenger::getInstance().sendRequest(msg);
+      //un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
+      _ois->readObject(un);
+      partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
+      man->collectProcessUnit(un);
     } else {
       LOGERROR("unknown command received:" << command);
     }

@@ -9,10 +9,11 @@
 #define	ENDPOINT_H
 
 #include <boost/asio/ip/tcp.hpp>
+#include "exports.h"
 
 namespace partitionservice {
 
-  class Endpoint {
+  class PARTSERVICE_EXPORT Endpoint {
   public:
     Endpoint(boost::asio::ip::tcp::endpoint);
     virtual ~Endpoint();

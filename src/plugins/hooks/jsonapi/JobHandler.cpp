@@ -101,12 +101,13 @@ namespace jobhandler {
     if (!contains(root, "name")) {
       result = "task has no defined name";
     } else {
+      /*first create an empty named task to resolve the required parameter for it*/
       Ptr<org::esb::core::Task>task = org::esb::core::PluginRegistry::getInstance()->createTask(root["name"].as_string(), std::map<std::string, std::string>());
       if (!task) {
         result = std::string("could not find a definition for task with name ").append(root["name"].as_string());
       } else {
         org::esb::core::OptionsDescription desc = task->getOptionsDescription();
-
+        std::map<std::string, std::string> para;
         typedef boost::shared_ptr<boost::program_options::option_description> option;
         std::string parameter;
 
@@ -133,8 +134,22 @@ namespace jobhandler {
             break;
           }
           std::string key = value->long_name();
-          std::string v = root[key].as_string();
+          std::string v;
+          if(!contains(root, value->long_name())){
+            v=def;
+          }else{
+                v = root[key].as_string();
+          }
           parameter += key + "=" + v + ";";
+          para[key]=v;
+        }
+        task = org::esb::core::PluginRegistry::getInstance()->createTask(root["name"].as_string(), para);
+        task->getContext()->_props["job"]=job;
+        task->prepare();
+        if(task->getStatus()==org::esb::core::Task::ERROR){
+          result=root["name"].as_string();
+          result+=":";
+          result+=task->getStatusMessage();
         }
         LOGDEBUG("Task Found: " << root["name"].as_string());
         db::Task t(*getContext()->database);

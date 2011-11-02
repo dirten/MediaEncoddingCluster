@@ -50,6 +50,7 @@ namespace encodingtask {
 
       /*this against some round issues*/
       in += 0.000000001;
+      LOGDEBUG("Decimal input:"<<in);
       /*spliting the double value into Integral and Fractional parts*/
       org::esb::util::Decimal dec(in);
       org::esb::util::Decimal::MantissaType i;

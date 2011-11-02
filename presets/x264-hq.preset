@@ -8,7 +8,7 @@
     "video":{ 
 	"id":"libx264",
 	"qscale":"4",
-	"b":"1024",
+	"b":"256",
 	"coder":"1",
 	"psnr":"1",
 	"loop":"1",
@@ -23,7 +23,6 @@
 	"subq":"8",
 	"me_range":"16",
 	"g":"250",
-	"cqp":"30",
 	"keyint_min":"25",
 	"sc_threshold":"40",
 	"i_qfactor":"0.71",
@@ -45,7 +44,8 @@
 	"time_base":"1/25",
 	"global_header":"1",
 	"width":"320",
-	"height":"240"
+	"height":"240",
+	"multipass":"1"
     },
     "audio":{ 
 	"id":"libmp3lame",

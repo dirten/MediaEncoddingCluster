@@ -34,6 +34,7 @@
 #include "org/esb/util/StringUtil.h"
 #include "boost/thread/detail/thread.hpp"
 #include "org/esb/config/config.h"
+#include "org/esb/io/File.h"
 
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
@@ -123,6 +124,10 @@ void ProcessUnit::process() {
     _encoder->setCodecOption("passlogfile", oss.str());
     _encoder->setFlag(CODEC_FLAG_PASS2);
     processInternal();
+  }
+  org::esb::io::File statsfile(oss.str());
+  if(statsfile.exists()){
+    statsfile.deleteFile();
   }
 }
 

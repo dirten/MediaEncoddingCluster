@@ -421,6 +421,12 @@ int main(int argc, char * argv[]) {
     }
 
     if (vm.count("client")) {
+
+      log4cplus::helpers::Properties & props = const_cast<log4cplus::helpers::Properties&> (config.getProperties());
+      props.setProperty(LOG4CPLUS_TEXT("appender.MAIN.File"), LOG4CPLUS_TEXT(config::Config::get("log.path") + "/mhive-client-debug.log"));
+      props.setProperty(LOG4CPLUS_TEXT("appender.ERROR.File"), LOG4CPLUS_TEXT(config::Config::get("log.path") + "/mhive-client-error.log"));
+      config.configure();
+
       config::Config::setProperty("mode", "client");
       org::esb::core::PluginRegistry::getInstance()->startClientServices();
       org::esb::lang::CtrlCHitWaiter::wait();

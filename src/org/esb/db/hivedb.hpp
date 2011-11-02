@@ -518,6 +518,25 @@ public:
 ;
 ;
 };
+class JobProcessUnitRelationProcessUnitJob {
+public:
+    class Row {
+    public:
+        litesql::Field<int> processUnit;
+        litesql::Field<int> job;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType Job;
+    static const litesql::FieldType ProcessUnit;
+    static void link(const litesql::Database& db, const db::Job& o0, const db::ProcessUnit& o1);
+    static void unlink(const litesql::Database& db, const db::Job& o0, const db::ProcessUnit& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<JobProcessUnitRelationProcessUnitJob::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
 class UserUserGroupRelationUser2UserGroup {
 public:
     class Row {
@@ -1715,6 +1734,15 @@ public:
         litesql::DataSource<JobDetail> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
         litesql::DataSource<JobJobDetailRelationJobJobDetail::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
+    class ProcessUnitsHandle : public litesql::RelationHandle<Job> {
+    public:
+        ProcessUnitsHandle(const Job& owner);
+        void link(const ProcessUnit& o0);
+        void unlink(const ProcessUnit& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<ProcessUnit> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<JobProcessUnitRelationProcessUnitJob::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     class PartitionHandle : public litesql::RelationHandle<Job> {
     public:
         PartitionHandle(const Job& owner);
@@ -1774,6 +1802,7 @@ public:
     Job::OutputfileHandle outputfile();
     Job::PresetHandle preset();
     Job::JobdetailsHandle jobdetails();
+    Job::ProcessUnitsHandle processUnits();
     Job::PartitionHandle partition();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
@@ -1834,6 +1863,8 @@ public:
     litesql::Field<std::string> name;
     static const litesql::FieldType Parameter;
     litesql::Field<std::string> parameter;
+    static const litesql::FieldType Statustext;
+    litesql::Field<std::string> statustext;
     static const litesql::FieldType Progress;
     litesql::Field<int> progress;
 protected:
@@ -2058,6 +2089,15 @@ public:
     public:
         static const litesql::FieldType Id;
     };
+    class JobHandle : public litesql::RelationHandle<ProcessUnit> {
+    public:
+        JobHandle(const ProcessUnit& owner);
+        void link(const Job& o0);
+        void unlink(const Job& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Job> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<JobProcessUnitRelationProcessUnitJob::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     static const std::string type__;
     static const std::string table__;
     static const std::string sequence__;
@@ -2090,6 +2130,7 @@ public:
     ProcessUnit(const litesql::Database& db, const litesql::Record& rec);
     ProcessUnit(const ProcessUnit& obj);
     const ProcessUnit& operator=(const ProcessUnit& obj);
+    ProcessUnit::JobHandle job();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
     void create();

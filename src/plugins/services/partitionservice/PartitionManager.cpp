@@ -15,6 +15,7 @@
 //#include "MessageQueue.h"
 //#include "safmq.h"
 #include "org/esb/util/Foreach.h"
+#include "org/esb/config/config.h"
 namespace partitionservice {
   PartitionManager * PartitionManager::_instance = NULL;
 
@@ -152,9 +153,9 @@ namespace partitionservice {
     LOGDEBUG("PartitionManager::putProcessUnit partition=" << partition << " unitid=" << unit->_process_unit);
     //if (unit->_input_packets.size() == 0)return;
 
-     //_input_packets.front()->getStreamIndex();
+    //_input_packets.front()->getStreamIndex();
     std::string stream_index = org::esb::util::StringUtil::toString(unit->_source_stream);
-    std::string stream_id=partition+"/"+stream_index;
+    std::string stream_id = org::esb::config::Config::get("hive.tmp_path") + "/" + partition + "/" + stream_index;
 
     if (_partitions.count(partition) > 0) {
       Partition & part = _partitions[partition];
@@ -256,6 +257,27 @@ namespace partitionservice {
     LOGDEBUG("Leave PartitionManager::getProcessUnit");
     return result;
   }
+
+  void PartitionManager::collectProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit) {
+
+    std::string name = org::esb::config::Config::get("hive.tmp_path") + "/global/collect";
+    name += "/";
+
+    org::esb::io::File outdir(name.c_str());
+    if(!outdir.exists())
+      outdir.mkdirs();
+    std::string uuid = org::esb::util::PUUID();
+    name += uuid;
+    org::esb::io::File out(name.c_str());
+
+    org::esb::io::FileOutputStream fos(&out);
+    org::esb::io::ObjectOutputStream ous(&fos);
+
+    ous.writeObject(unit);
+    ous.close();
+
+  }
+
   /*
 
   bool PartitionManager::getPartition(std::string name, Partition & partition) {

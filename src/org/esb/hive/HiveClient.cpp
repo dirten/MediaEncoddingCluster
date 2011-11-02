@@ -106,16 +106,16 @@ namespace org {
           } else {
             while (!_toHalt) {
               char * text = const_cast<char*> ("get process_unit");
-              org::esb::hive::job::ProcessUnit * unit = new org::esb::hive::job::ProcessUnit();
+              boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit;// = new org::esb::hive::job::ProcessUnit();
               try {
                 _sock->getOutputStream()->write(text, strlen(text));
-                _ois->readObject(*unit);
+                _ois->readObject(unit);
               } catch (exception & ex) {
                 LOGERROR("Connection to Server lost!!!" << ex.what());
                 _sock->close();
               }
-              if (unit->_input_packets.size() == 0) {
-                delete unit;
+              if (!unit || unit->_input_packets.size() == 0) {
+                //delete unit;
                 break;
               }
               unit->process();
@@ -129,7 +129,7 @@ namespace org {
               char * text_out = const_cast<char*> ("put process_unit");
               try {
                 _sock->getOutputStream()->write(text_out, strlen(text_out));
-                _oos->writeObject(*unit);
+                _oos->writeObject(unit);
               } catch (exception & ex) {
                 LOGERROR("Connection to Server lost!!!" << ex.what());
                 _sock->close();
@@ -141,7 +141,7 @@ namespace org {
               unit->_encoder = NULL;*/
               delete unit->_converter;
               unit->_converter = NULL;
-              delete unit;
+              //delete unit;
               //_toHalt=true;
 
             }

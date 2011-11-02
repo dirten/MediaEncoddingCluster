@@ -20,7 +20,7 @@
 namespace encodingtask {
 
   EncodingTask::EncodingTask() {
-    _sequence_counter=0;
+    _sequence_counter = 0;
   }
 
   EncodingTask::~EncodingTask() {
@@ -35,13 +35,23 @@ namespace encodingtask {
     } else {
       setStatus(Task::ERROR);
       setStatusMessage("there is no associated job to this encoding task");
+      return;
     }
 
     try {
-      org::esb::hive::PresetReaderJson reader(profile);
-      _codecs = reader.getCodecList();
-      _filters = reader.getFilterList();
-      _preset = reader.getPreset();
+      litesql::DataSource<db::Preset> ds = litesql::select<db::Preset > (_job->getDatabase(), db::Preset::Uuid == profile);
+      if (ds.count() > 0) {
+        db::Preset preset = ds.one();
+        std::string data = preset.data;
+        org::esb::hive::PresetReaderJson reader(data);
+        _codecs = reader.getCodecList();
+        _filters = reader.getFilterList();
+        _preset = reader.getPreset();
+      } else {
+        setStatus(Task::ERROR);
+        setStatusMessage(std::string("Could not find preset with id = ").append(profile));
+        return;
+      }
     } catch (std::exception & ex) {
       setStatus(Task::ERROR);
       setStatusMessage("Error while parsing JSON Profile");
@@ -80,22 +90,71 @@ namespace encodingtask {
 
       /*create a stream data element for each stream from the input file*/
       StreamData & sdata = stream_map[is->index];
-      sdata.last_start_dts=0;
-      sdata.min_packet_count=0;
-      sdata.outstream=a;
+      sdata.last_start_dts = 0;
+      sdata.min_packet_count = 0;
+      sdata.outstream = a;
       /*create the decoder objects*/
       sdata.decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is));
       sdata.pass2decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is));
-      sdata.decoder->reset();
-      sdata.pass2decoder->reset();
+
+      /*special need to create a fresh decoder for mpeg2*/
+      if (is->codec->codec_id == CODEC_ID_MPEG2VIDEO) {
+        LOGDEBUG("MPeg2Video Decoder Found");
+        typedef std::map<std::string, std::string> Props;
+        Props props = sdata.decoder->getCodecOptions();
+
+        sdata.decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is->codec->codec_id));
+        sdata.pass2decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is->codec->codec_id));
+
+        foreach(Props::value_type prop, props) {
+          LOGDEBUG("Key=" << prop.first << " val=" << prop.second);
+          sdata.decoder->setCodecOption(prop.first, prop.second);
+          sdata.pass2decoder->setCodecOption(prop.first, prop.second);
+        }
+        sdata.decoder->setFrameRate(is->r_frame_rate);
+        sdata.pass2decoder->setFrameRate(is->r_frame_rate);
+        sdata.decoder->ctx->time_base = is->codec->time_base;
+        sdata.decoder->ctx->ticks_per_frame = is->codec->ticks_per_frame;
+        sdata.pass2decoder->ctx->ticks_per_frame = is->codec->ticks_per_frame;
+
+        sdata.decoder->ctx->width = is->codec->width;
+        sdata.decoder->ctx->height = is->codec->height;
+        sdata.decoder->ctx->extradata_size = is->codec->extradata_size;
+        LOGDEBUG("ExtradataSize:" << sdata.decoder->ctx->extradata_size);
+        if (sdata.decoder->ctx->extradata_size > 0) {
+          sdata.decoder->ctx->extradata = (uint8_t*) av_malloc(sdata.decoder->ctx->extradata_size);
+          //memcpy(sdata.decoder->ctx->extradata, is->codec->extradata, sdata.decoder->ctx->extradata_size);
+          memset(sdata.decoder->ctx->extradata, 0, sdata.decoder->ctx->extradata_size);
+        } else
+          sdata.decoder->ctx->extradata = NULL;
+
+        sdata.pass2decoder->ctx->time_base = is->codec->time_base;
+        sdata.pass2decoder->ctx->width = is->codec->width;
+        sdata.pass2decoder->ctx->height = is->codec->height;
+        sdata.pass2decoder->ctx->extradata_size = is->codec->extradata_size;
+        LOGDEBUG("ExtradataSize:" << sdata.pass2decoder->ctx->extradata_size);
+        if (sdata.pass2decoder->ctx->extradata_size > 0) {
+          sdata.pass2decoder->ctx->extradata = (uint8_t*) av_malloc(sdata.pass2decoder->ctx->extradata_size);
+          //memcpy(sdata.pass2decoder->ctx->extradata, is->codec->extradata, sdata.pass2decoder->ctx->extradata_size);
+          memset(sdata.pass2decoder->ctx->extradata, 0, sdata.pass2decoder->ctx->extradata_size);
+        } else
+          sdata.pass2decoder->ctx->extradata = NULL;
+
+
+        sdata.decoder->open();
+        sdata.pass2decoder->open();
+      }
+
+      //sdata.decoder->reset();
+      //sdata.pass2decoder->reset();
       /*create the encoder objects*/
       typedef std::map<std::string, std::string> Parameter;
       if (sdata.decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
         if (_codecs["video"].count("codec_id") != 0) {
           sdata.encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["video"]["codec_id"]));
           sdata.pass2encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["video"]["codec_id"]));
-            org::esb::av::CodecPropertyTransformer transformer(_codecs["video"]);
-            std::map<std::string, std::string> params = transformer.getCodecProperties();
+          org::esb::av::CodecPropertyTransformer transformer(_codecs["video"]);
+          std::map<std::string, std::string> params = transformer.getCodecProperties();
 
           foreach(Parameter::value_type param, params) {
             LOGDEBUG("Parameter key=" << param.first << " value=" << param.second);
@@ -181,14 +240,18 @@ namespace encodingtask {
         putToPartition(unit, true);
       }
     }
+    while (partitionservice::PartitionManager::getInstance()->getSize(_partition) > 0) {
+      setProgress(getProgressLength()-partitionservice::PartitionManager::getInstance()->getSize(_partition));
+      org::esb::lang::Thread::sleep2(1 * 1000);
+    }
   }
 
   void EncodingTask::putToPartition(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast) {
-    unit->_sequence=_sequence_counter++;
+    unit->_sequence = _sequence_counter++;
     unit->setJobId(_job->uuid.value());
 
     partitionservice::PartitionManager::Type t = partitionservice::PartitionManager::TYPE_UNKNOWN;
-    LOGDEBUG("CodecType:"<<unit->_decoder->getCodecType());
+    LOGDEBUG("CodecType:" << unit->_decoder->getCodecType());
     if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
       t = partitionservice::PartitionManager::TYPE_AUDIO;
     } else if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
@@ -198,7 +261,7 @@ namespace encodingtask {
     unit->_source_stream = unit->_input_packets.front()->getStreamIndex();
     unit->_last_process_unit = isLast;
     partitionservice::PartitionManager::getInstance()->putProcessUnit(_partition, unit, t);
-    setProgressLength(getProgressLength()+1);
+    setProgressLength(getProgressLength() + 1);
   }
 
   void EncodingTask::enQueue(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast) {
@@ -217,9 +280,9 @@ namespace encodingtask {
   }
 
   boost::shared_ptr<org::esb::hive::job::ProcessUnit> EncodingTask::getProcessUnit() {
-            boost::shared_ptr<org::esb::hive::job::ProcessUnit> u;
-        //u = puQueue.dequeue();
-            return u;
+    boost::shared_ptr<org::esb::hive::job::ProcessUnit> u;
+    //u = puQueue.dequeue();
+    return u;
   }
 
   void EncodingTask::putProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>) {

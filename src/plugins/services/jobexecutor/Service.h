@@ -35,6 +35,7 @@ namespace clientcontroller {
     };
     STATUS _status;
     Ptr<org::esb::core::Task> _current_task;
+    void actualizeProgress(Ptr<org::esb::core::Task>,db::Task&);
   };
   REGISTER_SERVICE("jobexecutor", Service);
 }

@@ -18,6 +18,7 @@
 #include "plugins/services/partitionservice/ProcessUnitCollector.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/util/UUID.h"
+#include "org/esb/hive/Environment.h"
 using namespace std;
 
 void process(boost::asio::ip::tcp::endpoint e1, partitionservice::ProcessUnitCollector & col) {
@@ -40,6 +41,7 @@ void process(boost::asio::ip::tcp::endpoint e1, partitionservice::ProcessUnitCol
  * 
  */
 int main(int argc, char** argv) {
+  org::esb::hive::Environment::build(argc,argv);
   Log::open();
 
 
@@ -84,6 +86,7 @@ int main(int argc, char** argv) {
   assert(man->joinPartition("global", e4, partitionservice::PartitionManager::TYPE_AUDIO) == partitionservice::PartitionManager::OK);
   partitionservice::ProcessUnitCollector col("collector");
   boost::thread t1=go(process, e1, col);
+  
   boost::thread t2=go(process, e2, col);
   boost::thread t3=go(process, e3, col);
   boost::thread t4=go(process, e4, col);
@@ -92,10 +95,12 @@ int main(int argc, char** argv) {
     org::esb::lang::Thread::sleep2(50 * 1000);
   }
   t1.join();
+  
   t2.join();
   t3.join();
   t4.join();
   t5.join();
+   
   /*encoding is ready*/
   std::map<std::string, std::string> expcfg;
   //cfg["encodingtask.src"]=std::string(MEC_SOURCE_DIR).append("/test.dvd");

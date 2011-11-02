@@ -44,6 +44,7 @@ namespace partitionservice {
         Result deletePartition(std::string name);
 
         void putProcessUnit(std::string partition, boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, Type=TYPE_UNKNOWN);
+        void collectProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit);
         boost::shared_ptr<org::esb::hive::job::ProcessUnit>getProcessUnit(boost::asio::ip::tcp::endpoint ep);
         int getSize(std::string partition);
       private:

@@ -432,8 +432,8 @@ namespace org {
           while ((o = av_next_option(ctx->priv_data, o))) {
             LOGDEBUG("Option="<<o->name);
             if (strcmp(o->name, "passlogfile") == 0) {
-              LOGDEBUG(o->name);
-              int ret = av_set_string3(ctx->priv_data, "passlogfile", passlogfile.c_str(), 1, &o);
+              LOGDEBUG(o->name<<"="<<passlogfile.c_str());
+              int ret = av_opt_set(ctx->priv_data, "passlogfile", passlogfile.c_str(), 0);
             }
           }
         }

@@ -36,6 +36,7 @@ namespace plugin {
   void DownloadTask::execute() {
     Poco::URI uri(_srcuristr);
     Ptr<std::istream> pStr = Poco::URIStreamOpener::defaultOpener().open(uri);
+   
     std::ofstream osf(_trguristr.c_str(), std::ios::binary);
     Poco::StreamCopier::copyStream(*pStr.get(), osf);
   }
