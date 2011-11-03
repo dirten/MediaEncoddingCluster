@@ -7,11 +7,12 @@
 
 #ifndef ENVIRONMENT_H
 #define	ENVIRONMENT_H
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace hive {
 
-      class Environment {
+      class HIVE_EXPORT Environment {
       public:
         static void build(int argc, char**argv);
       private:
