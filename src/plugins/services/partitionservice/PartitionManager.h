@@ -44,7 +44,7 @@ namespace partitionservice {
         Result deletePartition(std::string name);
 
         void putProcessUnit(std::string partition, boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, Type=TYPE_UNKNOWN);
-        void collectProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit);
+        void collectProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit,boost::asio::ip::tcp::endpoint ep);
         boost::shared_ptr<org::esb::hive::job::ProcessUnit>getProcessUnit(boost::asio::ip::tcp::endpoint ep);
         int getSize(std::string partition);
       private:
@@ -117,7 +117,8 @@ namespace partitionservice {
         EndpointStreamMap _ep_stream;
         EndpointList _endpoint_pool;
         boost::mutex _partition_mutex;
-
+        std::map<Endpoint,boost::shared_ptr<org::esb::hive::job::ProcessUnit> > _ep_pu;
+        std::map<Endpoint,Partition > _ep_part;
       };
     }
 

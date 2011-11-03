@@ -7,6 +7,8 @@
 
 #ifndef DOWNLOADTASK_H
 #define	DOWNLOADTASK_H
+#include "org/esb/db/hivedb.hpp"
+
 #include "org/esb/core/Task.h"
 #include "ProcessUnitData.h"
 #include "org/esb/lang/Ptr.h"
@@ -52,6 +54,7 @@ namespace plugin {
     typedef boost::shared_ptr<org::esb::av::Packet> PacketPtr;
     StreamEncoderMap _stream_encoder;
     InOutStreamMap _in_out_stream_map;
+    Ptr<db::Job> _job;
   };
   //  REGISTER_TASK("DownloadTask", DownloadTask)
 }

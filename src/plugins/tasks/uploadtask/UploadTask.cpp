@@ -29,7 +29,7 @@ namespace plugin {
   }
 
   void UploadTask::execute() {
-
+        setStatus(Task::DONE);
   }
 
   REGISTER_TASK("UploadTask",UploadTask );

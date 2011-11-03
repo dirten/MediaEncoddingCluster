@@ -14,6 +14,7 @@
 #include "org/esb/util/Foreach.h"
 #include "org/esb/util/ScopedTimeCounter.h"
 #include "org/esb/av/FormatOutputStream.h"
+#include "org/esb/config/config.h"
 namespace plugin {
 
   ExportTask::ExportTask() {
@@ -23,11 +24,14 @@ namespace plugin {
   }
 
   void ExportTask::prepare() {
-    if (true || getContext()->contains("exporttask.jobid")) {
-      _job_id = getContext()->getEnvironment<std::string > ("exporttask.jobid");
+    if (getContext()->contains("job")) {
+      _job = Ptr<db::Job > (new db::Job(getContext()->get<db::Job > ("job")));
     } else {
       setStatus(Task::ERROR);
+      setStatusMessage("there is no associated job to this encoding task");
+      return;
     }
+    
     if (true || getContext()->contains("exporttask.format")) {
       _format = getContext()->getEnvironment<std::string > ("exporttask.format");
     } else {
@@ -43,7 +47,7 @@ namespace plugin {
   org::esb::core::OptionsDescription ExportTask::getOptionsDescription() {
     org::esb::core::OptionsDescription result("exporttask");
     result.add_options()
-            ("exporttask.jobid", boost::program_options::value<std::string > ()->required(), "Export task job id")
+            ("exporttask.overwrite", boost::program_options::value<std::string > ()->default_value("false"), "Export task overwrite existing outfile")
             ("exporttask.format", boost::program_options::value<std::string > ()->required(), "Export task container output format")
             ("exporttask.trg", boost::program_options::value<std::string > ()->required(), "Export task file target");
     return result;
@@ -55,9 +59,14 @@ namespace plugin {
       return;
     }
     org::esb::util::ScopedTimeCounter stc("export");
-    org::esb::io::File inputdir(_job_id);
+    std::string base=org::esb::config::Config::get("hive.tmp_path");
+    org::esb::io::File inputdir(base+"/jobs/"+_job->uuid.value()+"/collect");
     org::esb::io::FileList filelist = inputdir.listFiles();
-
+    if(filelist.size()==0){
+      setStatus(Task::ERROR);
+      setStatusMessage(std::string("no files found to export from ").append(base+"/"+_job_id));
+      return;
+    }
     foreach(Ptr<org::esb::io::File> file, filelist) {
       LOGDEBUG("File : " << file->getPath());
       org::esb::io::FileInputStream fis(file.get());
@@ -92,7 +101,7 @@ namespace plugin {
 
     org::esb::io::File fout(_target_file.c_str());
     LOGDEBUG("Export file to : " << fout.getPath());
-    if (fout.exists()) {
+    if (getContext()->getEnvironment<std::string> ("exporttask.overwrite")=="false"&&fout.exists()) {
       LOGDEBUG("File exist:" << _target_file);
       setStatus(Task::ERROR);
       setStatusMessage(std::string("file allready exist:").append(_target_file));
@@ -158,6 +167,7 @@ namespace plugin {
     fos->close();
     delete pos;
     delete fos;
+    setStatus(Task::DONE);
   }
 
   bool ExportTask::ptsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b) {

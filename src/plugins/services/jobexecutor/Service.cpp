@@ -44,7 +44,7 @@ namespace clientcontroller {
     while(task->getStatus()!=org::esb::core::Task::DONE&&task->getStatus()!=org::esb::core::Task::ERROR){
       LOGDEBUG("Reading Progress");
       dbtask.progress=task->getProgress();
-      dbtask.update();
+      dbtask.update();      
       org::esb::lang::Thread::sleep2(1000);
     }
   }
@@ -57,9 +57,12 @@ namespace clientcontroller {
         LOGDEBUG("New Job found!!!");
         db::Job job = source.one();
         if (job.tasks().get().count() > 0) {
+          int taskcount=job.tasks().get().count();
+          int counter=0;
           std::vector<db::Task> tasks = job.tasks().get().all();
           std::map<std::string, std::string> cfg;
-
+          job.status=job.Status.Processing;
+          job.update();
           foreach(db::Task & dbtask, tasks) {
             LOGDEBUG("Executing Task : " << dbtask.name << " with parameter : " << dbtask.parameter);
             org::esb::util::StringTokenizer tok(dbtask.parameter, ";");
@@ -75,10 +78,13 @@ namespace clientcontroller {
                 LOGERROR("line : " << line);
               }
             }
+            try{
             _current_task = org::esb::core::PluginRegistry::getInstance()->createTask(dbtask.name, cfg);
             _current_task->getContext()->_props["job"]=job;
             go(Service::actualizeProgress, this, _current_task,dbtask);
             _current_task->prepare();
+              dbtask.status=dbtask.Status.Processing;
+              dbtask.update();
             if(_current_task->getStatus()==org::esb::core::Task::ERROR){
               dbtask.status=dbtask.Status.Error;
               dbtask.statustext=_current_task->getStatusMessage();
@@ -87,6 +93,7 @@ namespace clientcontroller {
             }
             _current_task->execute();
             if(_current_task->getStatus()==org::esb::core::Task::ERROR){
+              
               dbtask.status=dbtask.Status.Error;
               dbtask.statustext=_current_task->getStatusMessage();
               dbtask.update();
@@ -102,6 +109,19 @@ namespace clientcontroller {
             dbtask.progress=100;
             dbtask.status=dbtask.Status.Complete;
             dbtask.update();
+            job.progress=(++counter)*100/taskcount;
+            job.update();
+            }catch(std::exception & ex){
+            //dbtask.progress=0;
+            dbtask.status=dbtask.Status.Error;
+            dbtask.statustext=ex.what();
+            dbtask.update();
+            
+            job.status=job.Status.Error;
+            job.update();
+            break;
+              
+            }
           }
         }
         job.status=job.Status.Completed;

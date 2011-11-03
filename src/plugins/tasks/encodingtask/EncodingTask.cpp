@@ -49,7 +49,7 @@ namespace encodingtask {
         _preset = reader.getPreset();
       } else {
         setStatus(Task::ERROR);
-        setStatusMessage(std::string("Could not find preset with id = ").append(profile));
+        setStatusMessage(std::string("Could not find profile with id = ").append(profile));
         return;
       }
     } catch (std::exception & ex) {
@@ -61,7 +61,7 @@ namespace encodingtask {
   org::esb::core::OptionsDescription EncodingTask::getOptionsDescription() {
     org::esb::core::OptionsDescription result("encodingtask");
     result.add_options()
-            ("encodingtask.src", boost::program_options::value<std::string > ()->default_value(""), "Encoding task source")
+            ("encodingtask.src", boost::program_options::value<std::string > ()->default_value(""), "Encoding task source file")
             ("encodingtask.partition", boost::program_options::value<std::string > ()->default_value("global"), "Encoding task partition")
             ("encodingtask.profile", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile");
     return result;
@@ -244,6 +244,8 @@ namespace encodingtask {
       setProgress(getProgressLength()-partitionservice::PartitionManager::getInstance()->getSize(_partition));
       org::esb::lang::Thread::sleep2(1 * 1000);
     }
+    setStatus(Task::DONE);
+    setStatusMessage("Encoding completed successfull");
   }
 
   void EncodingTask::putToPartition(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast) {

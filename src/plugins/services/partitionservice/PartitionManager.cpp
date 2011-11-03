@@ -74,7 +74,7 @@ namespace partitionservice {
    * @return 
    */
   int PartitionManager::getSize(std::string partition) {
-    int result = 0;
+    int result = _ep_pu.size();
     if (_partitions.count(partition) > 0) {
 
       foreach(Stream s, _partitions[partition].getStreams()) {
@@ -155,7 +155,7 @@ namespace partitionservice {
 
     //_input_packets.front()->getStreamIndex();
     std::string stream_index = org::esb::util::StringUtil::toString(unit->_source_stream);
-    std::string stream_id = org::esb::config::Config::get("hive.tmp_path") + "/" + partition + "/" + stream_index;
+    std::string stream_id = org::esb::config::Config::get("hive.tmp_path") + "/jobs/" + unit->getJobId() + "/" + stream_index;
 
     if (_partitions.count(partition) > 0) {
       Partition & part = _partitions[partition];
@@ -254,13 +254,19 @@ namespace partitionservice {
         }
       }
     }
+    if(result){
+      if(_ep_pu.count(ep)){
+        LOGERROR("Endpoint is allready Processing a ProcessUnit");
+      }
+      _ep_pu[ep]=result;
+    }
     LOGDEBUG("Leave PartitionManager::getProcessUnit");
     return result;
   }
 
-  void PartitionManager::collectProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit) {
+  void PartitionManager::collectProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit,boost::asio::ip::tcp::endpoint ep) {
 
-    std::string name = org::esb::config::Config::get("hive.tmp_path") + "/global/collect";
+    std::string name = org::esb::config::Config::get("hive.tmp_path") +"/jobs/"+unit->getJobId()+"/collect";
     name += "/";
 
     org::esb::io::File outdir(name.c_str());
@@ -275,7 +281,12 @@ namespace partitionservice {
 
     ous.writeObject(unit);
     ous.close();
-
+    
+    if(_ep_pu.count(ep)){
+      _ep_pu.erase(ep);
+    }else{
+      LOGERROR("Endpoint have not previously getting a ProcessUnit");
+    }
   }
 
   /*

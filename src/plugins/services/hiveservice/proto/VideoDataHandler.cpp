@@ -78,6 +78,7 @@ public:
   }
    */
   ~VideoDataHandler() {
+    partitionservice::PartitionManager::getInstance()->getInstance()->leavePartition("", _ep);
     shutdown = true;
     if (_oos)
       delete _oos;
@@ -128,14 +129,13 @@ public:
     if (strcmp(command, GET_UNIT) == 0) {
       partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
       un = man->getProcessUnit(_ep);
-      LOGDEBUG("GET_UNIT:::");
       _oos->writeObject(un);
     } else
       if (strcmp(command, PUT_UNIT) == 0) {
       //un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
       _ois->readObject(un);
       partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
-      man->collectProcessUnit(un);
+      man->collectProcessUnit(un, _ep);
     } else {
       LOGERROR("unknown command received:" << command);
     }

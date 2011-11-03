@@ -1788,6 +1788,8 @@ public:
     litesql::Field<std::string> data;
     static const Job::StatusType Deleted;
     litesql::Field<int> deleted;
+    static const Job::StatusType Partitionname;
+    litesql::Field<std::string> partitionname;
     static void initValues();
 protected:
     void defaults();
@@ -1804,6 +1806,7 @@ public:
     Job::JobdetailsHandle jobdetails();
     Job::ProcessUnitsHandle processUnits();
     Job::PartitionHandle partition();
+    virtual std::string getStatusText();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
     void create();
@@ -1833,6 +1836,7 @@ public:
         static const int Waiting;
         static const int Error;
         static const int Complete;
+        static const int Processing;
         StatusType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
     };
     class Status {
@@ -1840,6 +1844,7 @@ public:
         static const int Waiting;
         static const int Error;
         static const int Complete;
+        static const int Processing;
     };
     class JobHandle : public litesql::RelationHandle<Task> {
     public:
@@ -1881,6 +1886,7 @@ public:
     Task(const Task& obj);
     const Task& operator=(const Task& obj);
     Task::JobHandle job();
+    virtual std::string getStatusText();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
     void create();

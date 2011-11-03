@@ -68,7 +68,7 @@ namespace org {
 
           codecs["video"].insert(std::pair<std::string, std::string > ("time_base", "1/25"));
         }
-
+        /*
         AVCodec * vcodec = avcodec_find_encoder_by_name((*codecs["video"].find("codec_id")).second.c_str());
         if (vcodec) {
           codecs["video"].erase(codecs["video"].find("codec_id"));
@@ -81,7 +81,7 @@ namespace org {
           codecs["audio"].insert(std::pair<std::string, std::string > ("codec_id", org::esb::util::StringUtil::toString(acodec->id)));
 
         }
-
+         */
         boost::shared_ptr<org::esb::av::Encoder> venc = boost::shared_ptr<org::esb::av::Encoder>(new org::esb::av::Encoder(codecs["video"]["codec_id"]));//org::esb::hive::CodecFactory::getStreamEncoder(codecs["video"]);
         boost::shared_ptr<org::esb::av::Encoder> aenc = boost::shared_ptr<org::esb::av::Encoder>(new org::esb::av::Encoder(codecs["audio"]["codec_id"]));//org::esb::hive::CodecFactory::getStreamEncoder(codecs["audio"]);
 

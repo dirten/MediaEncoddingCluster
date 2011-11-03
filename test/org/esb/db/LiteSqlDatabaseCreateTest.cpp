@@ -33,6 +33,12 @@ int main(int argc, char** argv) {
   }else{
     org::esb::hive::DatabaseService::createTables();
   }
+  db::Job job(org::esb::hive::DatabaseService::getDatabase());
+  db::Task task(org::esb::hive::DatabaseService::getDatabase());
+  job.status=db::Job::Status::Error;
+  task.status=db::Task::Status::Complete;
+  LOGDEBUG("JobStatus:"<<job.getStatusText());
+  LOGDEBUG("TaskStatus:"<<task.getStatusText());
     //org::esb::hive::DatabaseService::loadPresets();
 
 /*  {

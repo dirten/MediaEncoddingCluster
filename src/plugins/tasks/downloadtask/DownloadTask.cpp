@@ -39,6 +39,7 @@ namespace plugin {
    
     std::ofstream osf(_trguristr.c_str(), std::ios::binary);
     Poco::StreamCopier::copyStream(*pStr.get(), osf);
+    setStatus(Task::DONE);
   }
 /*
   class RegisterDownloadTaskFactory : public org::esb::core::TaskFactory {

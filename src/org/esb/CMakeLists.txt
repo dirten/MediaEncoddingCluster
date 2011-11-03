@@ -41,6 +41,7 @@ LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
 
 add_library (db 
   db/hivedb.cpp
+  db/Functions.cpp
 #  db/DatabaseConfigLoader.cpp
 #  db/DatabaseBootstrap.cpp
 #            av/FrameConverter.cpp

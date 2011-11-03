@@ -69,7 +69,7 @@ namespace org {
           push_back(JSONNode("fps",job.fps.value()));
           push_back(JSONNode("infile",job.infile.value()));
           push_back(JSONNode("outfile",job.outfile.value()));
-          push_back(JSONNode("status",job.status.value()));
+          push_back(JSONNode("status",job.getStatusText()));
           std::string profileid;
           if (libjson::is_valid(job.data.value())) {
             JSONNode profile = libjson::parse(job.data.value());

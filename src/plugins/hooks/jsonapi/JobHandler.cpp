@@ -16,6 +16,7 @@
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
 #include "boost/lexical_cast.hpp"
+#include "org/esb/util/UUID.h"
 
 namespace jobhandler {
 
@@ -155,6 +156,7 @@ namespace jobhandler {
         db::Task t(*getContext()->database);
         t.name = root["name"].as_string();
         t.parameter = parameter;
+        t.uuid=(std::string)org::esb::util::PUUID();
         t.update();
         job.tasks().link(t);
       }
@@ -180,6 +182,11 @@ namespace jobhandler {
         foreach(db::Task dbtask, steve.tasks().get().all()) {
           JSONNode task(JSON_NODE);
           task.push_back(JSONNode("uuid", dbtask.uuid.value()));
+          task.push_back(JSONNode("name", dbtask.name.value()));
+          task.push_back(JSONNode("parameter", dbtask.parameter.value()));
+          task.push_back(JSONNode("status", dbtask.status.value()));
+          task.push_back(JSONNode("statusmessage", dbtask.statustext.value()));
+          task.push_back(JSONNode("progress", dbtask.progress.value()));
           tasks.push_back(task);
         }
         job.push_back(tasks);

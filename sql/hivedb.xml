@@ -248,7 +248,8 @@
         <field name="fps" type="integer"/>
         <field name="data" type="string"/>
         <field name="deleted" type="integer" default="0"/>
-        <field name="partition" type="string"/>
+        <field name="partitionname" type="string"/>
+        <method name="getStatusText" returntype="std::string"/>
     </object>
 
     <object name="Task">
@@ -263,6 +264,7 @@
           <value name="Complete" value="2"/>
           <value name="Processing" value="3"/>
         </field>
+        <method name="getStatusText" returntype="std::string"/>
     </object>
     
     <relation id="JobTask">
