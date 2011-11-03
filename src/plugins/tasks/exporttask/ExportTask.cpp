@@ -121,7 +121,7 @@ namespace plugin {
     pos->init();
 
     foreach(ProcessUnitData & data, _pudata) {
-      LOGDEBUG("StartTs : " << data.startts);
+      LOGDEBUG("StartTs : " << data.startts.toString());
       LOGDEBUG("Sequence : " << data._sequence);
       LOGDEBUG("File:" << data.id);
       LOGDEBUG("TargetStream:" << data.stream);

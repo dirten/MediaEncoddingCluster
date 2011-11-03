@@ -26,7 +26,6 @@ namespace org {
         bool operator!=(TimeStamp t)const;
         bool operator>(TimeStamp t)const;
         bool operator<(TimeStamp t)const;
-        friend std::ostream& operator<<(std::ostream&out,TimeStamp & t);
         std::string toString();
       private:
         int64_t _timestamp;
