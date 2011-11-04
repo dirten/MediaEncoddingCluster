@@ -28,7 +28,7 @@ namespace partitionservice {
     Stream();
     Stream(std::string id, TYPE);
     virtual ~Stream();
-    void enqueue(Ptr<ProcessUnit>);
+    void enqueue(boost::shared_ptr<ProcessUnit>);
     boost::shared_ptr<ProcessUnit> dequeue();
     void setType(TYPE);
     TYPE getType();

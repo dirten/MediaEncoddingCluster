@@ -90,7 +90,7 @@ namespace org {
 
       JSONHandler::JSONHandler() {
         //base_uri = "/api/v1";
-        _db=NULL;
+        //_db=NULL;
         //LOGDEBUG("JSONHandler::JSONHandler()");
         //db = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
         //org::esb::av::FormatBaseStream::initialize();

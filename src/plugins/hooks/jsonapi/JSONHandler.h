@@ -32,7 +32,7 @@ namespace org {
         void init();
       private:
         std::string base_uri;
-        db::HiveDb * _db;
+        boost::shared_ptr<db::HiveDb> _db;
         void handleEncoding(ServiceRequest * req, ServiceResponse*res);
         void handleProfile(ServiceRequest * req, ServiceResponse*res);
         void handleFormat(ServiceRequest * req, ServiceResponse*res);

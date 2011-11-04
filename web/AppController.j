@@ -11,6 +11,7 @@
 @import "ProfileList.j"
 @import "Navigator.j"
 @import "View/ProfileEditView.j"
+@import "View/TaskListView.j"
 @import "Controller/ContentViewController.j"
 @import "Controller/DetailViewController.j"
 @import "Controller/ProfileViewController.j"
@@ -118,7 +119,8 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
 
         detailView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds), CGRectGetHeight(bounds))];
 
-        detailEncodingView=[[[DetailWebView alloc] initWithFrame:[detailView bounds]] initWithTemplate:"EncodingDetailView"];
+        //detailEncodingView=[[[DetailWebView alloc] initWithFrame:[detailView bounds]] initWithTemplate:"EncodingDetailView"];
+        detailEncodingView=[[TaskListView alloc] initWithFrame:[detailView bounds]];
         detailProfileView=[[[DetailWebView alloc] initWithFrame:[detailView bounds]] initWithTemplate:"ProfileDetailView"];
         
         [detailViewController addViewWithName:detailEncodingView name:"EncodingView"];

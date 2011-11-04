@@ -15,12 +15,12 @@ namespace org {
     namespace core {
 
       PluginContext::PluginContext() {
-        database = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
+        database = boost::shared_ptr<db::HiveDb>(new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url")));
       }
 
 
       PluginContext::~PluginContext() {
-        delete database;
+        //delete database;
       }
       
       bool PluginContext::contains(std::string key) {

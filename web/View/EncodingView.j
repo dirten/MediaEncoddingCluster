@@ -62,13 +62,13 @@ EncodingClicked = @"EncodingClicked";
     [column setDataView:progressDataView];
     [column setWidth:120];
     [tableView addTableColumn:column];
-
+    /*
     column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 6]];
     [[column headerView] setStringValue:"Frames/sec"];
     [[column headerView] sizeToFit];
     [column setWidth:120];
     [tableView addTableColumn:column];
-
+    */
     column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 7]];
     [[column headerView] setStringValue:"Status"];
     [[column headerView] sizeToFit];

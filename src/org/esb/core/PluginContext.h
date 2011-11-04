@@ -23,7 +23,7 @@ namespace org {
 
       class CORE_EXPORT PluginContext {
       public:
-        db::HiveDb * database;
+        boost::shared_ptr<db::HiveDb> database;
         template<typename T>
         T getEnvironment(std::string key){
           return boost::lexical_cast<T>(env[key]);

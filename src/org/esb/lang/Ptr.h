@@ -9,7 +9,7 @@ class  Ptr:public boost::shared_ptr<T>{
 public:
   Ptr(){}
   Ptr(T * elem):boost::shared_ptr<T>(elem){}
-  Ptr(boost::shared_ptr<T>&d):boost::shared_ptr<T>(d){}
+  //Ptr(boost::shared_ptr<T>&d):boost::shared_ptr<T>(d){}
 };
 #endif
 

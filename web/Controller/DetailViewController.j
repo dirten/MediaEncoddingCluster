@@ -56,20 +56,21 @@
   {
     CPLog.debug("UserInfo:"+[notification userInfo]);
     var masterView = [notification object];
+    CPLog.debug("MasterView:"+[masterView class]);
     var view = [views objectForKey:[masterView class]];
 
     if (view){
-    [currentView setHidden:YES];
+      [currentView setHidden:YES];
       [view setHidden:NO];
       currentView = view;
-      var url=[masterView class]=="EncodingView"?"encoding":"profile";
+      var url=[masterView class]=="EncodingView"?"job":"profile";
       var request = [CPURLRequest requestWithURL:"/api/v1/"+url+"?id="+[notification userInfo]];
       var connection = [CPURLConnection connectionWithRequest:request delegate:self];
     }
   }
   - (void)connection:(CPURLConnection)aConnection didReceiveData:(CPString)data
   {
-    CPLog.debug("received json data:"+data);
+    //CPLog.debug("received json data:"+data);
     response=[data objectFromJSON];
     if(response.begintime&&response.endtime){
       var end=response.endtime==1?(new Date()).getTime()/1000:response.endtime;

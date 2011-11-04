@@ -165,13 +165,25 @@ namespace jobhandler {
   }
 
   void JobHandler::handleGET(org::esb::core::Request*req, org::esb::core::Response*res) {
+    org::esb::api::ServiceRequest*sreq = ((org::esb::api::ServiceRequest*) req);
     org::esb::api::ServiceResponse*sres = ((org::esb::api::ServiceResponse*) res);
     JSONNode result(JSON_NODE);
-    litesql::DataSource<db::Job> jobs = litesql::select<db::Job > (*getContext()->database);
-    result.push_back(JSONNode("status", "ok"));
-    JSONNode data(JSON_ARRAY);
-    data.set_name("data");
+    std::string where;
+    if(sreq->getParameter("id").length()>0){
+      LOGDEBUG("id="<<sreq->getParameter("id"));
+        where=(db::Job::Uuid==sreq->getParameter("id")).asString();
+
+    }else{
+      where="1=1";
+    }
+    litesql::RawExpr exp(where);
+    LOGDEBUG("Sql:"<<exp.asString());
+    //litesql::DataSource<db::Job> jobs;
+    litesql::DataSource<db::Job> jobs = litesql::select<db::Job > (*getContext()->database, exp);
     if (jobs.count() > 0) {
+      JSONNode data(JSON_ARRAY);
+      data.set_name("data");
+      result.push_back(JSONNode("status", "ok"));
 
       foreach(db::Job steve, jobs.all()) {
         JSONNode job(JSON_NODE);
@@ -185,6 +197,7 @@ namespace jobhandler {
           task.push_back(JSONNode("name", dbtask.name.value()));
           task.push_back(JSONNode("parameter", dbtask.parameter.value()));
           task.push_back(JSONNode("status", dbtask.status.value()));
+          task.push_back(JSONNode("statustext", dbtask.getStatusText()));
           task.push_back(JSONNode("statusmessage", dbtask.statustext.value()));
           task.push_back(JSONNode("progress", dbtask.progress.value()));
           tasks.push_back(task);
@@ -192,8 +205,13 @@ namespace jobhandler {
         job.push_back(tasks);
         data.push_back(job);
       }
+      result.push_back(data);
+    }else if(jobs.count()==1){
+      
+    }else{
+      result.push_back(JSONNode("status", "error"));
+      result.push_back(JSONNode("message", "no jobs found"));
     }
-    result.push_back(data);
     sres->setStatus(org::esb::api::ServiceResponse::OK);
     sres->getOutputStream()->write(result.write_formatted());
   }

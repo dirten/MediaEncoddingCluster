@@ -64,7 +64,7 @@ namespace plugin {
     org::esb::io::FileList filelist = inputdir.listFiles();
     if(filelist.size()==0){
       setStatus(Task::ERROR);
-      setStatusMessage(std::string("no files found to export from ").append(base+"/"+_job_id));
+      setStatusMessage(std::string("no files found to export from ").append(base+"/"+_job->uuid.value()+"/collect"));
       return;
     }
     foreach(Ptr<org::esb::io::File> file, filelist) {

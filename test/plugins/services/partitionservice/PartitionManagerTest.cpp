@@ -10,6 +10,7 @@
 #include "plugins/services/partitionservice/PartitionManager.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/config/config.h"
 using namespace std;
 
 void test_simple_create_and_delete() {
@@ -351,6 +352,8 @@ void test_partitioning_2() {
  */
 int main(int argc, char** argv) {
   Log::open();
+  org::esb::config::Config::setProperty("hive.tmp_path",".");
+  
   org::esb::lang::Thread::sleep2(500);
   test_simple_create_and_delete();
   test_simple_join_and_leave();

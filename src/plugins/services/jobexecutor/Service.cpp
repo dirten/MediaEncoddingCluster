@@ -124,7 +124,8 @@ namespace clientcontroller {
             }
           }
         }
-        job.status=job.Status.Completed;
+        if(job.status!=job.Status.Error)
+          job.status=job.Status.Completed;
         job.update();
       }else{
         LOGDEBUG("no new job found");

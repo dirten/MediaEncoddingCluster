@@ -105,10 +105,12 @@ namespace org {
 
       bool ServiceRequest::hasParameter(std::string key) {
         bool result = false;
+        LOGDEBUG("Query String"<<_request_info->query_string);
         if (_request_info->query_string != NULL) {
           org::esb::util::StringTokenizer st(_request_info->query_string, "&");
           while (st.hasMoreTokens()) {
             std::string tk = st.nextToken();
+            LOGDEBUG("token:"<<tk);
             if (tk == key) {
               result = true;
               break;

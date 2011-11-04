@@ -164,8 +164,8 @@ namespace partitionservice {
         part.addStream(Stream(stream_id, stype));
       }
       Stream & stream = part.getStream(stream_id);
-      Ptr<org::esb::hive::job::ProcessUnit>u(unit);
-      stream.enqueue(u);
+      //Ptr<org::esb::hive::job::ProcessUnit>u(unit);
+      stream.enqueue(unit);
     }
   }
 

@@ -22,7 +22,7 @@ namespace partitionservice {
     
   }
 
-  void Stream::enqueue(Ptr<ProcessUnit> unit) {
+  void Stream::enqueue(boost::shared_ptr<ProcessUnit> unit) {
     _queue->enqueue(unit);
   }
 

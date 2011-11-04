@@ -77,7 +77,7 @@ namespace encodingtask {
     /*check the input is valid*/
     if (!fis.isValid()) {
       setStatus(Task::ERROR);
-      setStatusMessage(std::string("Input file ").append(_srcuristr).append(" is not a valid media file!"));
+      setStatusMessage(std::string("Input file \"").append(_srcuristr).append("\" is not a valid media file!"));
       return;
     }
 
@@ -187,7 +187,7 @@ namespace encodingtask {
         LOGERROR("Codec not found")
       }
     }
-
+    
     org::esb::av::PacketInputStream pis(&fis);
 
     Packetizer packetizer(stream_map);
@@ -240,6 +240,7 @@ namespace encodingtask {
         putToPartition(unit, true);
       }
     }
+    
     while (partitionservice::PartitionManager::getInstance()->getSize(_partition) > 0) {
       setProgress(getProgressLength()-partitionservice::PartitionManager::getInstance()->getSize(_partition));
       org::esb::lang::Thread::sleep2(1 * 1000);
