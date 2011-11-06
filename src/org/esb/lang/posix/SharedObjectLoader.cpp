@@ -38,7 +38,7 @@ namespace org {
         try {
           _lib_handle = dlopen(filename.c_str(), RTLD_LAZY);
         } catch (std::exception &exc) {
-          LOGERROR("Error occurred during loading SharedObject: " << exc.what());
+          //LOGERROR("Error occurred during loading SharedObject: " << exc.what());
           _lib_handle = NULL;
         }
         if (!_lib_handle) {
@@ -55,7 +55,7 @@ namespace org {
           result = dlsym(_lib_handle, name.c_str());
         } catch (std::exception & ex) {
           result = NULL;
-          LOGERROR("Error occurred during loading function :" << ex.what());
+          //LOGERROR("Error occurred during loading function :" << ex.what());
         }
         if (!result) {
           std::string message = std::string("Error occurred during loading SharedObject: ") + dlerror();
@@ -65,9 +65,9 @@ namespace org {
       }*/
 
       SharedObjectLoader::~SharedObjectLoader() {
-        LOGDEBUG("SharedObjectLoader::~SharedObjectLoader():"<<_filename)
+        //LOGDEBUG("SharedObjectLoader::~SharedObjectLoader():"<<_filename)
         if(dlclose(_lib_handle)){
-          LOGERROR("closing shared object : "<<_filename<<" : "<<dlerror());
+          //LOGERROR("closing shared object : "<<_filename<<" : "<<dlerror());
         }else{
           
         }

@@ -30,10 +30,9 @@ TARGET_LINK_LIBRARIES(core
   io
   hive
   db
+  util
   ${POCO_LIB_NET}
   ${POCO_LIB_FOUNDATION}
-
-
 )
 SET_TARGET_PROPERTIES( core PROPERTIES PREFIX "libmhive-")
 

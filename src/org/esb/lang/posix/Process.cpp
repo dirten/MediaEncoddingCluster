@@ -40,11 +40,11 @@ namespace org {
           try {
             stop();
           } catch (ProcessException & ex) {
-            LOGERROR(ex.what());
+            //LOGERROR(ex.what());
             try {
               kill();
             } catch (ProcessException& ex2) {
-              LOGERROR(ex2.what());
+              //LOGERROR(ex2.what());
             }
           }
         }
@@ -60,7 +60,7 @@ namespace org {
         /*waiting 0,5 sec for the mutext condition*/
         org::esb::lang::Thread::sleep2(1000);
         if (_executable.length() == 0) {
-          LOGDEBUG("no executable given");
+          //LOGDEBUG("no executable given");
           throw ProcessException("no executable given");
         }
         //        std::cout << "starting process"<<std::endl;
@@ -74,9 +74,9 @@ namespace org {
         }
         args[a++] = const_cast<char*> (_name.c_str());
         std::list<std::string>::iterator arg_it = _arguments.begin();
-        LOGDEBUG("Using Executable: " << _executable);
+        //LOGDEBUG("Using Executable: " << _executable);
         for (; arg_it != _arguments.end(); arg_it++) {
-          LOGDEBUG("Arguments:" << (*arg_it));
+          //LOGDEBUG("Arguments:" << (*arg_it));
           args[a++] = const_cast<char*> ((*arg_it).c_str());
           //          prg += " " + (*arg_it);
         }
@@ -84,7 +84,7 @@ namespace org {
         args[a++] = NULL;
         _processId = fork();
         if (_processId < 0) {
-          LOGERROR("could not fork the process, EAGAIN");
+          //LOGERROR("could not fork the process, EAGAIN");
           throw ProcessException("could not fork the process, EAGAIN");
         }
         if (_processId == 0) {
@@ -94,7 +94,7 @@ namespace org {
           int s = execv(_executable.c_str(), args);
           if (s != 0) {
             notifyProcessListener(ProcessEvent(_processId, s, ProcessEvent::PROCESS_START_FAILED));
-            LOGERROR("could not start the process: " << _executable);
+            //LOGERROR("could not start the process: " << _executable);
             throw ProcessException(std::string("could not start the process: ").append(_executable));
           }
         } else {
@@ -105,7 +105,7 @@ namespace org {
 
           _running = true;
 
-          LOGDEBUG("pid=" << _processId);
+          //LOGDEBUG("pid=" << _processId);
           process_started_wait_condition.notify_one();
 
           int status = 0;
@@ -113,9 +113,9 @@ namespace org {
           waitpid(_processId, &status, 0);
           if (!_stop && status != 0) {
             //            throw ProcessException("Process with pid ended unexepcted");
-            LOGERROR("Process with pid " << _processId << " ended unexepcted -> " << _name);
+            //LOGERROR("Process with pid " << _processId << " ended unexepcted -> " << _name);
           }
-          LOGDEBUG("client Process with pid=" << _processId << " exited:" << status);
+          //LOGDEBUG("client Process with pid=" << _processId << " exited:" << status);
           notifyProcessListener(ProcessEvent(_processId, status, ProcessEvent::PROCESS_STOPPED));
           process_shutdown_wait_condition.notify_one();
           _running = false;
@@ -129,11 +129,11 @@ namespace org {
         _restartable = restart;
         boost::mutex::scoped_lock process_started_lock(process_started_wait_mutex);
         boost::thread t(boost::bind(&Process::start, this));
-        LOGDEBUG("waiting 5 sec. for process to start");
+        //LOGDEBUG("waiting 5 sec. for process to start");
         if (process_started_wait_condition.timed_wait(process_started_lock, boost::posix_time::seconds(5))) {
-          LOGDEBUG("process started");
+          //LOGDEBUG("process started");
         } else {
-          LOGERROR("Process start timeout of 30 sec. reached");
+          //LOGERROR("Process start timeout of 30 sec. reached");
           throw ProcessException("Process start timeout of 5 sec. reached");
         }
       }

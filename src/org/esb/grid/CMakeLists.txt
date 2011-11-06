@@ -12,7 +12,6 @@ add_library (grid
   command/ServerCommand.cpp
 )
 TARGET_LINK_LIBRARIES(grid
-    ${Boost_LIBRARIES}
     lang
     util
     net 

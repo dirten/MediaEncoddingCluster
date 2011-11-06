@@ -6,16 +6,16 @@
  */
 
 #include "NotFoundException.h"
-#include "org/esb/util/Log.h"
+//#include "org/esb/util/Log.h"
 namespace org {
   namespace esb {
     namespace lang {
 
       NotFoundException::NotFoundException(std::string & msg):Exception(msg) {
-        LOGERROR(msg);
+        //LOGERROR(msg);
       }
       NotFoundException::NotFoundException(const char * file, int line,std::string & msg):Exception(file, line,msg) {
-        LOGERROR(msg);
+        //LOGERROR(msg);
       }
 
       NotFoundException::~NotFoundException()throw() {

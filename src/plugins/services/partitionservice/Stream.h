@@ -16,7 +16,7 @@
 using namespace org::esb::hive::job;
 
 namespace partitionservice {
-
+  class Partition;
   class Stream {
   public:
     enum TYPE{
@@ -41,7 +41,9 @@ namespace partitionservice {
     int getSize();
     bool operator==(const Stream&a)const;
   private:
+    friend class Partition;
     std::string _id;
+    Partition *_partition;
     EndpointList _endpoints;
     TYPE _type;   
     Ptr<org::esb::util::FileQueue<boost::shared_ptr<ProcessUnit> > >_queue;

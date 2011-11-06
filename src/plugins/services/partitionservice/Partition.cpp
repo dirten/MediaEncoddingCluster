@@ -21,6 +21,7 @@ namespace partitionservice {
 
   void Partition::addStream(Stream s) {
     _streams.push_back(s);
+    s._partition=this;
   }
 
   bool Partition::containStream(std::string id) {
@@ -47,6 +48,7 @@ namespace partitionservice {
     }
     return result;
   }
+
   Partition::StreamList Partition::getStreams() {
     return _streams;
   }

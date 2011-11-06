@@ -1,6 +1,6 @@
 #include "../SystemCpuInfo.h"
 
-#include "org/esb/util/Log.h"
+//#include "org/esb/util/Log.h"
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/util/StringUtil.h"
 

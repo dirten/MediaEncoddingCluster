@@ -31,12 +31,12 @@ namespace org {
         try {
           loader = new org::esb::lang::SharedObjectLoader(file);
         } catch (org::esb::lang::NotFoundException & ex) {
-          LOGERROR(ex.what());
+          //LOGERROR(ex.what());
         }
       }
 
       PluginLoader::~PluginLoader() {
-        LOGDEBUG("PluginLoader::~PluginLoader()")
+        //LOGDEBUG("PluginLoader::~PluginLoader()")
                 delete loader;
       }
     }

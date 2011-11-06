@@ -25,7 +25,7 @@ add_library (io ${IO_LINK_TYPE}
       #QueueInputStream.cpp
 )
 TARGET_LINK_LIBRARIES(io
-    ${Boost_LIBRARIES}
+#    ${Boost_LIBRARIES}
     lang
     safmq
     util

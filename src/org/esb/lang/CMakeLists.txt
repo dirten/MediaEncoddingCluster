@@ -19,7 +19,7 @@ SET(lang_source
 IF(NOT WIN32)
   SET(lang_source
     ${lang_source}
-    posix/SystemCpuInfo.cpp
+#    posix/SystemCpuInfo.cpp
     posix/Process.cpp
     posix/SharedObjectLoader.cpp
   )
@@ -28,14 +28,14 @@ ELSEIF(APPLE)
 ELSEIF(WIN32)
   SET(lang_source
     ${lang_source}
-    win/SystemCpuInfo.cpp
+#    win/SystemCpuInfo.cpp
     win/Process.cpp
     win/SharedObjectLoader.cpp
   )
 
 ENDIF(NOT WIN32)
 
-add_library (lang
+add_library (lang SHARED
   ${lang_source}
 #      lang/NoSuchElementException.cpp
 #      lang/NullPointerException.cpp
@@ -46,7 +46,7 @@ MARK_AS_ADVANCED(COCOA_LIBRARY)
 
 TARGET_LINK_LIBRARIES(lang
 #    ${BREAKPAD_LIBS}
-    util
+#    util
 )
 IF(WIN32)
 	TARGET_LINK_LIBRARIES(lang wininet)
@@ -66,10 +66,10 @@ IF(NOT WIN32)
 		pthread
 	)
 ENDIF(NOT WIN32)
-IF(BUILD_SHARED_LIBS)
+#IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS lang
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
     RUNTIME DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-ENDIF(BUILD_SHARED_LIBS)
+#ENDIF(BUILD_SHARED_LIBS)

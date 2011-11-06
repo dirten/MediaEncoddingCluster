@@ -12,7 +12,7 @@
 #include <inttypes.h>
 #include "org/esb/lang/Thread.h"
 #include <boost/thread/condition.hpp>
-#include "org/esb/util/Log.h"
+//#include "org/esb/util/Log.h"
 #include "ProcessListener.h"
 #include "exports.h"
 namespace org {
@@ -20,7 +20,7 @@ namespace org {
     namespace lang {
 
       class LANG_EXPORT Process {
-        classlogger("org.esb.lang.Process");
+        //classlogger("org.esb.lang.Process");
       public:
         Process(int32_t pid);
         Process(std::string e, std::list<std::string> args=std::list<std::string>(), std::string name=std::string());

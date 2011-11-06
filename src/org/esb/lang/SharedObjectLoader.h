@@ -28,7 +28,7 @@
 #ifndef SHAREDOBJECTLOADER_H
 #define	SHAREDOBJECTLOADER_H
 #include <string>
-#include "org/esb/util/Log.h"
+//#include "org/esb/util/Log.h"
 #include <boost/function.hpp>
 #if defined __LINUX__ || defined __APPLE__ 
 #include <dlfcn.h>
@@ -43,7 +43,7 @@ namespace org {
     namespace lang {
 
       class LANG_EXPORT SharedObjectLoader {
-        classlogger("org.esb.lang.SharedObjectLoader");
+        //classlogger("org.esb.lang.SharedObjectLoader");
         std::string _filename;
       public:
         SharedObjectLoader(std::string);
@@ -58,7 +58,7 @@ namespace org {
             result = dlsym(_lib_handle, name.c_str());
           } catch (std::exception & ex) {
             result = NULL;
-            LOGERROR("Error occurred during loading function :" << ex.what());
+            //LOGERROR("Error occurred during loading function :" << ex.what());
           }
           if (!result) {
             std::string message = std::string("Error occurred during loading SharedObject: ") + dlerror();
