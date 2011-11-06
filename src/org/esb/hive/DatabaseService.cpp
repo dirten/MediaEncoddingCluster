@@ -25,7 +25,7 @@
  * ----------------------------------------------------------------------
  */
 #include "DatabaseService.h"
-#include "config.h"
+//#include "config.h"
 #include "org/esb/signal/Messenger.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/util/Foreach.h"

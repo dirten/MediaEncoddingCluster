@@ -8,7 +8,7 @@ static const char version[] = "$Id: config.cpp,v 1.3 2006/03/14 15:41:23 framebu
  * See the COPYING file for the terms of usage and distribution.
  */
 #include "org/esb/db/hivedb.hpp"
-#include "config.h"
+#include "org/esb/config/config.h"
 
 #include "org/esb/lang/Exception.h"
 #include "org/esb/hive/DatabaseService.h"
