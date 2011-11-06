@@ -7,7 +7,7 @@
   <fileSets>
     <fileSet>
       <directory>source/gloox-1.0/src</directory>
-      <outputDirectory>include/</outputDirectory>
+      <outputDirectory>include/gloox</outputDirectory>
       <includes>
         <include>**/*.h</include>
       </includes>
