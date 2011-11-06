@@ -1,0 +1,17 @@
+MESSAGE("Library dir" ${LIBRARY_DIR})
+MESSAGE("Include dir" ${INCLUDE_DIR})
+FIND_PATH(GLOOX_INCLUDE_DIR
+    gloox/gloox.h
+  PATHS
+    ${INCLUDE_DIR}
+  NO_DEFAULT_PATH
+)
+
+FIND_LIBRARY(GLOOX_LIBRARY_DIR
+    NAMES
+      gloox
+      gloox1.0
+    PATHS
+      ${LIBRARY_DIR}
+    NO_DEFAULT_PATH
+)
