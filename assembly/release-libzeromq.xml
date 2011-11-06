@@ -6,10 +6,10 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>source/zeromq-2.1.10/build/include</directory>
+      <directory>source/zeromq-2.1.10/include</directory>
       <outputDirectory>include</outputDirectory>
       <includes>
-        <include>**/*.h</include>
+        <include>**/*.*</include>
       </includes>
     </fileSet>
     <fileSet>
@@ -20,7 +20,7 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>source/zeromq-2.1.10/lib</directory>
+      <directory>source/zeromq-2.1.10/builds/msvc/libzmq/${build_type}</directory>
       <outputDirectory>lib/</outputDirectory>
       <includes>
         <include>**/*.lib</include>
