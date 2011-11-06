@@ -6,6 +6,7 @@
  */
 
 #include <cstdlib>
+#include <time.h>
 #include <gloox/connectionlistener.h>
 #include <gloox/client.h>
 
