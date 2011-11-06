@@ -30,7 +30,7 @@ namespace org {
 		ProcessEventType _eventType;
       };
 
-      class ProcessListener {
+      class LANG_EXPORT ProcessListener {
       public:
         ProcessListener();
         virtual ~ProcessListener();
