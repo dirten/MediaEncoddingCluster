@@ -216,7 +216,6 @@ namespace org {
           name+="/";
           std::string uuid=PUUID();
           name+=uuid;
-
           org::esb::io::File out(name.c_str());
           org::esb::io::FileOutputStream fos(&out);
           org::esb::io::ObjectOutputStream ous(&fos);
@@ -235,11 +234,11 @@ namespace org {
           name+="/";
           std::string uuid=_uuid_q.dequeue();
           name+=uuid;
-          
           org::esb::io::File infile(name.c_str());
-          org::esb::io::FileInputStream fis(&infile);
+		  org::esb::io::FileInputStream fis(&infile);
           org::esb::io::ObjectInputStream ois(&fis);
           ois.readObject(object);
+		  fis.close();
           infile.deleteFile();
           return object;
         }
