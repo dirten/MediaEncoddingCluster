@@ -5,12 +5,6 @@ include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${FFMPEG_INCLUDE_DIR})
 
 LINK_DIRECTORIES(${FFMPEG_LIB_DIR})
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/lame/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
 add_library (av SHARED
   Init.cpp 
   FrameConverter.cpp 
