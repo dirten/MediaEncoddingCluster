@@ -10,7 +10,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include <strsafe.h>
-#include "org/esb/util/Log.h"
+//#include "org/esb/util/Log.h"
 #include "org/esb/util/StringUtil.h"
 #include "boost/thread.hpp"
 #include "boost/bind.hpp"
@@ -98,8 +98,8 @@ namespace org {
         memset(&procInfo, 0, sizeof (procInfo));
         suInfo.cb = sizeof (suInfo);
 
-        LOGDEBUG("start executable:" << _executable);
-        LOGDEBUG("start command line:" << vip);
+        //LOGDEBUG("start executable:" << _executable);
+        //LOGDEBUG("start command line:" << vip);
         bWorked = ::CreateProcess(_executable.c_str(),
                 vip, // can also be NULL
                 NULL,
@@ -111,7 +111,7 @@ namespace org {
                 &suInfo,
                 &procInfo);
         if (!bWorked) {
-          LOGERROR("could not start the process: " << _executable);
+          //LOGERROR("could not start the process: " << _executable);
           throw ProcessException(std::string("could not start the process: ").append(_executable));
         }
         _processId = procInfo.dwProcessId;
@@ -122,11 +122,11 @@ namespace org {
         notifyProcessListener(ProcessEvent(_processId, 0, ProcessEvent::PROCESS_STARTED));
         WaitForSingleObject(procInfo.hProcess, INFINITE);
         CloseHandle(procInfo.hProcess);
-        LOGDEBUG("process ended:" << _executable);
+        //LOGDEBUG("process ended:" << _executable);
         notifyProcessListener(ProcessEvent(_processId, 0, ProcessEvent::PROCESS_STOPPED));
         _running = false;
         if (_restartable) {
-          LOGDEBUG("restarting!!!");
+          //LOGDEBUG("restarting!!!");
           run(_restartable);
         }
       }
@@ -135,11 +135,11 @@ namespace org {
         _restartable = restartable;
         boost::mutex::scoped_lock process_started_lock(process_started_wait_mutex);
         boost::thread t(boost::bind(&Process::start, this));
-        LOGDEBUG("waiting 5 sec. for process to start");
+        //LOGDEBUG("waiting 5 sec. for process to start");
         if (process_started_wait_condition.timed_wait(process_started_lock, boost::posix_time::seconds(5))) {
-          LOGDEBUG("process started");
+          //LOGDEBUG("process started");
         } else {
-          LOGERROR("Process start timeout of 30 sec. reached");
+          //LOGERROR("Process start timeout of 30 sec. reached");
           throw ProcessException("Process start timeout of 5 sec. reached");
         }
 //        boost::thread(boost::bind(&Process::start, this));
