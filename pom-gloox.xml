@@ -227,7 +227,7 @@
             </goals>
             <configuration>
               <descriptors>
-                <descriptor>assembly/release-libpoco.xml</descriptor>
+                <descriptor>assembly/release-libgloox.xml</descriptor>
               </descriptors>
             </configuration>
           </execution>
