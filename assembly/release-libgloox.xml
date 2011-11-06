@@ -20,7 +20,7 @@
           <destName>libgloox.a</destName>
         </file>
         <file>
-          <source>source/gloox-1.0/${build_type}/gloox10.lib</source>
+          <source>source/gloox-1.0/${build_type}/gloox1.0.lib</source>
           <outputDirectory>lib</outputDirectory>
           <destName>gloox.lib</destName>
         </file>
