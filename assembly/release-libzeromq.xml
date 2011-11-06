@@ -6,8 +6,8 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>source/gloox-1.0/src</directory>
-      <outputDirectory>include/gloox</outputDirectory>
+      <directory>source/zeromq-2.1.10/build/include</directory>
+      <outputDirectory>include</outputDirectory>
       <includes>
         <include>**/*.h</include>
       </includes>
@@ -20,10 +20,11 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>source/gloox-1.0/${build_type}/</directory>
+      <directory>source/zeromq-2.1.10/lib</directory>
       <outputDirectory>lib/</outputDirectory>
       <includes>
         <include>**/*.lib</include>
+        <include>**/*.pdb</include>
       </includes>
     </fileSet>
   </fileSets>
