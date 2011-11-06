@@ -1,0 +1,29 @@
+<assembly>
+  <id>${my.family}-${build_type}</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>source/gloox-1.0/src</directory>
+      <outputDirectory>include/</outputDirectory>
+      <includes>
+        <include>**/*.h</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+    <files>
+        <file>
+          <source>source/gloox-1.0/src/.libs/libgloox.a</source>
+          <outputDirectory>lib</outputDirectory>
+          <destName>libgloox.a</destName>
+        </file>
+        <file>
+          <source>source/gloox-1.0/${build_type}/gloox10.lib</source>
+          <outputDirectory>lib</outputDirectory>
+          <destName>gloox.lib</destName>
+        </file>
+    </files>
+
+</assembly>
