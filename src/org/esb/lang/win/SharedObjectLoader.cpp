@@ -39,7 +39,7 @@ namespace org {
 	}
 	catch( std::exception &exc )
 	{
-		LOGERROR("Could not load library"<<exc.what())
+		//LOGERROR("Could not load library"<<exc.what())
 		//getLogger().log( Logger::LOG_ERROR, "[WinDllCreator#createObjectFromDll] Error occurred during loading DLL: %1", exc.what() );
 		hMod = NULL;
 	}
