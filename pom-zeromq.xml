@@ -184,8 +184,8 @@
                 <!--<exec executable="cmd" dir="source/poco-1.4.2p1-all" failonerror="yes">
                   <arg line="/c build_vcexpress2008"/>
                 </exec>-->
-                <exec executable="vcbuild.exe" dir="source/zeromq-2.1.10/builds/msvc" failonerror="yes">
-                  <arg line="msvc.sln '${build_type}|win32'"/>
+                <exec executable="vcbuild.exe" dir="source/zeromq-2.1.10/builds/msvc/libzmq" failonerror="yes">
+                  <arg line="libzmq.vcproj '${build_type}|win32'"/>
                 </exec>
               </tasks>
             </configuration>
