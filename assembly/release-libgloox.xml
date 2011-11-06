@@ -12,18 +12,19 @@
         <include>**/*.h</include>
       </includes>
     </fileSet>
+    <fileSet>
+      <directory>source/gloox-1.0/src/.libs</directory>
+      <outputDirectory>lib/</outputDirectory>
+      <includes>
+        <include>**/*.a</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>source/gloox-1.0/${build_type}/</directory>
+      <outputDirectory>lib/</outputDirectory>
+      <includes>
+        <include>**/*.lib</include>
+      </includes>
+    </fileSet>
   </fileSets>
-    <files>
-        <file>
-          <source>source/gloox-1.0/src/.libs/libgloox.a</source>
-          <outputDirectory>lib</outputDirectory>
-          <destName>libgloox.a</destName>
-        </file>
-        <file>
-          <source>source/gloox-1.0/${build_type}/gloox1.0.lib</source>
-          <outputDirectory>lib</outputDirectory>
-          <destName>gloox.lib</destName>
-        </file>
-    </files>
-
 </assembly>
