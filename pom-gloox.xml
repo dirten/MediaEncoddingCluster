@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <profiles>
+    <profile>
+      <id>debug</id>
+      <activation>
+	<property>
+    	    <name>build_type</name>
+            <value>debug</value>
+        </property>
+      </activation>
+      <properties>
+        <btype>debug</btype>
+        <lib_file_name>libjson_dbg.a</lib_file_name>
+      </properties>
+    </profile>
+    <profile>
+      <id>release</id>
+      <activation>
+	<property>
+    	    <name>build_type</name>
+            <value>release</value>
+        </property>
+      </activation>
+      <properties>
+        <btype>small</btype>
+        <lib_file_name>libjson.a</lib_file_name>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>win32</id>
+      <activation>
+        <os>
+          <family>windows</family>
+          <arch>x86</arch>
+        </os>
+      </activation>
+      <properties>
+      <win32/>
+        <my.family>win32</my.family>
+        <target>ntx86</target>
+        <extra_configure_flags></extra_configure_flags>
+        <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
+        <CMAKE_MAKE_PROGRAM>"NMake Makefiles"</CMAKE_MAKE_PROGRAM>
+      </properties>
+    </profile>
+    <profile>
+      <id>linux</id>
+      <activation>
+        <os>
+          <name>Linux</name>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <unix/>
+        <my.family>linux</my.family>
+        <target>linuxx86</target>
+        <extra_configure_flags></extra_configure_flags>
+        <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
+        <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
+      </properties>
+    </profile>
+    <profile>
+      <id>macosx</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+      <unix/>
+        <my.family>mac</my.family>
+        <target>macosxx86</target>
+        <extra_configure_flags>--config=Darwin32</extra_configure_flags>
+        <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
+        <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
+      </properties>
+    </profile>
+    <profile>
+      <id>solaris</id>
+      <activation>
+        <os>
+          <name>Solaris</name>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <my.family>solaris</my.family>
+        <target>solaris</target>
+        <jambuild>build_dist.sh</jambuild>
+        <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
+      </properties>
+    </profile>
+  </profiles>
+  <!--
+  <parent>
+    <artifactId>JHive</artifactId>
+    <groupId>org.esb.jhive</groupId>
+    <version>0.1.0</version>
+  </parent>-->
+  <groupId>org.esb.gloox</groupId>
+  <artifactId>libgloox</artifactId>
+  <version>1.0</version>
+  <name>libgloox</name>
+  <url>http://maven.apache.org</url>
+  <distributionManagement>
+    <repository>
+      <id>ftp-repository</id>
+      <url>ftp://codergrid.de</url>
+    </repository>
+  </distributionManagement>
+  <repositories>
+    <repository>
+      <id>esb-repo</id>
+      <url>http://codergrid.de/repository</url>
+    </repository>
+  </repositories>
+                        
+  <build>
+    <extensions>
+      <!-- Enabling the use of FTP -->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ftp</artifactId>
+        <version>1.0-beta-6</version>
+      </extension>
+    </extensions>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.4</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-junit</artifactId>
+            <version>1.8.1</version>
+          </dependency>
+<dependency> 
+                        <groupId>ant-contrib</groupId> 
+                        <artifactId>ant-contrib</artifactId> 
+                        <version>1.0b3</version> 
+                    </dependency> 
+                    <dependency> 
+                        <groupId>ant</groupId> 
+                        <artifactId>ant-optional</artifactId> 
+                        <version>1.5.3-1</version> 
+                    </dependency>         </dependencies>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <id>download</id>
+            <configuration>
+              <tasks>
+                <mkdir dir="source"/>
+                <mkdir dir="source/build"/>
+                <get src="http://camaya.net/download/gloox-1.0.tar.bz2"
+                     dest="source/gloox-1.0.tar.bz2"
+                     verbose="true" usetimestamp="true"/>
+                <bunzip2 src="source/gloox-1.0.tar.bz2" dest="source"/>
+                <exec executable="tar" dir="source">
+                  <arg line="-xf gloox-1.0.tar"/>
+                </exec>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>compile</phase>
+            <id>buildwin32</id>
+            <configuration>
+              <tasks if="win32">
+                <pathconvert property="mybasedir" targetos="unix">
+                  <path location="${project.basedir}"/>
+                </pathconvert>
+	        <copy file="${mybasedir}/src/patch/gloox.vcproj" tofile="${mybasedir}/source/gloox-1.0/gloox.vcproj" failonerror="yes"/>
+
+                <!--<exec executable="cmd" dir="source/poco-1.4.2p1-all" failonerror="yes">
+                  <arg line="/c build_vcexpress2008"/>
+                </exec>-->
+                <exec executable="vcbuild.exe" dir="source/gloox-1.0" failonerror="yes">
+                  <arg line="gloox.vcproj '${build_type}|win32'"/>
+                </exec>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>compile</phase>
+            <id>buildunix</id>
+            <configuration>
+              <tasks if="unix">
+              <pathconvert property="mybasedir" targetos="unix">
+                  <path location="${project.basedir}"/>
+                </pathconvert>
+                <exec executable="sh" dir="source/gloox-1.0" failonerror="yes">
+                  <arg line="${mybasedir}/source/gloox-1.0/configure --prefix=${mybasedir}/source/build"/>
+                </exec>
+
+                <exec executable="make" dir="source/gloox-1.0" failonerror="yes">
+            	<arg line="install"/>
+                </exec>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>build-release</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>assembly/release-libpoco.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+</project>
