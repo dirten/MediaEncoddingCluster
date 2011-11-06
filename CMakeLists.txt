@@ -13,6 +13,7 @@ INCLUDE(cmake/HiveFindGo.txt)
 INCLUDE(cmake/Go.cmake)
 #INCLUDE(cmake/DownloadDeps.txt)
 
+SET(CMAKE_COLOR_MAKEFILE Off)
 if(APPLE)
 add_definitions(-m32)
 add_definitions(-arch i386)
