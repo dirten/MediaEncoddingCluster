@@ -10,10 +10,10 @@
 #include <map>
 #include <list>
 #include <string>
+#include "org/esb/util/Log.h"
 #include "Plugin.h"
 #include "org/esb/lang/SharedObjectLoader.h"
 #include "org/esb/lang/Ptr.h"
-#include "org/esb/util/Log.h"
 #include "exports.h"
 namespace org {
   namespace esb {
