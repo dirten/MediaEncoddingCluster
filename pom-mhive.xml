@@ -454,6 +454,13 @@
       <classifier>${my.family}</classifier>
       <type>zip</type>
     </dependency>
+    <dependency>
+	<groupId>org.esb.gloox</groupId>
+	<artifactId>libgloox</artifactId>
+	<version>1.0</version>
+      <classifier>${my.family}-${build_type}</classifier>
+      <type>zip</type>
+    </dependency>
   </dependencies>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

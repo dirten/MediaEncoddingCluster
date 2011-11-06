@@ -1,10 +1,7 @@
-include_directories (${MEC_SOURCE_DIR}/src)
-include_directories (${MEC_SOURCE_DIR})
-include_directories (${MYSQL_DIR}/include/mysql)
-include_directories (${MYSQL_DIR}/include)
+include_directories (${GLOOX_INCLUDE_DIR})
 
 
 add_executable (GlooxConnectTest GlooxConnectTest.cpp)
 
-target_link_libraries (GlooxConnectTest gloox)
+target_link_libraries (GlooxConnectTest ${GLOOX_LIBRARY})
 

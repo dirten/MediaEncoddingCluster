@@ -21,6 +21,6 @@ add_subdirectory (hive)
 #add_subdirectory (web)
 add_subdirectory (rpc)
 #add_subdirectory (mq)
-#add_subdirectory (gloox)
+add_subdirectory (gloox)
 
 

@@ -203,6 +203,8 @@
                 </pathconvert>
                 <exec executable="sh" dir="source/gloox-1.0" failonerror="yes">
                   <arg line="${mybasedir}/source/gloox-1.0/configure --prefix=${mybasedir}/source/build --enable-static --disable-shared"/>
+                  <env key="CXXFLAGS" value="-m32"/>
+                  <env key="LDFLAGS" value="-m32"/>
                 </exec>
 
                 <exec executable="make" dir="source/gloox-1.0" failonerror="yes">
