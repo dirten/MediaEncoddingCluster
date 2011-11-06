@@ -202,7 +202,7 @@
                   <path location="${project.basedir}"/>
                 </pathconvert>
                 <exec executable="sh" dir="source/gloox-1.0" failonerror="yes">
-                  <arg line="${mybasedir}/source/gloox-1.0/configure --prefix=${mybasedir}/source/build"/>
+                  <arg line="${mybasedir}/source/gloox-1.0/configure --prefix=${mybasedir}/source/build --enable-static --disable-shared"/>
                 </exec>
 
                 <exec executable="make" dir="source/gloox-1.0" failonerror="yes">
