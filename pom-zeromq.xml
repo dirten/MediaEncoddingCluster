@@ -180,6 +180,7 @@
                   <path location="${project.basedir}"/>
                 </pathconvert>
 	        <copy file="${mybasedir}/src/patch/libzmq.vcproj" tofile="${mybasedir}/source/zeromq-2.1.10/builds/msvc/libzmq/libzmq.vcproj" failonerror="yes"/>
+	        <copy file="${mybasedir}/src/patch/zmq.h" tofile="${mybasedir}/source/zeromq-2.1.10/include/zmq.h" failonerror="yes"/>
 
                 <!--<exec executable="cmd" dir="source/poco-1.4.2p1-all" failonerror="yes">
                   <arg line="/c build_vcexpress2008"/>
