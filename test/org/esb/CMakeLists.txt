@@ -22,6 +22,6 @@ add_subdirectory (hive)
 add_subdirectory (rpc)
 #add_subdirectory (mq)
 add_subdirectory (gloox)
-#add_subdirectory (zmq)
+add_subdirectory (zmq)
 
 
