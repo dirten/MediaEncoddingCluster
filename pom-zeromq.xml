@@ -203,6 +203,7 @@
                 </pathconvert>
                 <exec executable="sh" dir="source/zeromq-2.1.10" failonerror="yes">
                   <arg line="configure --prefix=${mybasedir}/source/build --enable-static --disable-shared"/>
+                  <env key="CFLAGS" value="-m32"/>
                   <env key="CXXFLAGS" value="-m32"/>
                   <env key="LDFLAGS" value="-m32"/>
                 </exec>
