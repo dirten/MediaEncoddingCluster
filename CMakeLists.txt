@@ -324,6 +324,7 @@ ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
 
 
 INCLUDE(cmake/HiveFindGloox.txt)
+INCLUDE(cmake/HiveFindZeromq.txt)
 
 IF(WIN32)
 #  INSTALL(FILES "c:/vcredist_x86.exe" DESTINATION . )
