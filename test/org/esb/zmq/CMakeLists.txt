@@ -6,5 +6,5 @@ add_executable (ZmqTest ZmqTest.cpp)
 target_link_libraries (ZmqTest ${ZMQ_LIBRARY} )
 
 IF(UNIX AND NOT APPLE)
-	target_link_libraries (ZmqTest uuid)
+	target_link_libraries (ZmqTest uuid pthread)
 ENDIF(UNIX AND NOT APPLE)
