@@ -358,7 +358,7 @@ add_subdirectory (test)
 #add_dependencies(lang svnversion)
 SET(MHIVE_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${MINOR_PATCH_VERSION}-${SVN_VERSION})
 
-CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_SOURCE_DIR}/config.h)
+#CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_SOURCE_DIR}/config.h)
 
 
 #set(CPACK_COMPONENTS_ALL mhive libraries)

@@ -15,7 +15,7 @@
  *
  * ----------------------------------------------------------------------
  */
-#include "config.h"
+//#include "config.h"
 #include "boost/program_options.hpp"
 #include "boost/asio.hpp"
 #include "org/esb/api/JsonServer.h"
@@ -449,7 +449,7 @@ int main(int argc, char * argv[]) {
       LOGDEBUG("start mhive Web server");
       org::esb::hive::Node node;
       node.setData("type", "webadmin");
-      node.setData("version", MHIVE_VERSION);
+      node.setData("version", "0.0.5.0");
       node.setData("port", org::esb::config::Config::getProperty("client.port", "20200"));
       org::esb::hive::NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"), boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
       res.start();
@@ -472,7 +472,7 @@ int main(int argc, char * argv[]) {
 
 
     if (vm.count("version")) {
-      cout << "MediaEncodingCluster " << MHIVE_VERSION << endl;
+      cout << "MediaEncodingCluster 0.0.5.0" << endl;
       //    cout << org::esb::hive::VERSION_STRING<< endl;
       cout << LIBAVCODEC_IDENT << endl;
       cout << LIBAVFORMAT_IDENT << endl;
@@ -565,7 +565,7 @@ void client(int argc, char *argv[]) {
   org::esb::lang::Thread::sleep2(3000);
   org::esb::hive::Node node;
   node.setData("type", "client");
-  node.setData("version", MHIVE_VERSION);
+  node.setData("version", "0.0.5.0");
   org::esb::hive::NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"), boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
   if (config::Config::get("client.host") == "auto") {
     NodeAgent agent;
