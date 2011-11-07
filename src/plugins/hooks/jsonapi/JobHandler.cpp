@@ -184,7 +184,6 @@ namespace jobhandler {
       JSONNode data(JSON_ARRAY);
       data.set_name("data");
       result.push_back(JSONNode("status", "ok"));
-
       foreach(db::Job steve, jobs.all()) {
         JSONNode job(JSON_NODE);
         job.push_back(JSONNode("uuid", steve.uuid.value()));
@@ -201,6 +200,7 @@ namespace jobhandler {
           task.push_back(JSONNode("statusmessage", dbtask.statustext.value()));
           task.push_back(JSONNode("progress", dbtask.progress.value()));
           tasks.push_back(task);
+          
         }
         job.push_back(tasks);
         data.push_back(job);

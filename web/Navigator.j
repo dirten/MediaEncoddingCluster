@@ -13,9 +13,16 @@
     var textColumn = [[CPTableColumn alloc] initWithIdentifier:@"TextColumn2"];
     [textColumn setWidth:190.0];
     [textColumn setEditable:YES];
+    //[[textColumn headerView] setStringValue:"Started"];
+    var textColumn2 = [[CPTableColumn alloc] initWithIdentifier:@"TextColumn3"];
+    [textColumn2 setWidth:190.0];
+    [textColumn2 setEditable:YES];
+    [[textColumn2 headerView] setStringValue:"Completed"];
     //[[textColumn headerView] setStringValue:"Main Menu"];
     [self addTableColumn:textColumn];
+    //[self addTableColumn:textColumn2];
     [self setOutlineTableColumn:textColumn];
+    //[self setOutlineTableColumn:textColumn2];
     [self setBackgroundColor:[CPColor colorWithRed:221.0/255.0 green:228.0/255.0 blue:235.0/255.0 alpha:1.0]];
     //[self setBackgroundColor:[CPColor colorWithRed:46.0/255.0 green:46.0/255.0 blue:50.0/255.0 alpha:1.0]];
     [self setAllowsEmptySelection:NO];

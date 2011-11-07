@@ -1,4 +1,4 @@
-
+@import "../View/JobEditorWindow.j"
 @implementation EncodingEditViewController : CPObject
   {
     ProfileEditView view;
@@ -18,9 +18,11 @@
   }
   
   -(void)openEncodingEditView:(CPNotification)notification{
-    CPLog.debug("profileEdit:"+[notification userInfo]);
-    view = [[EncodingEditView alloc] init];
-    [view setEncodingId:[notification userInfo]];
+    CPLog.debug("endodingEdit:"+[notification userInfo]);
+    //view = [[EncodingEditView alloc] init];
+    //[view setEncodingId:[notification userInfo]];
+    view = [[JobEditorWindow alloc] init];
+    //[view setEncodingId:[notification userInfo]];
   }
   -(void)encodingSave:(CPNotification)notification{
 
