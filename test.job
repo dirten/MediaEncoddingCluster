@@ -1,0 +1,7 @@
+{
+    "tasks":[
+	{"name":"EncodingTask","encodingtask.src":"/home/jan.hoelscher/Videos/20080808 1120 - PREMIERE 3 - 300 (300).ts","encodingtask.profile":"c5ea2e50-dce7-4f16-9823-eee3db883a41"},
+	{"name":"ExportTask","exporttask.jobid":"global/collect","exporttask.format":"mp4","exporttask.trg":"/tmp/test6.mp4","exporttask.overwrite":true},
+	{"name":"UploadTask","uploadtask.src":"","uploadtask.trg":""}
+    ]
+}
