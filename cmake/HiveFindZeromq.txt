@@ -1,0 +1,16 @@
+MESSAGE("Library dir" ${LIBRARY_DIR})
+MESSAGE("Include dir" ${INCLUDE_DIR})
+FIND_PATH(ZMQ_INCLUDE_DIR
+    zmq.hpp
+  PATHS
+    ${INCLUDE_DIR}
+  NO_DEFAULT_PATH
+)
+
+FIND_LIBRARY(ZMQ_LIBRARY
+    NAMES
+      zmq
+    PATHS
+      ${LIBRARY_DIR}
+    NO_DEFAULT_PATH
+)
