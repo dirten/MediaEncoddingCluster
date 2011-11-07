@@ -30,6 +30,7 @@ extern "C" {
 #if defined _WIN32
 #include <winsock2.h>
 #endif
+#define ZMQ_EXPORT
 
 /******************************************************************************/
 /*  0MQ versioning support.                                                   */
