@@ -22,6 +22,11 @@
 @import "View/EncodingEditView.j"
 @import "View/DetailWebView.j"
 
+@import "Controller/ModuleController.j"
+@import <TNKit/TNToolbar.j>
+@import <LPKit/LPCrashReporter.j>
+
+
 TOP_MARGIN=0.0;
 TOOLBAR_TOP_MARGIN=0.0;
 
@@ -39,17 +44,42 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
 
     - (void)applicationDidFinishLaunching:(CPNotification)aNotification
     {
+      if (typeof(LPCrashReporter) != "undefined")
+          [LPCrashReporter sharedErrorLogger];
 	//return;
         var theWindow = [[CPWindow alloc] initWithContentRect:CGRectMakeZero() styleMask:CPBorderlessBridgeWindowMask],
         contentView = [theWindow contentView],
         toolBar = [[CPToolbar alloc] initWithIdentifier:"Toolbar"],
         bounds = [contentView bounds];
 
-        [toolBar setDelegate:self];
-        [toolBar setVisible:true];
+        //[toolBar setDelegate:self];
+        //[toolBar setVisible:true];
         //[toolBar setFrameOrigin:CGPointMake(0.0,0.0)];
-        [theWindow setToolbar:toolBar];
+
+        mainToolbar = [[TNToolbar alloc] init];
+        [theWindow setToolbar:mainToolbar];
+        var image = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"logo.jpg"] size:CPSizeMake(100, 50)];
+        //[mainToolbar addItemWithIdentifier:@"logo" label:@"Log out" view:nil target:nil action:nil];
+        //[mainToolbar addItemWithIdentifier:@"test" label:@"Log out" view:nil target:self action:@selector(toolbarItemLogoutClick:)];
+        [mainToolbar addItemWithIdentifier:@"test" label:@"Log out with long name" icon:[[CPBundle mainBundle] pathForResource:"logo.jpg"]  target:self action:@selector(toolbarItemLogoutClick:) toolTip:@"Log out from the application"];
+
+        /*
+        moduleToolbarItem       = [[CPToolbarItem alloc] initWithItemIdentifier:@"TestModule"];
+        [moduleToolbarItem setLabel:@"new label"];
+        [moduleToolbarItem setImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"icon.png"] size:CPSizeMake(32, 32)]];
+        [moduleToolbarItem setAlternateImage:[[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:@"icon-alt.png"] size:CPSizeMake(32, 32)]];
+        [moduleToolbarItem setToolTip:@"tooltip"];
+        [mainToolbar addItem:moduleToolbarItem withIdentifier:@"Test"];
+        [mainToolbar setPosition:3 forToolbarItemIdentifier:@"Test"];
+        */
+        [mainToolbar setPosition:0 forToolbarItemIdentifier:@"logo"];
+        [mainToolbar setPosition:1 forToolbarItemIdentifier:@"test"];
+        [mainToolbar setPosition:2 forToolbarItemIdentifier:CPToolbarSeparatorItemIdentifier];
+
+
         
+
+
         splitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
         //splitview=[[CPSplitView alloc] initWithFrame:bounds];
 	[splitview setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
@@ -134,9 +164,17 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
 	[dsplitview addSubview:mainView];
 	[dsplitview addSubview:detailView];
 	[splitview addSubview:dsplitview];
+        moduleController=[[ModuleController alloc] init];
+        [moduleController setSideView:listScrollView];
+        [moduleController setMainView:mainView];
+        [moduleController setMainToolbar:mainToolbar];
+        [moduleController setModulesPath:@"Modules/"];
+        [moduleController load];
+
+        [mainToolbar reloadToolbarItems];
 
         [contentView addSubview:splitview];
-	[navi init];
+        [navi init];
 	
         [theWindow orderFront:self];
 	return;
@@ -293,6 +331,12 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
 
         [theWindow orderFront:self];
     }
+- (IBAction)toolbarItemLogoutClick:(id)sender
+{
+  CPLog.debug("button clicked");
+ [mainToolbar selectToolbarItem:sender];
+}
+
 - (void)connection:(CPURLConnection)aConnection didReceiveData:(CPString)data
 {
     //this method is called when the network request returns. the data is the returned
