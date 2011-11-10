@@ -37,7 +37,7 @@ var TNArchipelTypeDummyNamespace = @"archipel:dummy",
     Sample tabbed module implementation
     Please respect the pragma marks as much as possible.
 */
-@implementation TestModuleController : CPObject
+@implementation TestModuleController : CPViewController
 {
     @outlet CPTextField     fieldJID;
     @outlet CPTextField     fieldName;
@@ -57,6 +57,10 @@ var TNArchipelTypeDummyNamespace = @"archipel:dummy",
 #pragma mark -
 #pragma mark TNModule overrides
 
+-(void)toolbarItemClicked:(id)aSender
+{
+
+}
 /*! called when module is loaded
 */
 - (void)willLoad

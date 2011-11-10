@@ -115,6 +115,7 @@ ModuleTypeTab = @"tab";
 
         CPLog.debug("CPPrincipalClass-String:"+classstring);
         CPLog.debug("CPPrincipalClass-Class:"+CPClassFromString(classstring));
+        CPLog.debug("CPPrincipalClass-Class:"+objj_getClass(classstring));
 
         CPLog.debug("[aBundle principalClass]:"+[aBundle principalClass]);
         currentModuleController =  [[[aBundle principalClass] alloc] init];
@@ -137,7 +138,7 @@ ModuleTypeTab = @"tab";
     [_mainToolbar addItem:moduleToolbarItem withIdentifier:moduleName];
     [_mainToolbar setPosition:moduleToolbarIndex forToolbarItemIdentifier:moduleName];
 
-    [currentModuleController initializeModule];
+    /*[currentModuleController initializeModule];
     [currentModuleController setName:moduleName];
     [currentModuleController setToolbarItem:moduleToolbarItem];
     [currentModuleController setToolbar:_mainToolbar];
@@ -145,10 +146,10 @@ ModuleTypeTab = @"tab";
     [currentModuleController setModuleType:ModuleTypeToolbar];
     [currentModuleController setMandatoryPermissions:mandatoryPermissions];
     //[currentModuleController setViewPermissionDenied:viewPermissionDenied];
-
+    */
     [_loadedToolbarModules setObject:currentModuleController forKey:moduleName];
 
-    [currentModuleController _beforeWillLoad];
+    //[currentModuleController _beforeWillLoad];
 
    [_mainToolbar reloadToolbarItems];
 
@@ -241,16 +242,16 @@ ModuleTypeTab = @"tab";
 {
     var module  = [_loadedToolbarModules objectForKey:[sender itemIdentifier]],
         oldModule;
-        CPLog.debug("click module "+module);
     if (_currentToolbarModule)
     {
+        /*
         var moduleBundle    = [_currentToolbarModule bundle],
             iconPath        = [moduleBundle pathForResource:[moduleBundle objectForInfoDictionaryKey:@"ToolbarIcon"]];
-
+            */
         oldModule = _currentToolbarModule;
-        [_currentToolbarItem setImage:[[CPImage alloc] initWithContentsOfFile:iconPath size:CPSizeMake(32,32)]];
+        //[_currentToolbarItem setImage:[[CPImage alloc] initWithContentsOfFile:iconPath size:CPSizeMake(32,32)]];
 
-        [_currentToolbarModule willHide];
+        //[_currentToolbarModule willHide];
         [[_currentToolbarModule view] removeFromSuperview];
         _currentToolbarModule   = nil;
         _currentToolbarItem     = nil;
@@ -260,14 +261,16 @@ ModuleTypeTab = @"tab";
 
     if (module != oldModule)
     {
+        CPLog.debug("click module 123"+module);
+        /*
         var bounds          = [_mainModuleView bounds],
             moduleBundle    = [module bundle],
             iconPath        = [moduleBundle pathForResource:[moduleBundle objectForInfoDictionaryKey:@"AlternativeToolbarIcon"]];
 
         [sender setImage:[[CPImage alloc] initWithContentsOfFile:iconPath size:CPSizeMake(32,32)]];
-
-        [[module view] setFrame:bounds];
-        [module willShow];
+        */
+        [[module view] setFrame:[_mainModuleView bounds]];
+        //[module willShow];
 
         [_mainModuleView addSubview:[module view]];
 

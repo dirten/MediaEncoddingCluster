@@ -97,7 +97,7 @@
         <key>UseModuleMenu</key>
 		<integer>1</integer>
         <key>ToolbarItemOnly</key>
-		<integer>1</integer>
+		<integer>0</integer>
 
         <!--
             If set to 1, the module will expand with the window. Otherwise,

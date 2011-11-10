@@ -74,7 +74,7 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
         */
         [mainToolbar setPosition:0 forToolbarItemIdentifier:@"logo"];
         [mainToolbar setPosition:1 forToolbarItemIdentifier:@"test"];
-        [mainToolbar setPosition:2 forToolbarItemIdentifier:CPToolbarSeparatorItemIdentifier];
+        //[mainToolbar setPosition:2 forToolbarItemIdentifier:CPToolbarSeparatorItemIdentifier];
 
 
         
