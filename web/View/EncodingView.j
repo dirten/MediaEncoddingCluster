@@ -1,6 +1,9 @@
 
 @import "ProgressTableDataView.j"
 @import "ActionsTableDataView.j"
+
+
+
 EncodingDoubleClicked = @"EncodingDoubleClicked";
 EncodingClicked = @"EncodingClicked";
 @implementation EncodingView :CPScrollView

@@ -8,6 +8,14 @@
                 <key>folder</key>
                 <string>TestModule</string>
             </dict>
+            <dict>
+                <key>folder</key>
+                <string>ToolbarEncodingModule</string>
+            </dict>
+            <dict>
+                <key>folder</key>
+                <string>ToolbarProfileModule</string>
+            </dict>
         </array>
     </dict>
 </plist>
