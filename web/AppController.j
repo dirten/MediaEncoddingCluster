@@ -21,6 +21,8 @@
 @import "View/EncodingView.j"
 @import "View/EncodingEditView.j"
 @import "View/DetailWebView.j"
+@import "View/NodeEditorView.j"
+@import "View/NodeElementPanel.j"
 
 @import "Controller/ModuleController.j"
 @import <TNKit/TNToolbar.j>
@@ -40,17 +42,23 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
     {
         var jsonData;
 	ContentViewController contentViewController;
+    CPArray _nodeElements;
     }
 
     - (void)applicationDidFinishLaunching:(CPNotification)aNotification
     {
       if (typeof(LPCrashReporter) != "undefined")
           [LPCrashReporter sharedErrorLogger];
-	//return;
+
         var theWindow = [[CPWindow alloc] initWithContentRect:CGRectMakeZero() styleMask:CPBorderlessBridgeWindowMask],
         contentView = [theWindow contentView],
         toolBar = [[CPToolbar alloc] initWithIdentifier:"Toolbar"],
         bounds = [contentView bounds];
+        var nodeEditor=[[NodeEditorView alloc] initWithFrame:bounds];
+        [contentView addSubview:nodeEditor];
+        [theWindow orderFront:self];
+        [[[NodeElementPanel alloc] init] orderFront:nil];
+        return;
 
         //[toolBar setDelegate:self];
         //[toolBar setVisible:true];
