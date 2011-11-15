@@ -5,6 +5,8 @@
 * Created by You on February 22, 2011.
 * Copyright 2011, Your Company All rights reserved.
 */
+TOP_MARGIN=0.0;
+TOOLBAR_TOP_MARGIN=0.0;
 
 @import <Foundation/CPObject.j>
 @import <AppKit/AppKit.j>
@@ -39,8 +41,10 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
 
 
 @implementation AppController : CPObject
-    {
-        var jsonData;
+{
+  //@outlet CPWindow testWindow;
+  //CPViewController _testController;
+  var jsonData;
 	ContentViewController contentViewController;
     CPArray _nodeElements;
     }
@@ -85,14 +89,13 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
         //[mainToolbar setPosition:2 forToolbarItemIdentifier:CPToolbarSeparatorItemIdentifier];
 
 
-        
+        //[TestWindowController initWithFrame:bounds];
 
 
         splitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
         //splitview=[[CPSplitView alloc] initWithFrame:bounds];
 	[splitview setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
         [splitview setIsPaneSplitter:YES];
-
         dsplitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
         //splitview=[[CPSplitView alloc] initWithFrame:bounds];
 	[dsplitview setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
@@ -169,9 +172,9 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
         [detailView addSubview:detailProfileView];
 
 	[splitview addSubview:listScrollView];
-	[dsplitview addSubview:mainView];
-	[dsplitview addSubview:detailView];
-	[splitview addSubview:dsplitview];
+	//[dsplitview addSubview:mainView];
+	//[dsplitview addSubview:detailView];
+	[splitview addSubview:mainView];
         moduleController=[[ModuleController alloc] init];
         [moduleController setSideView:listScrollView];
         [moduleController setMainView:mainView];
@@ -185,6 +188,7 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
         [navi init];
 	
         [theWindow orderFront:self];
+
 	return;
 	
 
@@ -386,7 +390,7 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
 
     - (CPArray)toolbarDefaultItemIdentifiers:(CPToolbar)aToolbar
     {
-        return [LogoToolbarItemIdentifier,CPToolbarFlexibleSpaceItemIdentifier, SliderToolbarItemIdentifier];
+        return [LogoToolbarItemIdentifier,CPToolbarFlexibleSpaceItemIdentifier, SliderToolbarItemIdentifier,AddToolbarItemIdentifier];
     }
 
     //this delegate method returns the actual toolbar item for the given identifier
@@ -477,8 +481,12 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
     //[p setCanChooseDirectories:YES];
 
     //[p orderFront:self];
-    var profilePanel =[[ProfileEditView alloc] init];
-    [profilePanel setProfileId:0];
+    
+    //var profilePanel =[[ProfileEditView alloc] init];
+    //[profilePanel setProfileId:0];
+    //CPLog.debug("testWindow"+testWindow);
+    //[testWindow orderFront:self];
+    //[testWindow center];
 }
 
 - (void)remove:(id)sender
@@ -521,6 +529,7 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
         console.log([values objectAtIndex:index]);
         return [values objectAtIndex:index];
     }
+
 }
 
 - (BOOL)outlineView:(CPOutlineView)outlineView isItemExpandable:(id)item

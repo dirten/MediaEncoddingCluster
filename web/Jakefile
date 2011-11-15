@@ -27,7 +27,7 @@ app ("NewApplication", function(task)
     task.setEmail("feedback @nospam@ yourcompany.com");
     task.setSummary("NewApplication");
     //task.setSources((new FileList("*.j","Controller/*.j","View/**/*.j")).exclude(FILE.join("Build", "**")));
-    task.setSources((new FileList("**/*.j")).exclude(FILE.join("Build", "**")));
+    task.setSources((new FileList("**/*.j")).exclude(FILE.join("Build", "**"))/*.exclude(FILE.join("Modules", "**"))*/);
     task.setResources(new FileList("Resources/**"));
     task.setIndexFilePath("index.html");
     task.setInfoPlistPath("Info.plist");

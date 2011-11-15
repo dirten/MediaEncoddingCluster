@@ -5,14 +5,14 @@
  * Created on 10. Oktober 2011, 11:30
  */
 
-#ifndef SERVICE_H
-#define	SERVICE_H
+#ifndef JOBEXECUTOR_SERVICE_H
+#define	JOBEXECUTOR_SERVICE_H
 #include "org/esb/signal/MessageListener.h"
 #include "org/esb/core/ServicePlugin.h"
 #include "org/esb/core/Task.h"
 
 #include <list>
-namespace clientcontroller {
+namespace jobexecutor {
 
   class Service : public org::esb::core::ServicePlugin , org::esb::signal::MessageListener {
   public:

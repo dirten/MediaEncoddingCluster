@@ -15,7 +15,7 @@
 #include "org/esb/hive/HiveClientAudio.h"
 #include "org/esb/util/Foreach.h"
 #include "org/esb/util/StringTokenizer.h"
-namespace clientcontroller {
+namespace jobexecutor {
 
   Service::Service() {
     _status = NONE;
@@ -50,7 +50,7 @@ namespace clientcontroller {
   }
 
   void Service::run() {
-    LOGTRACEMETHOD("void ProcessUnitController::start() ")
+    LOGTRACEMETHOD("void JobExecutor::run() ")
     while (_status == RUNNING) {
       litesql::DataSource<db::Job> source = litesql::select<db::Job > (*getContext()->database, db::Job::Status == db::Job::Status::Waiting);
       if (source.count() > 0) {
