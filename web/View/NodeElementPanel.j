@@ -1,5 +1,6 @@
 
 @import "NodeView.j"
+@import "NodeConnectorView.j"
 @import "NodeEditorView.j"
 
 NodeElementDragType = "NodeElementDragType";
@@ -32,7 +33,7 @@ NodeElementDragType = "NodeElementDragType";
         
         [photosView setAutoresizingMask:CPViewWidthSizable];
         [photosView setMinItemSize:CGSizeMake(100, 100)];
-        [photosView setMaxItemSize:CGSizeMake(100, 100)];
+        [photosView setMaxItemSize:CGSizeMake(200, 200)];
         [photosView setDelegate:self];
         var itemPrototype = [[CPCollectionViewItem alloc] init],
             photoView = [[NodeItemView alloc] initWithFrame:CGRectMakeZero()];
@@ -52,6 +53,7 @@ NodeElementDragType = "NodeElementDragType";
         [contentView addSubview:scrollView];
         
         images = [  
+          [[NodeConnectorView alloc] initWithName:@"connect"],
           [[NodeView alloc] initWithName:@"test1"],
           [[NodeView alloc] initWithName:@"test2"],
           [[NodeView alloc] initWithName:@"test3"],
@@ -78,4 +80,31 @@ NodeElementDragType = "NodeElementDragType";
     
     return [CPKeyedArchiver archivedDataWithRootObject:images[firstIndex]];
 }
+@end
+
+@implementation NodeItemView : CPView
+{
+    CPTextField textField;
+    NodeView node;
+}
+
+- (void)setRepresentedObject:(id)anObject
+{
+    //[self addSubview:anObject];
+    //return;
+    if (!textField)
+    {
+        textField = [[CPTextField alloc] initWithFrame:CGRectMake(50.0, 15.0, 145.0, 20.0)];
+        [textField setFont:[CPFont boldSystemFontOfSize:12.0]];
+        [self addSubview:textField];
+    }
+    [textField setStringValue:[anObject name]];
+}
+
+- (void)setSelected:(BOOL)isSelected
+{
+    [self setBackgroundColor:isSelected ? [CPColor blueColor] : nil];
+    [textField setTextColor:isSelected ? [CPColor whiteColor] : [CPColor blackColor]];
+}
+
 @end

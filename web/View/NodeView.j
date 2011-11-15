@@ -1,18 +1,26 @@
 
 
 
-@implementation NodeView: CPView
+@implementation NodeView: CPBox
 {
   CPString name;
+  CGPoint     dragLocation;
 }
 
 
 -(id)initWithName:(CPString)aName
 {
-  self=[super initWithFrame:CGRectMake(0.0,0.0,30.0,50.0)];
+  self=[super initWithFrame:CGRectMake(0.0,0.0,130.0,50.0)];
   if(self){
     name=aName;
-    //[self setPostsFrameChangedNofication:YES];
+    [self setCornerRadius:3.0];
+//    [self setBorderWidth:3.0];
+    [self setBorderType:CPGrooveBorder];
+    [self setPostsFrameChangedNotifications:YES];
+    var label=[CPTextField labelWithTitle:aName];
+    [label setFrameOrigin:CGPointMake(10.5,2.5)];
+    [label setTextColor:[CPColor darkGrayColor]];
+    [self addSubview:label];
   }
   return self;
 }
@@ -22,6 +30,41 @@
   return name;
 }
 
+- (void)mouseDown:(CPEvent)anEvent
+{
+    
+    dragLocation = [anEvent locationInWindow];
+    
+}
+- (void)mouseDragged:(CPEvent)anEvent
+{
+    var location = [anEvent locationInWindow],
+        origin = [self frame].origin;
+    
+    [self setFrameOrigin:CGPointMake(origin.x + location.x - dragLocation.x, origin.y + location.y - dragLocation.y)];
+
+    dragLocation = location;
+}
+
+-(void)drawContentsInView:(id)view inRect:(id)aRect
+{
+    
+    [super drawRect:aRect];
+
+}
+
+
+- (void)drawRect:(CGRect)aRect
+{
+    [super drawRect:aRect];
+    /*
+    var label=[CPTextField labelWithTitle:name];
+    [label setFrameOrigin:CGPointMake(14.5,2.5)];
+    [label setTextColor:[CPColor darkGrayColor]];
+
+    [self addSubview:label];
+    */
+}
 
 -(id)initWithCoder:(CPCoder)aCoder
 {
@@ -38,7 +81,7 @@
   [super encodeWithCoder:aCoder];
   [aCoder encodeObject:name forKey:@"name"];
 }
-
+/*
 - (CPView) hitTest:		(CPPoint) 	aPoint	 	
 {
   CPLog.debug("hit test");
@@ -49,4 +92,5 @@
 {
   return YES;
 }
+*/
 @end

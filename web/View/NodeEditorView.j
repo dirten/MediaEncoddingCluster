@@ -3,7 +3,7 @@
 
 @implementation NodeEditorView: CPView
 {
-
+  CPArray elements;
 }
 
 -(id)initWithFrame:(id)aFrame
@@ -11,15 +11,24 @@
   self=[super initWithFrame:aFrame];
   if(self){
     [self registerForDraggedTypes:[NodeElementDragType]];
+    elements=[CPArray array];
   }
   return self;
 }
+
 - (void)performDragOperation:(CPDraggingInfo)aSender
 {
+    CPLog.debug("drop_dragging:");
     var data = [[aSender draggingPasteboard] dataForType:NodeElementDragType];
     CPLog.debug("drop_dragging:"+data);
     var element=[CPKeyedUnarchiver unarchiveObjectWithData:data];
     CPLog.debug("Element:"+[element name]);
+    
+    var location=[self convertPoint:[aSender draggingLocation] fromView:nil];
+    [element setFrameOrigin:location];
+    //[self addSubview:element];
+    [elements addObject:element];
+    [self setNeedsDisplay:YES];
 
 }   
  - (void) mouseDragged:		(CPEvent) 	anEvent	 {
@@ -35,8 +44,23 @@
 {
   CPLog.debug("draggingExited");
 }
+- (void)drawRect:(CPRect)rect 
+{
+  var context = [[CPGraphicsContext currentContext] graphicsPort];
 
+  CPLog.debug("DrawRect12");
+  var graphicCount = [elements count];
+  for (var index = graphicCount - 1; index>=0; index--) 
+	{
+    var element = [elements objectAtIndex:index];
+    CPLog.debug("ElementIndex:"+index+" Element:"+element);
+    CGContextSaveGState(context);
+		[element drawContentsInView:self inRect:rect];
 
+		CGContextRestoreGState(context);
+  }
+}
+/*
 - (CPView) hitTest:		(CPPoint) 	aPoint	 	
 {
   CPLog.debug("hit test x:"+aPoint.x+" y:"+aPoint.y);
@@ -45,30 +69,8 @@
 
 - (BOOL) hitTests
 {
-  return YES;
+  return NO;
 }
+*/
 @end
 
-@implementation NodeItemView : CPView
-{
-    CPTextField textField;
-}
-
-- (void)setRepresentedObject:(id)anObject
-{
-    if (!textField)
-    {
-        textField = [[CPTextField alloc] initWithFrame:CGRectMake(50.0, 15.0, 145.0, 20.0)];
-        [textField setFont:[CPFont boldSystemFontOfSize:12.0]];
-        [self addSubview:textField];
-    }
-    [textField setStringValue:[anObject name]];
-}
-
-- (void)setSelected:(BOOL)isSelected
-{
-    [self setBackgroundColor:isSelected ? [CPColor blueColor] : nil];
-    [textField setTextColor:isSelected ? [CPColor whiteColor] : [CPColor blackColor]];
-}
-
-@end
