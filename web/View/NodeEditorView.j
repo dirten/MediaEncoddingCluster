@@ -22,21 +22,13 @@
 
 - (void)performDragOperation:(CPDraggingInfo)aSender
 {
-  CPLog.debug("drop_dragging:");
   var data = [[aSender draggingPasteboard] dataForType:NodeElementDragType];
-  CPLog.debug("drop_dragging:"+data);
   var element=[CPKeyedUnarchiver unarchiveObjectWithData:data];
-  CPLog.debug("Element:"+[element name]);
-  CPLog.debug(CPStringFromPoint([aSender draggingLocation]));
-  var location=[self convertPoint:[aSender draggingLocation] fromView:nil];
-  //[element setFrameOrigin:[aSender draggingLocation]];
-  var frameOrigin=[aSender draggingLocation];
-  
+  var frameOrigin=[aSender draggingLocation];  
   var bounds = [element bounds];
+
   [element setBounds:CGRectMake(frameOrigin.x,frameOrigin.y,bounds.size.width,bounds.size.height)];
   
-  //CPLog.debug("Origin"+CPStringFromPoint([element frameOrigin]));
-  //[self addSubview:element];
   [elements addObject:element];
   [self setNeedsDisplay:YES];
   
@@ -45,7 +37,8 @@
 - (void) mouseDown:		(CPEvent) 	anEvent	 {
   CPLog.debug("mouseDown:"+CPStringFromPoint([anEvent locationInWindow]));
   currentSelectedElement=[self graphicUnderPoint:[anEvent locationInWindow]];
-  //currentSelectedHandle=[self handleUnderPoint:[anEvent locationInWindow]];
+  currentSelectedHandle=[self handleUnderPoint:[anEvent locationInWindow]];
+
   if([currentSelectedElement class]!=CPNull){
     CPLog.debug("selected graphic:"+CPStringFromRect([currentSelectedElement bounds]));
   }
@@ -58,6 +51,34 @@
    
 - (void) mouseDragged:		(CPEvent) 	anEvent	 {
   CPLog.debug("mouseDragged:"+CPStringFromPoint([anEvent locationInWindow]));
+  if(currentSelectedHandle){
+    CPLog.debug("Which Handle:"+currentSelectedHandle);
+    /**
+    * this is used for moving the connector handle
+    */
+    var location = [anEvent locationInWindow],
+          originBounds = [currentSelectedElement bounds];
+    var bx=location.x+(originBounds.origin.x-dragLocation.x);
+    var by=location.y+(originBounds.origin.y-dragLocation.y);
+
+    var ex=originBounds.size.width;
+    var ey=originBounds.size.height;
+
+    if(currentSelectedHandle==LineBeginHandle){
+      ex=originBounds.size.width-(originBounds.origin.x-location.x);
+      ey=originBounds.size.height-(originBounds.origin.y-location.y);
+    }
+
+    if(currentSelectedHandle==LineEndHandle){
+
+    }
+    var bounds=CGRectMake(bx,by,ex,ey);
+    [currentSelectedElement setBounds:bounds];
+    dragLocation = location;
+  }else  
+  /**
+  * this is used for moving the complete node object
+  */
   if([currentSelectedElement class]!=CPNull){
     var location = [anEvent locationInWindow],
           originBounds = [currentSelectedElement bounds];
@@ -65,11 +86,7 @@
     CPLog.debug("NewBounds:"+CPStringFromRect([currentSelectedElement bounds]));
     [currentSelectedElement setBounds:bounds];
     dragLocation = location;
-  }else if(currentSelectedHandle){
-    CPLog.debug("here:"+JSON.stringify(currentSelectedHandle));
-    //CPLog.debug("Drawing Connector from point:"+CPStringFromPoint(currentSelectedHandle)+" to point "+CPStringFromPoint(location));
-    //[self drawConnectorInView:self fromPoint:currentSelectedHandle toPoint:[anEvent locationInWindow]];
-  }
+  } 
   [self setNeedsDisplay:YES];
 }
 - (void) mouseUp:		(CPEvent) 	anEvent	 {
@@ -99,6 +116,11 @@
 		{
       CPLog.debug("under point");
       selected=element;
+    }else{
+      var handle=[element handleAtPoint:aPoint];
+      if(handle){
+        selected=element;
+      }
     }
   }
   return selected;

@@ -68,7 +68,6 @@ LineEndHandle = 2;
 
 -(CPRect)bounds
 {
-  CPLog.debug("BeginPoint:"+_beginPoint);
   return CGRectMake(_beginPoint.x,_beginPoint.y,_endPoint.x-_beginPoint.x,_endPoint.y-_beginPoint.y);
 }
 /*
@@ -184,6 +183,22 @@ LineEndHandle = 2;
     return CGRectContainsPoint(handleBounds, point);
 }
 
+- (CPPoint)handleAtPoint:(CPPoint)aPoint 
+{
+    // Check a handle-sized rectangle that's centered on the handle point.
+    var bounds=[self bounds];
+    var pointin=CPPointMake(bounds.origin.x, bounds.origin.y);
+    if([self isHandleAtPoint:_beginPoint underPoint:aPoint]){
+      CPLog.debug("begin point found");
+      return LineBeginHandle;
+    }
+    //var pointout=CPPointMake(bounds.origin.x+bounds.size.width+GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
+    if([self isHandleAtPoint:_endPoint underPoint:aPoint]){
+      CPLog.debug("end point found");
+      return LineEndHandle;
+    }
+    return LineNoHandle;
+}
 
 -(id)initWithCoder:(CPCoder)aCoder
 {
