@@ -1,10 +1,15 @@
 
 
+NoHandle = 0;
+InputHandle = 1;
+OutputHandle = 2;
 
 @implementation NodeView: CPBox
 {
   CPString name;
   CGPoint     dragLocation;
+  CPArray     inputElements;
+  CPArray     outputElements;
 }
 
 
@@ -30,6 +35,16 @@
   return name;
 }
 
+-(CPArray)inputElements
+{
+  return inputElements;
+}
+
+-(CPArray)outputElements
+{
+  return outputElements;
+}
+/*
 - (void)mouseDown:(CPEvent)anEvent
 {
     
@@ -45,14 +60,39 @@
 
     dragLocation = location;
 }
-
+*/
 -(void)drawContentsInView:(id)view inRect:(id)aRect
 {
   CPLog.debug("RectSelf:"+CPStringFromRect([self bounds]));
-    [super drawRect:aRect];
+  [super drawRect:aRect];
+  var bounds=[self bounds];
 
+  var pointin=CPPointMake(bounds.origin.x-GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
+  [self drawHandleInView:view atPoint:pointin];
+  var pointout=CPPointMake(bounds.origin.x+bounds.size.width+GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
+  [self drawHandleInView:view atPoint:pointout];
 }
 
+- (void)drawHandleInView:(CPView)view atPoint:(CPPoint)point 
+{
+	var context = [[CPGraphicsContext currentContext] graphicsPort];
+	
+    // Figure out a rectangle that's centered on the point but lined up with device pixels.
+    var x = point.x - GraphicHandleHalfWidth;
+    var y = point.y - GraphicHandleHalfWidth;
+    var width = GraphicHandleWidth;
+    var height = GraphicHandleWidth;
+	  var handleBounds = CGRectMake(x, y, width, height);
+    CPLog.debug("Handle @ x:"+x+" y:"+y+" w:"+width+" h:"+height);
+    // Draw the shadow of the handle.
+    var handleShadowBounds = CGRectOffset(handleBounds, 1.0, 1.0);
+	  CGContextSetFillColor(context, [CPColor shadowColor]);
+    CGContextFillRect(context, handleShadowBounds);
+
+    // Draw the handle itself.
+	CGContextSetFillColor(context, [CPColor darkGrayColor]);
+    CGContextFillRect(context, handleBounds);
+}
 
 - (void)drawRect:(CGRect)aRect
 {
@@ -64,6 +104,37 @@
 
     [self addSubview:label];
     */
+}
+
+- (BOOL)isHandleAtPoint:(CPPoint)handlePoint underPoint:(CPPoint)point 
+{
+    // Check a handle-sized rectangle that's centered on the handle point.
+    var x = handlePoint.x - GraphicHandleHalfWidth;
+    var y = handlePoint.y - GraphicHandleHalfWidth;
+    var width = GraphicHandleWidth;
+    var height = GraphicHandleWidth;
+    var handleBounds = CGRectMake(x, y, width, height);
+    CPLog.debug("Handle @ x:"+x+" y:"+y+" w:"+width+" h:"+height);
+    CPLog.debug("Point @ x:"+point.x+" y:"+point.y);
+
+    return CGRectContainsPoint(handleBounds, point);
+}
+
+- (CPPoint)handleAtPoint:(CPPoint)aPoint 
+{
+    // Check a handle-sized rectangle that's centered on the handle point.
+    var bounds=[self bounds];
+    var pointin=CPPointMake(bounds.origin.x-GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
+    if([self isHandleAtPoint:pointin underPoint:aPoint]){
+      CPLog.debug("begin point found");
+      return aPoint;
+    }
+    var pointout=CPPointMake(bounds.origin.x+bounds.size.width+GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
+    if([self isHandleAtPoint:pointout underPoint:aPoint]){
+      CPLog.debug("end point found");
+      return aPoint;
+    }
+    return nil;
 }
 
 -(id)initWithCoder:(CPCoder)aCoder

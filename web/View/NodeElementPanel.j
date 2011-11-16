@@ -32,7 +32,7 @@ NodeElementDragType = "NodeElementDragType";
         var photosView = [[CPCollectionView alloc] initWithFrame:bounds];
         
         [photosView setAutoresizingMask:CPViewWidthSizable];
-        [photosView setMinItemSize:CGSizeMake(100, 100)];
+        [photosView setMinItemSize:CGSizeMake(150, 100)];
         [photosView setMaxItemSize:CGSizeMake(200, 200)];
         [photosView setDelegate:self];
         var itemPrototype = [[CPCollectionViewItem alloc] init],
@@ -90,6 +90,7 @@ NodeElementDragType = "NodeElementDragType";
 
 - (void)setRepresentedObject:(id)anObject
 {
+    //[self setBounds:[anObject bounds]];
     //[self addSubview:anObject];
     //return;
     if (!textField)

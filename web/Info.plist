@@ -8,7 +8,7 @@
 	<string>NewApplication</string>
 	<key>CPPrincipalClass</key>
 	<string>CPApplication</string>
-	<key>Main cib file base name</key>
-	<string>TestWindow.cib</string>
+	<!--<key>Main cib file base name</key>
+	<string>TestWindow.cib</string>-->
 </dict>
 </plist>
