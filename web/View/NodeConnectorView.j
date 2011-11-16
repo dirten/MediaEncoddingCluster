@@ -139,6 +139,13 @@ LineEndHandle = 2;
 {
       handleUnderMouse=NO;
 }
+-(void)drawContentsInView:(id)view inRect:(id)aRect
+{
+  CPLog.debug("RectSelf:"+CPStringFromRect([self bounds]));
+    [self drawRect:aRect];
+
+}
+
 - (void)drawRect:(CGRect)aRect
 {
     //[[self subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];

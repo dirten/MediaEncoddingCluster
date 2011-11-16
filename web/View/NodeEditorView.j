@@ -18,20 +18,25 @@
 
 - (void)performDragOperation:(CPDraggingInfo)aSender
 {
-    CPLog.debug("drop_dragging:");
-    var data = [[aSender draggingPasteboard] dataForType:NodeElementDragType];
-    CPLog.debug("drop_dragging:"+data);
-    var element=[CPKeyedUnarchiver unarchiveObjectWithData:data];
-    CPLog.debug("Element:"+[element name]);
-    
-    var location=[self convertPoint:[aSender draggingLocation] fromView:nil];
-    [element setFrameOrigin:location];
-    //[self addSubview:element];
-    [elements addObject:element];
-    [self setNeedsDisplay:YES];
-
+  CPLog.debug("drop_dragging:");
+  var data = [[aSender draggingPasteboard] dataForType:NodeElementDragType];
+  CPLog.debug("drop_dragging:"+data);
+  var element=[CPKeyedUnarchiver unarchiveObjectWithData:data];
+  CPLog.debug("Element:"+[element name]);
+  CPLog.debug(CPStringFromPoint([aSender draggingLocation]));
+  var location=[self convertPoint:[aSender draggingLocation] fromView:nil];
+  //[element setFrameOrigin:[aSender draggingLocation]];
+  var frameOrigin=[aSender draggingLocation];
+  var bounds = [element bounds];
+  [element setBounds:CGRectMake(frameOrigin.x,frameOrigin.y,bounds.size.width,bounds.size.height)];
+  
+  CPLog.debug("Origin"+CPStringFromPoint([element frameOrigin]));
+  //[self addSubview:element];
+  [elements addObject:element];
+  [self setNeedsDisplay:YES];
+  
 }   
- - (void) mouseDragged:		(CPEvent) 	anEvent	 {
+- (void) mouseDragged:		(CPEvent) 	anEvent	 {
   CPLog.debug("mouseDragged");
 }
 
@@ -47,7 +52,7 @@
 - (void)drawRect:(CPRect)rect 
 {
   var context = [[CPGraphicsContext currentContext] graphicsPort];
-
+  
   CPLog.debug("DrawRect12");
   var graphicCount = [elements count];
   for (var index = graphicCount - 1; index>=0; index--) 
@@ -56,21 +61,21 @@
     CPLog.debug("ElementIndex:"+index+" Element:"+element);
     CGContextSaveGState(context);
 		[element drawContentsInView:self inRect:rect];
-
+    
 		CGContextRestoreGState(context);
   }
 }
 /*
-- (CPView) hitTest:		(CPPoint) 	aPoint	 	
-{
-  CPLog.debug("hit test x:"+aPoint.x+" y:"+aPoint.y);
-  return nil;
-}
-
-- (BOOL) hitTests
-{
-  return NO;
-}
-*/
+ - (CPView) hitTest:		(CPPoint) 	aPoint	 	
+ {
+ CPLog.debug("hit test x:"+aPoint.x+" y:"+aPoint.y);
+ return nil;
+ }
+ 
+ - (BOOL) hitTests
+ {
+ return NO;
+ }
+ */
 @end
 

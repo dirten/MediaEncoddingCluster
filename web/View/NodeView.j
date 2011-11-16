@@ -48,7 +48,7 @@
 
 -(void)drawContentsInView:(id)view inRect:(id)aRect
 {
-    
+  CPLog.debug("RectSelf:"+CPStringFromRect([self bounds]));
     [super drawRect:aRect];
 
 }
