@@ -8,6 +8,7 @@
   CPPoint currentSelectedHandle;
 
   CGPoint     dragLocation;
+  id lastNode;
 }
 
 -(id)initWithFrame:(id)aFrame
@@ -16,6 +17,7 @@
   if(self){
     [self registerForDraggedTypes:[NodeElementDragType]];
     elements=[CPArray array];
+    lastNode=nil;
   }
   return self;
 }
@@ -28,14 +30,17 @@
   var bounds = [element bounds];
 
   [element setBounds:CGRectMake(frameOrigin.x,frameOrigin.y,bounds.size.width,bounds.size.height)];
-  
   [elements addObject:element];
+  
+  if(lastNode){
+    [lastNode addTarget:element];
+  }else
+    lastNode=element;
   [self setNeedsDisplay:YES];
   
 }
    
 - (void) mouseDown:		(CPEvent) 	anEvent	 {
-  CPLog.debug("mouseDown:"+CPStringFromPoint([anEvent locationInWindow]));
   currentSelectedElement=[self graphicUnderPoint:[anEvent locationInWindow]];
   currentSelectedHandle=[self handleUnderPoint:[anEvent locationInWindow]];
 
@@ -50,32 +55,38 @@
 }
    
 - (void) mouseDragged:		(CPEvent) 	anEvent	 {
-  CPLog.debug("mouseDragged:"+CPStringFromPoint([anEvent locationInWindow]));
+//  CPLog.debug("mouseDragged:"+CPStringFromPoint([anEvent locationInWindow]));
+  /*
   if(currentSelectedHandle){
-    CPLog.debug("Which Handle:"+currentSelectedHandle);
-    /**
-    * this is used for moving the connector handle
-    */
+    CPLog.debug("Which Handle12:"+currentSelectedHandle);
     var location = [anEvent locationInWindow],
           originBounds = [currentSelectedElement bounds];
-    var bx=location.x+(originBounds.origin.x-dragLocation.x);
-    var by=location.y+(originBounds.origin.y-dragLocation.y);
+
+    var bx=originBounds.origin.x;
+    var by=originBounds.origin.y;
 
     var ex=originBounds.size.width;
     var ey=originBounds.size.height;
 
     if(currentSelectedHandle==LineBeginHandle){
-      ex=originBounds.size.width-(originBounds.origin.x-location.x);
-      ey=originBounds.size.height-(originBounds.origin.y-location.y);
+      ex+=(dragLocation.x-location.x);
+      ey+=(dragLocation.y-location.y);
+      bx=location.x+(originBounds.origin.x-dragLocation.x);
+      by=location.y+(originBounds.origin.y-dragLocation.y);
     }
-
+    
     if(currentSelectedHandle==LineEndHandle){
-
+      ex-=(dragLocation.x-location.x);
+      ey-=(dragLocation.y-location.y);
     }
+
     var bounds=CGRectMake(bx,by,ex,ey);
     [currentSelectedElement setBounds:bounds];
     dragLocation = location;
-  }else  
+    if([self handleUnderPoint:location]){
+      CPLog.debug("handle under point");
+    }
+  }else*/
   /**
   * this is used for moving the complete node object
   */
@@ -83,14 +94,15 @@
     var location = [anEvent locationInWindow],
           originBounds = [currentSelectedElement bounds];
     var bounds=CGRectMake(location.x+(originBounds.origin.x-dragLocation.x),location.y+(originBounds.origin.y-dragLocation.y),originBounds.size.width,originBounds.size.height);
-    CPLog.debug("NewBounds:"+CPStringFromRect([currentSelectedElement bounds]));
+    //CPLog.debug("NewBounds:"+CPStringFromRect([currentSelectedElement bounds]));
     [currentSelectedElement setBounds:bounds];
     dragLocation = location;
   } 
   [self setNeedsDisplay:YES];
 }
+
 - (void) mouseUp:		(CPEvent) 	anEvent	 {
-  CPLog.debug("mouseUp:"+[anEvent locationInWindow]);
+//  CPLog.debug("mouseUp:"+[anEvent locationInWindow]);
   currentSelectedElement=[CPNull null];
   currentSelectedHandle=nil;
 }
@@ -118,10 +130,10 @@
       selected=element;
     }else{
       var handle=[element handleAtPoint:aPoint];
-      if(handle){
-        selected=element;
-      }
-    }
+	    if(handle){
+	      selected=element;
+	    }
+	  }
   }
   return selected;
 }
@@ -144,52 +156,81 @@
   return nil;
 }
 
--(void)drawConnectorInView:(CPView)view fromPoint:(CPPoint)startPoint toPoint:(CPPoint)endPoint
+
+-(void)drawLinkFrom:(CPPoint)startPoint to:(CPPoint)endPoint
 {
+  var p0=CPMakePoint(startPoint.x,startPoint.y);
+  var p3=CPMakePoint(endPoint.x,endPoint.y);
 
-  var context = [[CPGraphicsContext currentContext] graphicsPort];
+  var p1=CPMakePoint(startPoint.x+treshold((endPoint.x-startPoint.x)/2,50),startPoint.y);
+  var p2=CPMakePoint(endPoint.x-treshold((endPoint.x-startPoint.x)/2,50),endPoint.y);
+  
+  var inlineColor=[CPColor grayColor];
+  var outlineColor=[CPColor blackColor];
 
-  var path = CGPathCreateMutable();
-	//var endPoint = [self endPoint];
+  var path=[CPBezierPath bezierPath];
+  [path setLineWidth:0];
+  [outlineColor set];
+  [path appendBezierPathWithOvalInRect:CPMakeRect(startPoint.x-2.5,startPoint.y-2.5,5,5)];
+  [path fill];
+  
+  path=[CPBezierPath bezierPath];
+  [path setLineWidth:0];
+  [inlineColor set];
+  [path appendBezierPathWithOvalInRect:CPMakeRect(startPoint.x-1.5,startPoint.y-1.5,3,3)];
+  [path fill];
 
-	CGPathMoveToPoint(path, nil, startPoint.x, startPoint.y);
-	CGPathAddLineToPoint(path, nil, endPoint.x, endPoint.y);
-	CGPathCloseSubpath(path);    
-  CPLog.debug("GraphicsContext:"+context);
-    if (path)
-	{
-		CGContextBeginPath(context);
-		CGContextAddPath(context, path);
-		CGContextClosePath(context);
-    /*
-		if ([self isDrawingFill]) 
-		{
-			CGContextSetFillColor(context, _fillColor);
-		    CGContextFillPath(context);
-		}*/
-		
-			CGContextSetStrokeColor(context, [CPColor blackColor]);
-		    CGContextStrokePath(context);
-  }
+  path=[CPBezierPath bezierPath];
+  [path setLineWidth:0];
+  [outlineColor set];
+  [path appendBezierPathWithOvalInRect:CPMakeRect(endPoint.x-2.5,endPoint.y-2.5,5,5)];
+  [path fill];
+
+  path=[CPBezierPath bezierPath];
+  [path setLineWidth:0];
+  [inlineColor set];
+  [path appendBezierPathWithOvalInRect:CPMakeRect(endPoint.x-1.5,endPoint.y-1.5,3,3)];
+  [path fill];
+
+  path=[CPBezierPath bezierPath];
+  [path setLineWidth:5];
+  [path moveToPoint:p0];
+  [path curveToPoint:p3 controlPoint1:p1 controlPoint2:p2];
+  [outlineColor set];
+  [path stroke];
+
+  path=[CPBezierPath bezierPath];
+  [path setLineWidth:3];
+  [path moveToPoint:p0];
+  [path curveToPoint:p3 controlPoint1:p1 controlPoint2:p2];
+  [inlineColor set];
+  [path stroke];
 
 }
 
 - (void)drawRect:(CPRect)rect 
 {
-  var context = [[CPGraphicsContext currentContext] graphicsPort];
-  
-  CPLog.debug("DrawRect12");
+  var context = [[CPGraphicsContext currentContext] graphicsPort];  
   var graphicCount = [elements count];
   for (var index = graphicCount - 1; index>=0; index--) 
 	{
     var element = [elements objectAtIndex:index];
-    CPLog.debug("ElementIndex:"+index+" Element:"+element);
     CGContextSaveGState(context);
 		[element drawContentsInView:self inRect:rect];
-    
+
+    {/*this scope is for handle drawing*/
+      var targets=[element outputElements];
+      var targetCount = [targets count];
+      for (var index2 = targetCount - 1; index2>=0; index2--) 
+      {
+        var target = [targets objectAtIndex:index2];
+        var startPoint=[element outHandlePoint];  
+        var endPoint=[target inHandlePoint];
+        [self drawLinkFrom:startPoint to:endPoint];
+      }
+    }
 		CGContextRestoreGState(context);
   }
-  CPLog.debug("DrawRect12-End");
 }
 /*
  - (CPView) hitTest:		(CPPoint) 	aPoint	 	
@@ -203,5 +244,9 @@
  return NO;
  }
  */
-@end
 
+
+@end
+treshold = function(x,tr){
+  return (x>0)?((x>tr)?x:tr):-x+tr;
+}
