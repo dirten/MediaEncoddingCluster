@@ -43,7 +43,7 @@ OutputHandle = 2;
   if(self){
     name=aName;
     [self setCornerRadius:3.0];
-//    [self setBorderWidth:3.0];
+    //[self setBorderWidth:3.0];
     [self setBorderType:CPGrooveBorder];
     [self setPostsFrameChangedNotifications:YES];
     var label=[CPTextField labelWithTitle:aName];
@@ -86,6 +86,11 @@ OutputHandle = 2;
 {
   CPLog.debug("AddTarget")
   [outputElements addObject:target];
+}
+-(void)addSource:(id)source
+{
+  CPLog.debug("AddSource")
+  [inputElements addObject:source];
 }
 
 /*
