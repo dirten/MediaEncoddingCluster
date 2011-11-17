@@ -53,7 +53,7 @@ NodeElementDragType = "NodeElementDragType";
         [contentView addSubview:scrollView];
         
         images = [  
-          [[NodeConnectorView alloc] initWithName:@"connect"],
+          
           [[NodeView alloc] initWithName:@"test1"],
           [[NodeView alloc] initWithName:@"test2"],
           [[NodeView alloc] initWithName:@"test3"],
@@ -82,7 +82,7 @@ NodeElementDragType = "NodeElementDragType";
 }
 @end
 
-@implementation NodeItemView : CPView
+@implementation NodeItemView : CPBox
 {
     CPTextField textField;
     NodeView node;
@@ -90,11 +90,16 @@ NodeElementDragType = "NodeElementDragType";
 
 - (void)setRepresentedObject:(id)anObject
 {
-    //[self setBounds:[anObject bounds]];
+    [self setBounds:[anObject bounds]];
+    [self setCornerRadius:3.0];
+    //[self setBorderWidth:3.0];
+    [self setBorderType:CPGrooveBorder];
+    [self setPostsFrameChangedNotifications:YES];
+
     //[self addSubview:anObject];
     //return;
     if (!textField)
-    {
+    { 
         textField = [[CPTextField alloc] initWithFrame:CGRectMake(50.0, 15.0, 145.0, 20.0)];
         [textField setFont:[CPFont boldSystemFontOfSize:12.0]];
         [self addSubview:textField];

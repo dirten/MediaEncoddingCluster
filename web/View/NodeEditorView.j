@@ -103,9 +103,9 @@
 
 - (void) mouseUp:		(CPEvent) 	anEvent	 {
 //  CPLog.debug("mouseUp:"+[anEvent locationInWindow]);
-    CPLog.debug("Drop Target Drop Handle Here:"+targetDropElement);
-    CPLog.debug("Drop Source Element:"+currentSelectedElement);
-    if(isDrawingLink&&[targetDropElement class]!=CPNull&&currentSelectedElement!=targetDropElement){
+    //CPLog.debug("Drop Target Drop Handle Here:"+targetDropElement);
+    //CPLog.debug("Drop Source Element:"+currentSelectedElement);
+    if(isDrawingLink&&[targetDropElement class]!=CPNull&&[currentSelectedElement class]!=CPNull&&currentSelectedElement!=targetDropElement){
       [currentSelectedElement addTarget:targetDropElement];
       [targetDropElement addSource:currentSelectedElement];
     }
@@ -224,7 +224,7 @@
 {
     var isContentsUnderPoint = NO;
 
-  var bounds=CPMakeRect(from.x,from.y,to.x-from.x,  to.y-from.y);
+  var bounds=CPMakeRect(from.x,from.y,Math.abs(to.x-from.x),  Math.abs(to.y-from.y));
   CPLog.debug("Rect Link : "+CPStringFromRect(bounds));
   var acceptableDistance = 20.0;
  if (CGRectContainsPoint(bounds, point)) 

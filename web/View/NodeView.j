@@ -38,7 +38,7 @@ OutputHandle = 2;
 }
 -(id)initWithName:(CPString)aName
 {
-  CPLog.debug("NodeVIew initWithName")
+  CPLog.debug("NodeVIew initWithName:"+aName)
   self=[super initWithFrame:CGRectMake(0.0,0.0,130.0,50.0)];
   if(self){
     name=aName;
@@ -195,7 +195,7 @@ OutputHandle = 2;
     name=[aCoder decodeObjectForKey:"name"];
     name=[aCoder decodeObjectForKey:"inHandlePoint"];
     name=[aCoder decodeObjectForKey:"outHandlePoint"];
-    [self init];
+    [self initWithName:name];
   }
   return self;
 }
