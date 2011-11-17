@@ -172,12 +172,12 @@ OutputHandle = 2;
     //var pointin=CPPointMake(bounds.origin.x-GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
     if([self isHandleAtPoint:inHandlePoint underPoint:aPoint]){
       CPLog.debug("begin point found");
-      return aPoint;
+      return inHandlePoint;
     }
     //var pointout=CPPointMake(bounds.origin.x+bounds.size.width+GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
     if([self isHandleAtPoint:outHandlePoint underPoint:aPoint]){
       CPLog.debug("end point found");
-      return aPoint;
+      return outHandlePoint;
     }
     return nil;
 }

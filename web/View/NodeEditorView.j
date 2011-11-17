@@ -5,10 +5,12 @@
 {
   CPArray elements;
   id currentSelectedElement;
+  id targetDropElement;
   CPPoint currentSelectedHandle;
 
   CGPoint     dragLocation;
   id lastNode;
+  BOOL isDrawingLink;
 }
 
 -(id)initWithFrame:(id)aFrame
@@ -31,11 +33,12 @@
 
   [element setBounds:CGRectMake(frameOrigin.x,frameOrigin.y,bounds.size.width,bounds.size.height)];
   [elements addObject:element];
-  
+  /*
   if(lastNode){
     [lastNode addTarget:element];
   }else
     lastNode=element;
+    */
   [self setNeedsDisplay:YES];
   
 }
@@ -49,44 +52,19 @@
   }
 
   if(currentSelectedHandle!=nil){
-    CPLog.debug("currentSelectedHandle:"+CPStringFromPoint([currentSelectedHandle]));
+    CPLog.debug("currentSelectedHandle:"+CPStringFromPoint(currentSelectedHandle));
+    isDrawingLink=YES;
   }
   dragLocation = [anEvent locationInWindow];
 }
    
 - (void) mouseDragged:		(CPEvent) 	anEvent	 {
 //  CPLog.debug("mouseDragged:"+CPStringFromPoint([anEvent locationInWindow]));
-  /*
+  
   if(currentSelectedHandle){
     CPLog.debug("Which Handle12:"+currentSelectedHandle);
-    var location = [anEvent locationInWindow],
-          originBounds = [currentSelectedElement bounds];
-
-    var bx=originBounds.origin.x;
-    var by=originBounds.origin.y;
-
-    var ex=originBounds.size.width;
-    var ey=originBounds.size.height;
-
-    if(currentSelectedHandle==LineBeginHandle){
-      ex+=(dragLocation.x-location.x);
-      ey+=(dragLocation.y-location.y);
-      bx=location.x+(originBounds.origin.x-dragLocation.x);
-      by=location.y+(originBounds.origin.y-dragLocation.y);
-    }
     
-    if(currentSelectedHandle==LineEndHandle){
-      ex-=(dragLocation.x-location.x);
-      ey-=(dragLocation.y-location.y);
-    }
-
-    var bounds=CGRectMake(bx,by,ex,ey);
-    [currentSelectedElement setBounds:bounds];
-    dragLocation = location;
-    if([self handleUnderPoint:location]){
-      CPLog.debug("handle under point");
-    }
-  }else*/
+  }else
   /**
   * this is used for moving the complete node object
   */
@@ -96,15 +74,32 @@
     var bounds=CGRectMake(location.x+(originBounds.origin.x-dragLocation.x),location.y+(originBounds.origin.y-dragLocation.y),originBounds.size.width,originBounds.size.height);
     //CPLog.debug("NewBounds:"+CPStringFromRect([currentSelectedElement bounds]));
     [currentSelectedElement setBounds:bounds];
-    dragLocation = location;
   } 
+  var targetDropHandle=[self handleUnderPoint:[anEvent locationInWindow]];
+  if(targetDropHandle!=nil){
+    targetDropElement=[self graphicUnderPoint:[anEvent locationInWindow]];
+    CPLog.debug("Target Drop Handle Here:"+targetDropElement);
+    CPLog.debug("Source Element:"+currentSelectedElement);
+  }else{
+    CPLog.debug("noop");
+  
+  }
+  dragLocation = [anEvent locationInWindow];
   [self setNeedsDisplay:YES];
 }
 
 - (void) mouseUp:		(CPEvent) 	anEvent	 {
 //  CPLog.debug("mouseUp:"+[anEvent locationInWindow]);
+    CPLog.debug("Drop Target Drop Handle Here:"+targetDropElement);
+    CPLog.debug("Drop Source Element:"+currentSelectedElement);
+    if(isDrawingLink&&currentSelectedElement!=targetDropElement){
+      [currentSelectedElement addTarget:targetDropElement];
+    }
   currentSelectedElement=[CPNull null];
   currentSelectedHandle=nil;
+  targetDropElement=nil;
+  isDrawingLink=NO;
+  [self setNeedsDisplay:YES];
 }
 
 - (void)draggingEntered:(CPDraggingInfo)aSender
@@ -230,6 +225,11 @@
       }
     }
 		CGContextRestoreGState(context);
+  }
+  if(isDrawingLink){
+    //CPLog.debug("StartPoint:"+CPStringFromPoint(startPoint));
+    var startPoint=[currentSelectedElement outHandlePoint];
+    [self drawLinkFrom:startPoint to:dragLocation];
   }
 }
 /*
