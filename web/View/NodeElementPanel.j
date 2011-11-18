@@ -1,5 +1,7 @@
 
 @import "NodeView.j"
+@import "NodeInput.j"
+@import "NodeEncoding.j"
 @import "NodeConnectorView.j"
 @import "NodeEditorView.j"
 
@@ -54,8 +56,8 @@ NodeElementDragType = "NodeElementDragType";
         
         images = [  
           
-          [[NodeView alloc] initWithName:@"test1"],
-          [[NodeView alloc] initWithName:@"test2"],
+          [[NodeInput alloc] init],
+          [[NodeEncoding alloc] init],
           [[NodeView alloc] initWithName:@"test3"],
           [[NodeView alloc] initWithName:@"test4"],
           [[NodeView alloc] initWithName:@"test5"],
@@ -90,14 +92,14 @@ NodeElementDragType = "NodeElementDragType";
 
 - (void)setRepresentedObject:(id)anObject
 {
-    [self setBounds:[anObject bounds]];
+    //[self setBounds:[anObject bounds]];
     [self setCornerRadius:3.0];
     //[self setBorderWidth:3.0];
-    [self setBorderType:CPGrooveBorder];
-    [self setPostsFrameChangedNotifications:YES];
+    //return;
+    //[self setBorderType:CPGrooveBorder];
+    //[self setPostsFrameChangedNotifications:YES];
 
     //[self addSubview:anObject];
-    //return;
     if (!textField)
     { 
         textField = [[CPTextField alloc] initWithFrame:CGRectMake(50.0, 15.0, 145.0, 20.0)];

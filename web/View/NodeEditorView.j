@@ -64,6 +64,7 @@
     CPLog.debug("currentSelectedHandle:"+CPStringFromPoint(currentSelectedHandle));
     isDrawingLink=YES;
   }
+  targetDropElement=[CPNull null];
   [self setNeedsDisplay:YES];
  
   dragLocation = [anEvent locationInWindow];
@@ -75,7 +76,7 @@
 //  CPLog.debug("mouseDragged:"+CPStringFromPoint([anEvent locationInWindow]));
   
   if(currentSelectedHandle){
-    CPLog.debug("Which Handle12:"+currentSelectedHandle);
+    //CPLog.debug("Which Handle12:"+currentSelectedHandle);
     
   }else
   /**
@@ -91,10 +92,10 @@
   var targetDropHandle=[self handleUnderPoint:[anEvent locationInWindow]];
   if(targetDropHandle!=nil){
     targetDropElement=[self graphicUnderPoint:[anEvent locationInWindow]];
-    CPLog.debug("Target Drop Handle Here:"+targetDropElement);
-    CPLog.debug("Source Element:"+currentSelectedElement);
+    //CPLog.debug("Target Drop Handle Here:"+targetDropElement);
+    //CPLog.debug("Source Element:"+currentSelectedElement);
   }else{
-    CPLog.debug("noop");
+    //CPLog.debug("noop");
     targetDropElement=[CPNull null];
   }
   dragLocation = [anEvent locationInWindow];
@@ -103,9 +104,9 @@
 
 - (void) mouseUp:		(CPEvent) 	anEvent	 {
 //  CPLog.debug("mouseUp:"+[anEvent locationInWindow]);
-    //CPLog.debug("Drop Target Drop Handle Here:"+targetDropElement);
     //CPLog.debug("Drop Source Element:"+currentSelectedElement);
     if(isDrawingLink&&[targetDropElement class]!=CPNull&&[currentSelectedElement class]!=CPNull&&currentSelectedElement!=targetDropElement){
+      //CPLog.debug("Drop Target Drop Handle Here:"+targetDropElement);
       [currentSelectedElement addTarget:targetDropElement];
       [targetDropElement addSource:currentSelectedElement];
     }
@@ -133,10 +134,10 @@
   for (var index = graphicCount - 1; index>=0; index--) 
 	{
     var element = [elements objectAtIndex:index];
-    CPLog.debug("ElementIndex:"+index+" Element:"+element);
+    //CPLog.debug("ElementIndex:"+index+" Element:"+element);
 		if (CPRectContainsPoint([element bounds], aPoint)) 
 		{
-      CPLog.debug("under point");
+      //CPLog.debug("under point");
       selected=element;
     }else{
       var handle=[element handleAtPoint:aPoint];
@@ -155,14 +156,14 @@
 	{
     var element = [elements objectAtIndex:index];
     //if([element class]!=NodeConnectorView)continue;
-    CPLog.debug("ElementIndex:"+index+" Element:"+element);
+    //CPLog.debug("ElementIndex:"+index+" Element:"+element);
     var handle=[element handleAtPoint:aPoint];
     if(handle){
-      CPLog.debug("Result Point:"+CPStringFromPoint(handle));
+      //CPLog.debug("Result Point:"+CPStringFromPoint(handle));
       return handle;
     }
   }
-  CPLog.debug("return nil");
+  //CPLog.debug("return nil");
   return nil;
 }
 
@@ -217,7 +218,7 @@
   [path stroke];
 
 
-  CPLog.debug("PathCount:"+path._path.count);
+  //CPLog.debug("PathCount:"+path._path.count);
 }
 
 -(BOOL)checkPathAtPoint:(CPPoint)point from:(CPPoint)from to:(CPPoint)to
@@ -225,7 +226,7 @@
     var isContentsUnderPoint = NO;
 
   var bounds=CPMakeRect(from.x,from.y,Math.abs(to.x-from.x),  Math.abs(to.y-from.y));
-  CPLog.debug("Rect Link : "+CPStringFromRect(bounds));
+  //CPLog.debug("Rect Link : "+CPStringFromRect(bounds));
   var acceptableDistance = 20.0;
  if (CGRectContainsPoint(bounds, point)) 
 	{
@@ -297,7 +298,6 @@
         var endPoint=[target inHandlePoint];
         var color=[CPColor grayColor];
         if([self checkPathAtPoint:dragLocation from:startPoint to:endPoint]){
-          CPLog.debug("path found");
           var color=[CPColor greenColor];
         }
         [self drawLinkFrom:startPoint to:endPoint withColor:color];

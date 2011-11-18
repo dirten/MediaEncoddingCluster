@@ -7,6 +7,7 @@ OutputHandle = 2;
 @implementation NodeView: CPBox
 {
   CPString name;
+  CPTextField label
   CPPoint     inHandlePoint;
   CPPoint     outHandlePoint;
   CGPoint     dragLocation;
@@ -14,43 +15,24 @@ OutputHandle = 2;
   CPArray     outputElements;
 }
 
--(id)init
-{
-  CPLog.debug("NodeVIew init")
-//self=[super init];
-  
-  if(self){
-    //[self setCornerRadius:3.0];
-//    [self setBorderWidth:3.0];
-    //[self setBorderType:CPGrooveBorder];
-    //[self setPostsFrameChangedNotifications:YES];
-    //var label=[CPTextField labelWithTitle:aName];
-    //[label setFrameOrigin:CGPointMake(10.5,2.5)];
-    //[label setTextColor:[CPColor darkGrayColor]];
-    //[self addSubview:label];
-    var bounds=[self bounds];
-    inputElements=[CPArray array];
-    outputElements=[CPArray array];
-    inHandlePoint=CPPointMake(bounds.origin.x-GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
-    outHandlePoint=CPPointMake(bounds.origin.x+bounds.size.width+GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
-  }
-  //return self
-}
+
 -(id)initWithName:(CPString)aName
 {
   CPLog.debug("NodeVIew initWithName:"+aName)
-  self=[super initWithFrame:CGRectMake(0.0,0.0,130.0,50.0)];
+  self=[super initWithFrame:CGRectMake(0.0,0.0,130.0,100.0)];
   if(self){
     name=aName;
-    [self setCornerRadius:3.0];
+    [self setCornerRadius:5.0];
     //[self setBorderWidth:3.0];
     [self setBorderType:CPGrooveBorder];
     [self setPostsFrameChangedNotifications:YES];
-    var label=[CPTextField labelWithTitle:aName];
-    [label setFrameOrigin:CGPointMake(10.5,2.5)];
+    
+    label=[CPTextField labelWithTitle:aName];
+    //[label setFrameOrigin:CGPointMake(10.5,2.5)];
     [label setTextColor:[CPColor darkGrayColor]];
     [self addSubview:label];
     var bounds=[self bounds];
+    //CPLog.debug("ContentRect:"+CPStringFromRect(bounds));
     inputElements=[CPArray array];
     outputElements=[CPArray array];
     inHandlePoint=CPPointMake(bounds.origin.x-GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
@@ -84,12 +66,10 @@ OutputHandle = 2;
 }
 -(void)addTarget:(id)target
 {
-  CPLog.debug("AddTarget")
   [outputElements addObject:target];
 }
 -(void)addSource:(id)source
 {
-  CPLog.debug("AddSource")
   [inputElements addObject:source];
 }
 
@@ -112,13 +92,19 @@ OutputHandle = 2;
 */
 -(void)drawContentsInView:(id)view inRect:(id)aRect
 {
-  CPLog.debug("RectSelf:"+CPStringFromRect([self bounds]));
+  //CPLog.debug("RectSelf:"+CPStringFromRect([self bounds]));
   [super drawRect:aRect];
+  //[label drawRect:aRect];
   var bounds=[self bounds];
+  //CPLog.debug("ContentRect:"+CPStringFromRect(bounds));
   inHandlePoint=CPPointMake(bounds.origin.x-GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
   outHandlePoint=CPPointMake(bounds.origin.x+bounds.size.width+GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
+   var label=[CPTextField labelWithTitle:name];
+    [label setFrameOrigin:inHandlePoint];
+    [label setTextColor:[CPColor darkGrayColor]];
+    [self addSubview:label];
+  [label drawRect:aRect];
 
-  CPLog.debug("InHandlePoint:"+CPStringFromPoint([self inHandlePoint]));
   [self drawHandleInView:view atPoint:inHandlePoint];
   [self drawHandleInView:view atPoint:outHandlePoint];
 }
@@ -133,17 +119,17 @@ OutputHandle = 2;
     var width = GraphicHandleWidth;
     var height = GraphicHandleWidth;
 	  var handleBounds = CGRectMake(x, y, width, height);
-    CPLog.debug("Handle @ x:"+x+" y:"+y+" w:"+width+" h:"+height);
+    //CPLog.debug("Handle @ x:"+x+" y:"+y+" w:"+width+" h:"+height);
     // Draw the shadow of the handle.
     var handleShadowBounds = CGRectOffset(handleBounds, 1.0, 1.0);
 	  CGContextSetFillColor(context, [CPColor shadowColor]);
     CGContextFillRect(context, handleShadowBounds);
 
     // Draw the handle itself.
-	CGContextSetFillColor(context, [CPColor darkGrayColor]);
+	  CGContextSetFillColor(context, [CPColor darkGrayColor]);
     CGContextFillRect(context, handleBounds);
 }
-
+/*
 - (void)drawRect:(CGRect)aRect
 {
     [super drawRect:aRect];
@@ -155,7 +141,7 @@ OutputHandle = 2;
     [self addSubview:label];
     */
 }
-
+*/
 - (BOOL)isHandleAtPoint:(CPPoint)handlePoint underPoint:(CPPoint)point 
 {
     // Check a handle-sized rectangle that's centered on the handle point.
@@ -164,8 +150,8 @@ OutputHandle = 2;
     var width = GraphicHandleWidth;
     var height = GraphicHandleWidth;
     var handleBounds = CGRectMake(x, y, width, height);
-    CPLog.debug("Handle @ x:"+x+" y:"+y+" w:"+width+" h:"+height);
-    CPLog.debug("Point @ x:"+point.x+" y:"+point.y);
+    //CPLog.debug("Handle @ x:"+x+" y:"+y+" w:"+width+" h:"+height);
+    //CPLog.debug("Point @ x:"+point.x+" y:"+point.y);
 
     return CGRectContainsPoint(handleBounds, point);
 }
@@ -176,12 +162,12 @@ OutputHandle = 2;
     //var bounds=[self bounds];
     //var pointin=CPPointMake(bounds.origin.x-GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
     if([self isHandleAtPoint:inHandlePoint underPoint:aPoint]){
-      CPLog.debug("begin point found");
+      //CPLog.debug("begin point found");
       return inHandlePoint;
     }
     //var pointout=CPPointMake(bounds.origin.x+bounds.size.width+GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
     if([self isHandleAtPoint:outHandlePoint underPoint:aPoint]){
-      CPLog.debug("end point found");
+      //CPLog.debug("end point found");
       return outHandlePoint;
     }
     return nil;
@@ -193,8 +179,8 @@ OutputHandle = 2;
   self = [super initWithCoder:aCoder];
   if(self){
     name=[aCoder decodeObjectForKey:"name"];
-    name=[aCoder decodeObjectForKey:"inHandlePoint"];
-    name=[aCoder decodeObjectForKey:"outHandlePoint"];
+    //inHandlePoint=[aCoder decodeObjectForKey:"inHandlePoint"];
+    //outHandlePoint=[aCoder decodeObjectForKey:"outHandlePoint"];
     [self initWithName:name];
   }
   return self;
@@ -204,8 +190,8 @@ OutputHandle = 2;
 {
   [super encodeWithCoder:aCoder];
   [aCoder encodeObject:name forKey:@"name"];
-  [aCoder encodeObject:inHandlePoint forKey:@"inHandlePoint"];
-  [aCoder encodeObject:outHandlePoint forKey:@"outHandlePoint"];
+  //[aCoder encodeObject:inHandlePoint forKey:@"inHandlePoint"];
+  //[aCoder encodeObject:outHandlePoint forKey:@"outHandlePoint"];
 }
 /*
 - (CPView) hitTest:		(CPPoint) 	aPoint	 	

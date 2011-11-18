@@ -408,7 +408,7 @@ int main(int argc, char * argv[]) {
       org::esb::core::PluginRegistry::getInstance()->startServerServices();
       std::string port = config::Config::get("web.port");
       if (!quiet) {
-        std::cout << "mhive server is running, open the url http://localhost:" << port << std::endl;
+        //std::cout << "mhive server is running, open the url http://localhost:" << port << std::endl;
         std::cout << "Press ctrl & c to stop the program" << std::endl;
       }
       org::esb::lang::CtrlCHitWaiter::wait();
