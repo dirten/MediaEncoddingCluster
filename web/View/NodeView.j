@@ -74,11 +74,14 @@ OutputHandle = 2;
   [outputElements addObject:target];
 }
 
--(void)menuForNodeItem
+-(id)menuForNodeItem
 {
+    //return nil;
     menu = [[CPMenu alloc] initWithTitle:"Encoding Menu"],
     menuItems = ["Stop Encoding", "Delete Encoding"],
+    //menuItems = [],
     menuActions = [@selector(stop:), @selector(delete:)],
+    //menuActions = [],
     //isOpen = displayedIssuesKey === "openIssues",
     count = menuItems.length,
     i = 0,
@@ -284,9 +287,9 @@ OutputHandle = 2;
   //[aCoder encodeObject:inHandlePoint forKey:@"inHandlePoint"];
   //[aCoder encodeObject:outHandlePoint forKey:@"outHandlePoint"];
 }
--(void)openPropertyWindow
+-(id)propertyView
 {
-
+  return nil;
 }
 
 /*

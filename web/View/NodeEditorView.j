@@ -79,6 +79,7 @@
   currentSelectedElement=[self graphicUnderPoint:[anEvent locationInWindow]];
   if(clickcount==2&&[currentSelectedElement class]!=CPNull){
     var view=[currentSelectedElement propertyView];
+    if(!view)return;
     CPLog.debug("View Bounds:"+CPStringFromRect([view bounds]));
     var propertyWindow=[[NodePropertyWindow alloc] initWithFrame:[view bounds]] ;
 
