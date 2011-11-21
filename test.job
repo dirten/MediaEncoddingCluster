@@ -1,6 +1,6 @@
 {
     "tasks":[
-	{"name":"EncodingTask","encodingtask.src":"/Volumes/Movies/20070404 1515 - PREMIERE 3 - Carlito's Way - Weg zur Macht (Carlito's Way_ Rise to Power).ts","encodingtask.profile":"3e74a312-47b9-4082-a70c-e931f9d84ebd"},
+	{"name":"EncodingTask","encodingtask.src":"/media/video/ChocolateFactory.ts","encodingtask.profile":"1e12a8b2-fdee-458a-b062-70c8b787e084"},
 	{"name":"ExportTask","exporttask.jobid":"global/collect","exporttask.format":"mp4","exporttask.trg":"/tmp/test6.mp4","exporttask.overwrite":true},
 	{"name":"UploadTask","uploadtask.src":"","uploadtask.trg":""}
     ]

@@ -6,7 +6,7 @@
 
 ProfileChanged=@"ProfileChanged";
 
-@implementation ProfileEditView : CPView
+@implementation ProfileEditView : CPWindow
   {
     //CPTabView tabView;
     var items;
@@ -40,7 +40,7 @@ ProfileChanged=@"ProfileChanged";
 }
 -(id)initWithFrame:(GCRect)aFrame{
   var self=[super initWithFrame:aFrame];
-  CPLog.debug("ProfileEditView INIT12 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+  CPLog.debug("ProfileEditView INIT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
   splitview = [[CPSplitView alloc] initWithFrame:aFrame];
   [splitview setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
 
@@ -50,10 +50,11 @@ ProfileChanged=@"ProfileChanged";
   CPLog.debug("ProfileEditView INIT12 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
   //self=[super initWithContentRect:CGRectMake(15,150,325,225) styleMask:CPHUDBackgroundWindowMask|CPClosableWindowMask|CPResizableWindowMask];
   views = [CPDictionary dictionary];  
-  var self=[super init];
-  //var self=[super initWithContentRect:CGRectMake(280,50,700,500) styleMask:CPClosableWindowMask|CPResizableWindowMask];
-  var contentView=self;//[self contentView];
+  //var self=[super init];
+  var self=[super initWithContentRect:CGRectMake(280,50,700,500) styleMask:CPClosableWindowMask|CPResizableWindowMask];
+  var contentView=[self contentView];
   items = [CPDictionary dictionaryWithObjects:[ [], [], [], []] forKeys:[@"Audio",@"Video",@"Format",@"General"]];
+  CPLog.debug("here"+CPStringFromRect([contentView bounds]));
 
   splitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
   [splitview setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
@@ -64,7 +65,6 @@ ProfileChanged=@"ProfileChanged";
   [splitview addSubview:listScrollView];
   mainView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
   [splitview addSubview:mainView];
-
 
   treeView=[[CPOutlineView alloc] initWithFrame:[[listScrollView contentView] bounds]];
     var textColumn = [[CPTableColumn alloc] initWithIdentifier:@"TextColumn2"];

@@ -100,7 +100,7 @@ namespace jobhandler {
   std::string JobHandler::checkTask(JSONNode&root, db::Job & job) {
     std::string result = "";
     if (!contains(root, "name")) {
-      result = "task has no defined name";
+      result = "one task has no defined name";
     } else {
       /*first create an empty named task to resolve the required parameter for it*/
       Ptr<org::esb::core::Task>task = org::esb::core::PluginRegistry::getInstance()->createTask(root["name"].as_string(), std::map<std::string, std::string>());

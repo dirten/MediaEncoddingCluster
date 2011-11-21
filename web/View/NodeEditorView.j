@@ -1,5 +1,5 @@
 
-
+@import "NodePropertyWindow.j"
 
 @implementation NodeEditorView: CPView
 {
@@ -33,7 +33,7 @@
   var frameOrigin=[aSender draggingLocation];  
   var bounds = [element bounds];
 
-  [element setBounds:CGRectMake(frameOrigin.x,frameOrigin.y,bounds.size.width,bounds.size.height)];
+  [element setBounds:CGRectMake(frameOrigin.x-(bounds.size.width/2),frameOrigin.y-(bounds.size.height/2),bounds.size.width,bounds.size.height)];
   [elements addObject:element];
   /*
   if(lastNode){
@@ -44,9 +44,46 @@
   [self setNeedsDisplay:YES];
   
 }
-   
-- (void) mouseDown:		(CPEvent) 	anEvent	 {
+
+- (CPMenu)menuForEvent:(CPEvent)anEvent
+{
+    CPLog.debug("menu Button:"+[anEvent buttonNumber]);
   currentSelectedElement=[self graphicUnderPoint:[anEvent locationInWindow]];
+  if([currentSelectedElement class]!=CPNull){
+    CPLog.debug("selected graphic:"+CPStringFromRect([currentSelectedElement bounds]));
+    var menu=[currentSelectedElement menuForNodeItem];
+    CPLog.debug("Menu:"+menu);
+    select=currentSelectedElement;
+    [select setBorderWidth:3.0];
+    return menu;
+   }
+
+}
+/*
+- (void)rightMouseDown:(CPEvent)anEvent	
+{
+    CPLog.debug("Mouse Button:"+[anEvent buttonNumber]);
+  currentSelectedElement=[self graphicUnderPoint:[anEvent locationInWindow]];
+  if([currentSelectedElement class]!=CPNull){
+    CPLog.debug("selected graphic:"+CPStringFromRect([currentSelectedElement bounds]));
+    var menu=[currentSelectedElement menuForNodeItem];
+    CPLog.debug("Menu:"+menu);
+
+    select=currentSelectedElement;
+    [select setBorderWidth:3.0];
+   }
+}*/
+- (void) mouseDown:		(CPEvent) 	anEvent	 {
+  var clickcount=[anEvent clickCount];
+  CPLog.debug("Click count:"+clickcount);
+  currentSelectedElement=[self graphicUnderPoint:[anEvent locationInWindow]];
+  if(clickcount==2&&[currentSelectedElement class]!=CPNull){
+    var view=[currentSelectedElement propertyView];
+    CPLog.debug("View Bounds:"+CPStringFromRect([view bounds]));
+    var propertyWindow=[[NodePropertyWindow alloc] initWithFrame:[view bounds]] ;
+
+    CPLog.debug("open property window");
+  }
   currentSelectedHandle=[self handleUnderPoint:[anEvent locationInWindow]];
   if([select class]!=CPNull){
       [select setBorderWidth:1.0];
@@ -249,6 +286,11 @@
   }
   return isContentsUnderPoint;
 }
+- (BOOL)becomeFirstResponder
+ {
+     return YES;
+ }
+
 - (BOOL)acceptsFirstResponder 
 { 
     return YES; 
@@ -280,6 +322,7 @@
 
 - (void)drawRect:(CPRect)rect 
 {
+ [[self subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
   var context = [[CPGraphicsContext currentContext] graphicsPort];  
   var graphicCount = [elements count];
   for (var index = graphicCount - 1; index>=0; index--) 

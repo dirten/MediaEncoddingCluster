@@ -58,12 +58,14 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
         contentView = [theWindow contentView],
         toolBar = [[CPToolbar alloc] initWithIdentifier:"Toolbar"],
         bounds = [contentView bounds];
+
+        
         var nodeEditor=[[NodeEditorView alloc] initWithFrame:bounds];
         [contentView addSubview:nodeEditor];
         [theWindow orderFront:self];
         [[[NodeElementPanel alloc] init] orderFront:nil];
         return;
-
+        
         //[toolBar setDelegate:self];
         //[toolBar setVisible:true];
         //[toolBar setFrameOrigin:CGPointMake(0.0,0.0)];

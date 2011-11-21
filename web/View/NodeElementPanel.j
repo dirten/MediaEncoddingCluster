@@ -1,6 +1,8 @@
 
 @import "NodeView.j"
 @import "NodeInput.j"
+@import "NodeOutput.j"
+@import "NodeExecutable.j"
 @import "NodeEncoding.j"
 @import "NodeConnectorView.j"
 @import "NodeEditorView.j"
@@ -14,9 +16,8 @@ NodeElementDragType = "NodeElementDragType";
 
 - (id)init
 {
-    self = [self initWithContentRect:CGRectMake(10.0, 20.0, 300.0, 400.0)
+    self = [self initWithContentRect:CGRectMake(20.0, 30.0, 300.0, 400.0)
                            styleMask:CPHUDBackgroundWindowMask |
-                                     CPClosableWindowMask |
                                      CPResizableWindowMask];
 
     if (self)
@@ -34,7 +35,7 @@ NodeElementDragType = "NodeElementDragType";
         var photosView = [[CPCollectionView alloc] initWithFrame:bounds];
         
         [photosView setAutoresizingMask:CPViewWidthSizable];
-        [photosView setMinItemSize:CGSizeMake(150, 100)];
+        [photosView setMinItemSize:CGSizeMake(120, 100)];
         [photosView setMaxItemSize:CGSizeMake(200, 200)];
         [photosView setDelegate:self];
         var itemPrototype = [[CPCollectionViewItem alloc] init],
@@ -58,10 +59,12 @@ NodeElementDragType = "NodeElementDragType";
           
           [[NodeInput alloc] init],
           [[NodeEncoding alloc] init],
-          [[NodeView alloc] initWithName:@"test3"],
-          [[NodeView alloc] initWithName:@"test4"],
-          [[NodeView alloc] initWithName:@"test5"],
-          [[NodeView alloc] initWithName:@"test6"]
+          [[NodeOutput alloc] init],
+          [[NodeExecutable alloc] init],
+          [[NodeView alloc] initWithName:@"test3" withInputHandle:YES andOutputHandle:YES],
+          [[NodeView alloc] initWithName:@"test4" withInputHandle:YES andOutputHandle:YES],
+          [[NodeView alloc] initWithName:@"test5" withInputHandle:YES andOutputHandle:YES],
+          [[NodeView alloc] initWithName:@"test6" withInputHandle:YES andOutputHandle:YES]
         ];
                     
         [photosView setContent:images];
