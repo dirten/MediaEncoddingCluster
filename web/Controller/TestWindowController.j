@@ -5,7 +5,7 @@
 //  Created by Jan Hölscher on 08.11.11.
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
-
+/*
 @implementation TestClass : CPObject
 {
   float testFloat;
@@ -27,7 +27,7 @@
 }
 
 @end
-
+*/
 @implementation TestTransformer: CPValueTransformer
 {
   
@@ -47,14 +47,22 @@
   @outlet CPSlider testSlider;
   
   TestClass testClass;
-  
+  CPDictionary  data;
 }
 -(void)awakeFromCib{
-//CPLog.debug("TestWindowController awakeFromCib!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-  testClass=[TestClass alloc];
-  [testClass init];
+  CPLog.debug("TestWindowController awakeFromCib!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+  json={
+    "data":{
+      "format":{},
+      "video":{},
+      "audio":{}
+    }
+  };
+  data=[CPDictionary dictionaryWithJSObject:json recursively:YES];
+
   controller=[[CPObjectController alloc] init];
-  [controller bind:@"contentObject" toObject:self withKeyPath:@"testClass" options:nil];
+  [controller bind:@"contentObject" toObject:self withKeyPath:@"data" options:nil];
   //[testField bind:@"objectValue" toObject:controller withKeyPath:@"selection.testString" options:nil];
   transformer=[TestTransformer alloc];
   [testField 
@@ -78,10 +86,12 @@
   //    [testField setObjectValue:[value value]];
 }
 -(IBAction)buttonClicked:(id)aSender{
-  CPLog.debug("button clicked:"+testClass.testFloat);
+  
+  CPLog.debug("button clicked:"+data);
+  //CPLog.debug("button clicked:"+testClass.testFloat);
   //[testClass setValue:@"bla fasel" forKey:@"testString"];
   //CPLog.debug("button clicked:"+testClass.testString);
-  [testClass setValue:"20.0" forKey:@"testFloat"]
+  [data setValue:"20.0" forKey:@"testFloat"]
   //    [testField setObjectValue:[value value]];
 }
 @end

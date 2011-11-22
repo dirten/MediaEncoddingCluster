@@ -21,4 +21,10 @@
   CPLog.debug("orig View with bounds:"+CPStringFromRect([view bounds]));
   return view;
 }
+
+-(id)properties
+{
+  return nil;
+}
+
 @end

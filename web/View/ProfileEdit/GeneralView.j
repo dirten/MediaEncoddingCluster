@@ -3,9 +3,9 @@
   {
     FormBuilder _form;
   }
-  -(void)setData:(id)data
+  -(void)setData:(CPDictionary)data
   {
-
+    CPLog.debug("Dict data General view:"+data);
     [_form setData:data];
   }
   -(id)init

@@ -27,6 +27,7 @@ TOOLBAR_TOP_MARGIN=0.0;
 @import "View/NodeElementPanel.j"
 
 @import "Controller/ModuleController.j"
+@import "Controller/TestWindowController.j"
 @import <TNKit/TNToolbar.j>
 @import <LPKit/LPCrashReporter.j>
 

@@ -12,6 +12,7 @@
   CGPoint     dragLocation;
   id lastNode;
   BOOL isDrawingLink;
+  int   uidCounter;
  
 }
 
@@ -22,6 +23,7 @@
     [self registerForDraggedTypes:[NodeElementDragType]];
     elements=[CPArray array];
     lastNode=nil;
+    uidCounter=0;
   }
   return self;
 }
@@ -34,7 +36,9 @@
   var bounds = [element bounds];
 
   [element setBounds:CGRectMake(frameOrigin.x-(bounds.size.width/2),frameOrigin.y-(bounds.size.height/2),bounds.size.width,bounds.size.height)];
+  [element setUid:++uidCounter];
   [elements addObject:element];
+  CPLog.debug("UidCounter:"+[element uid]);
   /*
   if(lastNode){
     [lastNode addTarget:element];
@@ -82,7 +86,7 @@
     if(!view)return;
     CPLog.debug("View Bounds:"+CPStringFromRect([view bounds]));
     var propertyWindow=[[NodePropertyWindow alloc] initWithFrame:[view bounds]] ;
-
+    [[propertyWindow contentView] addSubview:view];
     CPLog.debug("open property window");
   }
   currentSelectedHandle=[self handleUnderPoint:[anEvent locationInWindow]];
@@ -93,6 +97,7 @@
 
   if([currentSelectedElement class]!=CPNull){
     CPLog.debug("selected graphic:"+CPStringFromRect([currentSelectedElement bounds]));
+    CPLog.debug("Uid:"+[currentSelectedElement uid]);
 
     select=currentSelectedElement;
     [select setBorderWidth:3.0];

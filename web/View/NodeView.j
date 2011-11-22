@@ -16,6 +16,7 @@ OutputHandle = 2;
   BOOL        _drawInputHandle;
   BOOL        _drawOutputHandle;
   CPMenu      menu;
+  int         uid       @accessors(property=uid);
 }
 
 -(id)initWithName:(CPString)aName withInputHandle:(BOOL)drawInputHandle andOutputHandle:(BOOL)drawOutputHandle
@@ -288,6 +289,10 @@ OutputHandle = 2;
   //[aCoder encodeObject:outHandlePoint forKey:@"outHandlePoint"];
 }
 -(id)propertyView
+{
+  return nil;
+}
+-(id)properties
 {
   return nil;
 }

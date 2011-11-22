@@ -6,19 +6,20 @@
 
 ProfileChanged=@"ProfileChanged";
 
-@implementation ProfileEditView : CPWindow
+@implementation ProfileEditView : CPView
   {
     //CPTabView tabView;
     var items;
     CPDictionary    views;
+    CPDictionary    pdata @accessors(property=data);
     CPView          currentView;
 
 
   }
   -(id)setProfileId:(id) id{
-    
+    return;
     CPLog.debug("setting profile id:"+ id);
-    if(id!="double click to create a new Profile"){
+    if(id!="double click to create a new Profile"&&id!=0){
       var request = [CPURLRequest requestWithURL:"/api/v1/profile?id="+id];
       [request setHTTPMethod:"GET"];
       // see important note about CPJSONPConnection above
@@ -34,7 +35,6 @@ ProfileChanged=@"ProfileChanged";
     [formatView setData:profileData.data.format];
     [videoView setData:profileData.data.video];
     [audioView setData:profileData.data.audio];
-
   }
 
 }
@@ -46,13 +46,15 @@ ProfileChanged=@"ProfileChanged";
 
 }
 
--(id)init{
+-(id)initWithData:(id)data{
+  pdata=data
   CPLog.debug("ProfileEditView INIT12 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
   //self=[super initWithContentRect:CGRectMake(15,150,325,225) styleMask:CPHUDBackgroundWindowMask|CPClosableWindowMask|CPResizableWindowMask];
   views = [CPDictionary dictionary];  
   //var self=[super init];
-  var self=[super initWithContentRect:CGRectMake(280,50,700,500) styleMask:CPClosableWindowMask|CPResizableWindowMask];
-  var contentView=[self contentView];
+  //var self=[super initWithContentRect:CGRectMake(280,50,700,500) styleMask:CPClosableWindowMask|CPResizableWindowMask];
+  var self=[super initWithFrame:CGRectMake(0,0,700,500)];
+  var contentView=self;//[self contentView];
   items = [CPDictionary dictionaryWithObjects:[ [], [], [], []] forKeys:[@"Audio",@"Video",@"Format",@"General"]];
   CPLog.debug("here"+CPStringFromRect([contentView bounds]));
 
@@ -116,28 +118,44 @@ ProfileChanged=@"ProfileChanged";
   [mainView addSubview:videoView];
   [mainView addSubview:audioView];
 
+  var data=[pdata objectForKey:@"data"];
+  CPLog.debug("Data in ProfileEdit View:"+data);
+  var format=[data objectForKey:@"format"];
+  var video=[data objectForKey:@"video"];
+  var audio=[data objectForKey:@"audio"];
+
+  [generalView setData:data];
+  [formatView setData:format];
+  [videoView setData:video];
+  [audioView setData:audio];
+  
   var okButton=[[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([contentView bounds])-90,CGRectGetHeight([contentView bounds])-40,80.0,24.0)];
   [okButton setTitle:@"Save"];
   [okButton setAutoresizingMask:CPViewMinXMargin|CPViewMinYMargin];
   [okButton setTarget:self];
   [okButton setAction:@selector(save:)];
+  [contentView addSubview:okButton];
 
+  /*
   var cancelButton=[[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([contentView bounds])-180,CGRectGetHeight([contentView bounds])-40,80.0,24.0)];
   [cancelButton setTitle:@"Cancel"];
   [cancelButton setAutoresizingMask:CPViewMinXMargin|CPViewMinYMargin];
-  [cancelButton setTarget:self];
-  [cancelButton setAction:@selector(close)];
+  //[cancelButton setTarget:self];
+  //[cancelButton setAction:@selector(close)];
 
-  [contentView addSubview:okButton];
   [contentView addSubview:cancelButton];
+  */
   [self setActiveView:@"General"];
-  [self orderFront:self];
-  [self setTitle:"Profile Editor"];
+  //[self orderFront:self];
+  //[self setTitle:"Profile Editor"];
 
   return self;
 }
 - (void)save:(id)sender{
   CPLog.debug("SAVING PROFILE");
+
+  CPLog.debug("Data:"+JSON.stringify([pdata toJSON]));
+  return;
   //CPLog.debug(JSON.stringify(profileData));
   var url="/api/v1/profile";
   if(profileData.data.id)
@@ -148,18 +166,21 @@ ProfileChanged=@"ProfileChanged";
   [request setHTTPBody:JSON.stringify(profileData.data)];
   // see important note about CPJSONPConnection above
   var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
-  //CPLog.debug([result rawString]);
+  CPLog.debug("Profile Save Result"+[result rawString]);
   [[CPNotificationCenter defaultCenter]
     postNotificationName:ProfileViewRefresh
     object:self
     userInfo:nil];
+
+  CPLog.debug("tryResult Parsing");
   resultData=[[result rawString] objectFromJSON];
+  CPLog.debug("Result Parsed");
   if(resultData.id){
     [[CPNotificationCenter defaultCenter]
       postNotificationName:ProfileChanged
       object:self
       userInfo:resultData.id];
-   [self close];
+   //[self close];
     var alert=[CPAlert alertWithMessageText:@"Profile saved" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"Profile successfull Saved"];
     [alert setAlertStyle:CPInformationalAlertStyle];
     [alert runModal];
@@ -170,6 +191,7 @@ ProfileChanged=@"ProfileChanged";
 
 
 }
+/*
 - (void)connection:(CPURLConnection)aConnection didReceiveData:(CPString)data
 {
   //CPLog.debug("received json data");
@@ -190,7 +212,7 @@ ProfileChanged=@"ProfileChanged";
 {
   alert(error); //a network error occurred
 }
-
+*/
 
 
 

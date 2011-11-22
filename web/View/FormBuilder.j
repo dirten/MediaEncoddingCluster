@@ -8,6 +8,7 @@
   {
     id _json;
     var nexttop;
+    CPDictionary _data;
     CPDictionary _elements;
     CPDictionary _options;
     var left_bound;
@@ -15,6 +16,8 @@
     
   -(void)setData:(id)data
   {
+  _data=data;
+  CPLog.debug("Dict data:"+_data);
     //CPLog.debug("setting data for profile in form builder"+JSON.stringify(data));
     _json=data;
 //          _json[data.id]=data.control["default"];
@@ -42,6 +45,7 @@
       //var el=[_elements objectForKey:[keys objectAtIndex:i]];
       var op=[_options objectForKey:[keys objectAtIndex:i]];
       _json[[keys objectAtIndex:i]]=op.control.defaults;
+      [_data setValue:op.control.defaults forKey:[keys objectAtIndex:i]];  
       //CPLog.debug("setting default "+[keys objectAtIndex:i]);
       }
     }
@@ -233,6 +237,7 @@
                 var data_option=[_elements objectForKey:data.option];
                 [data_option setObjectValue:data.value];
                 _json[data.option]=data.value;
+                [_data setValue:data.value forKey:data.option];    
               }
             }
           }
@@ -243,6 +248,8 @@
 
     //CPLog.debug("changed"+parseInt([sender objectValue]));
     _json[[sender identifier]]=parseInt([sender objectValue]);
+    [_data setValue:parseInt([sender objectValue]) forKey:[sender identifier]];
+
   }
   -(void)itemSelectionChanged:(id)sender
   {
@@ -256,6 +263,7 @@
         if(item.key==[sender title]){
           if(option.persist!=false)
             _json[[sender representedObject]]=item.value;
+            [_data setValue:item.value forKey:[sender representedObject]];
           /*enable referenced data fields*/
           if(item.enable&&item.enable.length>0){
             for(var b=0;b<item.enable.length;b++){
@@ -272,6 +280,7 @@
                 var data_option=[_elements objectForKey:data.option];
                 [data_option setObjectValue:data.value];
                 _json[data.option]=data.value;
+                [_data setValue:data.value forKey:data.option];
               }
             }
           }
@@ -285,7 +294,9 @@
 -(void)controlTextDidChange:(CPNotification)aNotification
 {
   //CPLog.debug("text changed:"+[[aNotification object] identifier]);
+  CPLog.debug("text changed data:"+_data);
   _json[[[aNotification object] identifier]]=[[aNotification object] objectValue];
+  [_data setValue:[[aNotification object] objectValue] forKey:[[aNotification object] identifier]];
 }
 
 @end
