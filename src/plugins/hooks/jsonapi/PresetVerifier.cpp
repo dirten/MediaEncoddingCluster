@@ -93,12 +93,12 @@ namespace org {
           aenc->setCodecOption(row.first, row.second);
         }
         if (!venc->open()) {
-          result = "Could not open video encoder, \nplease check your profile for the video encoder";
+          result = "Could not open video encoder, please check your profile for the video encoder";
           LOGERROR(result);
           return result;
         }
         if (!aenc->open()) {
-          result = "Could not open audio encoder, \nplease check your profile for the audio encoder";
+          result = "Could not open audio encoder, please check your profile for the audio encoder";
           LOGERROR(result);
           return result;
         }
@@ -110,7 +110,7 @@ namespace org {
         pos->setEncoder(*venc.get(),0);
         pos->setEncoder(*aenc.get(),1);
         if(!pos->init()){
-          result = "Could not initialize outputfile, \nplease check your profile for more information look into the server logfile";
+          result = "Could not initialize outputfile, please check your profile for more information look into the server logfile";
           LOGERROR(result);
           return result;          
         }
@@ -121,17 +121,17 @@ namespace org {
         ap.setStreamIndex(1);
         ap.setTimeBase(1,25);
         if(pos->writePacket(vp)){
-          result = "unable to write a video packet to the outputstream, \nplease check your profile for more information look into the server logfile";
+          result = "unable to write a video packet to the outputstream, please check your profile for more information look into the server logfile";
           LOGERROR(result);
           return result;                    
         }
         if(pos->writePacket(ap)){
-          result = "unable to write an audio packet to the outputstream, \nplease check your profile for more information look into the server logfile";
+          result = "unable to write an audio packet to the outputstream, please check your profile for more information look into the server logfile";
           LOGERROR(result);
           return result;          
         }
         if(!pos->close()){
-          result = "unable to write the trailer to the outputstream, \nplease check your profile for more information look into the server logfile";
+          result = "unable to write the trailer to the outputstream, please check your profile for more information look into the server logfile";
           LOGERROR(result);
           return result;          
         }

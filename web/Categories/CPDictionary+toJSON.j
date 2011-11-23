@@ -24,7 +24,7 @@
 
 var CKJSONKeyedArchiverClassKey = @"$$CLASS$$";
 
-@implementation CKJSONKeyedArchiver : CPCoder
+@implementation JSONKeyedArchiver : CPCoder
 {
     JSON    _json;
 }
@@ -122,10 +122,10 @@ var CKJSONKeyedArchiverClassKey = @"$$CLASS$$";
 -(id)toJSON
 {
   //return [CKJSONKeyedArchiver _encodeDictionaryOfObjects:self forKey:@"test"];
-  var json = {};
-  var archiver = [[CKJSONKeyedArchiver alloc] initForWritingWithMutableData:json];
-    
-  [archiver _encodeDictionaryOfObjects:self forKey:@"test"];
-  return json;
+  //var json = {};
+  //var archiver = [[CKJSONKeyedArchiver alloc] initForWritingWithMutableData:json];
+  
+  return [JSONKeyedArchiver archivedDataWithRootObject:self ];
+  //return json;
 }
 @end

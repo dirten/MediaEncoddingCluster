@@ -7395,6 +7395,159 @@ std::ostream & operator<<(std::ostream& os, Partition o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
+const litesql::FieldType Graph::Own::Id("id_","INTEGER","Graph_");
+const std::string Graph::type__("Graph");
+const std::string Graph::table__("Graph_");
+const std::string Graph::sequence__("Graph_seq");
+const litesql::FieldType Graph::Id("id_","INTEGER",table__);
+const litesql::FieldType Graph::Type("type_","TEXT",table__);
+const litesql::FieldType Graph::Uuid("uuid_","TEXT",table__);
+const litesql::FieldType Graph::Name("name_","TEXT",table__);
+const litesql::FieldType Graph::Data("data_","TEXT",table__);
+void Graph::defaults() {
+    id = 0;
+}
+Graph::Graph(const litesql::Database& db)
+     : litesql::Persistent(db), id(Id), type(Type), uuid(Uuid), name(Name), data(Data) {
+    defaults();
+}
+Graph::Graph(const litesql::Database& db, const litesql::Record& rec)
+     : litesql::Persistent(db, rec), id(Id), type(Type), uuid(Uuid), name(Name), data(Data) {
+    defaults();
+    size_t size = (rec.size() > 5) ? 5 : rec.size();
+    switch(size) {
+    case 5: data = convert<const std::string&, std::string>(rec[4]);
+        data.setModified(false);
+    case 4: name = convert<const std::string&, std::string>(rec[3]);
+        name.setModified(false);
+    case 3: uuid = convert<const std::string&, std::string>(rec[2]);
+        uuid.setModified(false);
+    case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
+    case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
+    }
+}
+Graph::Graph(const Graph& obj)
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), uuid(obj.uuid), name(obj.name), data(obj.data) {
+}
+const Graph& Graph::operator=(const Graph& obj) {
+    if (this != &obj) {
+        id = obj.id;
+        type = obj.type;
+        uuid = obj.uuid;
+        name = obj.name;
+        data = obj.data;
+    }
+    litesql::Persistent::operator=(obj);
+    return *this;
+}
+std::string Graph::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
+    tables.push_back(table__);
+    litesql::Record fields;
+    litesql::Record values;
+    fields.push_back(id.name());
+    values.push_back(id);
+    id.setModified(false);
+    fields.push_back(type.name());
+    values.push_back(type);
+    type.setModified(false);
+    fields.push_back(uuid.name());
+    values.push_back(uuid);
+    uuid.setModified(false);
+    fields.push_back(name.name());
+    values.push_back(name);
+    name.setModified(false);
+    fields.push_back(data.name());
+    values.push_back(data);
+    data.setModified(false);
+    fieldRecs.push_back(fields);
+    valueRecs.push_back(values);
+    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
+}
+void Graph::create() {
+    litesql::Record tables;
+    litesql::Records fieldRecs;
+    litesql::Records valueRecs;
+    type = type__;
+    std::string newID = insert(tables, fieldRecs, valueRecs);
+    if (id == 0)
+        id = newID;
+}
+void Graph::addUpdates(Updates& updates) {
+    prepareUpdate(updates, table__);
+    updateField(updates, table__, id);
+    updateField(updates, table__, type);
+    updateField(updates, table__, uuid);
+    updateField(updates, table__, name);
+    updateField(updates, table__, data);
+}
+void Graph::addIDUpdates(Updates& updates) {
+}
+void Graph::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
+    ftypes.push_back(Id);
+    ftypes.push_back(Type);
+    ftypes.push_back(Uuid);
+    ftypes.push_back(Name);
+    ftypes.push_back(Data);
+}
+void Graph::delRecord() {
+    deleteFromTable(table__, id);
+}
+void Graph::delRelations() {
+}
+void Graph::update() {
+    if (!inDatabase) {
+        create();
+        return;
+    }
+    Updates updates;
+    addUpdates(updates);
+    if (id != oldKey) {
+        if (!typeIsCorrect()) 
+            upcastCopy()->addIDUpdates(updates);
+    }
+    litesql::Persistent::update(updates);
+    oldKey = id;
+}
+void Graph::del() {
+    if (typeIsCorrect() == false) {
+        std::auto_ptr<Graph> p(upcastCopy());
+        p->delRelations();
+        p->onDelete();
+        p->delRecord();
+    } else {
+        onDelete();
+        delRecord();
+    }
+    inDatabase = false;
+}
+bool Graph::typeIsCorrect() {
+    return type == type__;
+}
+std::auto_ptr<Graph> Graph::upcast() {
+    return auto_ptr<Graph>(new Graph(*this));
+}
+std::auto_ptr<Graph> Graph::upcastCopy() {
+    Graph* np = new Graph(*this);
+    np->id = id;
+    np->type = type;
+    np->uuid = uuid;
+    np->name = name;
+    np->data = data;
+    np->inDatabase = inDatabase;
+    return auto_ptr<Graph>(np);
+}
+std::ostream & operator<<(std::ostream& os, Graph o) {
+    os << "-------------------------------------" << std::endl;
+    os << o.id.name() << " = " << o.id << std::endl;
+    os << o.type.name() << " = " << o.type << std::endl;
+    os << o.uuid.name() << " = " << o.uuid << std::endl;
+    os << o.name.name() << " = " << o.name << std::endl;
+    os << o.data.name() << " = " << o.data << std::endl;
+    os << "-------------------------------------" << std::endl;
+    return os;
+}
 HiveDb::HiveDb(std::string backendType, std::string connInfo)
      : litesql::Database(backendType, connInfo) {
     initialize();
@@ -7426,6 +7579,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
         res.push_back(Database::SchemaItem("UserGroup_seq","sequence","CREATE SEQUENCE UserGroup_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Request_seq","sequence","CREATE SEQUENCE Request_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Partition_seq","sequence","CREATE SEQUENCE Partition_seq START 1 INCREMENT 1"));
+        res.push_back(Database::SchemaItem("Graph_seq","sequence","CREATE SEQUENCE Graph_seq START 1 INCREMENT 1"));
     }
     res.push_back(Database::SchemaItem("Project_","table","CREATE TABLE Project_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,outdirectory_ TEXT,status_ TEXT,created_ INTEGER,started_ INTEGER,completed_ INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_","table","CREATE TABLE Filter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filtername_ TEXT,filterid_ TEXT)"));
@@ -7450,6 +7604,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("UserGroup_","table","CREATE TABLE UserGroup_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ INTEGER,nodecount_ INTEGER)"));
     res.push_back(Database::SchemaItem("Request_","table","CREATE TABLE Request_ (id_ " + backend->getRowIDType() + ",type_ TEXT,requestId_ TEXT,requestType_ TEXT,uri_ TEXT,query_ TEXT,data_ TEXT,response_ TEXT)"));
     res.push_back(Database::SchemaItem("Partition_","table","CREATE TABLE Partition_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,partitionsize_ INTEGER)"));
+    res.push_back(Database::SchemaItem("Graph_","table","CREATE TABLE Graph_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,name_ TEXT,data_ TEXT)"));
     res.push_back(Database::SchemaItem("Filter_FilterParameter_","table","CREATE TABLE Filter_FilterParameter_ (Filter1 INTEGER,FilterParameter2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_MediaFile_","table","CREATE TABLE Filter_MediaFile_ (Filter1 INTEGER,MediaFile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_Project_","table","CREATE TABLE Filter_Project_ (Filter1 INTEGER,Project2 INTEGER)"));

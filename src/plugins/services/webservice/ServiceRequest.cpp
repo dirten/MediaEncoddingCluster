@@ -111,7 +111,7 @@ namespace org {
           while (st.hasMoreTokens()) {
             std::string tk = st.nextToken();
             LOGDEBUG("token:"<<tk);
-            if (tk == key) {
+            if (tk.find(key) == 0 ) {
               result = true;
               break;
             }

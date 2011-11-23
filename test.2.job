@@ -6,10 +6,10 @@
 	{"name":"OutputTask","uid":"4"}
     ],
     "links":[
-	{"uid":"1", "linksToUid":"2"},
-	{"uid":"1", "linksToUid":"3"},
-	{"uid":"2", "linksToUid":"4"},
-	{"uid":"3", "linksToUid":"4"}
+	{"uid":"1", "linksTo":"2"},
+	{"uid":"1", "linksTo":"3"},
+	{"uid":"2", "linksTo":"4"},
+	{"uid":"3", "linksTo":"4"}
     ],
     "positions":[
 	{"uid":"1", "x":"200", "y":"200"},

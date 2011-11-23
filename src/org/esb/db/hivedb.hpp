@@ -25,6 +25,7 @@ class User;
 class UserGroup;
 class Request;
 class Partition;
+class Graph;
 class FilterFilterParameterRelation {
 public:
     class Row {
@@ -2405,6 +2406,50 @@ public:
     std::auto_ptr<Partition> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, Partition o);
+class Graph : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType Uuid;
+    litesql::Field<std::string> uuid;
+    static const litesql::FieldType Name;
+    litesql::Field<std::string> name;
+    static const litesql::FieldType Data;
+    litesql::Field<std::string> data;
+protected:
+    void defaults();
+public:
+    Graph(const litesql::Database& db);
+    Graph(const litesql::Database& db, const litesql::Record& rec);
+    Graph(const Graph& obj);
+    const Graph& operator=(const Graph& obj);
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<Graph> upcast();
+    std::auto_ptr<Graph> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, Graph o);
 class HiveDb : public litesql::Database {
 public:
     HiveDb(std::string backendType, std::string connInfo);

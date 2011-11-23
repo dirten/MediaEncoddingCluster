@@ -28,6 +28,7 @@ TOOLBAR_TOP_MARGIN=0.0;
 
 @import "Controller/ModuleController.j"
 @import "Controller/TestWindowController.j"
+@import "Controller/NodeEditorController.j"
 @import <TNKit/TNToolbar.j>
 @import <LPKit/LPCrashReporter.j>
 
@@ -63,6 +64,10 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
         
         var nodeEditor=[[NodeEditorView alloc] initWithFrame:bounds];
         [contentView addSubview:nodeEditor];
+
+        var nodeEditorController=[[NodeEditorController alloc] initWithView:nodeEditor];
+
+
         [theWindow orderFront:self];
         [[[NodeElementPanel alloc] init] orderFront:nil];
         return;

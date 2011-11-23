@@ -25,12 +25,25 @@ NodeElementDragType = "NodeElementDragType";
         [self setTitle:"Elements"];
         [self setFloatingPanel:YES];
 
-
-
         var contentView = [self contentView],
             bounds = [contentView bounds];
+
+        var okButton=[[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([contentView bounds])-90,CGRectGetHeight([contentView bounds])-40,80.0,24.0)];
+        [okButton setTitle:@"Save"];
+        [okButton setAutoresizingMask:CPViewMinXMargin|CPViewMinYMargin];
+        [okButton setTarget:self];
+        [okButton setAction:@selector(save:)];
+        [contentView addSubview:okButton];
+
+        var loadButton=[[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([contentView bounds])-190,CGRectGetHeight([contentView bounds])-40,80.0,24.0)];
+        [loadButton setTitle:@"Load"];
+        [loadButton setAutoresizingMask:CPViewMinXMargin|CPViewMinYMargin];
+        [loadButton setTarget:self];
+        [loadButton setAction:@selector(load:)];
+        [contentView addSubview:loadButton];
+
         
-        bounds.size.height -= 20.0;
+        bounds.size.height -= 50.0;
         
         var photosView = [[CPCollectionView alloc] initWithFrame:bounds];
         
@@ -84,6 +97,24 @@ NodeElementDragType = "NodeElementDragType";
     var firstIndex = [indices firstIndex];
     
     return [CPKeyedArchiver archivedDataWithRootObject:images[firstIndex]];
+}
+- (void)save:(id)sender{
+  CPLog.debug("SAVING Encoding Graph:");
+  [[CPNotificationCenter defaultCenter]
+    postNotificationName:SaveNodeEditorView
+    object:self
+    userInfo:nil];
+  }
+  //CPLog.debug("Data:"+JSON.stringify([pdata toJSON]));
+}
+- (void)load:(id)sender{
+  CPLog.debug("LOADING Encoding Graph:");
+  [[CPNotificationCenter defaultCenter]
+    postNotificationName:LoadNodeEditorView
+    object:self
+    userInfo:nil];
+  }
+  //CPLog.debug("Data:"+JSON.stringify([pdata toJSON]));
 }
 @end
 

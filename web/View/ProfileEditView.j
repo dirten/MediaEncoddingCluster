@@ -152,7 +152,7 @@ ProfileChanged=@"ProfileChanged";
   return self;
 }
 - (void)save:(id)sender{
-  CPLog.debug("SAVING PROFILE");
+  CPLog.debug("SAVING PROFILE:"+pdata);
 
   CPLog.debug("Data:"+JSON.stringify([pdata toJSON]));
   return;

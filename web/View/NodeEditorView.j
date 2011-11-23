@@ -3,7 +3,7 @@
 
 @implementation NodeEditorView: CPView
 {
-  CPArray elements;
+  CPArray elements @accessors(property=elements);
   id currentSelectedElement;
   id targetDropElement;
   id select;
@@ -24,10 +24,23 @@
     elements=[CPArray array];
     lastNode=nil;
     uidCounter=0;
+    /*
+    var okButton=[[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([self bounds])-90,CGRectGetHeight([self bounds])-40,80.0,24.0)];
+    [okButton setTitle:@"Save"];
+    [okButton setAutoresizingMask:CPViewMinXMargin|CPViewMinYMargin];
+    [okButton setTarget:self];
+    [okButton setAction:@selector(save:)];
+    [self addSubview:okButton];
+    */
+    dragLocation=CPPointMake(0,0);
   }
   return self;
 }
-
+-(void)clearElements
+{
+  elements=[CPArray array];
+  [self setNeedsDisplay:YES];
+}
 - (void)performDragOperation:(CPDraggingInfo)aSender
 {
   var data = [[aSender draggingPasteboard] dataForType:NodeElementDragType];

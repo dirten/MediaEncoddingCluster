@@ -2563,6 +2563,7 @@ static void handle_file_request(struct mg_connection *conn, const char *path,
       "Date: %s\r\n"
       "Last-Modified: %s\r\n"
       "Etag: \"%s\"\r\n"
+      "Cache-Control: no-cache\r\n"
       "Content-Type: %.*s\r\n"
       "Content-Length: %" INT64_FMT "\r\n"
       "Connection: %s\r\n"
