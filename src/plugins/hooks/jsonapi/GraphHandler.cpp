@@ -125,6 +125,7 @@ namespace graphhandler {
             save(inode, uuid);
           }
           JSONNode file_node(JSON_NODE);
+          file_node.set_name("graph");
           file_node.push_back(JSONNode("uuid",uuid));
           data.push_back(file_node);
         }

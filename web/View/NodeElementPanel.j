@@ -6,6 +6,7 @@
 @import "NodeEncoding.j"
 @import "NodeConnectorView.j"
 @import "NodeEditorView.j"
+@import "GraphListView.j"
 
 NodeElementDragType = "NodeElementDragType";
 
@@ -16,7 +17,7 @@ NodeElementDragType = "NodeElementDragType";
 
 - (id)init
 {
-    self = [self initWithContentRect:CGRectMake(20.0, 30.0, 300.0, 400.0)
+    self = [self initWithContentRect:CGRectMake(20.0, 30.0, 300.0, 600.0)
                            styleMask:CPHUDBackgroundWindowMask |
                                      CPResizableWindowMask];
 
@@ -43,7 +44,7 @@ NodeElementDragType = "NodeElementDragType";
         [contentView addSubview:loadButton];
 
         
-        bounds.size.height -= 50.0;
+        bounds.size.height -= 350.0;
         
         var photosView = [[CPCollectionView alloc] initWithFrame:bounds];
         
@@ -67,6 +68,11 @@ NodeElementDragType = "NodeElementDragType";
         [[scrollView contentView] setBackgroundColor:[CPColor whiteColor]];
 
         [contentView addSubview:scrollView];
+
+        //bounds.origin.y += 260.0;
+        var graphListView=[[GraphListView alloc] initWithFrame:CPRectMake(0,260,300,270)];
+        //var graphListView=[[GraphListView alloc] initWithFrame:bounds];
+        [contentView addSubview:graphListView];
         
         images = [  
           
