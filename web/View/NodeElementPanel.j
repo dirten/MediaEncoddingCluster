@@ -13,6 +13,7 @@ NodeElementDragType = "NodeElementDragType";
 @implementation NodeElementPanel : CPPanel
 {
   CPArray images;
+  GraphListView graphListView;
 }
 
 - (id)init
@@ -70,7 +71,7 @@ NodeElementDragType = "NodeElementDragType";
         [contentView addSubview:scrollView];
 
         //bounds.origin.y += 260.0;
-        var graphListView=[[GraphListView alloc] initWithFrame:CPRectMake(0,260,300,270)];
+        graphListView=[[GraphListView alloc] initWithFrame:CPRectMake(0,260,300,270)];
         //var graphListView=[[GraphListView alloc] initWithFrame:bounds];
         [contentView addSubview:graphListView];
         
@@ -104,24 +105,31 @@ NodeElementDragType = "NodeElementDragType";
     
     return [CPKeyedArchiver archivedDataWithRootObject:images[firstIndex]];
 }
-- (void)save:(id)sender{
+
+- (void)save:(id)sender
+{
   CPLog.debug("SAVING Encoding Graph:");
   [[CPNotificationCenter defaultCenter]
     postNotificationName:SaveNodeEditorView
     object:self
     userInfo:nil];
-  }
-  //CPLog.debug("Data:"+JSON.stringify([pdata toJSON]));
 }
-- (void)load:(id)sender{
-  CPLog.debug("LOADING Encoding Graph:");
-  [[CPNotificationCenter defaultCenter]
-    postNotificationName:LoadNodeEditorView
-    object:self
-    userInfo:nil];
+  
+- (void)load:(id)sender
+{
+  CPLog.debug("LOADING Encoding Graph:"+[graphListView selectedId]);
+  if([graphListView selectedId]){
+    [[CPNotificationCenter defaultCenter]
+      postNotificationName:LoadNodeEditorView
+      object:self
+      userInfo:[graphListView selectedId]];
+  }else{
+    var alert=[CPAlert alertWithError:@"please select a graph from the list"];
+    [alert runModal];
   }
-  //CPLog.debug("Data:"+JSON.stringify([pdata toJSON]));
 }
+
+
 @end
 
 @implementation NodeItemView : CPBox

@@ -17,6 +17,7 @@ OutputHandle = 2;
   BOOL        _drawOutputHandle;
   CPMenu      menu;
   int         uid       @accessors(property=uid);
+  CPDictionary          data @accessors(property=data);
 }
 
 -(id)initWithName:(CPString)aName withInputHandle:(BOOL)drawInputHandle andOutputHandle:(BOOL)drawOutputHandle
@@ -43,6 +44,10 @@ OutputHandle = 2;
     outputElements=[CPArray array];
     inHandlePoint=CPPointMake(bounds.origin.x-GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
     outHandlePoint=CPPointMake(bounds.origin.x+bounds.size.width+GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
+    json={
+      "data":{}
+    };
+  data=[CPDictionary dictionaryWithJSObject:json recursively:YES];    
   }
   return self;
 }
@@ -310,6 +315,7 @@ OutputHandle = 2;
 }
 */
 @end
+/*
 function CGBitmapGraphicsContextCreate() 
 { 
      var DOMElement = document.createElement("canvas"), 
@@ -317,3 +323,4 @@ function CGBitmapGraphicsContextCreate()
      context.DOMElement = DOMElement; 
      return context; 
 } 
+*/

@@ -62,6 +62,11 @@ var CKJSONKeyedArchiverClassKey = @"$$CLASS$$";
 {
     var encodedJSON = {};
     
+    
+
+    //return encodedJSON;
+
+
     if ([self _isObjectAPrimitive:objectToEncode])  // Primitives
     {
         encodedJSON = objectToEncode;
@@ -77,10 +82,15 @@ var CKJSONKeyedArchiverClassKey = @"$$CLASS$$";
     }
     else // Capp. objects
     {
-        var archiver = [[[self class] alloc] initForWritingWithMutableData:encodedJSON];
+        //var archiver = [[[self class] alloc] initForWritingWithMutableData:encodedJSON];
         
-        encodedJSON[CKJSONKeyedArchiverClassKey] = CPStringFromClass([objectToEncode class]);
-        [objectToEncode encodeWithCoder:archiver];
+        //encodedJSON[CKJSONKeyedArchiverClassKey] = CPStringFromClass([objectToEncode class]);
+        //[objectToEncode encodeWithCoder:archiver];
+        var keys = [objectToEncode allKeys];
+        for (var i = 0; i < [keys count]; i++)
+        {
+            encodedJSON[keys[i]] = [self _encodeObject:[objectToEncode objectForKey:keys[i]]];
+        }
     }
 
     return encodedJSON;

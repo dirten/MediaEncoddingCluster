@@ -14,7 +14,7 @@
   -(void)setData:(id)data
   {
     _json=data;
-    [self loadCodecUI:data.id];
+    [self loadCodecUI:[data valueForKey:@"id"]/*data.id*/];
     [_form setData:data];
   }
   -(id)init

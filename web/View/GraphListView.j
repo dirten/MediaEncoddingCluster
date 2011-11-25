@@ -73,4 +73,13 @@
   var connection = [CPURLConnection connectionWithRequest:request delegate:self];
 }
 
+-(CPString)selectedId
+{
+  if([tableView selectedRow]!=-1){
+    return jsonData.data[[tableView selectedRow]].uuid;
+  }else{
+    return nil;
+  }
+}
+
 @end

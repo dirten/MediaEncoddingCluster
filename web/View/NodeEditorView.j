@@ -1,7 +1,7 @@
 
 @import "NodePropertyWindow.j"
 
-@implementation NodeEditorView: CPView
+@implementation NodeEditorView: CPScrollView
 {
   CPArray elements @accessors(property=elements);
   id currentSelectedElement;
@@ -12,7 +12,7 @@
   CGPoint     dragLocation;
   id lastNode;
   BOOL isDrawingLink;
-  int   uidCounter;
+  //int   uidCounter;
  
 }
 
@@ -49,9 +49,9 @@
   var bounds = [element bounds];
 
   [element setBounds:CGRectMake(frameOrigin.x-(bounds.size.width/2),frameOrigin.y-(bounds.size.height/2),bounds.size.width,bounds.size.height)];
-  [element setUid:++uidCounter];
+  [element setUid:[elements count]+1];
   [elements addObject:element];
-  CPLog.debug("UidCounter:"+[element uid]);
+  //CPLog.debug("UidCounter:"+[element uid]);
   /*
   if(lastNode){
     [lastNode addTarget:element];
@@ -101,6 +101,8 @@
     var propertyWindow=[[NodePropertyWindow alloc] initWithFrame:[view bounds]] ;
     [[propertyWindow contentView] addSubview:view];
     CPLog.debug("open property window");
+    currentSelectedElement=[CPNull null];
+    return;
   }
   currentSelectedHandle=[self handleUnderPoint:[anEvent locationInWindow]];
   if([select class]!=CPNull){
@@ -231,7 +233,8 @@
 
   var p1=CPMakePoint(startPoint.x+treshold((endPoint.x-startPoint.x)/2,50),startPoint.y);
   var p2=CPMakePoint(endPoint.x-treshold((endPoint.x-startPoint.x)/2,50),endPoint.y);
-  
+  //CPLog.debug("Handle Start:"+CPStringFromPoint(p0));
+  //CPLog.debug("Handle End:"+CPStringFromPoint(p3));
   
   var outlineColor=[CPColor blackColor];
 
@@ -341,21 +344,29 @@
 
 - (void)drawRect:(CPRect)rect 
 {
+  [super drawRect:rect];
+  //CPLog.debug("drawRect");
+  var graphicCount = [elements count];
+  if(graphicCount == 0)return;
+  
  [[self subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
   var context = [[CPGraphicsContext currentContext] graphicsPort];  
-  var graphicCount = [elements count];
+  
   for (var index = graphicCount - 1; index>=0; index--) 
 	{
     var element = [elements objectAtIndex:index];
-    CGContextSaveGState(context);
+    //CGContextSaveGState(context);
 		[element drawContentsInView:self inRect:rect];
 
-    {/*this scope is for handle drawing*/
+    if(NO){/*this scope is for handle drawing*/
       var targets=[element outputElements];
       var targetCount = [targets count];
+      
       for (var index2 = targetCount - 1; index2>=0; index2--) 
       {
         var target = [targets objectAtIndex:index2];
+        CPLog.debug("Source UID:"+[element uid]);
+        CPLog.debug("Target UID:"+[target uid]);
         var startPoint=[element outHandlePoint];  
         var endPoint=[target inHandlePoint];
         var color=[CPColor grayColor];
@@ -365,8 +376,35 @@
         [self drawLinkFrom:startPoint to:endPoint withColor:color];
       }
     }
-		CGContextRestoreGState(context);
+		//CGContextRestoreGState(context);
   }
+  for (var index = graphicCount - 1; index>=0; index--) 
+	{
+    var element = [elements objectAtIndex:index];
+    //CGContextSaveGState(context);
+		//[element drawContentsInView:self inRect:rect];
+
+    {/*this scope is for handle drawing*/
+      var targets=[element outputElements];
+      var targetCount = [targets count];
+      
+      for (var index2 = targetCount - 1; index2>=0; index2--) 
+      {
+        var target = [targets objectAtIndex:index2];
+        //CPLog.debug("Source UID:"+[element uid]);
+        //CPLog.debug("Target UID:"+[target uid]);
+        var startPoint=[element outHandlePoint];  
+        var endPoint=[target inHandlePoint];
+        var color=[CPColor grayColor];
+        if([self checkPathAtPoint:dragLocation from:startPoint to:endPoint]){
+          var color=[CPColor greenColor];
+        }
+        [self drawLinkFrom:startPoint to:endPoint withColor:color];
+      }
+    }
+		//CGContextRestoreGState(context);
+  }
+
   if(isDrawingLink){
     var startPoint=[currentSelectedElement outHandlePoint];
     [self drawLinkFrom:startPoint to:dragLocation withColor:[CPColor greenColor]];

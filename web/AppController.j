@@ -53,16 +53,18 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
 
     - (void)applicationDidFinishLaunching:(CPNotification)aNotification
     {
+      /*
       if (typeof(LPCrashReporter) != "undefined")
           [LPCrashReporter sharedErrorLogger];
-
+          */
         var theWindow = [[CPWindow alloc] initWithContentRect:CGRectMakeZero() styleMask:CPBorderlessBridgeWindowMask],
         contentView = [theWindow contentView],
         toolBar = [[CPToolbar alloc] initWithIdentifier:"Toolbar"],
         bounds = [contentView bounds];
 
         
-        var nodeEditor=[[NodeEditorView alloc] initWithFrame:bounds];
+        nodeEditor=[[NodeEditorView alloc] initWithFrame:bounds];
+//debugger;
         [contentView addSubview:nodeEditor];
 
         var nodeEditorController=[[NodeEditorController alloc] initWithView:nodeEditor];

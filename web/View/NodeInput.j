@@ -3,7 +3,7 @@
 
 @implementation NodeInput: NodeView
 {
-
+ CPDictionary    data @accessors(property=data);
 }
 -(id)init
 {

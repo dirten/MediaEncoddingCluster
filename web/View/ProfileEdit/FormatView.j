@@ -13,7 +13,7 @@
   -(void)setData:(id)data
   {
     _json=data;
-    [self loadFormatUI:data.id];
+    [self loadFormatUI:[data valueForKey:@"id"]/*data.id*/];
     [_form setData:data];
     [self setBounds:[_form bounds]];
   }
