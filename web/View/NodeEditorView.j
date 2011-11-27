@@ -7,6 +7,8 @@
   id currentSelectedElement;
   id targetDropElement;
   id select;
+  id selectedPathSource;
+  id selectedPathTarget;
   CPPoint currentSelectedHandle;
 
   CGPoint     dragLocation;
@@ -23,6 +25,8 @@
     [self registerForDraggedTypes:[NodeElementDragType]];
     elements=[CPArray array];
     lastNode=nil;
+    selectedPathSource=nil;
+    selectedPathTarget=nil;
     uidCounter=0;
     /*
     var okButton=[[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([self bounds])-90,CGRectGetHeight([self bounds])-40,80.0,24.0)];
@@ -107,6 +111,7 @@
   currentSelectedHandle=[self handleUnderPoint:[anEvent locationInWindow]];
   if([select class]!=CPNull){
       [select setBorderWidth:1.0];
+      [select setBorderColor:[CPColor blackColor]];
       select=[CPNull null];
   }
 
@@ -116,6 +121,7 @@
 
     select=currentSelectedElement;
     [select setBorderWidth:3.0];
+    [select setBorderColor:[CPColor greenColor]];
    }
 
   if(currentSelectedHandle!=nil){
@@ -283,9 +289,11 @@
 -(BOOL)checkPathAtPoint:(CPPoint)point from:(CPPoint)from to:(CPPoint)to
 {
     var isContentsUnderPoint = NO;
-
-  var bounds=CPMakeRect(from.x,from.y,Math.abs(to.x-from.x),  Math.abs(to.y-from.y));
-  //CPLog.debug("Rect Link : "+CPStringFromRect(bounds));
+  var startPoint=CPPointMake(from.x, from.y>to.y?to.y:from.y);
+  var bounds=CPMakeRect(startPoint.x,startPoint.y,Math.abs(to.x-from.x),  Math.abs(to.y-from.y)+10);
+  CPLog.debug("Click  Point : "+CPStringFromPoint(point));
+  CPLog.debug("Rect Link : "+CPStringFromRect(bounds));
+  
   var acceptableDistance = 20.0;
  if (CGRectContainsPoint(bounds, point)) 
 	{
@@ -306,6 +314,8 @@
 
     //return YES;
   }
+  CPLog.debug("Selected Link : "+isContentsUnderPoint);
+
   return isContentsUnderPoint;
 }
 - (BOOL)becomeFirstResponder
@@ -320,7 +330,8 @@
 
 - (void)keyDown:(CPEvent)anEvent 
 { 
-  if([anEvent keyCode]==46&&[select class]!=CPNull){
+  if([anEvent keyCode]==46){
+    CPLog.debug("delete key pressed");
     var graphicCount = [elements count];
     for (var index = graphicCount - 1; index>=0; index--) 
     {
@@ -333,6 +344,22 @@
         {
           var source = [sources objectAtIndex:index2];
           [[source outputElements] removeObject:element];
+        }
+        //alert("remove");
+        [self setNeedsDisplay:YES];
+      }
+      if(element==selectedPathSource){
+        CPLog.debug("selected Path found");
+        //[elements removeObject:element];
+        var targets=[element outputElements];
+        var targetsCount = [targets count];
+        for (var index2 = targetsCount - 1; index2>=0; index2--) 
+        {
+          var target = [targets objectAtIndex:index2];
+          if(target==selectedPathTarget){
+            [[element outputElements] removeObject:target];            
+            [[target inputElements] removeObject:element];            
+          }
         }
         //alert("remove");
         [self setNeedsDisplay:YES];
@@ -398,6 +425,10 @@
         var color=[CPColor grayColor];
         if([self checkPathAtPoint:dragLocation from:startPoint to:endPoint]){
           var color=[CPColor greenColor];
+          selectedPathSource=element;
+          selectedPathTarget=target;
+          
+          //CPLog.debug("selectedPath:"+selectedPath);
         }
         [self drawLinkFrom:startPoint to:endPoint withColor:color];
       }

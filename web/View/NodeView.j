@@ -31,7 +31,8 @@ OutputHandle = 2;
     [self setCornerRadius:5.0];
     //[self setBorderWidth:3.0];
     [self setBorderType:CPGrooveBorder];
-    [self setBackgroundColor:[CPColor whiteColor]];
+    [[self contentView] setBackgroundColor:[CPColor whiteColor]];
+    //[self setBorderColor:[CPColor whiteColor]];
     [self setPostsFrameChangedNotifications:YES];
     
     label=[CPTextField labelWithTitle:aName];
@@ -157,6 +158,10 @@ OutputHandle = 2;
   //[label drawRect:aRect];
   var context = [[CPGraphicsContext currentContext] graphicsPort];
   var bounds=[self bounds];
+  
+  //[self setBackgroundColor:[CPColor whiteColor]];
+  //[[self contentView] setBackgroundColor:[CPColor whiteColor]];
+
   //CPLog.debug("ContentRect:"+CPStringFromRect(bounds));
   inHandlePoint=CPPointMake(bounds.origin.x-GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
   outHandlePoint=CPPointMake(bounds.origin.x+bounds.size.width+GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
@@ -164,7 +169,7 @@ OutputHandle = 2;
 	var path = CGPathCreateMutable();
 	
 	CGPathMoveToPoint(path, nil, inHandlePoint.x+5, inHandlePoint.y-20);
-  //[path setLineWidth:0];
+  //[path setLineWidth:1];
 	CGPathAddLineToPoint(path, nil, outHandlePoint.x-5, outHandlePoint.y-20);
 	CGPathCloseSubpath(path);
   CGContextBeginPath(context);
@@ -177,6 +182,7 @@ OutputHandle = 2;
   var label_origin=CPPointMake(inHandlePoint.x+15,inHandlePoint.y-40);
   [label setFrameOrigin:label_origin];
   [label setTextColor:[CPColor blackColor]];
+  //[label setEditable:YES];
   [view addSubview:label];
   //[label drawRect:aRect];
   [label setNeedsDisplay:YES];
