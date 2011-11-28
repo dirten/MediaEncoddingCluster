@@ -1,7 +1,7 @@
 
 @import "NodePropertyWindow.j"
 
-@implementation NodeEditorView: CPScrollView
+@implementation NodeEditorView: CPView
 {
   CPArray elements @accessors(property=elements);
   id currentSelectedElement;
@@ -30,6 +30,7 @@
     selectedPathTarget=nil;
     uidCounter=0;
     movingView=NO;
+    [self setBackgroundColor:[CPColor whiteColor]];
     /*
     var okButton=[[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([self bounds])-90,CGRectGetHeight([self bounds])-40,80.0,24.0)];
     [okButton setTitle:@"Save"];
@@ -51,7 +52,8 @@
 {
   var data = [[aSender draggingPasteboard] dataForType:NodeElementDragType];
   var element=[CPKeyedUnarchiver unarchiveObjectWithData:data];
-  var frameOrigin=[aSender draggingLocation];  
+  var frameOrigin=[self convertPoint:[aSender draggingLocation] toView:self];  
+  
   var bounds = [element bounds];
 
   [element setBounds:CGRectMake(frameOrigin.x-(bounds.size.width/2),frameOrigin.y-(bounds.size.height/2),bounds.size.width,bounds.size.height)];

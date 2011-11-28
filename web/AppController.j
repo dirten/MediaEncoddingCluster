@@ -72,7 +72,7 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
 
         [theWindow orderFront:self];
         [[[NodeElementPanel alloc] init] orderFront:nil];
-        //return;
+        return;
         
         //[toolBar setDelegate:self];
         //[toolBar setVisible:true];
