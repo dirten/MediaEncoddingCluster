@@ -9,7 +9,7 @@
 }
 -(id)init
 {
-  self=[super initWithName:@"Encoding" withInputHandle:YES andOutputHandle:YES];
+  self=[super initWithName:@"Encoding" withInputHandle:YES andOutputHandle:YES taskName:@"EncodingTask"];
   json={
     "data":{
       "format":{},

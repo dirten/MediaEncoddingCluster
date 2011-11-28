@@ -14,6 +14,7 @@
   CGPoint     dragLocation;
   id lastNode;
   BOOL isDrawingLink;
+  BOOL movingView;
   //int   uidCounter;
  
 }
@@ -28,6 +29,7 @@
     selectedPathSource=nil;
     selectedPathTarget=nil;
     uidCounter=0;
+    movingView=NO;
     /*
     var okButton=[[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([self bounds])-90,CGRectGetHeight([self bounds])-40,80.0,24.0)];
     [okButton setTitle:@"Save"];
@@ -76,6 +78,9 @@
     CPLog.debug("Menu:"+menu);
     select=currentSelectedElement;
     [select setBorderWidth:3.0];
+    [select setBorderColor:[CPColor greenColor]];
+    currentSelectedElement=[CPNull null];
+    movingView=NO;  
     return menu;
    }
 
@@ -129,6 +134,12 @@
     isDrawingLink=YES;
   }
   targetDropElement=[CPNull null];
+  if([currentSelectedElement class]==CPNull&&currentSelectedHandle==nil){
+    movingView=YES;
+    //[CPCursor dragCopyCursor];
+  }else{
+    movingView=NO;  
+  }
   [self setNeedsDisplay:YES];
  
   dragLocation = [anEvent locationInWindow];
@@ -161,6 +172,20 @@
   }else{
     //CPLog.debug("noop");
     targetDropElement=[CPNull null];
+  }
+  if(movingView){
+    var graphicCount = [elements count];
+    for (var index = graphicCount - 1; index>=0; index--) 
+    {
+      var element = [elements objectAtIndex:index];
+      var location = [anEvent locationInWindow],
+          originBounds = [element bounds];
+      var bounds=CGRectMake(location.x+(originBounds.origin.x-dragLocation.x),location.y+(originBounds.origin.y-dragLocation.y),originBounds.size.width,originBounds.size.height);
+      //CPLog.debug("NewBounds:"+CPStringFromRect([element bounds]));
+      [element setBounds:bounds];
+    }
+
+    CPLog.debug("moving all");
   }
   dragLocation = [anEvent locationInWindow];
   [self setNeedsDisplay:YES];
@@ -289,10 +314,10 @@
 -(BOOL)checkPathAtPoint:(CPPoint)point from:(CPPoint)from to:(CPPoint)to
 {
     var isContentsUnderPoint = NO;
-  var startPoint=CPPointMake(from.x, from.y>to.y?to.y:from.y);
+  var startPoint=CPPointMake(from.x>to.x?to.x:from.x, from.y>to.y?to.y:from.y);
   var bounds=CPMakeRect(startPoint.x,startPoint.y,Math.abs(to.x-from.x),  Math.abs(to.y-from.y)+10);
-  CPLog.debug("Click  Point : "+CPStringFromPoint(point));
-  CPLog.debug("Rect Link : "+CPStringFromRect(bounds));
+  //CPLog.debug("Click  Point : "+CPStringFromPoint(point));
+  //CPLog.debug("Rect Link : "+CPStringFromRect(bounds));
   
   var acceptableDistance = 20.0;
  if (CGRectContainsPoint(bounds, point)) 
@@ -314,7 +339,7 @@
 
     //return YES;
   }
-  CPLog.debug("Selected Link : "+isContentsUnderPoint);
+  //CPLog.debug("Selected Link : "+isContentsUnderPoint);
 
   return isContentsUnderPoint;
 }
@@ -349,7 +374,7 @@
         [self setNeedsDisplay:YES];
       }
       if(element==selectedPathSource){
-        CPLog.debug("selected Path found");
+        //CPLog.debug("selected Path found");
         //[elements removeObject:element];
         var targets=[element outputElements];
         var targetsCount = [targets count];
@@ -382,7 +407,7 @@
   for (var index = graphicCount - 1; index>=0; index--) 
 	{
     var element = [elements objectAtIndex:index];
-    //CGContextSaveGState(context);
+    CGContextSaveGState(context);
 		[element drawContentsInView:self inRect:rect];
 
     if(NO){/*this scope is for handle drawing*/
@@ -403,7 +428,7 @@
         [self drawLinkFrom:startPoint to:endPoint withColor:color];
       }
     }
-		//CGContextRestoreGState(context);
+		CGContextRestoreGState(context);
   }
   for (var index = graphicCount - 1; index>=0; index--) 
 	{

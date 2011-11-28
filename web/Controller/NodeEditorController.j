@@ -14,10 +14,10 @@ LoadNodeEditorView = @"LoadNodeEditorView";
 -(void)initWithView:(id)theView{
   view=theView;
   elementClass=[CPDictionary dictionary];
-  [elementClass setObject:[NodeInput class] forKey:@"Input"];
-  [elementClass setObject:[NodeEncoding class] forKey:@"Encoding"];
-  [elementClass setObject:[NodeOutput class] forKey:@"Output"];
-  [elementClass setObject:[NodeExecutable class] forKey:@"Executable"];
+  [elementClass setObject:[NodeInput class] forKey:@"InputTask"];
+  [elementClass setObject:[NodeEncoding class] forKey:@"EncodingTask"];
+  [elementClass setObject:[NodeOutput class] forKey:@"OutputTask"];
+  [elementClass setObject:[NodeExecutable class] forKey:@"ExecutableTask"];
   loadedUUID="";
   [[CPNotificationCenter defaultCenter]
     addObserver:self
@@ -46,7 +46,7 @@ LoadNodeEditorView = @"LoadNodeEditorView";
     var element = [elements objectAtIndex:index];
     CPLog.debug("ElementsData:"+JSON.stringify([[element data] toJSON]));
     var task={
-      name:[element name],
+      name:[element taskName],
       uid:[element uid],
       data:[[element data] toJSON].data
     };
@@ -87,16 +87,16 @@ LoadNodeEditorView = @"LoadNodeEditorView";
 }
 
 -(void)loadNodeEditorView:(CPNotification)notification{
-  CPLog.debug("loadNodeEditorView:"+[notification userInfo]);
+  //CPLog.debug("loadNodeEditorView:"+[notification userInfo]);
   //var data={"tasks":[{"name":"Input","uid":1},{"name":"Encoding","uid":2},{"name":"Encoding","uid":3},{"name":"Output","uid":4}],"links":[{"uid":1,"linksTo":2},{"uid":1,"linksTo":3},{"uid":2,"linksTo":4},{"uid":3,"linksTo":4}],"positions":[{"uid":1,"x":581,"y":47},{"uid":2,"x":858,"y":42},{"uid":3,"x":1070,"y":361},{"uid":4,"x":1130,"y":90}]};
   var path="/api/v1/graph?uuid="+[notification userInfo];
   var response=[CPHTTPURLResponse alloc];
   var error;
   var raw_data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:response];
-  CPLog.debug("error:"+[raw_data rawString]);
+  //CPLog.debug("raw_data:"+[raw_data rawString]);
   var data=[raw_data JSONObject].data;
   loadedUUID=data.uuid;
-  CPLog.debug("Obj:"+data.tasks.length);
+  //CPLog.debug("Obj:"+data.tasks.length);
   var elements=[CPDictionary dictionary];
   [view clearElements];
   for(a=0;a<data.tasks.length;a++){
@@ -105,23 +105,25 @@ LoadNodeEditorView = @"LoadNodeEditorView";
     if(data.tasks[a].data)
       taskdata={data:data.tasks[a].data};
     
-    CPLog.debug("TaskData:"+JSON.stringify(taskdata));
+    //CPLog.debug("TaskData:"+JSON.stringify(taskdata));
     var obj=[[[elementClass objectForKey:task.name] alloc] init];
     [obj setUid:task.uid];
     [obj setBoundsOrigin:CPPointMake(data.positions[a].x,data.positions[a].y)];
+    [obj setProgress:@" "];
     if(taskdata!=undefined)
       [obj setData:[CPDictionary dictionaryWithJSObject:taskdata recursively:YES]];
     [[view elements] addObject:obj];
     [elements setObject:obj forKey:task.uid];
+    
     //[view setNeedsDisplay:YES];
-    CPLog.debug("Data:"+obj);
+    //CPLog.debug("Data:"+obj);
   }
   for(a=0;a<data.links.length;a++){
     var link=data.links[a];
     var src=[elements objectForKey:link.uid];
     var trg=[elements objectForKey:link.linksTo];
-    CPLog.debug("SourceHandle:"+CPStringFromPoint([src outHandlePoint]));
-    CPLog.debug("SourceHandle:"+CPStringFromPoint([trg inHandlePoint]));
+    //CPLog.debug("SourceHandle:"+CPStringFromPoint([src outHandlePoint]));
+    //CPLog.debug("SourceHandle:"+CPStringFromPoint([trg inHandlePoint]));
     [src addTarget:trg];
     [trg addSource:src];
   }

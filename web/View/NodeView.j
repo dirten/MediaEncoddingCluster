@@ -7,7 +7,11 @@ OutputHandle = 2;
 @implementation NodeView: CPBox
 {
   CPString name;
+  CPString    taskName            @accessors(property=taskName);
+  CPString    labelText           @accessors(property=labelText);
   CPTextField label
+  CPTextField fieldDescription    @accessors(property=fieldDescription);
+
   CPPoint     inHandlePoint;
   CPPoint     outHandlePoint;
   CGPoint     dragLocation;
@@ -16,11 +20,12 @@ OutputHandle = 2;
   BOOL        _drawInputHandle;
   BOOL        _drawOutputHandle;
   CPMenu      menu;
-  int         uid       @accessors(property=uid);
-  CPDictionary          data @accessors(property=data);
+  int         uid                 @accessors(property=uid);
+  float         progress            @accessors(property=progress);
+  CPDictionary          data      @accessors(property=data);
 }
 
--(id)initWithName:(CPString)aName withInputHandle:(BOOL)drawInputHandle andOutputHandle:(BOOL)drawOutputHandle
+-(id)initWithName:(CPString)aName withInputHandle:(BOOL)drawInputHandle andOutputHandle:(BOOL)drawOutputHandle taskName:(CPString)aTaskName
 {
   _drawInputHandle=drawInputHandle;
   _drawOutputHandle=drawOutputHandle;
@@ -28,6 +33,9 @@ OutputHandle = 2;
   self=[super initWithFrame:CGRectMake(0.0,0.0,130.0,100.0)];
   if(self){
     name=aName;
+    taskName=aTaskName;
+    progress=40.0;
+    labelText="click to enter label";
     [self setCornerRadius:5.0];
     //[self setBorderWidth:3.0];
     [self setBorderType:CPGrooveBorder];
@@ -40,6 +48,10 @@ OutputHandle = 2;
     [label setTextColor:[CPColor darkGrayColor]];
     [self addSubview:label];
     var bounds=[self bounds];
+    fieldDescription=[CPTextField labelWithTitle:@"test value"];
+    var label_origin=CPPointMake(bounds.origin.x+15,bounds.origin.y-40);
+    [fieldDescription setFrameOrigin:label_origin];
+    //[fieldDescription setStringValue:@"test value"];
     //CPLog.debug("ContentRect:"+CPStringFromRect(bounds));
     inputElements=[CPArray array];
     outputElements=[CPArray array];
@@ -84,10 +96,10 @@ OutputHandle = 2;
 -(id)menuForNodeItem
 {
     //return nil;
-    menu = [[CPMenu alloc] initWithTitle:"Encoding Menu"],
-    menuItems = ["Stop Encoding", "Delete Encoding"],
+    menu = [[CPMenu alloc] initWithTitle:"Null Menu"],
+    menuItems = ["No Context Menu for this Item"],
     //menuItems = [],
-    menuActions = [@selector(stop:), @selector(delete:)],
+    menuActions = [@selector(noop)],
     //menuActions = [],
     //isOpen = displayedIssuesKey === "openIssues",
     count = menuItems.length,
@@ -98,7 +110,7 @@ OutputHandle = 2;
     {
         var title = menuItems[i],
         newMenuItem = [[CPMenuItem alloc] initWithTitle:title action:menuActions[i] keyEquivalent:nil];
-
+        [newMenuItem setEnabled:NO];
         [newMenuItem setTarget:self];
 
         switch (title)
@@ -129,6 +141,8 @@ OutputHandle = 2;
         }
     return menu;
 }
+-(void)noop{}
+
 
 -(void)addSource:(id)source
 {
@@ -183,22 +197,44 @@ OutputHandle = 2;
   [label setFrameOrigin:label_origin];
   [label setTextColor:[CPColor blackColor]];
   //[label setEditable:YES];
+  //[[self contentView] addSubview:label];
   [view addSubview:label];
+  //[view addSubview:fieldDescription];
   //[label drawRect:aRect];
   [label setNeedsDisplay:YES];
-  var base_value=30.0;
-  var ind=[[CPProgressIndicator alloc] initWithFrame:CGRectMake(0,3.5, CGRectGetWidth([self bounds])-4,15)];    
-  var progress_origin=CPPointMake(inHandlePoint.x+7,inHandlePoint.y+30);
+  var base_value=progress;
+  if(parseInt(base_value)==base_value){
+    var ind=[[CPProgressIndicator alloc] initWithFrame:CGRectMake(0,3.5, CGRectGetWidth([self bounds])-4,15)];    
+    var progress_origin=CPPointMake(inHandlePoint.x+7,inHandlePoint.y+30);
     [view addSubview:ind];
     [ind startAnimation:nil];
     [ind setDoubleValue:base_value];
     [ind setFrameOrigin:progress_origin];
-
+  }
+  var l=parseInt(base_value)==base_value?base_value+"%":base_value;
+  var label=[CPTextField labelWithTitle:l];
+  var l_origin=CPPointMake(inHandlePoint.x+7,inHandlePoint.y+30);
+  [label setFrameOrigin:l_origin];
+  [label setTextColor:[CPColor darkGrayColor]];
+  [view addSubview:label];
+  
+  /*
+  fieldDescription=[CPTextField labelWithTitle:labelText];
+  var l_origin=CPPointMake(inHandlePoint.x+7,inHandlePoint.y-20);
+  var l_bounds=CPRectMake(inHandlePoint.x+7,inHandlePoint.y-20, 50,10);
+  [fieldDescription setBounds:l_bounds];
+  [fieldDescription setFrameOrigin:l_origin];
+  [fieldDescription setEditable:YES];
+  [fieldDescription setPlaceholderString:@"click to enter label"];
+  [fieldDescription setTextColor:[CPColor darkGrayColor]];
+  [view addSubview:fieldDescription];
+  */
   [self drawRect:aRect];
   if(_drawInputHandle)
     [self drawHandleInView:view atPoint:inHandlePoint];
   if(_drawOutputHandle)
     [self drawHandleInView:view atPoint:outHandlePoint];
+  //[self drawRect:aRect];
 }
 
 - (void)drawHandleInView:(CPView)view atPoint:(CPPoint)point 
@@ -283,9 +319,10 @@ OutputHandle = 2;
     name=[aCoder decodeObjectForKey:"name"];
     _drawInputHandle=[aCoder decodeObjectForKey:"drawInputHandle"];
     _drawOutputHandle=[aCoder decodeObjectForKey:"drawOutputHandle"];
+    taskName=[aCoder decodeObjectForKey:"taskName"];
     //inHandlePoint=[aCoder decodeObjectForKey:"inHandlePoint"];
     //outHandlePoint=[aCoder decodeObjectForKey:"outHandlePoint"];
-    [self initWithName:name withInputHandle:_drawInputHandle andOutputHandle:_drawOutputHandle];
+    [self initWithName:name withInputHandle:_drawInputHandle andOutputHandle:_drawOutputHandle taskName:taskName];
   }
   return self;
 }
@@ -296,6 +333,8 @@ OutputHandle = 2;
   [aCoder encodeObject:name forKey:@"name"];
   [aCoder encodeObject:_drawInputHandle forKey:@"drawInputHandle"];
   [aCoder encodeObject:_drawOutputHandle forKey:@"drawOutputHandle"];
+  [aCoder encodeObject:taskName forKey:@"taskName"];
+
   //[aCoder encodeObject:inHandlePoint forKey:@"inHandlePoint"];
   //[aCoder encodeObject:outHandlePoint forKey:@"outHandlePoint"];
 }

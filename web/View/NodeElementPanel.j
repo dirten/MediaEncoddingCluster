@@ -81,10 +81,10 @@ NodeElementDragType = "NodeElementDragType";
           [[NodeEncoding alloc] init],
           [[NodeOutput alloc] init],
           [[NodeExecutable alloc] init],
-          [[NodeView alloc] initWithName:@"test3" withInputHandle:YES andOutputHandle:YES],
-          [[NodeView alloc] initWithName:@"test4" withInputHandle:YES andOutputHandle:YES],
-          [[NodeView alloc] initWithName:@"test5" withInputHandle:YES andOutputHandle:YES],
-          [[NodeView alloc] initWithName:@"test6" withInputHandle:YES andOutputHandle:YES]
+          [[NodeView alloc] initWithName:@"test3" withInputHandle:YES andOutputHandle:YES taskName:@""],
+          [[NodeView alloc] initWithName:@"test4" withInputHandle:YES andOutputHandle:YES taskName:@""],
+          [[NodeView alloc] initWithName:@"test5" withInputHandle:YES andOutputHandle:YES taskName:@""],
+          [[NodeView alloc] initWithName:@"test6" withInputHandle:YES andOutputHandle:YES taskName:@""]
         ];
                     
         [photosView setContent:images];

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CPBundleIdentifier</key>
+	<string>org.mhive.floweditor</string>
+	<key>CPBundleLocale</key>
+	<string>en</string>
+	<key>CPBundleInfoDictionaryVersion</key>
+	<string>1.0</string>
+	<key>CPBundlePackageType</key>
+	<string>280N</string>
+	<key>CPBundleVersion</key>
+	<string>1.0</string>
+	<key>CPBundleName</key>
+	<string>EncodingFlowEditor</string>
+	<key>CPPrincipalClass</key>
+	<string>EncodingFlowEditorModuleController</string>
+	<key>PluginDisplayName</key>
+	<dict>
+		<key>en</key>
+		<string>Encoding Flow Editor</string>
+		<key>de</key>
+		<string>Test Modul</string>
+	</dict>
+	<key>ToolbarIndex</key>
+	<integer>6</integer>
+	<key>ToolTip</key>
+	<string>this is a tooltip</string>
+	<key>InsertionType</key>
+	<string>toolbar</string>
+	<key>SupportedEntityTypes</key>
+	<array>
+		<string>encoding</string>
+		<string>server</string>
+		<string>profile</string>
+		<string>worker</string>
+	</array>
+	<key>UseModuleMenu</key>
+	<integer>1</integer>
+	<key>ToolbarItemOnly</key>
+	<integer>0</integer>
+	<key>FullscreenModule</key>
+	<integer>1</integer>
+	<key>CibName</key>
+	<string>SampleTabModule</string>
+</dict>
+</plist>
