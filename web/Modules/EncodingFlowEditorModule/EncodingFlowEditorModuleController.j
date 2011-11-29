@@ -23,7 +23,9 @@
 
 @implementation EncodingFlowEditorModuleController : CPViewController
 {
-    @outlet NodeEditorView  editorView;
+  @outlet NodeEditorView  editorView;
+  @outlet CPView          elementView;
+  @outlet CPView          graphListView;
 }
 
 
