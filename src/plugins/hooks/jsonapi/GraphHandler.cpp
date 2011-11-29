@@ -38,7 +38,11 @@ namespace graphhandler {
     LOGDEBUG("Url=" << sreq->getRequestURI());
     if (sreq->getRequestURI().find(_base_uri + "/graph") == 0) {
       if (sreq->getMethod() == "GET") {
-        handleGET(req, res);
+        if(sreq->hasParameter("delete")){
+          handleDELETE(req, res);
+        }else{
+          handleGET(req, res);          
+        }
       } else if (sreq->getMethod() == "POST") {
         handlePOST(req, res);
       }
@@ -71,6 +75,20 @@ namespace graphhandler {
     return result;
   }
 
+  void GraphHandler::handleDELETE(org::esb::core::Request*req, org::esb::core::Response*res) {
+    org::esb::api::ServiceRequest*sreq = ((org::esb::api::ServiceRequest*) req);
+    org::esb::api::ServiceResponse*sres = ((org::esb::api::ServiceResponse*) res);
+    std::string user_path=org::esb::config::Config::get("hive.graph_path");
+    if(sreq->hasParameter("uuid")){
+       std::string uuid=sreq->getParameter("uuid");
+       org::esb::io::File f(user_path+"/"+uuid+".graph");
+        if(f.exists()){
+          f.deleteFile();
+        }
+      }
+     sres->setStatus(org::esb::api::ServiceResponse::OK);
+  }
+  
   void GraphHandler::handleGET(org::esb::core::Request*req, org::esb::core::Response*res) {
     org::esb::api::ServiceRequest*sreq = ((org::esb::api::ServiceRequest*) req);
     org::esb::api::ServiceResponse*sres = ((org::esb::api::ServiceResponse*) res);
@@ -117,6 +135,10 @@ namespace graphhandler {
         if (libjson::is_valid(ndata)) {
           LOGDEBUG("Data is valid");
           JSONNode inode = libjson::parse(ndata);
+          std::string name;
+          if(contains(inode,"name")){
+            name=inode["name"].as_string();
+          }
           if(contains(inode,"uuid")){
             uuid=inode["uuid"].as_string();
           }else{
@@ -127,6 +149,7 @@ namespace graphhandler {
           JSONNode file_node(JSON_NODE);
           file_node.set_name("graph");
           file_node.push_back(JSONNode("uuid",uuid));
+          file_node.push_back(JSONNode("name",name));
           data.push_back(file_node);
         }
       }
@@ -150,11 +173,14 @@ namespace graphhandler {
       std::string uuid=sreq->getUUID();
       if(contains(inode,"uuid")){
         uuid=inode["uuid"].as_string();
+      }else{
+        inode.push_back(JSONNode("uuid",uuid));
       }
       //std::string msg = checkGraph(inode);
         sres->setStatus(org::esb::api::ServiceResponse::OK);
         /*save method should here*/
         save(inode, uuid);
+        result=inode;
     } else {
       JSONNode error(JSON_NODE);
       error.set_name("error");

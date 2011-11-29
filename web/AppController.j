@@ -28,7 +28,7 @@ TOOLBAR_TOP_MARGIN=0.0;
 
 @import "Controller/ModuleController.j"
 @import "Controller/TestWindowController.j"
-@import "Controller/NodeEditorController.j"
+//@import "Controller/NodeEditorController.j"
 @import <TNKit/TNToolbar.j>
 @import <LPKit/LPCrashReporter.j>
 
@@ -71,7 +71,7 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
 
         [theWindow orderFront:self];
         */
-        [[[NodeElementPanel alloc] init] orderFront:nil];
+        //[[[NodeElementPanel alloc] init] orderFront:nil];
         //return;
         
         //[toolBar setDelegate:self];
@@ -185,6 +185,8 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
 	//[dsplitview addSubview:mainView];
 	//[dsplitview addSubview:detailView];
 	[splitview addSubview:mainView];
+
+
         moduleController=[[ModuleController alloc] init];
         [moduleController setSideView:listScrollView];
         [moduleController setMainView:mainView];

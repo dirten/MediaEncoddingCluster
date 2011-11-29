@@ -46,6 +46,7 @@
 }
 -(void)clearElements
 {
+  [[self subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
   elements=[CPArray array];
   [self setNeedsDisplay:YES];
 }

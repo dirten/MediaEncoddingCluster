@@ -3,12 +3,16 @@
 
 SaveNodeEditorView = @"SaveNodeEditorView";
 LoadNodeEditorView = @"LoadNodeEditorView";
+NewNodeEditorView = @"NewNodeEditorView";
+RenameNodeEditorView = @"RenameNodeEditorView";
+DeleteNodeEditorView = @"DeleteNodeEditorView";
 
 @implementation NodeEditorController : CPObject
 {
   NodeEditorView view;
   CPDictionary elementClasses;
   id loadedUUID;
+  CPString loadedName;
 }
 
 -(void)initWithView:(id)theView{
@@ -29,10 +33,25 @@ LoadNodeEditorView = @"LoadNodeEditorView";
     selector:@selector(loadNodeEditorView:)
     name:LoadNodeEditorView
     object:nil];
+  [[CPNotificationCenter defaultCenter]
+    addObserver:self
+    selector:@selector(newNodeEditorView:)
+    name:NewNodeEditorView
+    object:nil];
+  [[CPNotificationCenter defaultCenter]
+    addObserver:self
+    selector:@selector(renameNodeEditorView:)
+    name:RenameNodeEditorView
+    object:nil];
+  [[CPNotificationCenter defaultCenter]
+    addObserver:self
+    selector:@selector(deleteNodeEditorView:)
+    name:DeleteNodeEditorView
+    object:nil];
 }
   
 -(void)saveNodeEditorView:(CPNotification)notification{
-  CPLog.debug("saveNodeEditorView");
+  CPLog.debug("saveNodeEditorView"+notification);
 
   var data={}
   data.tasks=new Array();
@@ -41,6 +60,7 @@ LoadNodeEditorView = @"LoadNodeEditorView";
 
   var elements=[view elements];
   var elementCount = [elements count];
+  CPLog.debug("Element count"+elementCount);
   for (var index = 0; index<elementCount ; index++)
 	{
     var element = [elements objectAtIndex:index];
@@ -76,13 +96,17 @@ LoadNodeEditorView = @"LoadNodeEditorView";
   CPLog.debug("Data:"+JSON.stringify(data));
   if(loadedUUID)
     data.uuid=loadedUUID;
-  
-  var request = [CPURLRequest requestWithURL:@"/api/v1/graph"];
-  [request setHTTPMethod:"POST"];
-  [request setHTTPBody:JSON.stringify(data)];
-  var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
-  CPLog.debug("Graph Save Result"+[result rawString]);
-
+  if(loadedName)
+    data.name=loadedName;
+  if(elementCount>0){
+    var request = [CPURLRequest requestWithURL:@"/api/v1/graph"];
+    [request setHTTPMethod:"POST"];
+    [request setHTTPBody:JSON.stringify(data)];
+    var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+    CPLog.debug("Graph Save Result"+[result rawString]);
+    loadedUUID=[result JSONObject].uuid;
+    [[notification object] refresh];
+  }
   //CPLog.debug("Array:"+array);
 }
 
@@ -129,8 +153,65 @@ LoadNodeEditorView = @"LoadNodeEditorView";
   }
   [view setNeedsDisplay:YES];
 }
+
+-(void)newNodeEditorView:(CPNotification)notification
+{
+  [view clearElements];
+  //loadedUUID=nil;
+  loadedName=[notification object];
+  var data={};
+  data.tasks=new Array();
+  data.links=new Array();
+  data.positions=new Array();
+
+  CPLog.debug("new Editor with name "+loadedName);
+  CPLog.debug("Data:"+JSON.stringify(data));
+  if(loadedUUID)
+    data.uuid=loadedUUID;
+  if(loadedName)
+    data.name=loadedName;
+  var request = [CPURLRequest requestWithURL:@"/api/v1/graph"];
+  [request setHTTPMethod:"POST"];
+  [request setHTTPBody:JSON.stringify(data)];
+  var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+  CPLog.debug("Graph Save Result"+[result rawString]);
+  loadedUUID=[result JSONObject].uuid;
+  //[[notification object] refresh];
+
+  [view setNeedsDisplay:YES];
+}
+
+-(void)renameNodeEditorView:(CPNotification)notification
+{
+  var path="/api/v1/graph?uuid="+[notification userInfo];
+  var response=[CPHTTPURLResponse alloc];
+  var error;
+  var raw_data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:response];
+  //CPLog.debug("raw_data:"+[raw_data rawString]);
+  var data=[raw_data JSONObject].data;
+  data.name=[notification object];
+
+  var request = [CPURLRequest requestWithURL:@"/api/v1/graph"];
+  [request setHTTPMethod:"POST"];
+  [request setHTTPBody:JSON.stringify(data)];
+  var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+  CPLog.debug("Graph Save Result"+[result rawString]);
+  //loadedUUID=[result JSONObject].uuid;
+
+}
+
+-(void)deleteNodeEditorView:(CPNotification)notification
+{
+  var request = [CPURLRequest requestWithURL:@"/api/v1/graph?delete&uuid="+[notification userInfo]];
+  //[request setHTTPMethod:"POST"];
+  var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+  CPLog.debug("Graph delete Result"+[result rawString]);
+  [view clearElements];
+  loadedUUID=nil;
+  loadedName=nil;
+  [view setNeedsDisplay:YES];
+}
 -(id)createObjectForName:(CPString)name
 {
-  
 }
 @end
