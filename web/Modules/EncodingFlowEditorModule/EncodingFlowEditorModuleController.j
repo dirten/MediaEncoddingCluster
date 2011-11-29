@@ -18,29 +18,12 @@
 
 
 @import <Foundation/Foundation.j>
-
-// import only AppKit part you need here.
-@import <AppKit/CPTextField.j>
+@import "../../View/NodeEditorView.j"
 
 
-// if you don't need this variables outside of this file,
-// *always* use the 'var' keyword to make them filescoped
-// otherwise, it will be application scoped
-var TNArchipelTypeDummyNamespace = @"archipel:dummy",
-    TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
-
-/*! @defgroup  sampletabmodule Module SampleTabModule
-    @desc Development starting point to create a Tab module
-*/
-
-/*! @ingroup sampletabmodule
-    Sample tabbed module implementation
-    Please respect the pragma marks as much as possible.
-*/
 @implementation EncodingFlowEditorModuleController : CPViewController
 {
-    @outlet CPTextField     fieldJID;
-    @outlet CPTextField     fieldName;
+    @outlet NodeEditorView  editorView;
 }
 
 
@@ -51,7 +34,7 @@ var TNArchipelTypeDummyNamespace = @"archipel:dummy",
 */
 - (void)awakeFromCib
 {
-    [fieldJID setSelectable:YES];
+  [editorView setBackgroundColor:[CPColor whiteColor]];
 }
 
 #pragma mark -
@@ -114,14 +97,6 @@ var TNArchipelTypeDummyNamespace = @"archipel:dummy",
 #pragma mark -
 #pragma mark Notification handlers
 
-/*! called when entity' nickname changed
-    @param aNotification the notification
-*/
-- (void)_didUpdateNickName:(CPNotification)aNotification
-{
-    [fieldName setStringValue:[_entity nickname]];
-}
-
 
 #pragma mark -
 #pragma mark Utilities
@@ -131,59 +106,6 @@ var TNArchipelTypeDummyNamespace = @"archipel:dummy",
 
 #pragma mark -
 #pragma mark Actions
-
-/*! send hello to entity
-    @param aSender the sender of the action
-*/
-- (IBAction)sendHello:(id)aSender
-{
-    // try to always proxy your IBAction like this.
-    [self sayHello];
-}
-
-
-#pragma mark -
-#pragma mark XMPP Controls
-
-/*! Send the dummy hello stanza to the current entity
-*/
-- (void)sayHello
-{
-    var stanza = [TNStropheStanza iqWithType:@"get"];
-
-    [stanza addChildWithName:@"query" andAttributes:{"xmlns": TNArchipelTypeDummyNamespace}];
-    [stanza addChildWithName:@"archipel" andAttributes:{
-        "action": TNArchipelTypeDummyNamespaceSayHello}];
-
-    [_entity sendStanza:stanza andRegisterSelector:@selector(_didSayHello:) ofObject:self];
-}
-
-/*! compute the answer about the hello command
-    @param aStanza TNStropheStanza that contains the hypervisor answer
-*/
-- (BOOL)_didSayHello:(TNStropheStanza)aStanza
-{
-    if ([aStanza type] == @"success")
-    {
-        // You can use Growl if you want to notify the user about something.
-        // Do not forget to localize your strings using CPLocalizedString (defined at the end of this file)
-        [[TNGrowlCenter defaultCenter] pushNotificationWithTitle:[_entity nickname]
-                                                         message:CPBundleLocalizedString(@"Hello sent!", @"Hello sent!")];
-    }
-    else
-    {
-        // Then we got an error. You can manage it as you want,
-        // but in any way it is strongly suggested to use the
-        // standard handling of the TNModule
-        // This will display a growl notification and will log relevant
-        // info into the JS console.
-        [self handleIqErrorFromStanza:aStanza];
-    }
-
-    // return NO to not be notified next time
-    // Most of the time you want to return NO.
-    return NO;
-}
 
 
 #pragma mark -

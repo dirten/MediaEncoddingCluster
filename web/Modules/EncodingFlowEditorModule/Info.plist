@@ -43,6 +43,6 @@
 	<key>FullscreenModule</key>
 	<integer>1</integer>
 	<key>CibName</key>
-	<string>SampleTabModule</string>
+	<string>EncodingFlowEditorModule</string>
 </dict>
 </plist>

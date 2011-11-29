@@ -29,6 +29,7 @@
     selectedPathSource=nil;
     selectedPathTarget=nil;
     uidCounter=0;
+
     movingView=NO;
     [self setBackgroundColor:[CPColor whiteColor]];
     /*
@@ -52,8 +53,9 @@
 {
   var data = [[aSender draggingPasteboard] dataForType:NodeElementDragType];
   var element=[CPKeyedUnarchiver unarchiveObjectWithData:data];
-  var frameOrigin=[self convertPoint:[aSender draggingLocation] toView:self];  
   
+  var frameOrigin=[self convertPoint:[aSender draggingLocation] fromView:nil];  
+  //var frameOrigin = [self convertPoint:[_window convertGlobalToBase:aGlobalLocation] fromView:nil]; 
   var bounds = [element bounds];
 
   [element setBounds:CGRectMake(frameOrigin.x-(bounds.size.width/2),frameOrigin.y-(bounds.size.height/2),bounds.size.width,bounds.size.height)];
@@ -104,7 +106,9 @@
 - (void) mouseDown:		(CPEvent) 	anEvent	 {
   var clickcount=[anEvent clickCount];
   CPLog.debug("Click count:"+clickcount);
-  currentSelectedElement=[self graphicUnderPoint:[anEvent locationInWindow]];
+  
+  var point=[self convertPoint:[anEvent locationInWindow] fromView:nil];
+  currentSelectedElement=[self graphicUnderPoint:point];
   if(clickcount==2&&[currentSelectedElement class]!=CPNull){
     var view=[currentSelectedElement propertyView];
     if(!view)return;
@@ -115,7 +119,7 @@
     currentSelectedElement=[CPNull null];
     return;
   }
-  currentSelectedHandle=[self handleUnderPoint:[anEvent locationInWindow]];
+  currentSelectedHandle=[self handleUnderPoint:point];
   if([select class]!=CPNull){
       [select setBorderWidth:1.0];
       [select setBorderColor:[CPColor blackColor]];
@@ -144,7 +148,7 @@
   }
   [self setNeedsDisplay:YES];
  
-  dragLocation = [anEvent locationInWindow];
+  dragLocation = point;
 }
    
 - (void) mouseDragged:		(CPEvent) 	anEvent	 {
