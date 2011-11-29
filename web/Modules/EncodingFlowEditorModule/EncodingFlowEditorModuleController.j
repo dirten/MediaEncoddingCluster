@@ -37,6 +37,7 @@
 - (void)awakeFromCib
 {
   [editorView setBackgroundColor:[CPColor whiteColor]];
+  graphListView=[[GraphListView alloc] initWithFrame:CPRectMake(0,260,300,270)];
 }
 
 #pragma mark -

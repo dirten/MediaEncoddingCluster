@@ -152,6 +152,7 @@
 }
    
 - (void) mouseDragged:		(CPEvent) 	anEvent	 {
+  var point=[self convertPoint:[anEvent locationInWindow] fromView:nil];
     //[select setBorderWidth:1.0];
 
 //  CPLog.debug("mouseDragged:"+CPStringFromPoint([anEvent locationInWindow]));
@@ -164,15 +165,15 @@
   * this is used for moving the complete node object
   */
   if([currentSelectedElement class]!=CPNull){
-    var location = [anEvent locationInWindow],
+    var location = point,
           originBounds = [currentSelectedElement bounds];
     var bounds=CGRectMake(location.x+(originBounds.origin.x-dragLocation.x),location.y+(originBounds.origin.y-dragLocation.y),originBounds.size.width,originBounds.size.height);
     //CPLog.debug("NewBounds:"+CPStringFromRect([currentSelectedElement bounds]));
     [currentSelectedElement setBounds:bounds];
   } 
-  var targetDropHandle=[self handleUnderPoint:[anEvent locationInWindow]];
+  var targetDropHandle=[self handleUnderPoint:point];
   if(targetDropHandle!=nil){
-    targetDropElement=[self graphicUnderPoint:[anEvent locationInWindow]];
+    targetDropElement=[self graphicUnderPoint:point];
     //CPLog.debug("Target Drop Handle Here:"+targetDropElement);
     //CPLog.debug("Source Element:"+currentSelectedElement);
   }else{
@@ -184,7 +185,7 @@
     for (var index = graphicCount - 1; index>=0; index--) 
     {
       var element = [elements objectAtIndex:index];
-      var location = [anEvent locationInWindow],
+      var location = point,
           originBounds = [element bounds];
       var bounds=CGRectMake(location.x+(originBounds.origin.x-dragLocation.x),location.y+(originBounds.origin.y-dragLocation.y),originBounds.size.width,originBounds.size.height);
       //CPLog.debug("NewBounds:"+CPStringFromRect([element bounds]));
@@ -193,7 +194,7 @@
 
     CPLog.debug("moving all");
   }
-  dragLocation = [anEvent locationInWindow];
+  dragLocation = point;
   [self setNeedsDisplay:YES];
 }
 

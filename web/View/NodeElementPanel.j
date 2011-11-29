@@ -7,6 +7,7 @@
 @import "NodeConnectorView.j"
 @import "NodeEditorView.j"
 @import "GraphListView.j"
+@import "GraphElementView.j"
 
 NodeElementDragType = "NodeElementDragType";
 
@@ -14,6 +15,7 @@ NodeElementDragType = "NodeElementDragType";
 {
   CPArray images;
   GraphListView graphListView;
+  GraphElementView graphElementView;
 }
 
 - (id)init
@@ -29,6 +31,11 @@ NodeElementDragType = "NodeElementDragType";
 
         var contentView = [self contentView],
             bounds = [contentView bounds];
+        graphElementView=[[GraphElementView alloc] initWithFrame:CPRectMake(0,0,300,250)];
+        [contentView addSubview:graphElementView];
+        graphListView=[[GraphListView alloc] initWithFrame:CPRectMake(0,260,300,270)];
+        //var graphListView=[[GraphListView alloc] initWithFrame:bounds];
+        [contentView addSubview:graphListView];
 
         var okButton=[[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([contentView bounds])-90,CGRectGetHeight([contentView bounds])-40,80.0,24.0)];
         [okButton setTitle:@"Save"];
@@ -43,7 +50,7 @@ NodeElementDragType = "NodeElementDragType";
         [loadButton setTarget:self];
         [loadButton setAction:@selector(load:)];
         [contentView addSubview:loadButton];
-
+        return self;
         
         bounds.size.height -= 350.0;
         
