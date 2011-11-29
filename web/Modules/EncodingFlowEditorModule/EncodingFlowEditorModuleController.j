@@ -26,6 +26,7 @@
   @outlet NodeEditorView  editorView;
   @outlet CPView          elementView;
   @outlet CPView          graphListView;
+  @outlet CPButtonBar     graphButtonBar;
 }
 
 
