@@ -56,7 +56,7 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
   var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
   [request setHTTPMethod:"GET"];
   var connection = [CPURLConnection connectionWithRequest:request delegate:self];
-  [buttonBar setValue:CPThemeStateDisabled forThemeAttribute:@"button-bezel-color"]
+  //[buttonBar setValue:CPThemeStateDisabled forThemeAttribute:@"button-bezel-color"]
   //profileView=[[ProfileEditView alloc] initWithFrame:[profileView bounds]];
 }
 

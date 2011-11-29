@@ -1,6 +1,9 @@
 
+
+//@import "/Modules/ToolbarProfileModule/ProfileModuleController.j"
 ModuleTypeToolbar = @"toolbar";
 ModuleTypeTab = @"tab";
+
 
 /*******************************************************************************
 *
@@ -112,7 +115,7 @@ ModuleTypeTab = @"tab";
     if (toolbarOnly)
     { 
         var classstring=[aBundle objectForInfoDictionaryKey:@"CPPrincipalClass"];
-
+        
         CPLog.debug("CPPrincipalClass-String:"+classstring);
         CPLog.debug("CPPrincipalClass-Class:"+CPClassFromString(classstring));
         CPLog.debug("CPPrincipalClass-Class:"+objj_getClass(classstring));
@@ -182,7 +185,10 @@ ModuleTypeTab = @"tab";
         var plist = [CPPropertyListSerialization propertyListFromData:[CPData dataWithRawString:req.responseText] format:nil];
 
         //[aBundle setValue:plist forTable:@"Localizable"];
+        var classname=[aBundle objectForInfoDictionaryKey:@"CPPrincipalClass"];
         CPLog.debug("PricipalClass+"+CPClassFromString([aBundle objectForInfoDictionaryKey:@"CPPrincipalClass"]));
+        CPLog.debug("CPPrincipalClass-Window:"+classname+"->"+[aBundle principalClass]);
+
         CPLog.debug("localizedCibName:"+localizedCibName);
         CPLog.debug("localizedCibName:"+localizationStringsURL);
         var instance=[CPClassFromString([aBundle objectForInfoDictionaryKey:@"CPPrincipalClass"]) alloc];
