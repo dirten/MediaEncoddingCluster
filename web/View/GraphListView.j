@@ -51,7 +51,13 @@
   //CPLog.debug("load table data");
   if([tableColumn identifier]==1){
     CPLog.debug("item found for row"+row+"="+JSON.stringify(jsonData.data[row]));
-    var str=jsonData.data[row].name.length>0?jsonData.data[row].name:jsonData.data[row].uuid;
+    var str="";
+    if(jsonData.data[row].name!=undefined&&jsonData.data[row].name.length>0){
+      str=jsonData.data[row].name;
+    }else{
+      str=jsonData.data[row].uuid;    
+    }
+    //var str=jsonData.data[row].name.length>0?jsonData.data[row].name:jsonData.data[row].uuid;
     return [CPString stringWithFormat:@"%s", str];
   }
 }
@@ -137,8 +143,14 @@
 - (void)delete:(id)sender
 {
   /*asking for a name*/
-  delgraph=[[InputWindow alloc] initWithTitle:@"Delete Graph" andText:@"are you sure to delete the graph:"+[self selectedId]];
-  [delgraph setDelegate:self];  
+  delgraph=[[CPAlert alloc] init];// initWithTitle:@"Delete Graph" andText:@"are you sure to delete the graph:"+[self selectedId]];
+  [delgraph setTitle:"Are You Sure?"];
+  [delgraph setMessageText:"Are you sure you want to delete the Graph with ID :" + [self selectedId] + "?"];
+  [delgraph setAlertStyle:CPWarningAlertStyle];
+  [delgraph addButtonWithTitle:"Cancel"];
+  [delgraph setDelegate:self];
+  [delgraph addButtonWithTitle:"Delete Graph"];
+  [delgraph runModal];
 
 }
 - (void)rename:(id)sender

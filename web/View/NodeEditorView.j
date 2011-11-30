@@ -75,8 +75,9 @@
 
 - (CPMenu)menuForEvent:(CPEvent)anEvent
 {
-    CPLog.debug("menu Button:"+[anEvent buttonNumber]);
-  currentSelectedElement=[self graphicUnderPoint:[anEvent locationInWindow]];
+  CPLog.debug("menu Button:"+[anEvent buttonNumber]);
+  var point=[self convertPoint:[anEvent locationInWindow] fromView:nil];
+  currentSelectedElement=[self graphicUnderPoint:point];
   if([currentSelectedElement class]!=CPNull){
     CPLog.debug("selected graphic:"+CPStringFromRect([currentSelectedElement bounds]));
     var menu=[currentSelectedElement menuForNodeItem];
@@ -88,7 +89,6 @@
     movingView=NO;  
     return menu;
    }
-
 }
 /*
 - (void)rightMouseDown:(CPEvent)anEvent	

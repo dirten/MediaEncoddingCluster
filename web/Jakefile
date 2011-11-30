@@ -19,6 +19,7 @@ app ("NewApplication", function(task)
 {
     task.setBuildIntermediatesPath(FILE.join("Build", "NewApplication.build", configuration));
     task.setBuildPath(FILE.join("Build", configuration));
+    //task.setPreventsNib2Cib(true);
 
     task.setProductName("NewApplication");
     task.setIdentifier("com.yourcompany.NewApplication");

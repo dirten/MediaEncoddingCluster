@@ -120,6 +120,7 @@ DeleteNodeEditorView = @"DeleteNodeEditorView";
   //CPLog.debug("raw_data:"+[raw_data rawString]);
   var data=[raw_data JSONObject].data;
   loadedUUID=data.uuid;
+  loadedName=data.name;
   //CPLog.debug("Obj:"+data.tasks.length);
   var elements=[CPDictionary dictionary];
   [view clearElements];
