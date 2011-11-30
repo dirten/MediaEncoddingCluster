@@ -5,6 +5,8 @@
  * Created by You on February 22, 2011.
  * Copyright 2011, Your Company All rights reserved.
  */
+ 
+require("./common.jake");
 
 var ENV = require("system").env,
     FILE = require("file"),
@@ -14,6 +16,8 @@ var ENV = require("system").env,
     app = require("cappuccino/jake").app,
     configuration = ENV["CONFIG"] || ENV["CONFIGURATION"] || ENV["c"] || "Debug",
     OS = require("os");
+
+var subprojects = ["ModulesSource/EncodingFlowEditorModule"];
 
 app ("NewApplication", function(task)
 {
@@ -27,8 +31,8 @@ app ("NewApplication", function(task)
     task.setAuthor("Your Company");
     task.setEmail("feedback @nospam@ yourcompany.com");
     task.setSummary("NewApplication");
-    //task.setSources((new FileList("*.j","Controller/*.j","View/**/*.j")).exclude(FILE.join("Build", "**")));
-    task.setSources((new FileList("**/*.j")).exclude(FILE.join("Build", "**"))/*.exclude(FILE.join("Modules", "**"))*/);
+    task.setSources(new FileList("*.j","Controller/*.j","View/**/*.j"));
+    //task.setSources((new FileList("**/*.j")).exclude(FILE.join("Build", "**"))/*.exclude(FILE.join("Modules", "**"))*/);
     task.setResources(new FileList("Resources/**"));
     task.setIndexFilePath("index.html");
     task.setInfoPlistPath("Info.plist");
@@ -37,6 +41,20 @@ app ("NewApplication", function(task)
         task.setCompilerFlags("-DDEBUG -g");
     else
         task.setCompilerFlags("-O");
+});
+
+
+["build", "clean", "clobber"].forEach(function(aTaskName)
+{
+    task (aTaskName, function()
+    {
+        subjake(subprojects, aTaskName);
+    });
+});
+
+task ("modules", [], function()
+{
+    subjake(subprojects, "build");
 });
 
 task ("default", ["NewApplication"], function()
