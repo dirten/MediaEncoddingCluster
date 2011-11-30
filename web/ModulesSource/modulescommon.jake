@@ -56,7 +56,7 @@ task ("default", [NAME], function()
 
 task ("build", ["default"]);
 
-task ("debug", function()
+task ("Debug", function()
 {
     ENV["CONFIG"] = "Debug";
     JAKE.subjake(["."], "build", ENV);
@@ -64,7 +64,8 @@ task ("debug", function()
 
 task ("install", function()
 {
-
+    //FILE.join("Build", configuration)
+    print("installing "+NAME);
 });
 
 task ("release", function()

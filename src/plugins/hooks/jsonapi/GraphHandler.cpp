@@ -109,9 +109,9 @@ namespace graphhandler {
           if(contains(inode,"uuid")){
             uuid=inode["uuid"].as_string();
           }else{
-            f.deleteFile();
-            inode.push_back(JSONNode("uuid",uuid));
-            save(inode, uuid);
+            //f.deleteFile();
+            //inode.push_back(JSONNode("uuid",uuid));
+            //save(inode, uuid);
           }
           result.push_back(JSONNode("status", "ok"));
           inode.set_name("data");
@@ -142,9 +142,9 @@ namespace graphhandler {
           if(contains(inode,"uuid")){
             uuid=inode["uuid"].as_string();
           }else{
-            file->deleteFile();
-            inode.push_back(JSONNode("uuid",uuid));
-            save(inode, uuid);
+            //file->deleteFile();
+            //inode.push_back(JSONNode("uuid",uuid));
+            //save(inode, uuid);
           }
           JSONNode file_node(JSON_NODE);
           file_node.set_name("graph");

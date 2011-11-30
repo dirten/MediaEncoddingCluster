@@ -8,7 +8,8 @@
  
 require("./common.jake");
 
-var ENV = require("system").env,
+var APPNAME="MediaEncodingAdmin",
+    ENV = require("system").env,
     FILE = require("file"),
     JAKE = require("jake"),
     task = JAKE.task,
@@ -19,19 +20,19 @@ var ENV = require("system").env,
 
 var subprojects = ["ModulesSource/EncodingFlowEditorModule"];
 
-app ("NewApplication", function(task)
+app (APPNAME, function(task)
 {
-    task.setBuildIntermediatesPath(FILE.join("Build", "NewApplication.build", configuration));
+    task.setBuildIntermediatesPath(FILE.join("Build", APPNAME+".build", configuration));
     task.setBuildPath(FILE.join("Build", configuration));
     //task.setPreventsNib2Cib(true);
 
-    task.setProductName("NewApplication");
-    task.setIdentifier("com.yourcompany.NewApplication");
+    task.setProductName(APPNAME);
+    task.setIdentifier("org.esb."+APPNAME);
     task.setVersion("1.0");
-    task.setAuthor("Your Company");
-    task.setEmail("feedback @nospam@ yourcompany.com");
-    task.setSummary("NewApplication");
-    task.setSources(new FileList("*.j","Controller/*.j","View/**/*.j"));
+    task.setAuthor("EsbLab");
+    task.setEmail("feedback @nospam@ codergrid.de");
+    task.setSummary(APPNAME);
+    task.setSources(new FileList("*.j","Controller/*.j","View/**/*.j","Categories/*.j"));
     //task.setSources((new FileList("**/*.j")).exclude(FILE.join("Build", "**"))/*.exclude(FILE.join("Modules", "**"))*/);
     task.setResources(new FileList("Resources/**"));
     task.setIndexFilePath("index.html");
@@ -44,11 +45,14 @@ app ("NewApplication", function(task)
 });
 
 
-["build", "clean", "clobber"].forEach(function(aTaskName)
+["build", "clean", "clobber","install"].forEach(function(aTaskName)
 {
     task (aTaskName, function()
     {
-        subjake(subprojects, aTaskName);
+	print(ENV["CONFIGURATION"]);
+	ENV["CONFIG"]=ENV["CONFIGURATION"];
+	JAKE.subjake(subprojects, aTaskName, ENV);
+        //subjake(subprojects, aTaskName);
     });
 });
 
@@ -57,7 +61,7 @@ task ("modules", [], function()
     subjake(subprojects, "build");
 });
 
-task ("default", ["NewApplication"], function()
+task ("default", [APPNAME], function()
 {
     printResults(configuration);
 });
@@ -70,6 +74,11 @@ task ("debug", function()
     JAKE.subjake(["."], "build", ENV);
 });
 
+task ("install",["build"], function()
+{
+
+});
+
 task ("release", function()
 {
     ENV["CONFIGURATION"] = "Release";
@@ -78,36 +87,36 @@ task ("release", function()
 
 task ("run", ["debug"], function()
 {
-    OS.system(["open", FILE.join("Build", "Debug", "NewApplication", "index.html")]);
+    OS.system(["open", FILE.join("Build", "Debug", APPNAME, "index.html")]);
 });
 
 task ("run-release", ["release"], function()
 {
-    OS.system(["open", FILE.join("Build", "Release", "NewApplication", "index.html")]);
+    OS.system(["open", FILE.join("Build", "Release", APPNAME, "index.html")]);
 });
 
 task ("deploy", ["release"], function()
 {
-    FILE.mkdirs(FILE.join("Build", "Deployment", "NewApplication"));
-    OS.system(["press", "-f", FILE.join("Build", "Release", "NewApplication"), FILE.join("Build", "Deployment", "NewApplication")]);
+    FILE.mkdirs(FILE.join("Build", "Deployment", APPNAME));
+    OS.system(["press", "-f", FILE.join("Build", "Release", APPNAME), FILE.join("Build", "Deployment", APPNAME)]);
     printResults("Deployment")
 });
 
 task ("desktop", ["release"], function()
 {
-    FILE.mkdirs(FILE.join("Build", "Desktop", "NewApplication"));
-    require("cappuccino/nativehost").buildNativeHost(FILE.join("Build", "Release", "NewApplication"), FILE.join("Build", "Desktop", "NewApplication", "NewApplication.app"));
+    FILE.mkdirs(FILE.join("Build", "Desktop", APPNAME));
+    require("cappuccino/nativehost").buildNativeHost(FILE.join("Build", "Release", APPNAME), FILE.join("Build", "Desktop", APPNAME, APPNAME+".app"));
     printResults("Desktop")
 });
 
 task ("run-desktop", ["desktop"], function()
 {
-    OS.system([FILE.join("Build", "Desktop", "NewApplication", "NewApplication.app", "Contents", "MacOS", "NativeHost"), "-i"]);
+    OS.system([FILE.join("Build", "Desktop", APPNAME, APPNAME+".app", "Contents", "MacOS", "NativeHost"), "-i"]);
 });
 
 function printResults(configuration)
 {
     print("----------------------------");
-    print(configuration+" app built at path: "+FILE.join("Build", configuration, "NewApplication"));
+    print(configuration+" app built at path: "+FILE.join("Build", configuration, APPNAME));
     print("----------------------------");
 }
