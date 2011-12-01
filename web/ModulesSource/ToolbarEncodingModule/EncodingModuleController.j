@@ -171,7 +171,7 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
     // return a CPString instance that will be displayed in a regular column (CPTextField)
     //CPLog.debug([tableColumn identifier]);
     if([tableColumn identifier]==1){
-      return [CPString stringWithFormat:@"%s", jsonData.data[row].id ];
+      return [CPString stringWithFormat:@"%s test", jsonData.data[row].id ];
     }else if([tableColumn identifier]==2){
       if(jsonData.data[row].begintime>1){
         return [CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime ];

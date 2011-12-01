@@ -53,6 +53,7 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
  */
 - (void)awakeFromCib
 {
+  CPLog.debug("awakeFromCib and reload table view new bla"+self);
   var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
   [request setHTTPMethod:"GET"];
   var connection = [CPURLConnection connectionWithRequest:request delegate:self];

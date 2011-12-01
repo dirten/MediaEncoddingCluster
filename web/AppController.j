@@ -81,9 +81,16 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
         mainToolbar = [[TNToolbar alloc] init];
         [theWindow setToolbar:mainToolbar];
         var image = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"logo.jpg"] size:CPSizeMake(100, 50)];
-        //[mainToolbar addItemWithIdentifier:@"logo" label:@"Log out" view:nil target:nil action:nil];
+        var logoToolbarItem       = [[CPToolbarItem alloc] initWithItemIdentifier:@"logo"];
+        [logoToolbarItem setImage:image];
+        [logoToolbarItem setLabel:@"test"];
+        [logoToolbarItem setToolTip:@"test"];
+
+        //[mainToolbar addItem:logoToolbarItem withIdentifier:@"logo"];
+        [mainToolbar addItemWithIdentifier:@"logo" label:@"" icon:[[CPBundle mainBundle] pathForResource:"logo.jpg"]  target:nil action:nil toolTip:@""];
         //[mainToolbar addItemWithIdentifier:@"test" label:@"Log out" view:nil target:self action:@selector(toolbarItemLogoutClick:)];
-        [mainToolbar addItemWithIdentifier:@"test" label:@"Log out with long name" icon:[[CPBundle mainBundle] pathForResource:"logo.jpg"]  target:self action:@selector(toolbarItemLogoutClick:) toolTip:@"Log out from the application"];
+        //[mainToolbar addItemWithIdentifier:@"test" label:@"Log out with long name" icon:[[CPBundle mainBundle] pathForResource:"logo.jpg"]  target:self action:@selector(toolbarItemLogoutClick:) toolTip:@"Log out from the application"];
+        //[mainToolbar addItemWithIdentifier:@"test" label:@"Log out with long name" icon:[[CPBundle mainBundle] pathForResource:"logo.jpg"]  target:self action:@selector(toolbarItemLogoutClick:) toolTip:@"Log out from the application"];
 
         /*
         moduleToolbarItem       = [[CPToolbarItem alloc] initWithItemIdentifier:@"TestModule"];
@@ -95,7 +102,7 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
         [mainToolbar setPosition:3 forToolbarItemIdentifier:@"Test"];
         */
         [mainToolbar setPosition:0 forToolbarItemIdentifier:@"logo"];
-        [mainToolbar setPosition:1 forToolbarItemIdentifier:@"test"];
+        //[mainToolbar setPosition:1 forToolbarItemIdentifier:@"test"];
         //[mainToolbar setPosition:2 forToolbarItemIdentifier:CPToolbarSeparatorItemIdentifier];
 
 

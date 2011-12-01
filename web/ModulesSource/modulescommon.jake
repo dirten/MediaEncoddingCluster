@@ -25,13 +25,15 @@ var ENV = require("system").env,
     FileList = require("jake").FileList,
     framework = require("cappuccino/jake").framework,
     configuration = ENV["CONFIG"] || "Debug",
+    APPNAME = ENV["APPNAME"],
     OS = require("os"),
     FILELIST = (typeof(FILELIST) == "undefined") ?  new FileList("*.j") : FILELIST;
 
 framework (NAME, function(task)
 {
     task.setBuildIntermediatesPath(FILE.join("Build", NAME + ".build", configuration));
-    task.setBuildPath(FILE.join("Build", configuration));
+    task.setBuildPath(FILE.join("..","..","Build", configuration, APPNAME, "Modules"));
+    //task.setBuildPath(FILE.join("..","..", "Modules"));
     //task.setPreventsNib2Cib(true);
     task.setProductName(NAME);
     task.setIdentifier( COMPANY + "." + NAME);

@@ -7,15 +7,31 @@ NewNodeEditorView = @"NewNodeEditorView";
 RenameNodeEditorView = @"RenameNodeEditorView";
 DeleteNodeEditorView = @"DeleteNodeEditorView";
 
+var _instance;
+testfunc=function(){
+  CPLog.debug("Loaded here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+}
+testfunc();
 @implementation NodeEditorController : CPObject
 {
   NodeEditorView view;
   CPDictionary elementClasses;
   id loadedUUID;
   CPString loadedName;
+  
 }
 
--(void)initWithView:(id)theView{
++(id)instance:(id)theView
+{
+  CPLog.debug("Instance:"+_instance);
+  if(!_instance)
+    _instance=[[NodeEditorController alloc] initWithView:theView];
+  CPLog.debug("Instance after:"+_instance);
+  return _instance;
+}
+-(id)initWithView:(id)theView{
+  self=[super init];
+  CPLog.debug("Creating new Instance of NodeEditorController");
   view=theView;
   elementClass=[CPDictionary dictionary];
   [elementClass setObject:[NodeInput class] forKey:@"InputTask"];
@@ -48,6 +64,7 @@ DeleteNodeEditorView = @"DeleteNodeEditorView";
     selector:@selector(deleteNodeEditorView:)
     name:DeleteNodeEditorView
     object:nil];
+    return self;
 }
   
 -(void)saveNodeEditorView:(CPNotification)notification{
@@ -157,6 +174,7 @@ DeleteNodeEditorView = @"DeleteNodeEditorView";
 
 -(void)newNodeEditorView:(CPNotification)notification
 {
+  CPLog.debug("Self"+self);
   [view clearElements];
   //loadedUUID=nil;
   loadedName=[notification object];

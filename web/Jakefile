@@ -18,10 +18,11 @@ var APPNAME="MediaEncodingAdmin",
     configuration = ENV["CONFIG"] || ENV["CONFIGURATION"] || ENV["c"] || "Debug",
     OS = require("os");
 
-var subprojects = ["ModulesSource/EncodingFlowEditorModule"];
+var subprojects = ["ModulesSource/EncodingFlowEditorModule","ModulesSource/ToolbarEncodingModule","ModulesSource/ToolbarProfileModule"];
 
 app (APPNAME, function(task)
-{
+{	
+    ENV["APPNAME"]=APPNAME;
     task.setBuildIntermediatesPath(FILE.join("Build", APPNAME+".build", configuration));
     task.setBuildPath(FILE.join("Build", configuration));
     //task.setPreventsNib2Cib(true);
@@ -38,27 +39,44 @@ app (APPNAME, function(task)
     task.setIndexFilePath("index.html");
     task.setInfoPlistPath("Info.plist");
 
-    if (configuration === "Debug")
+    if (configuration === "Debug"){
         task.setCompilerFlags("-DDEBUG -g");
-    else
+	task.setIndexFilePath("index-debug.html");
+    }else{
         task.setCompilerFlags("-O");
+    }
 });
 
 
-["build", "clean", "clobber","install"].forEach(function(aTaskName)
+["build"].forEach(function(aTaskName)
 {
     task (aTaskName, function()
     {
 	print(ENV["CONFIGURATION"]);
 	ENV["CONFIG"]=ENV["CONFIGURATION"];
 	JAKE.subjake(subprojects, aTaskName, ENV);
-        //subjake(subprojects, aTaskName);
-    });
-});
 
-task ("modules", [], function()
-{
-    subjake(subprojects, "build");
+	/*build modules.plist*/
+	
+	var plist = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+	plist+="<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n";
+	plist+="<plist version=\"1.0\">\n";
+	plist+="    <dict>\n";
+        plist+="    <key>Modules</key>\n";
+        plist+="    <array>\n";
+        subprojects.forEach(
+    	    function(project){
+    		var tmp=project.split("/");
+    		var projectname=tmp[1];
+    		plist+= "        <dict>\n            <key>folder</key>\n            <string>" + projectname + "</string>\n        </dict>\n";
+    	    }
+        );
+        plist +="    </array>\n";
+	plist +="    </dict>\n";
+	plist +="</plist>";
+        FILE.write(FILE.join("Build", configuration, APPNAME, "Modules","modules.plist"),plist);
+        //FILE.write(FILE.join("Modules","modules.plist"),plist);
+    });
 });
 
 task ("default", [APPNAME], function()
@@ -74,9 +92,16 @@ task ("debug", function()
     JAKE.subjake(["."], "build", ENV);
 });
 
-task ("install",["build"], function()
+task ("install-debug",["build"], function()
 {
+    ENV["CONFIGURATION"] = "Debug";
+    //print(ENV["CONFIGURATION"]);
+});
 
+task ("install-release",["build"], function()
+{
+    ENV["CONFIGURATION"] = "Release";
+    //print(ENV["CONFIGURATION"]);
 });
 
 task ("release", function()

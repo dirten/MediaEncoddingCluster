@@ -21,7 +21,7 @@
 @import "../../View/InputWindow.j"
 @import "../../View/NodeEditorView.j"
 @import "../../Controller/NodeEditorController.j"
-
+var editorController;
 
 @implementation EncodingFlowEditorModuleController : CPViewController
 {
@@ -30,7 +30,7 @@
   @outlet GraphListView   graphListView;
   @outlet CPButtonBar     graphButtonBar;
 
-  id editorController;
+  //id editorController;
   TextInput input;
 }
 
@@ -42,6 +42,7 @@
 */
 - (void)awakeFromCib
 {
+  CPLog.debug("EncodingFlowEditorModuleController awake from cib !!!!!!!!!!!!!!!!!!!!!!!!");
   [editorView setBackgroundColor:[CPColor whiteColor]];
   //graphListView=[[GraphListView alloc] initWithFrame:CPRectMake(0,260,300,270)];
 
@@ -74,7 +75,9 @@
   [buttons addObject:newButton];
 
   [graphButtonBar setButtons:buttons];
-  editorController=[[NodeEditorController alloc] initWithView:editorView];
+  CPLog.debug("Instance Self:"+self);
+  CPLog.debug("Instance Self:"+editorController);
+  editorController=[NodeEditorController instance:editorView];
 
 }
 
