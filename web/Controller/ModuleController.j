@@ -104,7 +104,7 @@ ModuleTypeTab = @"tab";
 
     if ([moduleToolTip isKindOfClass:CPDictionary] && bundleLocale)
         moduleToolTip = [moduleToolTip objectForKey:[defaults objectForKey:@"CPBundleLocale"]];
-    
+    CPLog.debug("IconPath:"+[aBundle resourcePath]);
     [moduleToolbarItem setLabel:moduleLabel];
     [moduleToolbarItem setImage:[[CPImage alloc] initWithContentsOfFile:[aBundle pathForResource:@"icon.png"] size:CPSizeMake(32, 32)]];
     [moduleToolbarItem setAlternateImage:[[CPImage alloc] initWithContentsOfFile:[aBundle pathForResource:@"icon-alt.png"] size:CPSizeMake(32, 32)]];

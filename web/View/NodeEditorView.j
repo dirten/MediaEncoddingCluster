@@ -10,7 +10,7 @@
   id selectedPathSource;
   id selectedPathTarget;
   CPPoint currentSelectedHandle;
-
+  CPString _name  @accessors(property=name);
   CGPoint     dragLocation;
   id lastNode;
   BOOL isDrawingLink;
@@ -114,7 +114,7 @@
     var view=[currentSelectedElement propertyView];
     if(!view)return;
     CPLog.debug("View Bounds:"+CPStringFromRect([view bounds]));
-    var propertyWindow=[[NodePropertyWindow alloc] initWithFrame:[view bounds]] ;
+    var propertyWindow=[[NodePropertyWindow alloc] initWithView:view] ;
     [[propertyWindow contentView] addSubview:view];
     CPLog.debug("open property window");
     currentSelectedElement=[CPNull null];
@@ -351,6 +351,7 @@
 
   return isContentsUnderPoint;
 }
+
 - (BOOL)becomeFirstResponder
  {
      return YES;
@@ -406,10 +407,22 @@
 {
   [super drawRect:rect];
   //CPLog.debug("drawRect");
-  var graphicCount = [elements count];
-  if(graphicCount == 0)return;
   
  [[self subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+  var label=[CPTextField labelWithTitle:_name];
+  //[label setBounds:CPRectMake(10.0,10.0,200.0,100.0)];  
+  [label setFrameOrigin:CPPointMake(10,10)];
+  [label setFrameSize:CGSizeMake(550, 100)];
+  [label setTextColor:[CPColor blackColor]];
+  [label setFont:[CPFont boldSystemFontOfSize:34]];
+  [label setAlphaValue:0.3];
+
+  //[label setEditable:YES];
+  //[[self contentView] addSubview:label];
+  [self addSubview:label];
+  var graphicCount = [elements count];
+  if(graphicCount == 0)return;
+
   var context = [[CPGraphicsContext currentContext] graphicsPort];  
   
   for (var index = graphicCount - 1; index>=0; index--) 

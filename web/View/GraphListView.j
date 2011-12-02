@@ -104,6 +104,14 @@
     return nil;
   }
 }
+-(CPString)selectedName
+{
+  if([tableView selectedRow]!=-1){
+    return jsonData.data[[tableView selectedRow]].name;
+  }else{
+    return nil;
+  }
+}
 - (CPMenu)tableView:(CPTableView)aTableView menuForTableColumn:(CPTableColumn)aColumn row:(int)aRow
 {
 // menu should open/close
@@ -147,7 +155,7 @@
   /*asking for a name*/
   delgraph=[[CPAlert alloc] init];// initWithTitle:@"Delete Graph" andText:@"are you sure to delete the graph:"+[self selectedId]];
   [delgraph setTitle:"Are You Sure?"];
-  [delgraph setMessageText:"Are you sure you want to delete the Graph with ID :" + [self selectedId] + "?"];
+  [delgraph setMessageText:"Are you sure you want to delete the Graph with ID :" + [self selectedName] + "?"];
   [delgraph setAlertStyle:CPWarningAlertStyle];
   [delgraph addButtonWithTitle:"Cancel"];
   [delgraph setDelegate:self];

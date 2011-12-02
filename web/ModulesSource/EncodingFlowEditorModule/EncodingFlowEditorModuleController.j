@@ -70,13 +70,18 @@ var editorController;
   [newButton setTarget:self];
   [newButton setAction:@selector(new:)];
 
+  var submitButton=[[CPButton alloc] initWithFrame:CGRectMake(0, 0, 55, 25)];
+  [submitButton setTitle:@"Submit"];
+  [submitButton setAutoresizingMask:CPViewMinXMargin|CPViewMinYMargin];
+  [submitButton setTarget:self];
+  [submitButton setAction:@selector(submit:)];
+
   [buttons addObject:loadButton];
   [buttons addObject:saveButton];
   [buttons addObject:newButton];
+  [buttons addObject:submitButton];
 
   [graphButtonBar setButtons:buttons];
-  CPLog.debug("Instance Self:"+self);
-  CPLog.debug("Instance Self:"+editorController);
   editorController=[NodeEditorController instance:editorView];
 
 }
@@ -200,6 +205,13 @@ var editorController;
     var alert=[CPAlert alertWithError:@"please select a graph from the list"];
     [alert runModal];
   }
+}
+- (void)submit:(id)sender
+{
+   [[CPNotificationCenter defaultCenter]
+    postNotificationName:SubmitNodeEditorView
+    object:self
+    userInfo:[graphListView selectedId]];
 }
 
 - (void)alertDidEnd:(CPAlert)anAlert returnCode:(int)tag

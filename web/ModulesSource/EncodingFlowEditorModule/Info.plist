@@ -19,7 +19,7 @@
 	<key>PluginDisplayName</key>
 	<dict>
 		<key>en</key>
-		<string>Encoding Flow Editor</string>
+		<string>Encoding Flow Builder</string>
 		<key>de</key>
 		<string>Test Modul</string>
 	</dict>

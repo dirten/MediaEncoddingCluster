@@ -19,7 +19,7 @@
 	<key>PluginDisplayName</key>
 	<dict>
 		<key>en</key>
-		<string>Profile</string>
+		<string>Profile Builder</string>
 		<key>de</key>
 		<string>Profile Modul</string>
 	</dict>

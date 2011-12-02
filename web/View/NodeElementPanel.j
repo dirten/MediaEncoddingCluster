@@ -175,7 +175,7 @@ NodeElementDragType = "NodeElementDragType";
 
 - (void)setSelected:(BOOL)isSelected
 {
-    [self setBackgroundColor:isSelected ? [CPColor blueColor] : nil];
+    [self setBackgroundColor:isSelected ? [CPColor grayColor] : nil];
     [textField setTextColor:isSelected ? [CPColor whiteColor] : [CPColor blackColor]];
 }
 

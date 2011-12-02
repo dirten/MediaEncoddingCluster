@@ -61,7 +61,7 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
         contentView = [theWindow contentView],
         toolBar = [[CPToolbar alloc] initWithIdentifier:"Toolbar"],
         bounds = [contentView bounds];
-
+        [theWindow orderFront:self];
         /*
         nodeEditor=[[NodeEditorView alloc] initWithFrame:bounds];
         [contentView addSubview:nodeEditor];
@@ -108,7 +108,17 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
 
         //[TestWindowController initWithFrame:bounds];
 
+        moduleController=[[ModuleController alloc] init];
+        //[moduleController setSideView:listScrollView];
+        [moduleController setMainView:contentView];
+        [moduleController setMainToolbar:mainToolbar];
+        [moduleController setModulesPath:@"Modules/"];
+        [moduleController load];
 
+        [mainToolbar reloadToolbarItems];
+
+        //[contentView addSubview:splitview];
+        return;
         splitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
         //splitview=[[CPSplitView alloc] initWithFrame:bounds];
 	[splitview setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];

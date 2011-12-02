@@ -6,6 +6,7 @@ LoadNodeEditorView = @"LoadNodeEditorView";
 NewNodeEditorView = @"NewNodeEditorView";
 RenameNodeEditorView = @"RenameNodeEditorView";
 DeleteNodeEditorView = @"DeleteNodeEditorView";
+SubmitNodeEditorView = @"SubmitNodeEditorView";
 
 var _instance;
 testfunc=function(){
@@ -63,6 +64,11 @@ testfunc();
     addObserver:self
     selector:@selector(deleteNodeEditorView:)
     name:DeleteNodeEditorView
+    object:nil];
+  [[CPNotificationCenter defaultCenter]
+    addObserver:self
+    selector:@selector(submitNodeEditorView:)
+    name:SubmitNodeEditorView
     object:nil];
     return self;
 }
@@ -169,6 +175,7 @@ testfunc();
     [src addTarget:trg];
     [trg addSource:src];
   }
+  [view setName:loadedName];
   [view setNeedsDisplay:YES];
 }
 
@@ -196,7 +203,7 @@ testfunc();
   CPLog.debug("Graph Save Result"+[result rawString]);
   loadedUUID=[result JSONObject].uuid;
   //[[notification object] refresh];
-
+  [view setName:loadedName];
   [view setNeedsDisplay:YES];
 }
 
@@ -230,7 +237,18 @@ testfunc();
   loadedName=nil;
   [view setNeedsDisplay:YES];
 }
--(id)createObjectForName:(CPString)name
+
+-(void)submitNodeEditorView:(CPNotification)notification
 {
+  var request = [CPURLRequest requestWithURL:@"/api/v1/graph?submit&uuid="+[notification userInfo]];
+  //[request setHTTPMethod:"POST"];
+  var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+  CPLog.debug("Graph submit Result"+[result rawString]);
+  [view clearElements];
+  loadedUUID=nil;
+  loadedName=nil;
+  [view setNeedsDisplay:YES];
+
+
 }
 @end

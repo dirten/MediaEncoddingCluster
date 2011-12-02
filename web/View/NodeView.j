@@ -197,11 +197,21 @@ OutputHandle = 2;
 
   var label=[CPTextField labelWithTitle:name];
   var label_origin=CPPointMake(inHandlePoint.x+15,inHandlePoint.y-40);
+  
   [label setFrameOrigin:label_origin];
   [label setTextColor:[CPColor blackColor]];
   //[label setEditable:YES];
   //[[self contentView] addSubview:label];
   [view addSubview:label];
+  
+    var imageView=[[CPImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 110.0, 110.0)];
+    var img_origin=CPPointMake(inHandlePoint.x+15,inHandlePoint.y-55);
+  
+    [imageView setFrameOrigin:img_origin];
+    [imageView setAlphaValue:0.3];
+    [imageView setImage:[self image]];
+    [view addSubview:imageView];
+
   //[view addSubview:fieldDescription];
   //[label drawRect:aRect];
   [label setNeedsDisplay:YES];
