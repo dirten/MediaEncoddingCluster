@@ -3,6 +3,10 @@
 
 }
 
++(void)operate
+{
+
+}
 -(id)init
 {
   self=[super init];
