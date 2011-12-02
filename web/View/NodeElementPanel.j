@@ -142,6 +142,7 @@ NodeElementDragType = "NodeElementDragType";
 @implementation NodeItemView : CPBox
 {
     CPTextField textField;
+  CPImageView imageView;
     NodeView node;
 }
 
@@ -155,10 +156,18 @@ NodeElementDragType = "NodeElementDragType";
     //[self setPostsFrameChangedNotifications:YES];
 
     //[self addSubview:anObject];
-    if (!textField)
+  if ([anObject image])
+  { 
+    imageView=[[CPImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 110.0, 110.0)];
+    //[imageView setAlphaValue:0.5];
+    [imageView setImage:[anObject image]];
+    [self addSubview:imageView];
+  }
+  if (!textField)
     { 
-        textField = [[CPTextField alloc] initWithFrame:CGRectMake(50.0, 15.0, 145.0, 20.0)];
+        textField = [[CPTextField alloc] initWithFrame:CGRectMake(87.0, 80.0, 145.0, 20.0)];
         [textField setFont:[CPFont boldSystemFontOfSize:12.0]];
+      [textField setAlphaValue:0.5];
         [self addSubview:textField];
     }
     [textField setStringValue:[anObject name]];

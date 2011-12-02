@@ -185,8 +185,8 @@ testfunc();
 
   CPLog.debug("new Editor with name "+loadedName);
   CPLog.debug("Data:"+JSON.stringify(data));
-  if(loadedUUID)
-    data.uuid=loadedUUID;
+  //if(loadedUUID)
+  //  data.uuid=loadedUUID;
   if(loadedName)
     data.name=loadedName;
   var request = [CPURLRequest requestWithURL:@"/api/v1/graph"];

@@ -128,7 +128,7 @@ ProfileChanged=@"ProfileChanged";
   [formatView setData:format];
   [videoView setData:video];
   [audioView setData:audio];
-  
+  /*
   var okButton=[[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([contentView bounds])-90,CGRectGetHeight([contentView bounds])-40,80.0,24.0)];
   [okButton setTitle:@"Save"];
   [okButton setAutoresizingMask:CPViewMinXMargin|CPViewMinYMargin];
@@ -136,7 +136,7 @@ ProfileChanged=@"ProfileChanged";
   [okButton setAction:@selector(save:)];
   [contentView addSubview:okButton];
 
-  /*
+  
   var cancelButton=[[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([contentView bounds])-180,CGRectGetHeight([contentView bounds])-40,80.0,24.0)];
   [cancelButton setTitle:@"Cancel"];
   [cancelButton setAutoresizingMask:CPViewMinXMargin|CPViewMinYMargin];

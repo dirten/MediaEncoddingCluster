@@ -47,5 +47,10 @@
   //CPLog.debug("orig View with bounds:"+CPStringFromRect([view bounds]));
   return view;
 }
+-(id)image
+{
+    var image = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"Torrents-icon.png"] size:CPSizeMake(100, 50)];
+  return image;
+}
 
 @end

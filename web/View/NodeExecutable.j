@@ -10,6 +10,11 @@
   self=[super initWithName:@"Executable" withInputHandle:YES andOutputHandle:YES taskName:@"ExecutableTask"];
   return self;
 }
+-(id)image
+{
+  var image = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"Developer-icon.png"] size:CPSizeMake(100, 50)];
+  return image;
+}
 
 -(id)propertyView
 {

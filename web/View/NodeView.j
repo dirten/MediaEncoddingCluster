@@ -64,7 +64,10 @@ OutputHandle = 2;
   }
   return self;
 }
-
+-(id)image
+{
+  return nil;
+}
 -(CPString)name
 {
   return name;

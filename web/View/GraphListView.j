@@ -14,11 +14,13 @@
   if(self){
     frame.origin.x=0;
     frame.origin.y=0;
-
+    [self setAutohidesScrollers:YES];
+    [self setHasHorizontalScroller:NO ];
+    [self setHasVerticalScroller:YES]; 
     tableView=[[CPTableView alloc] initWithFrame:frame];
   
     var column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 1]];
-    [[column headerView] setStringValue:"Id"];
+    [[column headerView] setStringValue:"Name"];
     [[column headerView] sizeToFit];
     [column setWidth:280];
     [tableView addTableColumn:column];
@@ -42,7 +44,7 @@
     //jsonData.data.unshift({"id":"double click to create a new Encoding","created":"","begintime":"","endtime":"","progress":"","status":""});
     result=jsonData.data.length;
   }
-  CPLog.debug("RowCount="+result);
+  CPLog.debug("graphlist RowCount="+result);
   return result;
 }
 

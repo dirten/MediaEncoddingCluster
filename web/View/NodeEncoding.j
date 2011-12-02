@@ -32,6 +32,12 @@
   [view setProfileId:0];
   return view;
 }
+-(id)image
+{
+  var image = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"Enhanced-Labs-icon.png"] size:CPSizeMake(100, 50)];
+  return image;
+}
+
 -(id)initWithCoder:(CPCoder)aCoder
 {
   CPLog.debug("initWithCoder");
