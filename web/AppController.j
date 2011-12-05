@@ -32,6 +32,7 @@ TOOLBAR_TOP_MARGIN=0.0;
 @import <TNKit/TNToolbar.j>
 @import <LPKit/LPCrashReporter.j>
 
+@import <GrowlCappuccino/GrowlCappuccino.j>
 
 TOP_MARGIN=0.0;
 TOOLBAR_TOP_MARGIN=0.0;
@@ -61,6 +62,13 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
         contentView = [theWindow contentView],
         toolBar = [[CPToolbar alloc] initWithIdentifier:"Toolbar"],
         bounds = [contentView bounds];
+        var growl=[TNGrowlCenter defaultCenter];
+        [growl setView:contentView];
+        /*
+        [growl pushNotificationWithTitle:@"Hello" message:@"Hello World!"];
+        [growl pushNotificationWithTitle:@"Hello" message:@"Hello World next!"];
+        [growl pushNotificationWithTitle:@"Hello" message:@"Hello World next 3!"];
+        */
         [theWindow orderFront:self];
         /*
         nodeEditor=[[NodeEditorView alloc] initWithFrame:bounds];

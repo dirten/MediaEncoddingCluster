@@ -64,6 +64,10 @@ OutputHandle = 2;
   }
   return self;
 }
+-(CPString)frontLabel
+{
+  return @"";
+}
 -(id)image
 {
   return nil;
@@ -203,14 +207,18 @@ OutputHandle = 2;
   var label_origin=CPPointMake(inHandlePoint.x+15,inHandlePoint.y-40);
   [label setFrameOrigin:label_origin];
   [label setTextColor:[CPColor blackColor]];
-  [label setNeedsDisplay:YES];
+  //[label setNeedsDisplay:YES];
   [view addSubview:label];
 
-  var label=[CPTextField labelWithTitle:[self labelText]];
-  var label_origin=CPPointMake(inHandlePoint.x+5,inHandlePoint.y-20);
+  var tmptext=[self frontLabel];
+
+  if(tmptext!=undefined&&tmptext.length>18)
+    tmptext=tmptext.substring(0,18)+"...";
+  var label=[CPTextField labelWithTitle:tmptext];
+  var label_origin=CPPointMake(inHandlePoint.x+8,inHandlePoint.y-20);
   [label setFrameOrigin:label_origin];
   [label setTextColor:[CPColor blackColor]];
-  [label setNeedsDisplay:YES];
+  //[label setNeedsDisplay:YES];
   [view addSubview:label];
   
   var imageView=[[CPImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 110.0, 110.0)];

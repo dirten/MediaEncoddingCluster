@@ -26,10 +26,15 @@
 
   return self;
 }
-/*
+
 -(void)close
 {
   CPLog.debug("Close");
+  [[CPNotificationCenter defaultCenter]
+    postNotificationName:RefreshNodeEditorView
+    object:self
+    userInfo:nil];
+    [super close];
 }
-*/
+
 @end

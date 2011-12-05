@@ -27,14 +27,19 @@
   //popoverView=[[CPPopover alloc] init];
   //viewController=[[CPViewController alloc] init];
   //[popoverView setContentViewController:viewController];
-  [self setLabelText:@""];
+  //[self setLabelText:@""];
   return self;
+}
+
+-(CPString)frontLabel
+{
+  return [[data objectForKey:@"data"] objectForKey:@"name"];
 }
 
 -(void)setData:(id)ndata
 {
   data=ndata;
-  [self setLabelText:[[data objectForKey:@"data"] objectForKey:@"name"]];
+  //[self setLabelText:[[data objectForKey:@"data"] objectForKey:@"name"]];
   //[self setLabelText:@"name"];
   CPLog.debug("Data in setData:"+[data objectForKey:@"name"]);
 }
@@ -45,6 +50,8 @@
 }
 -(id)propertyView
 {
+  //[[TNGrowlCenter defaultCenter] pushNotificationWithTitle:@"Loading Property View." message:"please wait!"];
+  
   var view=[[ProfileEditView alloc] initWithData:data];
   [view setProfileId:0];
   return view;
@@ -109,10 +116,14 @@
   data=[CPDictionary dictionaryWithJSObject:json recursively:YES];  
 
   CPLog.debug("LoadProfile:"+[sender title]);
-  [self setLabelText:[[data objectForKey:@"data"] objectForKey:@"name"]];
+  //[self setLabelText:[[data objectForKey:@"data"] objectForKey:@"name"]];
   
-  [self setNeedsDisplay:YES];
-
+  //[self setNeedsDisplay:YES];
+ [[CPNotificationCenter defaultCenter]
+    postNotificationName:RefreshNodeEditorView
+    object:self
+    userInfo:nil];
+  [[TNGrowlCenter defaultCenter] pushNotificationWithTitle:@"Profile successful loaded." message:"Profile "+[[data objectForKey:@"data"] objectForKey:@"name"]+" successful loaded."];
   //[popoverView showRelativeToRect:nil ofView:self preferredEdge:CPRectMake(100,100,200,200)];
 }
 -(void)open:(id)aSender

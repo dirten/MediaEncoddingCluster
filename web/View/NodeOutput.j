@@ -17,6 +17,27 @@
 
   return self;
 }
+-(CPString)frontLabel
+{
+  return [[data objectForKey:@"data"] objectForKey:@"outfile"];
+}
+-(id)menuForNodeItem
+{
+  return [self menuItems:["Properties..."] forActions:[@selector(open:)]];
+}
+
+-(void)open:(id)aSender
+{
+  CPLog.debug("open clicked:"+aSender);
+  var view=[self propertyView];
+  if(!view)return;
+  CPLog.debug("View Bounds:"+CPStringFromRect([view bounds]));
+  var propertyWindow=[[NodePropertyWindow alloc] initWithView:view] ;
+  [[propertyWindow contentView] addSubview:view];
+  CPLog.debug("open property window");
+
+}
+
 -(id)propertyView
 {
   var bounds=CPRectMake(0,0,450,100);

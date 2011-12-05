@@ -5,7 +5,7 @@
 {
   TextBox field;
 }
--(id)initWithTitle:(CPString)aTitle andText:(CPString)aText
+-(id)initWithTitle:(CPString)aTitle andText:(CPString)aText forValue:(CPString)aValue
 {
   self=[super init];
   [self setTitle:aTitle];
@@ -15,7 +15,7 @@
   [self setAlertStyle:CPInformationalAlertStyle];
   
   //[self setDelegate:self];
-  field = [TextBox textFieldWithStringValue:@"" placeholder:@"type in file location" width:280];
+  field = [TextBox textFieldWithStringValue:aValue placeholder:@"type in file location" width:280];
   [field setFrameOrigin:CGPointMake(80.0,40.0)];
   //[field setDelegate:self];
   [field setIdentifier:@"infile"];

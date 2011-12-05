@@ -37,6 +37,7 @@ var editorController;
 
   //id editorController;
   TextInput input;
+  CPAlert unsaveWarn;
 }
 
 
@@ -200,10 +201,11 @@ var editorController;
 - (void)save:(id)sender
 {
   CPLog.debug("SAVING Encoding Graph:");
-  [[CPNotificationCenter defaultCenter]
-    postNotificationName:SaveNodeEditorView
-    object:[graphListView refresh]
-    userInfo:nil];
+
+      [[CPNotificationCenter defaultCenter]
+        postNotificationName:SaveNodeEditorView
+        object:[graphListView refresh]
+        userInfo:nil];
   
 }
 
@@ -231,15 +233,22 @@ var editorController;
   
 - (void)load:(id)sender
 {
-  CPLog.debug("LOADING Encoding Graph:"+[graphListView selectedId]);
-  if([graphListView selectedId]){
+  if([editorView hasUnsavedChanges]){
+	 unsaveWarn = [[CPAlert alloc] init];
+   [unsaveWarn setTitle:"Current Graph has unsaved changes!"];
+   [unsaveWarn setMessageText:"Would you proceed anyway, this will discard all changes!"];
+   [unsaveWarn setAlertStyle:CPWarningAlertStyle];
+   [unsaveWarn addButtonWithTitle:"Cancel"];
+   [unsaveWarn setDelegate:self];
+   [unsaveWarn addButtonWithTitle:"proceed without saving"];
+   [unsaveWarn runModal];
+
+  }else{
     [[CPNotificationCenter defaultCenter]
       postNotificationName:LoadNodeEditorView
       object:self
       userInfo:[graphListView selectedId]];
-  }else{
-    var alert=[CPAlert alertWithError:@"please select a graph from the list"];
-    [alert runModal];
+
   }
 }
 - (void)submit:(id)sender
@@ -252,11 +261,27 @@ var editorController;
 
 - (void)alertDidEnd:(CPAlert)anAlert returnCode:(int)tag
 {
-  var name=[input inputText];
-  if (tag === 1)
-    [self _new:name];
-  [CPTimer scheduledTimerWithTimeInterval:0.5 target:graphListView selector:@selector(refresh) userInfo:nil repeats:NO];
-
+  if(anAlert==input){
+    var name=[input inputText];
+    if (tag === 1)
+      [self _new:name];
+    [CPTimer scheduledTimerWithTimeInterval:0.5 target:graphListView selector:@selector(refresh) userInfo:nil repeats:NO];
+  }
+  if(anAlert==unsaveWarn){
+    if (tag === 1){
+      CPLog.debug("LOADING Encoding Graph:"+[graphListView selectedId]);
+      if([graphListView selectedId]){
+        [[CPNotificationCenter defaultCenter]
+          postNotificationName:LoadNodeEditorView
+          object:self
+          userInfo:[graphListView selectedId]];
+      }else{
+        var alert=[CPAlert alertWithError:@"please select a graph from the list"];
+        [alert runModal];
+      }
+    }
+    [CPTimer scheduledTimerWithTimeInterval:0.5 target:graphListView selector:@selector(refresh) userInfo:nil repeats:NO];
+  }
 }
 
 @end

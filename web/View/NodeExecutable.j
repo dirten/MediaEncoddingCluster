@@ -8,12 +8,38 @@
 -(id)init
 {
   self=[super initWithName:@"Executable" withInputHandle:YES andOutputHandle:YES taskName:@"ExecutableTask"];
+  json={
+    "data":{
+      "executable":""
+    }
+  };
+  data=[CPDictionary dictionaryWithJSObject:json recursively:YES];  
   return self;
 }
 -(id)image
 {
   var image = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"Developer-icon.png"] size:CPSizeMake(100, 50)];
   return image;
+}
+-(CPString)frontLabel
+{
+  return [[data objectForKey:@"data"] objectForKey:@"executable"];
+}
+-(id)menuForNodeItem
+{
+  return [self menuItems:["Properties..."] forActions:[@selector(open:)]];
+}
+
+-(void)open:(id)aSender
+{
+  CPLog.debug("open clicked:"+aSender);
+  var view=[self propertyView];
+  if(!view)return;
+  CPLog.debug("View Bounds:"+CPStringFromRect([view bounds]));
+  var propertyWindow=[[NodePropertyWindow alloc] initWithView:view] ;
+  [[propertyWindow contentView] addSubview:view];
+  CPLog.debug("open property window");
+
 }
 
 -(id)propertyView

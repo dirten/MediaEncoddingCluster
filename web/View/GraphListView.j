@@ -29,7 +29,7 @@
     [tableView setDelegate:self];
     [tableView setTarget:self];
     [tableView setDoubleAction:@selector(doubleClicked)];
-
+    [tableView setUsesAlternatingRowBackgroundColors:YES];
     [self setDocumentView:tableView];
     [self setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [self refresh];
@@ -127,7 +127,7 @@
     // if we have more than one issue selected and the user right clicks
     // on a different issue we should just select the issue he right clicked
     if (![[tableView selectedRowIndexes] containsIndex:aRow])
-        [self selectEncodingAtIndex:aRow];
+        [self selectGraphAtIndex:aRow];
 
     // this might have just changed... recalculate
     numberOfSelectedIssues = [[tableView selectedRowIndexes] count];
@@ -149,6 +149,16 @@
 
     return menu;
 }
+- (void)selectGraphAtIndex:(unsigned)index
+{
+    var indexSet = index < 0 ? [CPIndexSet indexSet] : [CPIndexSet indexSetWithIndex:index];
+
+    if (index >= 0)
+        [tableView scrollRowToVisible:index];
+
+    [tableView selectRowIndexes:indexSet byExtendingSelection:NO];
+    //[self tableViewSelectionDidChange:nil];
+}
 
 - (void)delete:(id)sender
 {
@@ -166,7 +176,7 @@
 - (void)rename:(id)sender
 {
   /*asking for a name*/
-  input=[[InputWindow alloc] initWithTitle:@"Name for the Graph" andText:@"please enter a new Name for the Graph."];
+  input=[[InputWindow alloc] initWithTitle:@"Name for the Graph" andText:@"please enter a new Name for the Graph." forValue:[self selectedName]];
   [input setDelegate:self];  
 }
 

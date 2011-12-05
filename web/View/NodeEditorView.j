@@ -1,6 +1,9 @@
 
 @import "NodePropertyWindow.j"
 
+RefreshNodeEditorView=@"RefreshNodeEditorView";
+NodeEditorViewChanged=@"NodeEditorViewChanged";
+
 @implementation NodeEditorView: CPView
 {
   CPArray elements @accessors(property=elements);
@@ -15,6 +18,7 @@
   id lastNode;
   BOOL isDrawingLink;
   BOOL movingView;
+  BOOL unsavedChanges       @accessors(property=unsavedChanges);
   //int   uidCounter;
  
 }
@@ -32,6 +36,17 @@
 
     movingView=NO;
     [self setBackgroundColor:[CPColor whiteColor]];
+  [[CPNotificationCenter defaultCenter]
+    addObserver:self
+    selector:@selector(refreshNodeEditorView)
+    name:RefreshNodeEditorView
+    object:nil];
+  [[CPNotificationCenter defaultCenter]
+    addObserver:self
+    selector:@selector(nodeEditorViewChanged)
+    name:NodeEditorViewChanged
+    object:nil];
+
     /*
     var okButton=[[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([self bounds])-90,CGRectGetHeight([self bounds])-40,80.0,24.0)];
     [okButton setTitle:@"Save"];
@@ -44,10 +59,26 @@
   }
   return self;
 }
+-(void)nodeEditorViewChanged
+{
+  unsavedChanges=YES;
+  [self setNeedsDisplay:YES];
+}
+-(BOOL)hasUnsavedChanges
+{
+  return unsavedChanges;
+}
+
+-(void)refreshNodeEditorView
+{
+  CPLog.debug("Refresh Signal received");
+ [self setNeedsDisplay:YES];
+}
 -(void)clearElements
 {
   [[self subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
   elements=[CPArray array];
+  unsavedChanges=NO;
   [self setNeedsDisplay:YES];
 }
 - (void)performDragOperation:(CPDraggingInfo)aSender
@@ -71,6 +102,7 @@
   }else
     lastNode=element;
     */
+  [self nodeEditorViewChanged];
   [self setNeedsDisplay:YES];
   
 }
@@ -88,6 +120,7 @@
     [select setBorderWidth:3.0];
     [select setBorderColor:[CPColor greenColor]];
     currentSelectedElement=[CPNull null];
+    select=[CPNull null];
     movingView=NO;  
     return menu;
    }
@@ -156,6 +189,8 @@
    
 - (void) mouseDragged:		(CPEvent) 	anEvent	 {
   var point=[self convertPoint:[anEvent locationInWindow] fromView:nil];
+  [self nodeEditorViewChanged];
+
     //[select setBorderWidth:1.0];
 
 //  CPLog.debug("mouseDragged:"+CPStringFromPoint([anEvent locationInWindow]));
@@ -411,7 +446,10 @@
   //CPLog.debug("drawRect");
   
  [[self subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-  var label=[CPTextField labelWithTitle:_name];
+  var tmpname=_name;
+  if([self hasUnsavedChanges])
+    tmpname=_name+" * ";
+  var label=[CPTextField labelWithTitle:tmpname];
   //[label setBounds:CPRectMake(10.0,10.0,200.0,100.0)];  
   [label setFrameOrigin:CPPointMake(10,10)];
   [label setFrameSize:CGSizeMake(550, 100)];

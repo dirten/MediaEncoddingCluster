@@ -19,7 +19,7 @@ testfunc();
   CPDictionary elementClasses;
   id loadedUUID;
   CPString loadedName;
-  
+  id growl;
 }
 
 +(id)instance:(id)theView
@@ -40,6 +40,8 @@ testfunc();
   [elementClass setObject:[NodeOutput class] forKey:@"OutputTask"];
   [elementClass setObject:[NodeExecutable class] forKey:@"ExecutableTask"];
   loadedUUID="";
+  growl=[TNGrowlCenter defaultCenter];
+
   [[CPNotificationCenter defaultCenter]
     addObserver:self
     selector:@selector(saveNodeEditorView:)
@@ -75,7 +77,7 @@ testfunc();
   
 -(void)saveNodeEditorView:(CPNotification)notification{
   CPLog.debug("saveNodeEditorView"+notification);
-
+  
   var data={}
   data.tasks=new Array();
   data.links=new Array();
@@ -130,10 +132,15 @@ testfunc();
     loadedUUID=[result JSONObject].uuid;
     [[notification object] refresh];
   }
+  [growl pushNotificationWithTitle:@"Graph Saved" message:"Graph "+loadedName+" successful saved"];
+  [view setUnsavedChanges:NO];
+  [view setNeedsDisplay:YES];
   //CPLog.debug("Array:"+array);
 }
 
 -(void)loadNodeEditorView:(CPNotification)notification{
+
+
   //CPLog.debug("loadNodeEditorView:"+[notification userInfo]);
   //var data={"tasks":[{"name":"Input","uid":1},{"name":"Encoding","uid":2},{"name":"Encoding","uid":3},{"name":"Output","uid":4}],"links":[{"uid":1,"linksTo":2},{"uid":1,"linksTo":3},{"uid":2,"linksTo":4},{"uid":3,"linksTo":4}],"positions":[{"uid":1,"x":581,"y":47},{"uid":2,"x":858,"y":42},{"uid":3,"x":1070,"y":361},{"uid":4,"x":1130,"y":90}]};
   var path="/api/v1/graph?uuid="+[notification userInfo];
@@ -215,6 +222,7 @@ testfunc();
   var raw_data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:response];
   //CPLog.debug("raw_data:"+[raw_data rawString]);
   var data=[raw_data JSONObject].data;
+  var oldName=data.name;
   data.name=[notification object];
 
   var request = [CPURLRequest requestWithURL:@"/api/v1/graph"];
@@ -223,6 +231,7 @@ testfunc();
   var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
   CPLog.debug("Graph Save Result"+[result rawString]);
   //loadedUUID=[result JSONObject].uuid;
+  [growl pushNotificationWithTitle:@"Graph renamed" message:"Graph "+oldName+" successful renamed to "+data.name];
 
 }
 

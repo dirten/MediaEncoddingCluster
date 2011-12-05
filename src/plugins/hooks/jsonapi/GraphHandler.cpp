@@ -165,7 +165,7 @@ namespace graphhandler {
     org::esb::api::ServiceResponse*sres = ((org::esb::api::ServiceResponse*) res);
     JSONNode result(JSON_NODE);
     std::string postdata;
-    sreq->getInputstream()->read(postdata);
+    sreq->getInputstream()->read(postdata,1000000);
     LOGDEBUG("POSTDATA = " << postdata);
     if (libjson::is_valid(postdata)) {
       LOGDEBUG("Data is valid");

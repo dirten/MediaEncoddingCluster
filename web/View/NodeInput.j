@@ -18,7 +18,10 @@
   data=[CPDictionary dictionaryWithJSObject:json recursively:YES];  
   return self;
 }
-
+-(CPString)frontLabel
+{
+  return [[data objectForKey:@"data"] objectForKey:@"infile"];
+}
 -(id)propertyView
 {
   var bounds=CPRectMake(0,0,450,100);
@@ -61,7 +64,7 @@
 
 -(id)menuForNodeItem
 {
-  return [self menuItems:["Properties...","test"] forActions:[@selector(open:),nil]];
+  return [self menuItems:["Properties..."] forActions:[@selector(open:)]];
 }
 
 -(void)open:(id)aSender

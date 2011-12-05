@@ -23,7 +23,7 @@ ModuleTypeTab = @"tab";
 
     CPToolbarItem                   _currentToolbarItem;
     CPView                          _currentToolbarModule;
-
+    id growl;
 }
 
 
@@ -34,6 +34,8 @@ ModuleTypeTab = @"tab";
 -(id)init{
   self = [super init];
   _loadedToolbarModules                   = [CPDictionary dictionary];
+  growl=[TNGrowlCenter defaultCenter];
+
   return self;
 }
 /*******************************************************************************
@@ -157,6 +159,8 @@ ModuleTypeTab = @"tab";
    [_mainToolbar reloadToolbarItems];
 
     CPLog.debug("Tabbtool loaded");
+   [growl pushNotificationWithTitle:@"Module loaded" message:moduleName+" sucessfull loaded!"];
+
 }
 
 /*******************************************************************************
