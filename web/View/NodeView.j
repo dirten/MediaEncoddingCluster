@@ -11,7 +11,7 @@ OutputHandle = 2;
   CPString    labelText           @accessors(property=labelText);
   CPTextField label
   CPTextField fieldDescription    @accessors(property=fieldDescription);
-
+  
   CPPoint     inHandlePoint;
   CPPoint     outHandlePoint;
   CGPoint     dragLocation;
@@ -35,7 +35,7 @@ OutputHandle = 2;
     name=aName;
     taskName=aTaskName;
     progress=40.0;
-    labelText="click to enter label";
+    labelText="";
     [self setCornerRadius:5.0];
     //[self setBorderWidth:3.0];
     [self setBorderType:CPGrooveBorder];
@@ -60,7 +60,7 @@ OutputHandle = 2;
     json={
       "data":{}
     };
-  data=[CPDictionary dictionaryWithJSObject:json recursively:YES];    
+    data=[CPDictionary dictionaryWithJSObject:json recursively:YES];    
   }
   return self;
 }
@@ -98,51 +98,55 @@ OutputHandle = 2;
 
 -(id)menuForNodeItem
 {
-    //return nil;
-    menu = [[CPMenu alloc] initWithTitle:"Null Menu"],
-    menuItems = ["No Context Menu for this Item"],
-    //menuItems = [],
-    menuActions = [@selector(noop)],
-    //menuActions = [],
-    //isOpen = displayedIssuesKey === "openIssues",
-    count = menuItems.length,
-    i = 0,
-    numberOfSelectedIssues=1;
-
-    for (; i < count; i++)
+  return [self menuItems:["No Context Menu for this Item"] forActions:[@selector(noop)]];
+}
+-(id)menuItems:(id)items forActions:(id)actions
+{
+  //return nil;
+  menu = [[CPMenu alloc] initWithTitle:"Null Menu"],
+  menuItems = items;//["No Context Menu for this Item"],
+  //menuItems = [],
+  menuActions = actions;//[@selector(noop)],
+  //menuActions = [],
+  //isOpen = displayedIssuesKey === "openIssues",
+  count = menuItems.length,
+  i = 0,
+  numberOfSelectedIssues=1;
+  
+  for (; i < count; i++)
+  {
+    var title = menuItems[i],
+    newMenuItem = [[CPMenuItem alloc] initWithTitle:title action:menuActions[i] keyEquivalent:nil];
+    [newMenuItem setEnabled:menuActions[i]!=nil];
+    [newMenuItem setTarget:self];
+    
+    switch (title)
     {
-        var title = menuItems[i],
-        newMenuItem = [[CPMenuItem alloc] initWithTitle:title action:menuActions[i] keyEquivalent:nil];
-        [newMenuItem setEnabled:NO];
-        [newMenuItem setTarget:self];
-
-        switch (title)
-        {
-          case "Stop Encoding":
-            if (numberOfSelectedIssues > 1)
-                [newMenuItem setTitle:"Stop (" + numberOfSelectedIssues + ") Encodings" ];
-                break;
-
-    	    case "Delete Encoding":
-            if (numberOfSelectedIssues > 1)
-              [newMenuItem setTitle:"Delete (" + numberOfSelectedIssues + ") Encodings"];
-        		break;
-
-          case "Tag":
-            var shouldTag = numberOfSelectedIssues === 1;
-            break;
-          case "Comment":
-            [newMenuItem setEnabled:(numberOfSelectedIssues === 1)];
-            break;
-            // we want a seperator so just skip it for now
-          case "View On GitHub":
-            [newMenuItem setEnabled:(numberOfSelectedIssues === 1)];
-            continue;
-            break;
-          }
-          [menu addItem:newMenuItem];
-        }
-    return menu;
+      case "Stop Encoding":
+        if (numberOfSelectedIssues > 1)
+          [newMenuItem setTitle:"Stop (" + numberOfSelectedIssues + ") Encodings" ];
+        break;
+        
+      case "Delete Encoding":
+        if (numberOfSelectedIssues > 1)
+          [newMenuItem setTitle:"Delete (" + numberOfSelectedIssues + ") Encodings"];
+        break;
+        
+      case "Tag":
+        var shouldTag = numberOfSelectedIssues === 1;
+        break;
+      case "Comment":
+        [newMenuItem setEnabled:(numberOfSelectedIssues === 1)];
+        break;
+        // we want a seperator so just skip it for now
+      case "View On GitHub":
+        [newMenuItem setEnabled:(numberOfSelectedIssues === 1)];
+        continue;
+        break;
+    }
+    [menu addItem:newMenuItem];
+  }
+  return menu;
 }
 -(void)noop{}
 
@@ -153,22 +157,22 @@ OutputHandle = 2;
 }
 
 /*
-- (void)mouseDown:(CPEvent)anEvent
-{
-    
-    dragLocation = [anEvent locationInWindow];
-    
-}
-- (void)mouseDragged:(CPEvent)anEvent
-{
-    var location = [anEvent locationInWindow],
-        origin = [self frame].origin;
-    
-    [self setFrameOrigin:CGPointMake(origin.x + location.x - dragLocation.x, origin.y + location.y - dragLocation.y)];
-
-    dragLocation = location;
-}
-*/
+ - (void)mouseDown:(CPEvent)anEvent
+ {
+ 
+ dragLocation = [anEvent locationInWindow];
+ 
+ }
+ - (void)mouseDragged:(CPEvent)anEvent
+ {
+ var location = [anEvent locationInWindow],
+ origin = [self frame].origin;
+ 
+ [self setFrameOrigin:CGPointMake(origin.x + location.x - dragLocation.x, origin.y + location.y - dragLocation.y)];
+ 
+ dragLocation = location;
+ }
+ */
 -(void)drawContentsInView:(id)view inRect:(id)aRect
 {
   //CPLog.debug("-(void)drawContentsInView:(id)view inRect:(id)aRect:"+CPStringFromRect(aRect));
@@ -178,11 +182,11 @@ OutputHandle = 2;
   
   //[self setBackgroundColor:[CPColor whiteColor]];
   //[[self contentView] setBackgroundColor:[CPColor whiteColor]];
-
+  
   //CPLog.debug("ContentRect:"+CPStringFromRect(bounds));
   inHandlePoint=CPPointMake(bounds.origin.x-GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
   outHandlePoint=CPPointMake(bounds.origin.x+bounds.size.width+GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
-   
+  
 	var path = CGPathCreateMutable();
 	
 	CGPathMoveToPoint(path, nil, inHandlePoint.x+5, inHandlePoint.y-20);
@@ -194,27 +198,31 @@ OutputHandle = 2;
 	CGContextClosePath(context);
   CGContextSetStrokeColor(context, [CPColor blackColor]);
 	CGContextStrokePath(context);
-
+  
   var label=[CPTextField labelWithTitle:name];
   var label_origin=CPPointMake(inHandlePoint.x+15,inHandlePoint.y-40);
-  
   [label setFrameOrigin:label_origin];
   [label setTextColor:[CPColor blackColor]];
-  //[label setEditable:YES];
-  //[[self contentView] addSubview:label];
+  [label setNeedsDisplay:YES];
+  [view addSubview:label];
+
+  var label=[CPTextField labelWithTitle:[self labelText]];
+  var label_origin=CPPointMake(inHandlePoint.x+5,inHandlePoint.y-20);
+  [label setFrameOrigin:label_origin];
+  [label setTextColor:[CPColor blackColor]];
+  [label setNeedsDisplay:YES];
   [view addSubview:label];
   
-    var imageView=[[CPImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 110.0, 110.0)];
-    var img_origin=CPPointMake(inHandlePoint.x+15,inHandlePoint.y-55);
+  var imageView=[[CPImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 110.0, 110.0)];
+  var img_origin=CPPointMake(inHandlePoint.x+15,inHandlePoint.y-55);
   
-    [imageView setFrameOrigin:img_origin];
-    [imageView setAlphaValue:0.3];
-    [imageView setImage:[self image]];
-    [view addSubview:imageView];
-
+  [imageView setFrameOrigin:img_origin];
+  [imageView setAlphaValue:0.3];
+  [imageView setImage:[self image]];
+  [view addSubview:imageView];
+  
   //[view addSubview:fieldDescription];
   //[label drawRect:aRect];
-  [label setNeedsDisplay:YES];
   var base_value=progress;
   if(parseInt(base_value)==base_value){
     var ind=[[CPProgressIndicator alloc] initWithFrame:CGRectMake(0,3.5, CGRectGetWidth([self bounds])-4,15)];    
@@ -232,16 +240,16 @@ OutputHandle = 2;
   [view addSubview:label];
   
   /*
-  fieldDescription=[CPTextField labelWithTitle:labelText];
-  var l_origin=CPPointMake(inHandlePoint.x+7,inHandlePoint.y-20);
-  var l_bounds=CPRectMake(inHandlePoint.x+7,inHandlePoint.y-20, 50,10);
-  [fieldDescription setBounds:l_bounds];
-  [fieldDescription setFrameOrigin:l_origin];
-  [fieldDescription setEditable:YES];
-  [fieldDescription setPlaceholderString:@"click to enter label"];
-  [fieldDescription setTextColor:[CPColor darkGrayColor]];
-  [view addSubview:fieldDescription];
-  */
+   fieldDescription=[CPTextField labelWithTitle:labelText];
+   var l_origin=CPPointMake(inHandlePoint.x+7,inHandlePoint.y-20);
+   var l_bounds=CPRectMake(inHandlePoint.x+7,inHandlePoint.y-20, 50,10);
+   [fieldDescription setBounds:l_bounds];
+   [fieldDescription setFrameOrigin:l_origin];
+   [fieldDescription setEditable:YES];
+   [fieldDescription setPlaceholderString:@"click to enter label"];
+   [fieldDescription setTextColor:[CPColor darkGrayColor]];
+   [view addSubview:fieldDescription];
+   */
   [self drawRect:aRect];
   if(_drawInputHandle)
     [self drawHandleInView:view atPoint:inHandlePoint];
@@ -252,76 +260,76 @@ OutputHandle = 2;
 
 - (void)drawHandleInView:(CPView)view atPoint:(CPPoint)point 
 {
-
-//  var ctx = document.getElementById('canvas').getContext('2d'); 
+  
+  //  var ctx = document.getElementById('canvas').getContext('2d'); 
 	var context = [[CPGraphicsContext currentContext] graphicsPort];
-   /*context.shadowOffsetX = 2; 
+  /*context.shadowOffsetX = 2; 
    context.shadowOffsetY = 2; 
    context.shadowBlur = 2; 
    context.shadowColor = "rgba(0, 0, 0, 0.5)"; 
    context.font = "12px Times New Roman"; 
    context.fillStyle = "Black"; 
    context.fillText(name, inHandlePoint.x+15, inHandlePoint.y-30); 
-	*/
-    // Figure out a rectangle that's centered on the point but lined up with device pixels.
-    var x = point.x - GraphicHandleHalfWidth;
-    var y = point.y - GraphicHandleHalfWidth;
-    var width = GraphicHandleWidth;
-    var height = GraphicHandleWidth;
-	  var handleBounds = CGRectMake(x, y, width, height);
-    //CPLog.debug("Handle @ x:"+x+" y:"+y+" w:"+width+" h:"+height);
-    // Draw the shadow of the handle.
-    var handleShadowBounds = CGRectOffset(handleBounds, 1.0, 1.0);
-	  CGContextSetFillColor(context, [CPColor shadowColor]);
-    CGContextFillRect(context, handleShadowBounds);
-
-    // Draw the handle itself.
-	  CGContextSetFillColor(context, [CPColor darkGrayColor]);
-    CGContextFillRect(context, handleBounds);
+   */
+  // Figure out a rectangle that's centered on the point but lined up with device pixels.
+  var x = point.x - GraphicHandleHalfWidth;
+  var y = point.y - GraphicHandleHalfWidth;
+  var width = GraphicHandleWidth;
+  var height = GraphicHandleWidth;
+  var handleBounds = CGRectMake(x, y, width, height);
+  //CPLog.debug("Handle @ x:"+x+" y:"+y+" w:"+width+" h:"+height);
+  // Draw the shadow of the handle.
+  var handleShadowBounds = CGRectOffset(handleBounds, 1.0, 1.0);
+  CGContextSetFillColor(context, [CPColor shadowColor]);
+  CGContextFillRect(context, handleShadowBounds);
+  
+  // Draw the handle itself.
+  CGContextSetFillColor(context, [CPColor darkGrayColor]);
+  CGContextFillRect(context, handleBounds);
 }
 /*
-- (void)drawRect:(CGRect)aRect
-{
-    [super drawRect:aRect];
-    
-    var label=[CPTextField labelWithTitle:name];
-    [label setFrameOrigin:CGPointMake(14.5,2.5)];
-    [label setTextColor:[CPColor darkGrayColor]];
-
-    [self addSubview:label];
-    
-}
-*/
+ - (void)drawRect:(CGRect)aRect
+ {
+ [super drawRect:aRect];
+ 
+ var label=[CPTextField labelWithTitle:name];
+ [label setFrameOrigin:CGPointMake(14.5,2.5)];
+ [label setTextColor:[CPColor darkGrayColor]];
+ 
+ [self addSubview:label];
+ 
+ }
+ */
 - (BOOL)isHandleAtPoint:(CPPoint)handlePoint underPoint:(CPPoint)point 
 {
-    // Check a handle-sized rectangle that's centered on the handle point.
-    var x = handlePoint.x - GraphicHandleHalfWidth;
-    var y = handlePoint.y - GraphicHandleHalfWidth;
-    var width = GraphicHandleWidth;
-    var height = GraphicHandleWidth;
-    var handleBounds = CGRectMake(x, y, width, height);
-    //CPLog.debug("Handle @ x:"+x+" y:"+y+" w:"+width+" h:"+height);
-    //CPLog.debug("Point @ x:"+point.x+" y:"+point.y);
-
-    return CGRectContainsPoint(handleBounds, point);
+  // Check a handle-sized rectangle that's centered on the handle point.
+  var x = handlePoint.x - GraphicHandleHalfWidth;
+  var y = handlePoint.y - GraphicHandleHalfWidth;
+  var width = GraphicHandleWidth;
+  var height = GraphicHandleWidth;
+  var handleBounds = CGRectMake(x, y, width, height);
+  //CPLog.debug("Handle @ x:"+x+" y:"+y+" w:"+width+" h:"+height);
+  //CPLog.debug("Point @ x:"+point.x+" y:"+point.y);
+  
+  return CGRectContainsPoint(handleBounds, point);
 }
 
 - (CPPoint)handleAtPoint:(CPPoint)aPoint 
 {
-    // Check a handle-sized rectangle that's centered on the handle point.
-    //var bounds=[self bounds];
-    //var pointin=CPPointMake(bounds.origin.x-GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
-
-    if(_drawInputHandle && [self isHandleAtPoint:inHandlePoint underPoint:aPoint]){
-      //CPLog.debug("begin point found");
-      return inHandlePoint;
-    }
-    //var pointout=CPPointMake(bounds.origin.x+bounds.size.width+GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
-    if(_drawOutputHandle && [self isHandleAtPoint:outHandlePoint underPoint:aPoint]){
-      //CPLog.debug("end point found");
-      return outHandlePoint;
-    }
-    return nil;
+  // Check a handle-sized rectangle that's centered on the handle point.
+  //var bounds=[self bounds];
+  //var pointin=CPPointMake(bounds.origin.x-GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
+  
+  if(_drawInputHandle && [self isHandleAtPoint:inHandlePoint underPoint:aPoint]){
+    //CPLog.debug("begin point found");
+    return inHandlePoint;
+  }
+  //var pointout=CPPointMake(bounds.origin.x+bounds.size.width+GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
+  if(_drawOutputHandle && [self isHandleAtPoint:outHandlePoint underPoint:aPoint]){
+    //CPLog.debug("end point found");
+    return outHandlePoint;
+  }
+  return nil;
 }
 
 -(id)initWithCoder:(CPCoder)aCoder
@@ -347,7 +355,7 @@ OutputHandle = 2;
   [aCoder encodeObject:_drawInputHandle forKey:@"drawInputHandle"];
   [aCoder encodeObject:_drawOutputHandle forKey:@"drawOutputHandle"];
   [aCoder encodeObject:taskName forKey:@"taskName"];
-
+  
   //[aCoder encodeObject:inHandlePoint forKey:@"inHandlePoint"];
   //[aCoder encodeObject:outHandlePoint forKey:@"outHandlePoint"];
 }
@@ -361,24 +369,24 @@ OutputHandle = 2;
 }
 
 /*
-- (CPView) hitTest:		(CPPoint) 	aPoint	 	
-{
-  CPLog.debug("hit test");
-  return nil;
-}
-
-- (BOOL) hitTests
-{
-  return YES;
-}
-*/
+ - (CPView) hitTest:		(CPPoint) 	aPoint	 	
+ {
+ CPLog.debug("hit test");
+ return nil;
+ }
+ 
+ - (BOOL) hitTests
+ {
+ return YES;
+ }
+ */
 @end
 /*
-function CGBitmapGraphicsContextCreate() 
-{ 
-     var DOMElement = document.createElement("canvas"), 
-         context = DOMElement.getContext("2d"); 
-     context.DOMElement = DOMElement; 
-     return context; 
-} 
-*/
+ function CGBitmapGraphicsContextCreate() 
+ { 
+ var DOMElement = document.createElement("canvas"), 
+ context = DOMElement.getContext("2d"); 
+ context.DOMElement = DOMElement; 
+ return context; 
+ } 
+ */

@@ -1,11 +1,16 @@
 
+@import <AppKit/CPPopover.j>
 @import "NodeView.j"
 @import "ProfileEditView.j"
 @import "../Categories/CPDictionary+toJSON.j"
+@import "ProfileSelector.j"
+
 @implementation NodeEncoding: NodeView
 {
   CPDictionary    data @accessors(property=data);
   id json;
+  CPPopover   popoverView;
+  CPViewController viewController;
 }
 -(id)init
 {
@@ -19,7 +24,19 @@
   };
   data=[CPDictionary dictionaryWithJSObject:json recursively:YES];  
   CPLog.debug("Data in Contruct:"+data);
+  //popoverView=[[CPPopover alloc] init];
+  //viewController=[[CPViewController alloc] init];
+  //[popoverView setContentViewController:viewController];
+  [self setLabelText:@""];
   return self;
+}
+
+-(void)setData:(id)ndata
+{
+  data=ndata;
+  [self setLabelText:[[data objectForKey:@"data"] objectForKey:@"name"]];
+  //[self setLabelText:@"name"];
+  CPLog.debug("Data in setData:"+[data objectForKey:@"name"]);
 }
 
 -(void)drawContentsInView:(id)view inRect:(id)aRect
@@ -32,10 +49,82 @@
   [view setProfileId:0];
   return view;
 }
+
+-(id)menuForNodeItem
+{
+//  return [self menuItems:["Load existing Profile ...","Properties"] forActions:[@selector(loadProfile:),@selector(open:)]];
+  
+  //return nil;
+  menu = [[CPMenu alloc] initWithTitle:"Null Menu"],
+  profileMenu = [[CPMenu alloc] initWithTitle:"Profiles"],
+  profileMenuItem = [[CPMenuItem alloc] initWithTitle:"Load existing Profile ..." action:nil keyEquivalent:nil],
+  menuItems = ["No Context Menu for this Item"],
+  //menuItems = [],
+  menuActions = [nil],
+  //menuActions = [],
+  //isOpen = displayedIssuesKey === "openIssues",
+  count = menuItems.length,
+  i = 0,
+  //[menu addItem:profileMenu];
+  numberOfSelectedIssues=1;
+  var request = [CPURLRequest requestWithURL:@"/api/v1/profile"];
+  var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+  CPLog.debug("NodeEncoding Load Result"+[result rawString]);
+  var json=[[result rawString] objectFromJSON];
+  [profileMenuItem setSubmenu:profileMenu];
+  [menu addItem:profileMenuItem];
+  
+  for (; i < json.data.length; i++)
+  {
+    var newMenuItem = [[CPMenuItem alloc] initWithTitle:json.data[i].name action:@selector(loadProfile:) keyEquivalent:nil];
+    
+    [newMenuItem setRepresentedObject:json.data[i].id];
+    [newMenuItem setTarget:self];
+
+    [profileMenu addItem:newMenuItem];  
+  }
+  var newMenuItem = [[CPMenuItem alloc] initWithTitle:@"Properties..." action:@selector(open:) keyEquivalent:nil];
+  //[newMenuItem setEnabled:YES];
+  [newMenuItem setTarget:self];
+  
+  [menu addItem:newMenuItem];  
+  return menu;
+}
+
+}
+
 -(id)image
 {
   var image = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"Enhanced-Labs-icon.png"] size:CPSizeMake(100, 50)];
   return image;
+}
+
+-(void)loadProfile:(id)sender
+{
+  var profileId=[sender representedObject];
+  var request = [CPURLRequest requestWithURL:@"/api/v1/profile?id="+profileId];
+  var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+  CPLog.debug("NodeEncoding Load Profile Result"+[result rawString]);
+  var json=[[result rawString] objectFromJSON];
+  data=[CPDictionary dictionaryWithJSObject:json recursively:YES];  
+
+  CPLog.debug("LoadProfile:"+[sender title]);
+  [self setLabelText:[[data objectForKey:@"data"] objectForKey:@"name"]];
+  
+  [self setNeedsDisplay:YES];
+
+  //[popoverView showRelativeToRect:nil ofView:self preferredEdge:CPRectMake(100,100,200,200)];
+}
+-(void)open:(id)aSender
+{
+  CPLog.debug("open clicked:"+aSender);
+  var view=[self propertyView];
+  if(!view)return;
+  CPLog.debug("View Bounds:"+CPStringFromRect([view bounds]));
+  var propertyWindow=[[NodePropertyWindow alloc] initWithView:view] ;
+  [[propertyWindow contentView] addSubview:view];
+  CPLog.debug("open property window");
+  
 }
 
 -(id)initWithCoder:(CPCoder)aCoder

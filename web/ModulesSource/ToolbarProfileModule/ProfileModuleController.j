@@ -18,6 +18,8 @@
 
 
 @import <Foundation/Foundation.j>
+@import "../../Categories/CPButtonBar+themeGray.j"
+
 
 // import only AppKit part you need here.
 @import <AppKit/CPTextField.j>
@@ -53,6 +55,7 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
  */
 - (void)awakeFromCib
 {
+  [buttonBar setGrayTheme];
   CPLog.debug("awakeFromCib and reload table view new bla"+self);
   var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
   [request setHTTPMethod:"GET"];

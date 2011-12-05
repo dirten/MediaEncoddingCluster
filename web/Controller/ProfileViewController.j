@@ -3,16 +3,12 @@
 
 @implementation ProfileViewController : CPObject
   {
-    CPView view;
+    @outlet CPTableView profileTableView;
   }
 
-  - (id)init
-  {
-  }
-  - (id)setupView:(CGRect)frame
-  {
-    if(view==nil)
-      view = [[ProfileView alloc] initWithFrame:frame];
-    return view
-  }
+
+-(void)awakeFromCib
+{
+
+}
 @end

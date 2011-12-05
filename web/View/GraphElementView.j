@@ -9,8 +9,8 @@ CPArray elements;
   self=[super initWithFrame:aFrame];
   var elementsView = [[CPCollectionView alloc] initWithFrame:aFrame];
   [elementsView setAutoresizingMask:CPViewWidthSizable];
-  [elementsView setMinItemSize:CGSizeMake(120, 100)];
-  [elementsView setMaxItemSize:CGSizeMake(200, 200)];
+  [elementsView setMinItemSize:CGSizeMake(150, 100)];
+  [elementsView setMaxItemSize:CGSizeMake(150, 100)];
   [elementsView setDelegate:self];
 
   var elementPrototype = [[CPCollectionViewItem alloc] init],

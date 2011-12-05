@@ -8,7 +8,7 @@ ProfileClicked = @"ProfileClicked";
   {
     id jsonData;
     id selectedid;
-    CPTableView  tableView;
+    @outlet CPTableView  tableView;
   }
 
   -(void)setData:(id)data
@@ -16,6 +16,18 @@ ProfileClicked = @"ProfileClicked";
     jsonData=data;
   }
 
+-(void)awakeFromCib
+{
+  CPLog.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ProfileView awakeFromCib");
+  [self setDocumentView:tableView];
+
+  var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
+  [request setHTTPMethod:"GET"];
+  CPLog.debug(request.HTTPMethod);
+  // see important note about CPJSONPConnection above
+  var connection = [CPURLConnection connectionWithRequest:request delegate:self];
+
+}
   -(id)initWithFrame:(id)frame
   {
     [[CPNotificationCenter defaultCenter]
@@ -63,7 +75,7 @@ ProfileClicked = @"ProfileClicked";
   {
     var result=0;
     if(jsonData){
-      jsonData.data.unshift({"id":"double click to create a new Profile","name":""});
+      //jsonData.data.unshift({"id":"double click to create a new Profile","name":""});
       result=jsonData.data.length;
     }
     CPLog.debug("RowCount="+result);

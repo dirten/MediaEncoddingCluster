@@ -18,9 +18,12 @@
 
 
 @import <Foundation/Foundation.j>
+@import <AppKit/CPAccordionView.j>
 @import "../../View/InputWindow.j"
 @import "../../View/NodeEditorView.j"
 @import "../../Controller/NodeEditorController.j"
+@import "../../Categories/CPButtonBar+themeGray.j"
+
 var editorController;
 
 @implementation EncodingFlowEditorModuleController : CPViewController
@@ -29,6 +32,8 @@ var editorController;
   @outlet CPView          elementView;
   @outlet GraphListView   graphListView;
   @outlet CPButtonBar     graphButtonBar;
+  @outlet CPButtonBar     inspectButtonBar;
+  @outlet CPAccordionView accView;
 
   //id editorController;
   TextInput input;
@@ -44,6 +49,10 @@ var editorController;
 {
   CPLog.debug("EncodingFlowEditorModuleController awake from cib !!!!!!!!!!!!!!!!!!!!!!!!");
   [editorView setBackgroundColor:[CPColor whiteColor]];
+  [graphButtonBar setGrayTheme];
+  [inspectButtonBar setGrayTheme];
+  [inspectButtonBar setHasResizeControl:NO];
+   
   //graphListView=[[GraphListView alloc] initWithFrame:CPRectMake(0,260,300,270)];
 
   var buttons=[CPArray array];
@@ -55,12 +64,15 @@ var editorController;
   var loadButton=[[CPButton alloc] initWithFrame:CGRectMake(0, 0, 55, 25)];
   [loadButton setTitle:@"Load"];
   [loadButton setAutoresizingMask:CPViewMinXMargin|CPViewMinYMargin];
+  //[loadButton setBordered:NO];
   [loadButton setTarget:self];
+  
   [loadButton setAction:@selector(load:)];
 
   var saveButton=[[CPButton alloc] initWithFrame:CGRectMake(0, 0, 55, 25)];
   [saveButton setTitle:@"Save"];
   [saveButton setAutoresizingMask:CPViewMinXMargin|CPViewMinYMargin];
+  //[saveButton setBordered:NO];
   [saveButton setTarget:self];
   [saveButton setAction:@selector(save:)];
 
@@ -76,6 +88,7 @@ var editorController;
   [submitButton setTarget:self];
   [submitButton setAction:@selector(submit:)];
 
+  //[buttons addObject:plusButton];
   [buttons addObject:loadButton];
   [buttons addObject:saveButton];
   [buttons addObject:newButton];
@@ -84,6 +97,29 @@ var editorController;
   [graphButtonBar setButtons:buttons];
   editorController=[NodeEditorController instance:editorView];
 
+
+
+    var accItem1    = [[CPAccordionViewItem alloc] initWithIdentifier:@"anItem 1"]; 
+    var accItem2    = [[CPAccordionViewItem alloc] initWithIdentifier:@"anItem 2"]; 
+    var accItem3    = [[CPAccordionViewItem alloc] initWithIdentifier:@"anItem 3"]; 
+    var label1         = [[CPTextField alloc] initWithFrame:CGRectMake(0,0,400,300)]; 
+    var label2         = [[CPTextField alloc] initWithFrame:CGRectMake(0,0,400,300)]; 
+    var label3         = [[CPTextField alloc] initWithFrame:CGRectMake(0,0,400,300)]; 
+    [label1 setBackgroundColor:[CPColor greenColor]]; 
+    [label2 setBackgroundColor:[CPColor greenColor]]; 
+    [label3 setBackgroundColor:[CPColor greenColor]]; 
+    [label1 setStringValue:@"testing 1"]; 
+    [label2 setStringValue:@"testing 2"]; 
+    [label3 setStringValue:@"testing 3"]; 
+  [accItem1 setView:label1]; 
+  [accItem2 setView:label2]; 
+  [accItem3 setView:label3]; 
+  [accItem1 setLabel:@"eins"]; 
+  [accItem2 setLabel:@"zwei"]; 
+  [accItem3 setLabel:@"drei"]; 
+    [accView addItem:accItem1]; 
+    [accView addItem:accItem2]; 
+    [accView addItem:accItem3]; 
 }
 
 #pragma mark -

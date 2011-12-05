@@ -61,6 +61,8 @@
 
   [element setBounds:CGRectMake(frameOrigin.x-(bounds.size.width/2),frameOrigin.y-(bounds.size.height/2),bounds.size.width,bounds.size.height)];
   [element setUid:[elements count]+1];
+  [element setProgress:@" "];
+
   [elements addObject:element];
   //CPLog.debug("UidCounter:"+[element uid]);
   /*

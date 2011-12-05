@@ -213,14 +213,14 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
 {
   //this method is called when the network request returns. the data is the returned
   //information from flickr. we set the array of photo urls as the data to our collection view
-  CPLog.debug("status==200 : "+[_response statusCode]==200);
+  //CPLog.debug("status==200 : "+[_response statusCode]==200);
   
-  if([_response statusCode]==200){
+  //if([_response statusCode]==200){
     jsonData=[data objectFromJSON];
     [jobTableView reloadData];
-  }else{
+  //}else{
     //alert(data);
-  }
+  //}
 }
 - (void)refresh{
   var request = [CPURLRequest requestWithURL:"/api/v1/encoding?full"];
