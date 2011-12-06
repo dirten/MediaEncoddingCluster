@@ -51,7 +51,13 @@
 -(id)propertyView
 {
   //[[TNGrowlCenter defaultCenter] pushNotificationWithTitle:@"Loading Property View." message:"please wait!"];
-  
+  //[[CPRunLoop currentRunLoop] performSelectors]; 
+ [[CPNotificationCenter defaultCenter]
+    postNotificationName:NodeEditorViewChanged
+    object:self
+    userInfo:nil];
+  [[CPRunLoop currentRunLoop] performSelectors]; 
+
   var view=[[ProfileEditView alloc] initWithData:data];
   [view setProfileId:0];
   return view;
@@ -124,8 +130,14 @@
     object:self
     userInfo:nil];
   [[TNGrowlCenter defaultCenter] pushNotificationWithTitle:@"Profile successful loaded." message:"Profile "+[[data objectForKey:@"data"] objectForKey:@"name"]+" successful loaded."];
+ [[CPNotificationCenter defaultCenter]
+    postNotificationName:NodeEditorViewChanged
+    object:self
+    userInfo:nil];
+  [[CPRunLoop currentRunLoop] performSelectors]; 
   //[popoverView showRelativeToRect:nil ofView:self preferredEdge:CPRectMake(100,100,200,200)];
 }
+
 -(void)open:(id)aSender
 {
   CPLog.debug("open clicked:"+aSender);

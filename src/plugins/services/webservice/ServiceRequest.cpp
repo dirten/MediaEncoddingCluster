@@ -105,12 +105,12 @@ namespace org {
 
       bool ServiceRequest::hasParameter(std::string key) {
         bool result = false;
-        LOGDEBUG("Query String"<<_request_info->query_string);
+        //LOGDEBUG("Query String"<<_request_info->query_string);
         if (_request_info->query_string != NULL) {
           org::esb::util::StringTokenizer st(_request_info->query_string, "&");
           while (st.hasMoreTokens()) {
             std::string tk = st.nextToken();
-            LOGDEBUG("token:"<<tk);
+            //LOGDEBUG("token:"<<tk);
             if (tk.find(key) == 0 ) {
               result = true;
               break;
@@ -134,9 +134,9 @@ namespace org {
 
       bool ServiceRequest::hasHeader(std::string name) {
         bool result=false;
-        LOGDEBUG("HeaderCount="<<_request_info->num_headers);
+        //LOGDEBUG("HeaderCount="<<_request_info->num_headers);
         for (int a = 0; a < _request_info->num_headers; a++) {
-          LOGDEBUG("header "<<_request_info->http_headers[a].name<<" = "<<_request_info->http_headers[a].value);
+          //LOGDEBUG("header "<<_request_info->http_headers[a].name<<" = "<<_request_info->http_headers[a].value);
           if(strcmp(_request_info->http_headers[a].name,name.c_str())==0){
             result=true;
             break;

@@ -24,13 +24,15 @@ namespace plugin {
   }
 
   void ExportTask::prepare() {
+    /*
     if (getContext()->contains("job")) {
       _job = Ptr<db::Job > (new db::Job(getContext()->get<db::Job > ("job")));
     } else {
       setStatus(Task::ERROR);
       setStatusMessage("there is no associated job to this encoding task");
       return;
-    }
+    }*/
+    _task_uuid = getContext()->getEnvironment<std::string > ("task.uuid");
     
     if (true || getContext()->contains("exporttask.format")) {
       _format = getContext()->getEnvironment<std::string > ("exporttask.format");
@@ -60,11 +62,11 @@ namespace plugin {
     }
     org::esb::util::ScopedTimeCounter stc("export");
     std::string base=org::esb::config::Config::get("hive.tmp_path");
-    org::esb::io::File inputdir(base+"/jobs/"+_job->uuid.value()+"/collect");
+    org::esb::io::File inputdir(base+"/jobs/"+_task_uuid+"/collect");
     org::esb::io::FileList filelist = inputdir.listFiles();
     if(filelist.size()==0){
       setStatus(Task::ERROR);
-      setStatusMessage(std::string("no files found to export from ").append(base+"/"+_job->uuid.value()+"/collect"));
+      setStatusMessage(std::string("no files found to export from ").append(base+"/"+_task_uuid+"/collect"));
       return;
     }
     foreach(Ptr<org::esb::io::File> file, filelist) {

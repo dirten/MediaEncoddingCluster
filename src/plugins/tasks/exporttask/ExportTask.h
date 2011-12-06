@@ -54,7 +54,8 @@ namespace plugin {
     typedef boost::shared_ptr<org::esb::av::Packet> PacketPtr;
     StreamEncoderMap _stream_encoder;
     InOutStreamMap _in_out_stream_map;
-    Ptr<db::Job> _job;
+    //Ptr<db::Job> _job;
+    std::string _task_uuid;
   };
   //  REGISTER_TASK("DownloadTask", DownloadTask)
 }

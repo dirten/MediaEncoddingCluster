@@ -174,6 +174,22 @@ const JSONNode & JSONNode::at(json_index_t pos) const json_throws(std::out_of_ra
     }
     return (*this)[pos];
 }
+bool JSONNode::contains(std::string sn) {
+    bool result = false;
+    if (JSONNode ** res = internal -> at(sn)){
+      result=true;
+    }/*
+    int size = this->size();
+    if (size > 0) {
+      for (int a = 0; a < size; a++) {
+        //JSONNode n = this[a];        
+        if (sn == (internal -> at(a))->name()) {
+          result = true;
+        }
+      }
+    }*/
+    return result;
+  }
 
 JSONNode & JSONNode::operator[](json_index_t pos) json_nothrow {
     JSON_CHECK_INTERNAL();

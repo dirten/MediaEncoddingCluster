@@ -20,7 +20,7 @@
 #include "org/esb/util/UUID.h"
 #include "org/esb/hive/Environment.h"
 using namespace std;
-
+bool toexit=false;
 void process(boost::asio::ip::tcp::endpoint e1, partitionservice::ProcessUnitCollector & col) {
   boost::shared_ptr<org::esb::hive::job::ProcessUnit> pu;
   partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
@@ -31,9 +31,12 @@ void process(boost::asio::ip::tcp::endpoint e1, partitionservice::ProcessUnitCol
       //  org::esb::lang::Thread::sleep2(10*1000);
       pu->process();
       pu->_input_packets.clear();
-      col.putProcessUnit(pu);
+      man->collectProcessUnit(pu, e1);
+      //col.putProcessUnit(pu);
+    }else{
+      org::esb::lang::Thread::sleep2(1000);
     }
-  } while (pu);
+  } while (!toexit);
 
 }
 
@@ -43,10 +46,13 @@ void process(boost::asio::ip::tcp::endpoint e1, partitionservice::ProcessUnitCol
 int main(int argc, char** argv) {
   org::esb::hive::Environment::build(argc,argv);
   Log::open();
-
+  if(argc<3){
+    std::cout << "usage: "<<argv[0]<<" <inputfile_path> <profile_path> "<<std::endl;
+  }
+    
 
   /*Loading profile from disk*/
-  org::esb::io::FileInputStream fis(std::string(MEC_SOURCE_DIR).append("/presets/x264-hq.preset"));
+  org::esb::io::FileInputStream fis(argv[2]);
   std::string profile_data;
   fis.read(profile_data);
   org::esb::core::PluginRegistry::getInstance()->load(ENCODINGTASK_PLUGIN);
@@ -55,23 +61,15 @@ int main(int argc, char** argv) {
   //cfg["encodingtask.src"]=std::string(MEC_SOURCE_DIR).append("/test.dvd");
   cfg["encodingtask.src"]=std::string(argv[1]);
   //cfg["encodingtask.src"] = "/media/video/ChocolateFactory.ts";
-  cfg["encodingtask.profile"] = profile_data;
+  cfg["encodingtask.profiledata"] = profile_data;
+  cfg["task.uuid"] = "0815";
   db::HiveDb database("sqlite3", "database=test.db");
   database.drop();
   database.create();
   db::Job job(database);
   job.uuid = (std::string)org::esb::util::PUUID();
   job.update();
-  {
-    Ptr<org::esb::core::Task> task = org::esb::core::PluginRegistry::getInstance()->createTask("EncodingTask", cfg);
-    task->getContext()->_props["job"] = job;
-    if (task) {
-      task->prepare();
-      task->execute();
-      task->cleanup();
-    }
-  }
-  //return 0;
+
   partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
   boost::asio::ip::tcp::endpoint e1(boost::asio::ip::address_v4::from_string("127.0.0.1"), 6000);
   boost::asio::ip::tcp::endpoint e2(boost::asio::ip::address_v4::from_string("127.0.0.1"), 6001);
@@ -91,9 +89,22 @@ int main(int argc, char** argv) {
   boost::thread t3=go(process, e3, col);
   boost::thread t4=go(process, e4, col);
   boost::thread t5=go(process, e5, col);
-  while (man->getSize("global") > 0) {
-    org::esb::lang::Thread::sleep2(50 * 1000);
+  
+  
+  {
+    Ptr<org::esb::core::Task> task = org::esb::core::PluginRegistry::getInstance()->createTask("EncodingTask", cfg);
+    //task->getContext()->_props["job"] = job;
+    if (task) {
+      task->prepare();
+      task->execute();
+      task->cleanup();
+    }
   }
+  //return 0;
+  while (man->getSize("global") > 0) {
+    org::esb::lang::Thread::sleep2(1 * 1000);
+  }
+  toexit=true;
   t1.join();
   
   t2.join();
@@ -105,7 +116,8 @@ int main(int argc, char** argv) {
   std::map<std::string, std::string> expcfg;
   //cfg["encodingtask.src"]=std::string(MEC_SOURCE_DIR).append("/test.dvd");
   expcfg["exporttask.trg"] = "/tmp/ChocolateFactory.mp4";
-  expcfg["exporttask.jobid"] = "collector";
+  expcfg["exporttask.format"] = "mp4";
+  expcfg["task.uuid"] = "0815";
   {
     Ptr<org::esb::core::Task> task = org::esb::core::PluginRegistry::getInstance()->createTask("ExportTask", expcfg);
     if (task) {

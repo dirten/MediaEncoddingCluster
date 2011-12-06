@@ -21,6 +21,7 @@
 @import <AppKit/CPAccordionView.j>
 @import "../../View/InputWindow.j"
 @import "../../View/NodeEditorView.j"
+@import "../../View/YesNoAlert.j"
 @import "../../Controller/NodeEditorController.j"
 @import "../../Categories/CPButtonBar+themeGray.j"
 
@@ -213,7 +214,7 @@ var editorController;
 {
   CPLog.debug("New Encoding Graph:");
   /*asking for a name*/
-  input=[[InputWindow alloc] initWithTitle:@"Name for the new Graph" andText:@"please enter a Name for the new Graph."];
+  input=[[InputWindow alloc] initWithTitle:@"Name for the new Graph" andText:@"please enter a Name for the new Graph." forValue:nil];
   [input setDelegate:self];
   /*
   [[CPNotificationCenter defaultCenter]
@@ -230,10 +231,21 @@ var editorController;
     object:name
     userInfo:nil];
 }
-  
-- (void)load:(id)sender
+
+- (void)_load:(id)sender
 {
   if([editorView hasUnsavedChanges]){
+    var alert=[[YesNoAlert alloc] 
+                initWithLabel:@"Current Graph has unsaved changes!" 
+                question:@"Would you proceed anyway, this will discard all changes!" 
+                yesLabel:@"proceed without saving" 
+                noLabel:@"Cancel" 
+                target:self 
+                yesAction:@selector(_load)
+                yesObject:nil
+                noAction:nil
+                noObject:nil];
+  /*
 	 unsaveWarn = [[CPAlert alloc] init];
    [unsaveWarn setTitle:"Current Graph has unsaved changes!"];
    [unsaveWarn setMessageText:"Would you proceed anyway, this will discard all changes!"];
@@ -242,14 +254,17 @@ var editorController;
    [unsaveWarn setDelegate:self];
    [unsaveWarn addButtonWithTitle:"proceed without saving"];
    [unsaveWarn runModal];
-
+   */
   }else{
-    [[CPNotificationCenter defaultCenter]
+    [self _load];
+  }
+}
+- (void)load:(id)sender
+{
+   [[CPNotificationCenter defaultCenter]
       postNotificationName:LoadNodeEditorView
       object:self
       userInfo:[graphListView selectedId]];
-
-  }
 }
 - (void)submit:(id)sender
 {

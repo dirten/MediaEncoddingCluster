@@ -30,11 +30,12 @@ namespace encodingtask {
   private:
     std::string _srcuristr;
     std::string _partition;
+    std::string _task_uuid;
     
     org::esb::hive::PresetReaderJson::CodecList _codecs;
     org::esb::hive::PresetReaderJson::FilterList _filters;
     org::esb::hive::PresetReaderJson::Preset _preset ;
-    Ptr<db::Job> _job;
+    //Ptr<db::Job> _job;
     
     void putToPartition(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast=false);
     void enQueue(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast=false);

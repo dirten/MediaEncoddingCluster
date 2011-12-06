@@ -22,6 +22,7 @@
 #include "boost/lexical_cast.hpp"
 #include "org/esb/util/UUID.h"
 #include "org/esb/config/config.h"
+#include "GraphVerifier.h"
 
 namespace graphhandler {
 
@@ -38,10 +39,10 @@ namespace graphhandler {
     LOGDEBUG("Url=" << sreq->getRequestURI());
     if (sreq->getRequestURI().find(_base_uri + "/graph") == 0) {
       if (sreq->getMethod() == "GET") {
-        if(sreq->hasParameter("delete")){
+        if (sreq->hasParameter("delete")) {
           handleDELETE(req, res);
-        }else{
-          handleGET(req, res);          
+        } else {
+          handleGET(req, res);
         }
       } else if (sreq->getMethod() == "POST") {
         handlePOST(req, res);
@@ -78,26 +79,30 @@ namespace graphhandler {
   void GraphHandler::handleDELETE(org::esb::core::Request*req, org::esb::core::Response*res) {
     org::esb::api::ServiceRequest*sreq = ((org::esb::api::ServiceRequest*) req);
     org::esb::api::ServiceResponse*sres = ((org::esb::api::ServiceResponse*) res);
-    std::string user_path=org::esb::config::Config::get("hive.graph_path");
-    if(sreq->hasParameter("uuid")){
-       std::string uuid=sreq->getParameter("uuid");
-       org::esb::io::File f(user_path+"/"+uuid+".graph");
-        if(f.exists()){
-          f.deleteFile();
-        }
+    std::string user_path = org::esb::config::Config::get("hive.graph_path");
+    if (sreq->hasParameter("uuid")) {
+      std::string uuid = sreq->getParameter("uuid");
+      org::esb::io::File f(user_path + "/" + uuid + ".graph");
+      if (f.exists()) {
+        f.deleteFile();
       }
-     sres->setStatus(org::esb::api::ServiceResponse::OK);
+    }
+    sres->setStatus(org::esb::api::ServiceResponse::OK);
   }
-  
+
   void GraphHandler::handleGET(org::esb::core::Request*req, org::esb::core::Response*res) {
     org::esb::api::ServiceRequest*sreq = ((org::esb::api::ServiceRequest*) req);
     org::esb::api::ServiceResponse*sres = ((org::esb::api::ServiceResponse*) res);
     JSONNode result(JSON_NODE);
-    std::string user_path=org::esb::config::Config::get("hive.graph_path");
-    if(sreq->hasParameter("uuid")){
-      std::string uuid=sreq->getParameter("uuid");
-      org::esb::io::File f(user_path+"/"+uuid+".graph");
-      if(f.exists()){
+    std::string user_path = org::esb::config::Config::get("hive.graph_path");
+    if (sreq->hasParameter("submit") && sreq->hasParameter("uuid")) {
+      performSubmit(req, res);
+      return;
+    } else
+      if (sreq->hasParameter("uuid")) {
+      std::string uuid = sreq->getParameter("uuid");
+      org::esb::io::File f(user_path + "/" + uuid + ".graph");
+      if (f.exists()) {
         org::esb::io::FileInputStream fis(&f);
         std::string ndata;
         fis.read(ndata);
@@ -106,9 +111,9 @@ namespace graphhandler {
         if (libjson::is_valid(ndata)) {
           LOGDEBUG("Data is valid");
           JSONNode inode = libjson::parse(ndata);
-          if(contains(inode,"uuid")){
-            uuid=inode["uuid"].as_string();
-          }else{
+          if (contains(inode, "uuid")) {
+            uuid = inode["uuid"].as_string();
+          } else {
             //f.deleteFile();
             //inode.push_back(JSONNode("uuid",uuid));
             //save(inode, uuid);
@@ -118,38 +123,39 @@ namespace graphhandler {
           result.push_back(inode);
         }
       }
-    }else{
-      org::esb::io::File f(user_path+"/");
-      org::esb::io::FileList files=f.listFiles();    
+    } else {
+      org::esb::io::File f(user_path + "/");
+      org::esb::io::FileList files = f.listFiles();
       JSONNode data(JSON_ARRAY);
       data.set_name("data");
       result.push_back(JSONNode("status", "ok"));
-      foreach(Ptr<org::esb::io::File> file, files){
+
+      foreach(Ptr<org::esb::io::File> file, files) {
         /**load graph file*/
         org::esb::io::FileInputStream fis(file.get());
         std::string ndata;
         fis.read(ndata);
-        std::string uuid=sreq->getUUID();
+        std::string uuid = sreq->getUUID();
 
         /**parsing json file*/
         if (libjson::is_valid(ndata)) {
           LOGDEBUG("Data is valid");
           JSONNode inode = libjson::parse(ndata);
           std::string name;
-          if(contains(inode,"name")){
-            name=inode["name"].as_string();
+          if (contains(inode, "name")) {
+            name = inode["name"].as_string();
           }
-          if(contains(inode,"uuid")){
-            uuid=inode["uuid"].as_string();
-          }else{
+          if (contains(inode, "uuid")) {
+            uuid = inode["uuid"].as_string();
+          } else {
             //file->deleteFile();
             //inode.push_back(JSONNode("uuid",uuid));
             //save(inode, uuid);
           }
           JSONNode file_node(JSON_NODE);
           file_node.set_name("graph");
-          file_node.push_back(JSONNode("uuid",uuid));
-          file_node.push_back(JSONNode("name",name));
+          file_node.push_back(JSONNode("uuid", uuid));
+          file_node.push_back(JSONNode("name", name));
           data.push_back(file_node);
         }
       }
@@ -165,22 +171,22 @@ namespace graphhandler {
     org::esb::api::ServiceResponse*sres = ((org::esb::api::ServiceResponse*) res);
     JSONNode result(JSON_NODE);
     std::string postdata;
-    sreq->getInputstream()->read(postdata,1000000);
+    sreq->getInputstream()->read(postdata, 1000000);
     LOGDEBUG("POSTDATA = " << postdata);
     if (libjson::is_valid(postdata)) {
       LOGDEBUG("Data is valid");
       JSONNode inode = libjson::parse(postdata);
-      std::string uuid=sreq->getUUID();
-      if(contains(inode,"uuid")){
-        uuid=inode["uuid"].as_string();
-      }else{
-        inode.push_back(JSONNode("uuid",uuid));
+      std::string uuid = sreq->getUUID();
+      if (contains(inode, "uuid")) {
+        uuid = inode["uuid"].as_string();
+      } else {
+        inode.push_back(JSONNode("uuid", uuid));
       }
       //std::string msg = checkGraph(inode);
-        sres->setStatus(org::esb::api::ServiceResponse::OK);
-        /*save method should here*/
-        save(inode, uuid);
-        result=inode;
+      sres->setStatus(org::esb::api::ServiceResponse::OK);
+      /*save method should here*/
+      save(inode, uuid);
+      result = inode;
     } else {
       JSONNode error(JSON_NODE);
       error.set_name("error");
@@ -193,9 +199,41 @@ namespace graphhandler {
   }
 
   void GraphHandler::save(JSONNode& node, std::string & uuid) {
-    std::string user_path=org::esb::config::Config::get("hive.graph_path");
-    org::esb::io::File f(user_path+"/"+uuid+".graph");
+    std::string user_path = org::esb::config::Config::get("hive.graph_path");
+    org::esb::io::File f(user_path + "/" + uuid + ".graph");
     org::esb::io::FileOutputStream fos(&f);
     fos.write(node.write_formatted());
+  }
+
+  void GraphHandler::performSubmit(org::esb::core::Request*req, org::esb::core::Response*res) {
+    org::esb::api::ServiceRequest*sreq = ((org::esb::api::ServiceRequest*) req);
+    org::esb::api::ServiceResponse*sres = ((org::esb::api::ServiceResponse*) res);
+    JSONNode result(JSON_NODE);
+    std::string uuid = sreq->getParameter("uuid");
+    boost::shared_ptr<db::HiveDb> db = getContext()->database;
+    std::string user_path = org::esb::config::Config::get("hive.graph_path");
+    org::esb::io::File f(user_path + "/" + uuid + ".graph");
+    if (f.exists()) {
+      org::esb::io::FileInputStream fis(&f);
+      std::string ndata;
+      fis.read(ndata);
+
+      /**parsing json file*/
+      if (libjson::is_valid(ndata)) {
+        LOGDEBUG("Data is valid");
+        JSONNode inode = libjson::parse(ndata);
+        graph::GraphVerifier * v = graph::GraphVerifier::getInstance();
+        if (!v->verifyTasks(inode)) {
+          result=v->getResult();
+        } else {
+          result.push_back(JSONNode("status", "ok"));
+        }
+      } else {
+        result.push_back(JSONNode("status", "error"));
+      }
+    }
+    LOGDEBUG("perform submit for uuid" << uuid);
+    sres->setStatus(org::esb::api::ServiceResponse::OK);
+    sres->getOutputStream()->write(result.write_formatted());
   }
 }

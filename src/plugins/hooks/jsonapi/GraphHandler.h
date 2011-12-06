@@ -30,6 +30,7 @@ namespace graphhandler {
     void handleGET(org::esb::core::Request*, org::esb::core::Response*);
     void handleDELETE(org::esb::core::Request*, org::esb::core::Response*);
     void handlePOST(org::esb::core::Request*, org::esb::core::Response*);
+    void performSubmit(org::esb::core::Request*, org::esb::core::Response*);
     bool contains(JSONNode& node, std::string name);
     void save(JSONNode&root, std::string & uuid);
     std::string _base_uri;

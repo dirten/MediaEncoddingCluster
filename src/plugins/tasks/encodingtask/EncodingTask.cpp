@@ -29,29 +29,22 @@ namespace encodingtask {
   void EncodingTask::prepare() {
     _srcuristr = getContext()->getEnvironment<std::string > ("encodingtask.src");
     _partition = getContext()->getEnvironment<std::string > ("encodingtask.partition");
-    std::string profile = getContext()->getEnvironment<std::string > ("encodingtask.profile");
+    _task_uuid = getContext()->getEnvironment<std::string > ("task.uuid");
+    //std::string profile = getContext()->getEnvironment<std::string > ("encodingtask.profile");
+    std::string profiledata = getContext()->getEnvironment<std::string > ("encodingtask.profiledata");
+    /*
     if (getContext()->contains("job")) {
       _job = Ptr<db::Job > (new db::Job(getContext()->get<db::Job > ("job")));
     } else {
       setStatus(Task::ERROR);
       setStatusMessage("there is no associated job to this encoding task");
-      return;
-    }
-
-    try {
-      litesql::DataSource<db::Preset> ds = litesql::select<db::Preset > (_job->getDatabase(), db::Preset::Uuid == profile);
-      if (ds.count() > 0) {
-        db::Preset preset = ds.one();
-        std::string data = preset.data;
-        org::esb::hive::PresetReaderJson reader(data);
-        _codecs = reader.getCodecList();
-        _filters = reader.getFilterList();
-        _preset = reader.getPreset();
-      } else {
-        setStatus(Task::ERROR);
-        setStatusMessage(std::string("Could not find profile with id = ").append(profile));
-        return;
-      }
+      //return;
+    }*/
+    try{
+      org::esb::hive::PresetReaderJson reader(profiledata);
+      _codecs = reader.getCodecList();
+      _filters = reader.getFilterList();
+      _preset = reader.getPreset();
     } catch (std::exception & ex) {
       setStatus(Task::ERROR);
       setStatusMessage("Error while parsing JSON Profile");
@@ -63,7 +56,8 @@ namespace encodingtask {
     result.add_options()
             ("encodingtask.src", boost::program_options::value<std::string > ()->default_value(""), "Encoding task source file")
             ("encodingtask.partition", boost::program_options::value<std::string > ()->default_value("global"), "Encoding task partition")
-            ("encodingtask.profile", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile");
+            //("encodingtask.profile", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile");
+            ("encodingtask.profiledata", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data");
     return result;
   }
 
@@ -251,7 +245,7 @@ namespace encodingtask {
 
   void EncodingTask::putToPartition(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast) {
     unit->_sequence = _sequence_counter++;
-    unit->setJobId(_job->uuid.value());
+    unit->setJobId(_task_uuid);
 
     partitionservice::PartitionManager::Type t = partitionservice::PartitionManager::TYPE_UNKNOWN;
     LOGDEBUG("CodecType:" << unit->_decoder->getCodecType());
@@ -268,7 +262,7 @@ namespace encodingtask {
   }
 
   void EncodingTask::enQueue(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast) {
-    unit->setJobId(_job->uuid.value());
+    unit->setJobId(_task_uuid);
 
     partitionservice::PartitionManager::Type t = partitionservice::PartitionManager::TYPE_UNKNOWN;
 

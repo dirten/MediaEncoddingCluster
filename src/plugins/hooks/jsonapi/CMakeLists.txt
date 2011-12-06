@@ -17,6 +17,7 @@ add_library (jsonapi SHARED
   ConfigHandler.cpp
   JobHandler.cpp
   GraphHandler.cpp
+  GraphVerifier.cpp
 )
 
 TARGET_LINK_LIBRARIES(jsonapi

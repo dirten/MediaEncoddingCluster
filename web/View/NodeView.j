@@ -23,6 +23,13 @@ OutputHandle = 2;
   int         uid                 @accessors(property=uid);
   float         progress            @accessors(property=progress);
   CPDictionary          data      @accessors(property=data);
+
+
+  /*performance test*/
+  CPImageView _imageView;
+  CPTextField _taskLabelField;
+  CPTextField _propLabelField;
+
 }
 
 -(id)initWithName:(CPString)aName withInputHandle:(BOOL)drawInputHandle andOutputHandle:(BOOL)drawOutputHandle taskName:(CPString)aTaskName
@@ -61,6 +68,19 @@ OutputHandle = 2;
       "data":{}
     };
     data=[CPDictionary dictionaryWithJSObject:json recursively:YES];    
+
+    _imageView=[[CPImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 110.0, 110.0)];
+    [_imageView setAlphaValue:0.3];
+    [_imageView setImage:[self image]];
+
+    _taskLabelField=[CPTextField labelWithTitle:aName];
+
+    var tmptext=[self frontLabel];
+    if(tmptext!=undefined&&tmptext.length>18)
+      tmptext=tmptext.substring(0,18)+"...";
+    _propLabelField=[CPTextField labelWithTitle:tmptext];
+
+
   }
   return self;
 }
@@ -122,32 +142,7 @@ OutputHandle = 2;
     var title = menuItems[i],
     newMenuItem = [[CPMenuItem alloc] initWithTitle:title action:menuActions[i] keyEquivalent:nil];
     [newMenuItem setEnabled:menuActions[i]!=nil];
-    [newMenuItem setTarget:self];
-    
-    switch (title)
-    {
-      case "Stop Encoding":
-        if (numberOfSelectedIssues > 1)
-          [newMenuItem setTitle:"Stop (" + numberOfSelectedIssues + ") Encodings" ];
-        break;
-        
-      case "Delete Encoding":
-        if (numberOfSelectedIssues > 1)
-          [newMenuItem setTitle:"Delete (" + numberOfSelectedIssues + ") Encodings"];
-        break;
-        
-      case "Tag":
-        var shouldTag = numberOfSelectedIssues === 1;
-        break;
-      case "Comment":
-        [newMenuItem setEnabled:(numberOfSelectedIssues === 1)];
-        break;
-        // we want a seperator so just skip it for now
-      case "View On GitHub":
-        [newMenuItem setEnabled:(numberOfSelectedIssues === 1)];
-        continue;
-        break;
-    }
+    [newMenuItem setTarget:self];    
     [menu addItem:newMenuItem];
   }
   return menu;
@@ -203,31 +198,33 @@ OutputHandle = 2;
   CGContextSetStrokeColor(context, [CPColor blackColor]);
 	CGContextStrokePath(context);
   
-  var label=[CPTextField labelWithTitle:name];
+  //var label=[CPTextField labelWithTitle:name];
   var label_origin=CPPointMake(inHandlePoint.x+15,inHandlePoint.y-40);
-  [label setFrameOrigin:label_origin];
-  [label setTextColor:[CPColor blackColor]];
+  [_taskLabelField setFrameOrigin:label_origin];
+  [_taskLabelField setTextColor:[CPColor blackColor]];
   //[label setNeedsDisplay:YES];
-  [view addSubview:label];
-
+  [view addSubview:_taskLabelField];
+  
+  
   var tmptext=[self frontLabel];
-
   if(tmptext!=undefined&&tmptext.length>18)
     tmptext=tmptext.substring(0,18)+"...";
-  var label=[CPTextField labelWithTitle:tmptext];
-  var label_origin=CPPointMake(inHandlePoint.x+8,inHandlePoint.y-20);
-  [label setFrameOrigin:label_origin];
-  [label setTextColor:[CPColor blackColor]];
-  //[label setNeedsDisplay:YES];
-  [view addSubview:label];
+  [_propLabelField setStringValue:tmptext];
   
-  var imageView=[[CPImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 110.0, 110.0)];
+  
+  var label_origin=CPPointMake(inHandlePoint.x+8,inHandlePoint.y-20);
+  [_propLabelField setFrameOrigin:label_origin];
+  [_propLabelField setTextColor:[CPColor blackColor]];
+  [_propLabelField sizeToFit];
+
+  //[label setNeedsDisplay:YES];
+  [view addSubview:_propLabelField];
+  
+  //var imageView=[[CPImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 110.0, 110.0)];
   var img_origin=CPPointMake(inHandlePoint.x+15,inHandlePoint.y-55);
   
-  [imageView setFrameOrigin:img_origin];
-  [imageView setAlphaValue:0.3];
-  [imageView setImage:[self image]];
-  [view addSubview:imageView];
+  [_imageView setFrameOrigin:img_origin];
+  [view addSubview:_imageView];
   
   //[view addSubview:fieldDescription];
   //[label drawRect:aRect];

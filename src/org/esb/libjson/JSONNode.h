@@ -169,7 +169,7 @@ public:
 
     JSONNode & at(json_index_t pos) json_throws(std::out_of_range);
     const JSONNode & at(json_index_t pos) const json_throws(std::out_of_range);
-
+    bool contains(std::string name);
     JSONNode & operator[](json_index_t pos) json_nothrow;
     const JSONNode & operator[](json_index_t pos) const json_nothrow;
 

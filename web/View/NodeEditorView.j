@@ -116,12 +116,14 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
     CPLog.debug("selected graphic:"+CPStringFromRect([currentSelectedElement bounds]));
     var menu=[currentSelectedElement menuForNodeItem];
     CPLog.debug("Menu:"+menu);
+    /*
     select=currentSelectedElement;
     [select setBorderWidth:3.0];
     [select setBorderColor:[CPColor greenColor]];
-    currentSelectedElement=[CPNull null];
     select=[CPNull null];
+    */
     movingView=NO;  
+    currentSelectedElement=[CPNull null];
     return menu;
    }
 }

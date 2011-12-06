@@ -138,9 +138,26 @@ testfunc();
   //CPLog.debug("Array:"+array);
 }
 
+
 -(void)loadNodeEditorView:(CPNotification)notification{
+  if([view hasUnsavedChanges]){
+    var alert=[[YesNoAlert alloc] 
+                initWithLabel:@"Current Graph has unsaved changes!" 
+                question:@"Would you proceed anyway, this will discard all changes!" 
+                yesLabel:@"proceed without saving" 
+                noLabel:@"Cancel" 
+                target:self 
+                yesAction:@selector(_load:)
+                yesObject:notification
+                noAction:nil
+                noObject:nil];
+  }else{
+    [self _load:notification];
+  }
+}
 
-
+-(void)_load:(CPNotification)notification
+{
   //CPLog.debug("loadNodeEditorView:"+[notification userInfo]);
   //var data={"tasks":[{"name":"Input","uid":1},{"name":"Encoding","uid":2},{"name":"Encoding","uid":3},{"name":"Output","uid":4}],"links":[{"uid":1,"linksTo":2},{"uid":1,"linksTo":3},{"uid":2,"linksTo":4},{"uid":3,"linksTo":4}],"positions":[{"uid":1,"x":581,"y":47},{"uid":2,"x":858,"y":42},{"uid":3,"x":1070,"y":361},{"uid":4,"x":1130,"y":90}]};
   var path="/api/v1/graph?uuid="+[notification userInfo];
@@ -253,10 +270,10 @@ testfunc();
   //[request setHTTPMethod:"POST"];
   var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
   CPLog.debug("Graph submit Result"+[result rawString]);
-  [view clearElements];
-  loadedUUID=nil;
-  loadedName=nil;
-  [view setNeedsDisplay:YES];
+  //[view clearElements];
+  //loadedUUID=nil;
+  //loadedName=nil;
+  //[view setNeedsDisplay:YES];
 
 
 }

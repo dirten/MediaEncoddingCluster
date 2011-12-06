@@ -62,6 +62,8 @@ namespace plugin {
     }
   } RegisterDownloadTaskFactoryInstance;
  */
-  REGISTER_TASK("DownloadTask",DownloadTask );
+  //REGISTER_TASK("DownloadTask",DownloadTask );
+  typedef DownloadTask InputTask;
+  REGISTER_TASK("InputTask",InputTask );
 }
 

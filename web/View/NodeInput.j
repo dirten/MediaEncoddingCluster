@@ -50,6 +50,12 @@
 
   //CPLog.debug("orig bounds:"+CPStringFromRect(bounds));
   //CPLog.debug("orig View with bounds:"+CPStringFromRect([view bounds]));
+ [[CPNotificationCenter defaultCenter]
+    postNotificationName:NodeEditorViewChanged
+    object:self
+    userInfo:nil];
+  [[CPRunLoop currentRunLoop] performSelectors]; 
+
   return view;
 }
 -(id)image
