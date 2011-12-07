@@ -44,6 +44,7 @@ namespace graph {
 
   bool GraphVerifier::verifyTask(JSONNode& node) {
     bool result = false;
+    
     //std::string result = "";
     if (!node.contains("name")) {
       _message = "one task has no defined name";
@@ -56,10 +57,10 @@ namespace graph {
       } else {
         org::esb::core::OptionsDescription desc = task->getOptionsDescription();
         std::map<std::string, std::string> para;
-        typedef boost::shared_ptr<boost::program_options::option_description> option;
+        typedef boost::shared_ptr<boost::program_options::option_description> Option;
         std::string parameter;
 
-        foreach(const option value, desc.options()) {
+        foreach(const Option value, desc.options()) {
           std::string def;
           if (!value->semantic()->is_required()) {
             boost::any data;
@@ -79,17 +80,23 @@ namespace graph {
           }
           if (!node.contains(value->long_name()) && (value->semantic()->is_required() || def.length() == 0)) {
             _message = std::string("attribute ").append(value->long_name()).append(" for Task ").append(node["name"].as_string()).append(" could not be empty!");
+            LOGERROR(_message);
             break;
           }
           std::string key = value->long_name();
           std::string v;
+          LOGDEBUG("Looking for key:"<<value->long_name()<<" in node");
           if(!node.contains(value->long_name())){
+            LOGDEBUG("Key not found");
             v=def;
           }else{
-                v = node[key].as_string();
+            LOGDEBUG("Key found");
+            
+            v = node[key].write_formatted();
           }
           parameter += key + "=" + v + ";";
           para[key]=v;
+          LOGDEBUG("Parameter:"<<parameter);
         }
         task = org::esb::core::PluginRegistry::getInstance()->createTask(node["name"].as_string(), para);
         //task->getContext()->_props["job"]=job;

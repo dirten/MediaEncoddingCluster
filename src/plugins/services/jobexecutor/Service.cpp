@@ -59,7 +59,7 @@ namespace jobexecutor {
         if (job.tasks().get().count() > 0) {
           int taskcount=job.tasks().get().count();
           int counter=0;
-          std::vector<db::Task> tasks = job.tasks().get().all();
+          std::vector<db::Task> tasks = job.tasks().get().orderBy(db::Task::Id).all();
           std::map<std::string, std::string> cfg;
           job.status=job.Status.Processing;
           job.update();

@@ -11,6 +11,6 @@
 	<!--<key>Main cib file base name</key>
 	<string>TestWindow.cib</string>-->
   <key>LPCrashReporterLoggingURL</key>
-  <string>http://localhost:8080</string>
+  <string>/api/v1/crash</string>
 </dict>
 </plist>

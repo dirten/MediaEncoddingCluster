@@ -260,6 +260,7 @@ void endpoint_reader(boost::asio::ip::tcp::endpoint ep, int sid){
         action=false;
         LOGDEBUG("Receive ProcessUnit:"<<pu->_process_unit);
         org::esb::lang::Thread::sleep2(sid*10);
+        man->collectProcessUnit(pu, ep);
     }
   }while(pu);
   LOGDEBUG("leaving endpoint_reader for endpoint:"<<ep<<" and stream:"<<sid);
