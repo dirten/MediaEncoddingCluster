@@ -223,7 +223,7 @@ namespace graphhandler {
         LOGDEBUG("Data is valid");
         JSONNode inode = libjson::parse(ndata);
         graph::GraphVerifier * v = graph::GraphVerifier::getInstance();
-        if (!v->verifyTasks(inode)) {
+        if (!v->verify(inode, getContext()->database)) {
           result=v->getResult();
         } else {
           result.push_back(JSONNode("status", "ok"));

@@ -32,6 +32,8 @@ namespace encodingtask {
     _task_uuid = getContext()->getEnvironment<std::string > ("task.uuid");
     //std::string profile = getContext()->getEnvironment<std::string > ("encodingtask.profile");
     std::string profiledata = getContext()->getEnvironment<std::string > ("encodingtask.profiledata");
+    if(profiledata.length()==0)
+        profiledata = getContext()->getEnvironment<std::string > ("data");
     /*
     if (getContext()->contains("job")) {
       _job = Ptr<db::Job > (new db::Job(getContext()->get<db::Job > ("job")));
@@ -57,7 +59,8 @@ namespace encodingtask {
             ("encodingtask.src", boost::program_options::value<std::string > ()->default_value(""), "Encoding task source file")
             ("encodingtask.partition", boost::program_options::value<std::string > ()->default_value("global"), "Encoding task partition")
             //("encodingtask.profile", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile");
-            ("encodingtask.profiledata", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data");
+            ("encodingtask.profiledata", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data")
+            ("data", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data");
     return result;
   }
 

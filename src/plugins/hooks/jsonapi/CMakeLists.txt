@@ -18,6 +18,7 @@ add_library (jsonapi SHARED
   JobHandler.cpp
   GraphHandler.cpp
   GraphVerifier.cpp
+  GraphTaskCreator.cpp
 )
 
 TARGET_LINK_LIBRARIES(jsonapi

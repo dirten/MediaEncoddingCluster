@@ -11,7 +11,7 @@
 			"name" : "EncodingTask",
 			"uid" : 2,
 			"encodingtask.src":"/tmp/test",
-			"encodingtask.profiledata" : {
+			"data" : {
 				"name" : "Mp4 x264(320x240 hq) mp3(128kb 44.1kHz stereo)",
 				"format" : {
 					"id" : "mp4",
@@ -105,7 +105,7 @@
 			}
 		},
 		{
-			"name" : "OutputTask",
+			"name" : "UploadTask",
 			"uid" : 4,
 			"data" : {
 				"outfile" : "/tmp/test"
@@ -114,6 +114,7 @@
 		{
 			"name" : "EncodingTask",
 			"uid" : 5,
+			"encodingtask.src":"/tmp/test",
 			"data" : {
 				"name" : "Mp4 x264(320x240 hq) mp3(128kb 44.1kHz stereo)",
 				"format" : {
@@ -201,7 +202,7 @@
 			}
 		},
 		{
-			"name" : "OutputTask",
+			"name" : "UploadTask",
 			"uid" : 6,
 			"data" : {
 				"outfile" : "/upload"

@@ -10,6 +10,7 @@
 #include "org/esb/hive/Environment.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/config/config.h"
+
 #include "plugins/hooks/jsonapi/GraphVerifier.h"
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileInputStream.h"
@@ -21,15 +22,16 @@ using namespace std;
  * 
  */
 int main(int argc, char** argv) {
+  org::esb::hive::Environment::build(argc, argv);
   Log::open();
   org::esb::core::PluginRegistry::getInstance()->load(ENCODINGTASK_PLUGIN);
   org::esb::core::PluginRegistry::getInstance()->load(DOWNLOADTASK_PLUGIN);
   org::esb::core::PluginRegistry::getInstance()->load(EXPORTTASK_PLUGIN);
   org::esb::core::PluginRegistry::getInstance()->load(EXECUTABLETASK_PLUGIN);
   org::esb::core::PluginRegistry::getInstance()->load(UPLOADTASK_PLUGIN);
+  org::esb::core::PluginRegistry::getInstance()->initPlugins();
   boost::shared_ptr<db::HiveDb> database = boost::shared_ptr<db::HiveDb>(new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url")));
 
-  org::esb::hive::Environment::build(argc, argv);
   org::esb::io::File graph_file(std::string(MEC_SOURCE_DIR) + "/test-data/test.graph");
   if (graph_file.exists()) {
     std::string graphdata;

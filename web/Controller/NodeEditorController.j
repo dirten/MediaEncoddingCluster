@@ -270,6 +270,7 @@ testfunc();
   //[request setHTTPMethod:"POST"];
   var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
   CPLog.debug("Graph submit Result"+[result rawString]);
+  [growl pushNotificationWithTitle:@"Graph submitted" message:"Graph "+loadedName+" successful submitted for execution!"];
   //[view clearElements];
   //loadedUUID=nil;
   //loadedName=nil;

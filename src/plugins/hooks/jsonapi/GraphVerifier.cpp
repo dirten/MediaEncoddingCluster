@@ -19,6 +19,18 @@ namespace graph {
       _instance = new GraphVerifier();
     return _instance;
   }
+  
+  bool GraphVerifier::verify(JSONNode& node, boost::shared_ptr<db::HiveDb> db) {
+    bool result=true;
+    _db=db;   
+    result=verifyTasks(node);
+    if(result==true)
+      result=verifyLinks(node);
+    if(result==true)
+      result=verifyCycleRedundance(node);
+    return result;
+  }
+
 
   bool GraphVerifier::verifyTasks(JSONNode& node) {
     LOGDEBUG("bool GraphVerifier::verifyTasks(JSONNode& node)");
@@ -36,7 +48,28 @@ namespace graph {
       }
     }else{
       _status="error";
-      _message="there is not tasks array defined in json";
+      _message="there is no tasks array defined in json";
+      result = false;
+    }
+    return result;
+  }
+
+  bool GraphVerifier::verifyLinks(JSONNode& node) {
+    LOGDEBUG("bool GraphVerifier::verifyLinks(JSONNode& node)");
+    bool result = true;
+    if(node.contains("links")){
+      int s = node["links"].size();
+      for (int a = 0; a < s; a++) {
+        JSONNode link=node["links"].at(a);
+        if(!verifyLink(link)){
+          result=false;
+          _status="error";
+          break;
+        }
+      }
+    }else{
+      _status="error";
+      _message="there is no links array defined in json";
       result = false;
     }
     return result;
@@ -78,7 +111,7 @@ namespace graph {
             }
             LOGDEBUG("Key=" << value->long_name() << " Default=" << def);
           }
-          if (!node.contains(value->long_name()) && (value->semantic()->is_required() || def.length() == 0)) {
+          if (!node.contains(value->long_name()) && (value->semantic()->is_required())) {
             _message = std::string("attribute ").append(value->long_name()).append(" for Task ").append(node["name"].as_string()).append(" could not be empty!");
             LOGERROR(_message);
             break;
@@ -110,10 +143,54 @@ namespace graph {
         }
         LOGDEBUG("Task Found: " << node["name"].as_string());
       }
+      if(node.contains("uid")){
+        nodes[node["uid"].as_string()]=node;
+      }
     }
     //return result;
 
-
+    
+    return result;
+  }
+  
+  bool GraphVerifier::verifyLink(JSONNode& node) {
+    bool result=true;
+    if(node.contains("uid")){
+      if(nodes.count(node["uid"].as_string())){
+        if(node.contains("linksTo")){
+          if(nodes.count(node["linksTo"].as_string())){
+            /*if(linked_nodes.count(node["linksTo"].as_string())){
+              result=false;
+              _status="error";
+              _message="cyclic redundancy found";
+            }else*/
+            linked_nodes.insert(node["uid"].as_string());
+          }else{
+          result=false;
+          _status="error";
+          _message="target node does not exist in node list";            
+          }
+        }else{
+          result=false;
+          _status="error";
+          _message="node does not link to a target node";
+        }         
+      }else{
+        result=false;
+        _status="error";
+        _message="node could not be found in the list";
+      }
+    }else{
+        result=false;
+        _status="error";
+        _message="node have no uid";
+      }
+    return result;
+  }
+  
+  bool GraphVerifier::verifyCycleRedundance(JSONNode& node) {
+    bool result=true;
+    
     return result;
   }
 
