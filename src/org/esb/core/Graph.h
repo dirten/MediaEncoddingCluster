@@ -7,6 +7,9 @@
 #include "org/esb/lang/Ptr.h"
 #include "Task.h"
 #include "exports.h"
+
+#include <set>
+#include <map>
 #ifndef GRAPH_H
 #define	GRAPH_H
 namespace org {
@@ -20,7 +23,9 @@ namespace org {
         void linkElement(Ptr<Task>,Ptr<Task>);
         virtual ~Graph();
       private:
-
+        std::set<Ptr<Task> > _taskList;
+        //std::list<Ptr<Task> > _taskLinkMap;
+        std::string _link_matrix[100][100];
       };
     }
   }

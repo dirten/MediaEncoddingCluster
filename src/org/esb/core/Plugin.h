@@ -10,6 +10,7 @@
 
 #include "boost/program_options.hpp"
 #include "org/esb/lang/Ptr.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace core {
@@ -18,7 +19,7 @@ namespace org {
       typedef boost::program_options::options_description OptionsDescription;
       //typedef boost::program_options::value Value;
 
-      class Plugin {
+      class CORE_EXPORT Plugin {
       public:
 
         void setContext(Ptr<PluginContext> ac) {
