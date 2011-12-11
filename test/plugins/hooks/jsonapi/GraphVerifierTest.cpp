@@ -5,12 +5,12 @@
  * Created on 7. Dezember 2011, 13:26
  */
 
+#include "plugins/hooks/jsonapi/GraphVerifier.h"
 #include <cstdlib>
 #include "org/esb/core/PluginRegistry.h"
 #include "org/esb/hive/Environment.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/config/config.h"
-#include "plugins/hooks/jsonapi/GraphVerifier.h"
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileInputStream.h"
 
