@@ -270,7 +270,20 @@ testfunc();
   //[request setHTTPMethod:"POST"];
   var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
   CPLog.debug("Graph submit Result"+[result rawString]);
-  [growl pushNotificationWithTitle:@"Graph submitted" message:"Graph "+loadedName+" successful submitted for execution!"];
+  var mdata=[result JSONObject];
+  CPLog.debug("Graph submit Result JSON:"+mdata);
+
+  if(mdata.status=="ok"){
+    [growl pushNotificationWithTitle:@"Graph submitted" message:"Graph "+loadedName+" successful submitted for execution!"];
+  }else{
+     var stopWarn = [[CPAlert alloc] init];
+     [stopWarn setTitle:"Failed to submit the Graph?"];
+     [stopWarn setMessageText:mdata.message];
+     [stopWarn setAlertStyle:CPWarningAlertStyle];
+     [stopWarn addButtonWithTitle:"Close"];
+     [stopWarn runModal];
+
+  }
   //[view clearElements];
   //loadedUUID=nil;
   //loadedName=nil;

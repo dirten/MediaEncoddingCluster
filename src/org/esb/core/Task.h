@@ -48,11 +48,16 @@ namespace org {
         virtual void interrupt();
         virtual STATUS getStatus();
         virtual std::string getStatusMessage();
+        /**in case of tasks, these are file-source/sink*/
+        virtual std::string getSource();
+        virtual std::string getSink();
       private:
         unsigned int _progress;
         unsigned int _progress_length;
         STATUS _status;
         std::string _status_message;
+        std::string _source;
+        std::string _sink;
       };
     }
   }

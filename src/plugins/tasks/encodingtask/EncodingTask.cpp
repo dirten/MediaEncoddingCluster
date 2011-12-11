@@ -49,7 +49,7 @@ namespace encodingtask {
       _preset = reader.getPreset();
     } catch (std::exception & ex) {
       setStatus(Task::ERROR);
-      setStatusMessage("Error while parsing JSON Profile");
+      setStatusMessage(std::string("Error while parsing JSON Profile:").append(ex.what()));
     }
   }
 

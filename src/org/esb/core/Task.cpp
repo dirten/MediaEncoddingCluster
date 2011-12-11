@@ -68,6 +68,14 @@ namespace org {
       std::string  Task::getStatusMessage(){
         return _status_message;
       }
+
+      std::string Task::getSource(){
+        return _source;
+      }
+      
+      std::string Task::getSink(){
+        return _sink;
+      }
     }
   }
 }

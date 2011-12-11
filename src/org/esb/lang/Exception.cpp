@@ -64,6 +64,8 @@ void Exception::setMark(const char* file, const int lineNumber) {
 
 const char * Exception::what()const throw () {
   string msg = getStackTraceString();
+  printf("Message:%s\n", _msg.c_str());
+
 /*
   size_t size;
   char **strings;
@@ -96,7 +98,7 @@ const char * Exception::what()const throw () {
 
   //       free (strings);
 
-  return message.c_str();
+  return _msg.c_str();
   
 }
 #else

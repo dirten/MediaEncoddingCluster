@@ -19,6 +19,7 @@ SET(core_source
   HookNotificationCenter.cpp
   Application.cpp
   Task.cpp
+  Graph.cpp
 )
 
 add_library (core ${CORE_LINK_TYPE}

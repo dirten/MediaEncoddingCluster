@@ -11,6 +11,7 @@
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/core/Task.h"
+#include "org/esb/util/UUID.h"
 namespace graph {
   GraphVerifier * GraphVerifier::_instance = 0;
 
@@ -23,11 +24,14 @@ namespace graph {
   bool GraphVerifier::verify(JSONNode& node, boost::shared_ptr<db::HiveDb> db) {
     bool result=true;
     _db=db;   
+    _db->begin();
     result=verifyTasks(node);
     if(result==true)
       result=verifyLinks(node);
     if(result==true)
       result=verifyCycleRedundance(node);
+    if(result)
+      _db->commit();
     return result;
   }
 
@@ -83,6 +87,8 @@ namespace graph {
       _message = "one task has no defined name";
       _status="error";
     } else {
+      db::Task dbt(*_db.get());
+      dbt.name=node["name"].as_string();
       /*first create an empty named task to resolve the required parameter for it*/
       Ptr<org::esb::core::Task>task = org::esb::core::PluginRegistry::getInstance()->createTask(node["name"].as_string(), std::map<std::string, std::string>());
       if (!task) {
@@ -114,7 +120,7 @@ namespace graph {
           if (!node.contains(value->long_name()) && (value->semantic()->is_required())) {
             _message = std::string("attribute ").append(value->long_name()).append(" for Task ").append(node["name"].as_string()).append(" could not be empty!");
             LOGERROR(_message);
-            break;
+            //break;
           }
           std::string key = value->long_name();
           std::string v;
@@ -129,8 +135,10 @@ namespace graph {
           }
           parameter += key + "=" + v + ";";
           para[key]=v;
-          LOGDEBUG("Parameter:"<<parameter);
         }
+        dbt.parameter=parameter;
+        dbt.uuid=(std::string)org::esb::util::PUUID();
+        LOGDEBUG("Parameter:"<<parameter);
         task = org::esb::core::PluginRegistry::getInstance()->createTask(node["name"].as_string(), para);
         //task->getContext()->_props["job"]=job;
         task->prepare();
@@ -145,7 +153,9 @@ namespace graph {
       }
       if(node.contains("uid")){
         nodes[node["uid"].as_string()]=node;
-      }
+      }        
+      LOGDEBUG(dbt);
+      dbt.update();
     }
     //return result;
 
