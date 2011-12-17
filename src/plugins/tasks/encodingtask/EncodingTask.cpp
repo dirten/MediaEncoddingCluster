@@ -28,8 +28,12 @@ namespace encodingtask {
 
   void EncodingTask::prepare() {
     _srcuristr = getContext()->getEnvironment<std::string > ("encodingtask.src");
+    if(_srcuristr.length()==0){
+      _srcuristr=getSource();
+    }
     _partition = getContext()->getEnvironment<std::string > ("encodingtask.partition");
     _task_uuid = getContext()->getEnvironment<std::string > ("task.uuid");
+    
     //std::string profile = getContext()->getEnvironment<std::string > ("encodingtask.profile");
     std::string profiledata = getContext()->getEnvironment<std::string > ("encodingtask.profiledata");
     if(profiledata.length()==0)
@@ -51,6 +55,9 @@ namespace encodingtask {
       setStatus(Task::ERROR);
       setStatusMessage(std::string("Error while parsing JSON Profile:").append(ex.what()));
     }
+  }
+  int EncodingTask::getPadTypes(){
+    return Task::SINK|Task::SOURCE;
   }
 
   org::esb::core::OptionsDescription EncodingTask::getOptionsDescription() {

@@ -78,6 +78,16 @@
 {
   _response=response;
 }
+
+- (void)tableViewSelectionDidChange:(CPNotification)aNotification{
+  if([self selectedId]){
+    [[CPNotificationCenter defaultCenter]
+      postNotificationName:LoadNodeEditorView
+      object:self
+      userInfo:[self selectedId]];
+  }
+}
+
 - (void) doubleClicked
 {
   if([self selectedId]){

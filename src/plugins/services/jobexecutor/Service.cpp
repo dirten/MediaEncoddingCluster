@@ -15,6 +15,8 @@
 #include "org/esb/hive/HiveClientAudio.h"
 #include "org/esb/util/Foreach.h"
 #include "org/esb/util/StringTokenizer.h"
+#include "org/esb/core/Graph.h"
+#include "org/esb/core/GraphParser.h"
 namespace jobexecutor {
 
   Service::Service() {
@@ -40,11 +42,11 @@ namespace jobexecutor {
   void Service::stopService() {
     _status = STOPPING;
   }
-  void Service::actualizeProgress(Ptr<org::esb::core::Task> task,db::Task&dbtask){
-    while(task->getStatus()!=org::esb::core::Task::DONE&&task->getStatus()!=org::esb::core::Task::ERROR){
-      LOGDEBUG("Reading Progress");
-      dbtask.progress=task->getProgress();
-      dbtask.update();      
+  void Service::actualizeProgress(org::esb::core::Graph * graph,db::Job&dbjob){
+    while(graph->getState()!=org::esb::core::Graph::DONE&&graph->getState()!=org::esb::core::Graph::ERROR){
+      LOGDEBUG("Reading Graph Progress");
+      dbjob.graphstatus=graph->getStatus();
+      dbjob.update();      
       org::esb::lang::Thread::sleep2(1000);
     }
   }
@@ -56,6 +58,29 @@ namespace jobexecutor {
       if (source.count() > 0) {
         LOGDEBUG("New Job found!!!");
         db::Job job = source.one();
+        std::string graphdata=job.graph;
+        org::esb::core::GraphParser graphparser(graphdata);
+        org::esb::core::GraphParser::ElementMap & el=graphparser.getElementMap();
+        std::list<Ptr<org::esb::core::Graph::Element> > list;
+        foreach(org::esb::core::GraphParser::ElementMap::value_type & element, el){
+          list.push_back(element.second);
+        }
+        
+        org::esb::core::Graph graph(list, job.uuid);
+        go(Service::actualizeProgress, this, &graph,job);
+
+        try{
+          job.status=job.Status.Processing;
+          job.update();
+          graph.run();
+        }catch(std::exception & ex){
+          job.status=job.Status.Error;
+            job.status=job.Status.Error;
+            job.update();
+        }
+        job.status=job.Status.Completed;
+        job.update();
+
         if (job.tasks().get().count() > 0) {
           int taskcount=job.tasks().get().count();
           int counter=0;
@@ -81,7 +106,7 @@ namespace jobexecutor {
             try{
             _current_task = org::esb::core::PluginRegistry::getInstance()->createTask(dbtask.name, cfg);
             _current_task->getContext()->_props["job"]=job;
-            go(Service::actualizeProgress, this, _current_task,dbtask);
+            //go(Service::actualizeProgress, this, _current_task,dbtask);
             _current_task->prepare();
               dbtask.status=dbtask.Status.Processing;
               dbtask.update();

@@ -76,6 +76,20 @@ namespace org {
       std::string Task::getSink(){
         return _sink;
       }
+      void Task::setSource(std::string s){
+        _source=s;
+      }
+      
+      void Task::setSink(std::string s){
+        _sink=s;
+      }
+      
+      int Task::getPadTypes(){
+        return Task::NOPAD;
+      }
+      void Task::setUUID(std::string uuid){
+        _uuid=uuid;
+      }
     }
   }
 }

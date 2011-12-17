@@ -1791,6 +1791,10 @@ public:
     litesql::Field<int> deleted;
     static const Job::StatusType Partitionname;
     litesql::Field<std::string> partitionname;
+    static const Job::StatusType Graph;
+    litesql::Field<std::string> graph;
+    static const Job::StatusType Graphstatus;
+    litesql::Field<std::string> graphstatus;
     static void initValues();
 protected:
     void defaults();
@@ -1878,6 +1882,8 @@ protected:
 public:
     static const Task::StatusType Status;
     litesql::Field<int> status;
+    static const Task::StatusType Sortorder;
+    litesql::Field<int> sortorder;
     static void initValues();
 protected:
     void defaults();

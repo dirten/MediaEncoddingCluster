@@ -57,7 +57,7 @@ namespace org {
         boost::condition termination_wait;
 
       };
-      REGISTER_SERVICE("mediaexporter", ExportScanner)
+      //REGISTER_SERVICE("mediaexporter", ExportScanner)
     }
   }
 }

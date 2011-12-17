@@ -95,6 +95,7 @@
 																			<string key="NSFrameSize">{147, 17}</string>
 																			<reference key="NSSuperview" ref="666385744"/>
 																			<reference key="NSWindow"/>
+																			<reference key="NSNextKeyView" ref="446974686"/>
 																			<reference key="NSTableView" ref="355320549"/>
 																		</object>
 																		<object class="_NSCornerView" key="NSCornerView">
@@ -234,7 +235,7 @@
 																<string key="NSFrame">{{224, 17}, {15, 102}}</string>
 																<reference key="NSSuperview" ref="550606078"/>
 																<reference key="NSWindow"/>
-																<reference key="NSNextKeyView" ref="1030629573"/>
+																<reference key="NSNextKeyView" ref="917651162"/>
 																<string key="NSReuseIdentifierKey">_NS:1845</string>
 																<reference key="NSTarget" ref="550606078"/>
 																<string key="NSAction">_doScroller:</string>
@@ -273,7 +274,7 @@
 														<string key="NSFrame">{{0, 20}, {137, 104}}</string>
 														<reference key="NSSuperview" ref="31711154"/>
 														<reference key="NSWindow"/>
-														<reference key="NSNextKeyView" ref="446974686"/>
+														<reference key="NSNextKeyView" ref="666385744"/>
 														<string key="NSReuseIdentifierKey">_NS:1824</string>
 														<int key="NSsFlags">133808</int>
 														<reference key="NSVScroller" ref="287305367"/>
@@ -288,13 +289,14 @@
 														<string key="NSFrameSize">{137, 23}</string>
 														<reference key="NSSuperview" ref="31711154"/>
 														<reference key="NSWindow"/>
+														<reference key="NSNextKeyView" ref="340298833"/>
 														<string key="NSClassName">CPButtonBar</string>
 													</object>
 												</object>
 												<string key="NSFrameSize">{137, 124}</string>
 												<reference key="NSSuperview" ref="1030629573"/>
 												<reference key="NSWindow"/>
-												<reference key="NSNextKeyView" ref="340298833"/>
+												<reference key="NSNextKeyView" ref="550606078"/>
 												<string key="NSReuseIdentifierKey">_NS:1113</string>
 												<string key="NSClassName">NSView</string>
 											</object>
@@ -320,7 +322,7 @@
 								<string key="NSFrameSize">{137, 272}</string>
 								<reference key="NSSuperview" ref="310324291"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="550606078"/>
+								<reference key="NSNextKeyView" ref="1030629573"/>
 								<string key="NSReuseIdentifierKey">_NS:1165</string>
 								<string key="NSClassName">NSView</string>
 							</object>
@@ -369,6 +371,7 @@
 												<string key="NSFrame">{{319, 0}, {15, 266}}</string>
 												<reference key="NSSuperview" ref="633012306"/>
 												<reference key="NSWindow"/>
+												<reference key="NSNextKeyView"/>
 												<string key="NSReuseIdentifierKey">_NS:408</string>
 												<reference key="NSTarget" ref="633012306"/>
 												<string key="NSAction">_doScroller:</string>

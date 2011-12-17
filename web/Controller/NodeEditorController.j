@@ -158,7 +158,8 @@ testfunc();
 
 -(void)_load:(CPNotification)notification
 {
-  //CPLog.debug("loadNodeEditorView:"+[notification userInfo]);
+  CPLog.debug("_load");
+  CPLog.debug("loadNodeEditorView:"+[notification userInfo]);
   //var data={"tasks":[{"name":"Input","uid":1},{"name":"Encoding","uid":2},{"name":"Encoding","uid":3},{"name":"Output","uid":4}],"links":[{"uid":1,"linksTo":2},{"uid":1,"linksTo":3},{"uid":2,"linksTo":4},{"uid":3,"linksTo":4}],"positions":[{"uid":1,"x":581,"y":47},{"uid":2,"x":858,"y":42},{"uid":3,"x":1070,"y":361},{"uid":4,"x":1130,"y":90}]};
   var path="/api/v1/graph?uuid="+[notification userInfo];
   var response=[CPHTTPURLResponse alloc];

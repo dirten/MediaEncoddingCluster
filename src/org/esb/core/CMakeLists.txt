@@ -20,6 +20,8 @@ SET(core_source
   Application.cpp
   Task.cpp
   Graph.cpp
+  GraphParser.cpp
+  GraphException.cpp
 )
 
 add_library (core ${CORE_LINK_TYPE}

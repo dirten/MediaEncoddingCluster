@@ -18,7 +18,7 @@ namespace plugin {
     void prepare();
     void execute();
     org::esb::core::OptionsDescription getOptionsDescription();
-
+    int getPadTypes();
   private:
   };
 //  REGISTER_TASK("DownloadTask", DownloadTask)

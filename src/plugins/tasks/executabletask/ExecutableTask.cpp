@@ -26,7 +26,9 @@ namespace plugin {
             ("executabletask.exec", boost::program_options::value<std::string > ()->default_value("test"), "Upload task file source");
     return result;
   }
-
+  int ExecutableTask::getPadTypes(){
+    return Task::SOURCE|Task::SINK;
+  }
   void ExecutableTask::execute() {
         setStatus(Task::DONE);
   }

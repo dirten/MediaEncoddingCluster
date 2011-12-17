@@ -1,12 +1,16 @@
 
 @import "../../View/ProgressTableDataView.j"
+@import "../../View/NodeEditorView.j"
+@import "../../Controller/NodeActivityController.j"
+
 
 @implementation TaskActivityController: CPObject
 {
-  @outlet CPTableView  taskTableView;
+  @outlet CPTableView     taskTableView;
+  @outlet NodeEditorView  nodeEditorView;
   id jsonData;
   CPString jobid;
-  
+  NodeEditorController nodeEditorController;
   
 }
 -(void)awakeFromCib{
@@ -15,12 +19,16 @@
    selector:@selector(loadTasksOnNotification:)
    name:EncodingClicked
    object:nil];
+  [nodeEditorView setBackgroundColor:[CPColor whiteColor]];
+
   var progressDataView=[ProgressTableDataView new];
   var column = [taskTableView tableColumnWithIdentifier:@"3"];
   [column setDataView:progressDataView];
   [self refresh];
   [CPTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(refresh) userInfo:nil repeats:true];
-  
+  //[[NodeEditorController alloc] initWithView:theView]
+  nodeEditorController=[[NodeActivityController alloc] initWithView:nodeEditorView];
+
 }
 
 - (int)numberOfRowsInTableView:(CPTableView)tabView
@@ -62,8 +70,12 @@
 }
 - (void)loadTasksOnNotification:(CPNotification)notification
 {
-  jobid = [notification userInfo];
-  [self refresh];
+  //jobid = [notification userInfo];
+  //var not=[[CPNotification notificationWithName:@"noname" object:self userInfo:jobid]];
+  CPLog.debug("loadNodeEditorView:"+[notification userInfo]);
+
+  [nodeEditorController _load:notification];
+  //[self refresh];
 }
 
 - (void)refresh{

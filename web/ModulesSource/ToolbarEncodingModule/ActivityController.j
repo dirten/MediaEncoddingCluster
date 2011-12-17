@@ -116,7 +116,7 @@
 
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification{
   if(jsonData.data[[[aNotification object] selectedRow]]){
-    CPLog.debug("hello new:"+jsonData.data[[[aNotification object] selectedRow]].id);
+    CPLog.debug("hello new activity selected:"+jsonData.data[[[aNotification object] selectedRow]].id);
     selectedid=jsonData.data[[[aNotification object] selectedRow]].id;
     [[CPNotificationCenter defaultCenter]
      postNotificationName:EncodingClicked

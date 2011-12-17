@@ -160,6 +160,8 @@ ModuleTypeTab = @"tab";
 
     CPLog.debug("Tabbtool loaded");
    [growl pushNotificationWithTitle:@"Module loaded" message:moduleName+" sucessfull loaded!"];
+  [[CPRunLoop currentRunLoop] performSelectors]; 
+
 
 }
 

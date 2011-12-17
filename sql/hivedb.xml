@@ -249,6 +249,8 @@
         <field name="data" type="string"/>
         <field name="deleted" type="integer" default="0"/>
         <field name="partitionname" type="string"/>
+        <field name="graph" type="string"/>
+        <field name="graphstatus" type="string"/>
         <method name="getStatusText" returntype="std::string"/>
     </object>
 
@@ -265,6 +267,7 @@
           <value name="Processing" value="3"/>
         </field>
         <method name="getStatusText" returntype="std::string"/>
+        <field name="sortorder" type="integer"/>
     </object>
     
     <relation id="JobTask">

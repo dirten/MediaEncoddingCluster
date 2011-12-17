@@ -11,7 +11,11 @@
 #include "Poco/URI.h"
 #include "Poco/URIStreamOpener.h"
 #include "Poco/StreamCopier.h"
+#include "Poco/File.h"
+#include "Poco/Exception.h"
 #include "org/esb/lang/Ptr.h"
+
+#include "org/esb/libjson/libjson.h"
 namespace plugin {
 
   DownloadTask::DownloadTask() {
@@ -23,47 +27,69 @@ namespace plugin {
   void DownloadTask::prepare() {
     _srcuristr = getContext()->getEnvironment<std::string > ("downloadtask.src");
     _trguristr = getContext()->getEnvironment<std::string > ("downloadtask.trg");
+    if (_trguristr.length() == 0) {
+      _trguristr = getSink();
+    }
+    std::string data = getContext()->getEnvironment<std::string > ("data");
+    LOGDEBUG("data");
+    if (libjson::is_valid(data)) {
+      JSONNode node = libjson::parse(data);
+      if (node.contains("infile")) {
+        _srcuristr = node["infile"].as_string();
+      }
+    }
   }
 
   org::esb::core::OptionsDescription DownloadTask::getOptionsDescription() {
     org::esb::core::OptionsDescription result("downloadtask");
     result.add_options()
             ("downloadtask.src", boost::program_options::value<std::string > ()->default_value(""), "Download task source")
-            ("downloadtask.trg", boost::program_options::value<std::string > ()->default_value(""), "Download task target");
+            ("downloadtask.trg", boost::program_options::value<std::string > ()->default_value(""), "Download task target")
+            ("data", boost::program_options::value<std::string > ()->default_value(""), "");
     return result;
   }
 
-  void DownloadTask::execute() {
-    Poco::URI uri(_srcuristr);
-    Ptr<std::istream> pStr = Poco::URIStreamOpener::defaultOpener().open(uri);
-   
-    std::ofstream osf(_trguristr.c_str(), std::ios::binary);
-    Poco::StreamCopier::copyStream(*pStr.get(), osf);
-    setStatus(Task::DONE);
+  int DownloadTask::getPadTypes() {
+    return Task::SINK;
   }
-/*
-  class RegisterDownloadTaskFactory : public org::esb::core::TaskFactory {
-  public:
 
-    RegisterDownloadTaskFactory() {
-      org::esb::core::PluginRegistry::getInstance()->registerTaskFactory("DownloadTask", this);
+  void DownloadTask::execute() {
+    LOGDEBUG("copy " << _srcuristr << " to " << _trguristr);
+    //Poco::URI uri(_srcuristr);
+    Poco::File srcfile(_srcuristr);
+    if (srcfile.exists()) {
+      Poco::File trgfile(_trguristr);
+      srcfile.copyTo(_trguristr);
+      setStatus(Task::DONE);
+    } else {
+      setStatus(Task::ERROR);
     }
 
-    ~RegisterDownloadTaskFactory() {
-    }
+    LOGDEBUG("Download finish!");
+  }
+  /*
+    class RegisterDownloadTaskFactory : public org::esb::core::TaskFactory {
+    public:
 
-    Ptr<org::esb::core::Task> create() {
-      return Ptr<org::esb::core::Task > (new DownloadTask());
-    }
+      RegisterDownloadTaskFactory() {
+        org::esb::core::PluginRegistry::getInstance()->registerTaskFactory("DownloadTask", this);
+      }
 
-    org::esb::core::OptionsDescription getOptionsDescription() {
-      Ptr<org::esb::core::Task> t = Ptr<org::esb::core::Task>(new DownloadTask());
-      return t->getOptionsDescription();
-    }
-  } RegisterDownloadTaskFactoryInstance;
- */
+      ~RegisterDownloadTaskFactory() {
+      }
+
+      Ptr<org::esb::core::Task> create() {
+        return Ptr<org::esb::core::Task > (new DownloadTask());
+      }
+
+      org::esb::core::OptionsDescription getOptionsDescription() {
+        Ptr<org::esb::core::Task> t = Ptr<org::esb::core::Task>(new DownloadTask());
+        return t->getOptionsDescription();
+      }
+    } RegisterDownloadTaskFactoryInstance;
+   */
   //REGISTER_TASK("DownloadTask",DownloadTask );
   typedef DownloadTask InputTask;
-  REGISTER_TASK("InputTask",InputTask );
+  REGISTER_TASK("InputTask", InputTask);
 }
 

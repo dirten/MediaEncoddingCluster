@@ -30,6 +30,11 @@ namespace org {
           INTERRUPTED,
           ERROR
         };
+        enum PAD_TYPE {
+          NOPAD,
+          SOURCE,
+          SINK
+        };
 
       protected:
         void setProgressLength(unsigned int);
@@ -51,6 +56,10 @@ namespace org {
         /**in case of tasks, these are file-source/sink*/
         virtual std::string getSource();
         virtual std::string getSink();
+        virtual void setSource(std::string);
+        virtual void setSink(std::string);
+        virtual int getPadTypes();
+        virtual void setUUID(std::string);
       private:
         unsigned int _progress;
         unsigned int _progress_length;
@@ -58,6 +67,7 @@ namespace org {
         std::string _status_message;
         std::string _source;
         std::string _sink;
+        std::string _uuid;
       };
     }
   }

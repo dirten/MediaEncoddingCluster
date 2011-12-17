@@ -6,21 +6,21 @@
  */
 
 #include "org/esb/core/PluginContext.h"
-#include "UploadTask.h"
+#include "OutputTask.h"
 #include "org/esb/lang/Ptr.h"
 namespace plugin {
 
-  UploadTask::UploadTask() {
+  OutputTask::OutputTask() {
   }
 
-  UploadTask::~UploadTask() {
+  OutputTask::~OutputTask() {
   }
 
-  void UploadTask::prepare() {
+  void OutputTask::prepare() {
 
   }
 
-  org::esb::core::OptionsDescription UploadTask::getOptionsDescription() {
+  org::esb::core::OptionsDescription OutputTask::getOptionsDescription() {
     org::esb::core::OptionsDescription result("uploadtask");
     result.add_options()
             ("uploadtask.src", boost::program_options::value<std::string > ()->required(), "Upload task file source")
@@ -28,14 +28,14 @@ namespace plugin {
     return result;
   }
   
-  int UploadTask::getPadTypes(){
+  int OutputTask::getPadTypes(){
     return Task::SOURCE;
   }
   
-  void UploadTask::execute() {
+  void OutputTask::execute() {
         setStatus(Task::DONE);
   }
 
-  REGISTER_TASK("UploadTask",UploadTask );
+  REGISTER_TASK("OutputTask",OutputTask );
 
 }

@@ -187,6 +187,18 @@ namespace jobhandler {
       foreach(db::Job steve, jobs.all()) {
         JSONNode job(JSON_NODE);
         job.push_back(JSONNode("uuid", steve.uuid.value()));
+        JSONNode g = libjson::parse(steve.graph.value());
+        g.set_name("graph");
+        job.push_back(g);
+        try{
+        if(steve.graphstatus.value().length()>0){
+    	    JSONNode gstatus = libjson::parse(steve.graphstatus.value());
+    	    gstatus.set_name("graphstatus");
+    	    job.push_back(gstatus);
+        }
+        }catch(std::exception & ex){
+    	    LOGERROR("ERROR:"<<ex.what());
+        }
         JSONNode tasks(JSON_ARRAY);
         tasks.set_name("tasks");
 

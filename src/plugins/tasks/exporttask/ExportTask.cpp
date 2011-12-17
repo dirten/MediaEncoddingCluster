@@ -54,7 +54,10 @@ namespace plugin {
             ("exporttask.trg", boost::program_options::value<std::string > ()->required(), "Export task file target");
     return result;
   }
-
+  int ExportTask::getPadTypes(){
+    return Task::SINK;
+  }
+  
   void ExportTask::execute() {
     if (getStatus() == Task::ERROR) {
       LOGERROR("ExportTask have error");

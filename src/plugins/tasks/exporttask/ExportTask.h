@@ -23,7 +23,7 @@ namespace plugin {
     void prepare();
     void execute();
     org::esb::core::OptionsDescription getOptionsDescription();
-
+    int getPadTypes();
   private:
 
     struct StreamData {

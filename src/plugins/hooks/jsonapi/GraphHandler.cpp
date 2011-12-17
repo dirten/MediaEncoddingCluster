@@ -24,6 +24,10 @@
 #include "org/esb/config/config.h"
 #include "GraphVerifier.h"
 
+#include "org/esb/core/Graph.h"
+#include "org/esb/core/GraphParser.h"
+#include "org/esb/core/GraphException.h"
+
 namespace graphhandler {
 
   GraphHandler::GraphHandler() {
@@ -219,6 +223,23 @@ namespace graphhandler {
       fis.read(ndata);
 
       /**parsing json file*/
+      //try {
+        org::esb::core::GraphParser graphparser(ndata);
+        
+      db::Job job(*getContext()->database);
+
+      job.uuid = (std::string)org::esb::util::PUUID();
+      job.status = db::Job::Status::Waiting;
+      job.graph=ndata;
+      job.update();
+
+        //org::esb::core::Graph::createJob(list, getContext()->database);
+        result.push_back(JSONNode("status", "ok"));
+      //} catch (org::esb::core::GraphException & ex) {
+      //  result.push_back(JSONNode("status", "error"));
+      //  result.push_back(JSONNode("message", ex.what()));
+      //}
+        /*
       if (libjson::is_valid(ndata)) {
         LOGDEBUG("Data is valid");
         JSONNode inode = libjson::parse(ndata);
@@ -230,7 +251,7 @@ namespace graphhandler {
         }
       } else {
         result.push_back(JSONNode("status", "error"));
-      }
+      }*/
     }
     LOGDEBUG("perform submit for uuid" << uuid);
     sres->setStatus(org::esb::api::ServiceResponse::OK);

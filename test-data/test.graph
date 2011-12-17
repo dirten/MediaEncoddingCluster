@@ -4,13 +4,12 @@
 			"name" : "InputTask",
 			"uid" : 1,
 			"data" : {
-				"infile" : "/media/video/ChocolateFactory.ts"
+				"infile" : "/Users/jhoelscher/Movies/ChocolateFactory.ts"
 			}
 		},
 		{
 			"name" : "EncodingTask",
 			"uid" : 2,
-			"encodingtask.src":"/tmp/test",
 			"data" : {
 				"name" : "Mp4 x264(320x240 hq) mp3(128kb 44.1kHz stereo)",
 				"format" : {
@@ -67,7 +66,7 @@
 					"width" : "320",
 					"height" : "240",
 					"time_base_sel" : "1/25",
-					"frame_size" : "720x576",
+					"frame_size" : "240x120",
 					"multipass" : 1,
 					"maxrate" : 300,
 					"minrate" : 200,
@@ -114,7 +113,6 @@
 		{
 			"name" : "EncodingTask",
 			"uid" : 5,
-			"encodingtask.src":"/tmp/test",
 			"data" : {
 				"name" : "Mp4 x264(320x240 hq) mp3(128kb 44.1kHz stereo)",
 				"format" : {
@@ -171,7 +169,7 @@
 					"width" : "320",
 					"height" : "240",
 					"time_base_sel" : "1/25",
-					"frame_size" : "720x576",
+					"frame_size" : "240x120",
 					"multipass" : 1,
 					"maxrate" : 300,
 					"minrate" : 200,

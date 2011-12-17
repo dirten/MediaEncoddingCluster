@@ -10,6 +10,7 @@
 #include "org/esb/signal/MessageListener.h"
 #include "org/esb/core/ServicePlugin.h"
 #include "org/esb/core/Task.h"
+#include "org/esb/core/Graph.h"
 
 #include <list>
 namespace jobexecutor {
@@ -35,7 +36,7 @@ namespace jobexecutor {
     };
     STATUS _status;
     Ptr<org::esb::core::Task> _current_task;
-    void actualizeProgress(Ptr<org::esb::core::Task>,db::Task&);
+    void actualizeProgress(org::esb::core::Graph *,db::Job&);
   };
   REGISTER_SERVICE("jobexecutor", Service);
 }

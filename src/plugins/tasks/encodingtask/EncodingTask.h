@@ -26,7 +26,7 @@ namespace encodingtask {
     org::esb::core::OptionsDescription getOptionsDescription();
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> getProcessUnit();
     void putProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>);
-    
+    int getPadTypes();
   private:
     std::string _srcuristr;
     std::string _partition;

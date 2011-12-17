@@ -19,6 +19,7 @@
 
 @import <Foundation/Foundation.j>
 @import "../../Categories/CPButtonBar+themeGray.j"
+@import "../../View/ProfileEditView.j"
 
 
 // import only AppKit part you need here.
@@ -61,7 +62,15 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
   [request setHTTPMethod:"GET"];
   var connection = [CPURLConnection connectionWithRequest:request delegate:self];
   //[buttonBar setValue:CPThemeStateDisabled forThemeAttribute:@"button-bezel-color"]
-  //profileView=[[ProfileEditView alloc] initWithFrame:[profileView bounds]];
+  json={
+    "data":{
+      "format":{},
+      "video":{},
+      "audio":{}
+    }
+  };
+  var data=[CPDictionary dictionaryWithJSObject:json recursively:YES];  
+  //[profileView addSubview:[[ProfileEditView alloc] initWithData:data]];
 }
 
 #pragma mark -
