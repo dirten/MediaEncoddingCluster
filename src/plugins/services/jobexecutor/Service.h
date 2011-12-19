@@ -35,8 +35,9 @@ namespace jobexecutor {
       STOPPED
     };
     STATUS _status;
+    db::Job * _job;
     Ptr<org::esb::core::Task> _current_task;
-    void actualizeProgress(org::esb::core::Graph *,db::Job&);
+    void actualizeProgress(org::esb::core::Graph *);
   };
   REGISTER_SERVICE("jobexecutor", Service);
 }

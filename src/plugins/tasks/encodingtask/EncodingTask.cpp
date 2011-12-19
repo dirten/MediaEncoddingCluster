@@ -9,17 +9,19 @@
 #include "org/esb/util/Foreach.h"
 #include "EncodingTask.h"
 #include "org/esb/lang/Ptr.h"
-#include "StreamData.h"
 #include "Packetizer.h"
 #include "ProcessUnitBuilder.h"
 #include "org/esb/av/FormatInputStream.h"
+#include "org/esb/av/FormatOutputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "plugins/services/partitionservice/PartitionManager.h"
 #include "org/esb/av/CodecPropertyTransformer.h"
+#include "org/esb/util/ScopedTimeCounter.h"
+#include "org/esb/config/config.h"
 
 namespace encodingtask {
 
-  EncodingTask::EncodingTask() {
+  EncodingTask::EncodingTask() : Task() {
     _sequence_counter = 0;
   }
 
@@ -28,16 +30,17 @@ namespace encodingtask {
 
   void EncodingTask::prepare() {
     _srcuristr = getContext()->getEnvironment<std::string > ("encodingtask.src");
-    if(_srcuristr.length()==0){
-      _srcuristr=getSource();
+    if (_srcuristr.length() == 0) {
+      _srcuristr = getSource();
     }
     _partition = getContext()->getEnvironment<std::string > ("encodingtask.partition");
-    _task_uuid = getContext()->getEnvironment<std::string > ("task.uuid");
+    _task_uuid = getUUID(); //getContext()->getEnvironment<std::string > ("task.uuid");
+    _target_file=getSink();
     
     //std::string profile = getContext()->getEnvironment<std::string > ("encodingtask.profile");
     std::string profiledata = getContext()->getEnvironment<std::string > ("encodingtask.profiledata");
-    if(profiledata.length()==0)
-        profiledata = getContext()->getEnvironment<std::string > ("data");
+    if (profiledata.length() == 0)
+      profiledata = getContext()->getEnvironment<std::string > ("data");
     /*
     if (getContext()->contains("job")) {
       _job = Ptr<db::Job > (new db::Job(getContext()->get<db::Job > ("job")));
@@ -46,18 +49,20 @@ namespace encodingtask {
       setStatusMessage("there is no associated job to this encoding task");
       //return;
     }*/
-    try{
+    try {
       org::esb::hive::PresetReaderJson reader(profiledata);
       _codecs = reader.getCodecList();
       _filters = reader.getFilterList();
       _preset = reader.getPreset();
+      _format=_preset["id"];
     } catch (std::exception & ex) {
       setStatus(Task::ERROR);
       setStatusMessage(std::string("Error while parsing JSON Profile:").append(ex.what()));
     }
   }
-  int EncodingTask::getPadTypes(){
-    return Task::SINK|Task::SOURCE;
+
+  int EncodingTask::getPadTypes() {
+    return Task::SINK | Task::SOURCE;
   }
 
   org::esb::core::OptionsDescription EncodingTask::getOptionsDescription() {
@@ -72,6 +77,7 @@ namespace encodingtask {
   }
 
   void EncodingTask::execute() {
+    Task::execute();
     /*check if we had some errors before*/
     if (getStatus() == Task::ERROR)
       return;
@@ -191,7 +197,7 @@ namespace encodingtask {
         LOGERROR("Codec not found")
       }
     }
-    
+
     org::esb::av::PacketInputStream pis(&fis);
 
     Packetizer packetizer(stream_map);
@@ -244,11 +250,13 @@ namespace encodingtask {
         putToPartition(unit, true);
       }
     }
-    
+
     while (partitionservice::PartitionManager::getInstance()->getSize(_partition) > 0) {
-      setProgress(getProgressLength()-partitionservice::PartitionManager::getInstance()->getSize(_partition));
+      setProgress(getProgressLength() - partitionservice::PartitionManager::getInstance()->getSize(_partition));
       org::esb::lang::Thread::sleep2(1 * 1000);
     }
+    setProgress(getProgressLength());
+    exportFile();
     setStatus(Task::DONE);
     setStatusMessage("Encoding completed successfull");
   }
@@ -256,6 +264,7 @@ namespace encodingtask {
   void EncodingTask::putToPartition(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast) {
     unit->_sequence = _sequence_counter++;
     unit->setJobId(_task_uuid);
+    //unit->setJobId("121212");
 
     partitionservice::PartitionManager::Type t = partitionservice::PartitionManager::TYPE_UNKNOWN;
     LOGDEBUG("CodecType:" << unit->_decoder->getCodecType());
@@ -294,6 +303,132 @@ namespace encodingtask {
 
   void EncodingTask::putProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>) {
 
+  }
+
+  void EncodingTask::exportFile() {
+    if (getStatus() == Task::ERROR) {
+      LOGERROR("ExportTask have error");
+      return;
+    }
+    org::esb::util::ScopedTimeCounter stc("export");
+    std::string base = org::esb::config::Config::get("hive.tmp_path");
+    org::esb::io::File inputdir(base + "/jobs/" + _task_uuid + "/collect");
+    org::esb::io::FileList filelist = inputdir.listFiles();
+    if (filelist.size() == 0) {
+      setStatus(Task::ERROR);
+      setStatusMessage(std::string("no files found to export from ").append(base + "/" + _task_uuid + "/collect"));
+      return;
+    }
+
+    foreach(Ptr<org::esb::io::File> file, filelist) {
+      LOGDEBUG("File : " << file->getPath());
+      org::esb::io::FileInputStream fis(file.get());
+      org::esb::io::ObjectInputStream ois(&fis);
+      //org::esb::hive::job::ProcessUnit pu;
+      boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit;
+      if (ois.readObject(unit) == 0) {
+        if (unit->_output_packets.size() > 0) {
+          boost::shared_ptr<org::esb::av::Packet> first_packet = unit->_output_packets.front();
+          ProcessUnitData data;
+          data.id = file->getPath();
+          data.startts = first_packet->getDtsTimeStamp();
+          data._sequence = unit->_sequence;
+          data.encoder = unit->getEncoder();
+          data.stream = unit->_target_stream;
+          _pudata.push_back(data);
+        } else {
+          LOGDEBUG("unit->_output_packets.size()<=0");
+        }
+      } else {
+        LOGDEBUG("OIS !=0")
+      }
+    }
+    _pudata.sort();
+
+    /*creating streams here*/
+    foreach(ProcessUnitData & data, _pudata) {
+      if (_stream_encoder.count(data.stream) == 0) {
+        _stream_encoder[data.stream] = data.encoder;
+      }
+    }
+
+    org::esb::io::File fout(base + "/jobs/" + _task_uuid + "/"+_target_file);
+    LOGDEBUG("Export file to : " << fout.getPath());
+    if (getContext()->getEnvironment<std::string > ("exporttask.overwrite") == "false" && fout.exists()) {
+      LOGDEBUG("File exist:" << _target_file);
+      setStatus(Task::ERROR);
+      setStatusMessage(std::string("file allready exist:").append(_target_file));
+      return;
+    }
+    /*creating output Directory*/
+    org::esb::io::File outDirectory(fout.getFilePath().c_str());
+    if (!outDirectory.exists()) {
+      outDirectory.mkdirs();
+    }
+    /*openning the OutputStreams*/
+    FormatOutputStream * fos = new FormatOutputStream(&fout, _format.c_str());
+    PacketOutputStream * pos = new PacketOutputStream(fos, getSink() + ".stats");
+    int a = 0;
+
+    foreach(StreamEncoderMap::value_type & data, _stream_encoder) {
+      data.second->open();
+      StreamData & sd = _in_out_stream_map[data.first];
+      sd.next_timestamp = 0;
+      sd.last_timestamp = 0;
+      sd.out_stream_index = a;
+      sd.stream_type = data.second->getCodecType();
+      pos->setEncoder(*data.second, a++);
+      LOGDEBUG("StreamEncoder:" << data.first);
+    }
+    pos->init();
+
+    foreach(ProcessUnitData & data, _pudata) {
+      LOGDEBUG("StartTs : " << data.startts.toString());
+      LOGDEBUG("Sequence : " << data._sequence);
+      LOGDEBUG("File:" << data.id);
+      LOGDEBUG("TargetStream:" << data.stream);
+      LOGDEBUG("Encoder:" << data.encoder->toString());
+      org::esb::io::FileInputStream fis(data.id);
+      org::esb::io::ObjectInputStream ois(&fis);
+      boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit;
+      if (ois.readObject(unit) == 0) {
+
+        unit->_output_packets.sort(EncodingTask::ptsComparator);
+
+        foreach(PacketPtr p, unit->_output_packets) {
+          int idx = p->getStreamIndex();
+          p->setPts(_in_out_stream_map[idx].next_timestamp);
+          _in_out_stream_map[idx].last_timestamp = _in_out_stream_map[idx].next_timestamp;
+          _in_out_stream_map[idx].next_timestamp += p->getDuration();
+        }
+        unit->_output_packets.sort(dtsComparator);
+
+        foreach(PacketPtr p, unit->_output_packets) {
+          int idx = p->getStreamIndex();
+          p->packet->stream_index = _in_out_stream_map[idx].out_stream_index;
+          pos->writePacket(*p);
+        }
+
+      }
+      fis.close();
+      org::esb::io::File(data.id).deleteFile();
+      //infile.deleteFile();
+
+    }
+    pos->close();
+
+    fos->close();
+    delete pos;
+    delete fos;
+    //setStatus(Task::DONE);
+
+  }
+    bool EncodingTask::ptsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b) {
+    return a->getPts() < b->getPts();
+  }
+
+  bool EncodingTask::dtsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b) {
+    return a->getDts() < b->getDts();
   }
 
   REGISTER_TASK("EncodingTask", EncodingTask);

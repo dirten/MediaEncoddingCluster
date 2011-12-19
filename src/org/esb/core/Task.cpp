@@ -11,9 +11,10 @@ namespace org {
     namespace core {
 
       Task::Task() {
-        _status=NONE;
+        setStatus(NONE);
         _progress_length=0;
         _progress=0;
+        setProgress(0);
       }
 
       Task::~Task() {
@@ -30,17 +31,23 @@ namespace org {
       
       void Task::cleanup() {
         setStatus(CLEANUP);
-
         setStatus(DONE);
+      }
+
+      void Task::interrupt() {
+        setStatus(INTERRUPT);
       }
       
       int Task::getProgress() {
-        return _progress;
+        return (_progress*100)/_progress_length;
       }
       
-      void Task::setProgress(int p) {
-        if(p>0)
-          _progress=(p*100)/_progress_length;
+      void Task::setProgress(unsigned int p) {
+        if(p!=_progress){
+          _progress=p;//(p*100)/_progress_length;
+          if(progressObserver)
+            progressObserver(this);
+        }
       }
       
       void Task::setProgressLength(unsigned int l) {
@@ -50,13 +57,11 @@ namespace org {
       unsigned int Task::getProgressLength() {
         return _progress_length;
       }
-      
-      void Task::interrupt() {
-        setStatus(INTERRUPT);
-      }
-      
+            
       void Task::setStatus(STATUS s){
         _status=s;
+        if(statusObserver)
+          statusObserver(this);
       }
       Task::STATUS  Task::getStatus(){
         return _status;
@@ -87,9 +92,22 @@ namespace org {
       int Task::getPadTypes(){
         return Task::NOPAD;
       }
+      
       void Task::setUUID(std::string uuid){
         _uuid=uuid;
       }
+      
+      std::string Task::getUUID(){
+        return _uuid;
+      }
+      void Task::addStatusObserver( boost::function<void (Task*)> func){
+        statusObserver=func;
+      }
+      
+      void Task::addProgressObserver( boost::function<void (Task*)> func){
+        progressObserver=func;      
+      }
+
     }
   }
 }

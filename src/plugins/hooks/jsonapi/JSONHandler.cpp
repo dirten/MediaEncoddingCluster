@@ -77,7 +77,7 @@ namespace org {
             push_back(profile);
             //profileid=profile["id"].as_string();
           }
-          if(job.preset().get().count()>0){
+          if(false&&job.preset().get().count()>0){
                 db::Preset preset=job.preset().get().one();
                 push_back(JSONNode("profileid",preset.uuid));
           }
@@ -415,7 +415,7 @@ namespace org {
         }
         n.push_back(JSONNode("requestId", req->getUUID()));
         res->setStatus(ServiceResponse::OK);
-        res->getOutputStream()->write(n.write_formatted());
+        res->getOutputStream()->write(n.write());
             
       }
 

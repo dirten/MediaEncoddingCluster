@@ -10,14 +10,14 @@
 #include "org/esb/lang/Ptr.h"
 namespace plugin {
 
-  ExecutableTask::ExecutableTask() {
+  ExecutableTask::ExecutableTask():Task() {
   }
 
   ExecutableTask::~ExecutableTask() {
   }
 
   void ExecutableTask::prepare() {
-
+    Task::prepare();
   }
 
   org::esb::core::OptionsDescription ExecutableTask::getOptionsDescription() {
@@ -30,7 +30,10 @@ namespace plugin {
     return Task::SOURCE|Task::SINK;
   }
   void ExecutableTask::execute() {
-        setStatus(Task::DONE);
+    Task::execute();
+    setProgressLength(1);
+    setProgress(1);
+    //setStatus(Task::DONE);
   }
 
   REGISTER_TASK("ExecutableTask",ExecutableTask );

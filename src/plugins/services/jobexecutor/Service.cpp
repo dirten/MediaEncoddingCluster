@@ -42,13 +42,15 @@ namespace jobexecutor {
   void Service::stopService() {
     _status = STOPPING;
   }
-  void Service::actualizeProgress(org::esb::core::Graph * graph,db::Job&dbjob){
-    while(graph->getState()!=org::esb::core::Graph::DONE&&graph->getState()!=org::esb::core::Graph::ERROR){
+  void Service::actualizeProgress(org::esb::core::Graph * graph){
+    //while(graph->getState()!=org::esb::core::Graph::DONE&&graph->getState()!=org::esb::core::Graph::ERROR){
       LOGDEBUG("Reading Graph Progress");
-      dbjob.graphstatus=graph->getStatus();
-      dbjob.update();      
-      org::esb::lang::Thread::sleep2(1000);
-    }
+      int gprogress=(graph->getProcessedStepCount()*100)/graph->getStepCount();
+      _job->graphstatus=graph->getStatus();
+      _job->progress=gprogress;
+      _job->update();      
+      //org::esb::lang::Thread::sleep2(1000);
+    //}
   }
 
   void Service::run() {
@@ -65,21 +67,23 @@ namespace jobexecutor {
         foreach(org::esb::core::GraphParser::ElementMap::value_type & element, el){
           list.push_back(element.second);
         }
-        
+        _job=&job;
         org::esb::core::Graph graph(list, job.uuid);
-        go(Service::actualizeProgress, this, &graph,job);
+        graph.addStatusObserver(boost::bind(&Service::actualizeProgress, this,_1));
+        //go(Service::actualizeProgress, this, &graph,job);
 
         try{
           job.status=job.Status.Processing;
           job.update();
           graph.run();
+          //actualizeProgress(&graph, job);
+          job.status=job.Status.Completed;
+          job.update();
         }catch(std::exception & ex){
           job.status=job.Status.Error;
-            job.status=job.Status.Error;
-            job.update();
+          job.status=job.Status.Error;
+          job.update();
         }
-        job.status=job.Status.Completed;
-        job.update();
 
         if (job.tasks().get().count() > 0) {
           int taskcount=job.tasks().get().count();

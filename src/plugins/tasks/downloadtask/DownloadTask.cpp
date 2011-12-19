@@ -18,13 +18,14 @@
 #include "org/esb/libjson/libjson.h"
 namespace plugin {
 
-  DownloadTask::DownloadTask() {
+  DownloadTask::DownloadTask():Task() {
   }
 
   DownloadTask::~DownloadTask() {
   }
 
   void DownloadTask::prepare() {
+    Task::prepare();
     _srcuristr = getContext()->getEnvironment<std::string > ("downloadtask.src");
     _trguristr = getContext()->getEnvironment<std::string > ("downloadtask.trg");
     if (_trguristr.length() == 0) {
@@ -54,7 +55,9 @@ namespace plugin {
   }
 
   void DownloadTask::execute() {
+    Task::execute();
     LOGDEBUG("copy " << _srcuristr << " to " << _trguristr);
+    setProgressLength(1);
     //Poco::URI uri(_srcuristr);
     Poco::File srcfile(_srcuristr);
     if (srcfile.exists()) {
@@ -64,7 +67,7 @@ namespace plugin {
     } else {
       setStatus(Task::ERROR);
     }
-
+    setProgress(1);
     LOGDEBUG("Download finish!");
   }
   /*

@@ -15,6 +15,9 @@
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/util/Queue.h"
+#include "ProcessUnitData.h"
+#include "StreamData.h"
+
 namespace encodingtask {
 
   class ENCTASK_EXPORT EncodingTask : public org::esb::core::Task {
@@ -31,19 +34,39 @@ namespace encodingtask {
     std::string _srcuristr;
     std::string _partition;
     std::string _task_uuid;
-    
+
     org::esb::hive::PresetReaderJson::CodecList _codecs;
     org::esb::hive::PresetReaderJson::FilterList _filters;
-    org::esb::hive::PresetReaderJson::Preset _preset ;
+    org::esb::hive::PresetReaderJson::Preset _preset;
     //Ptr<db::Job> _job;
-    
-    void putToPartition(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast=false);
-    void enQueue(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast=false);
+
+    void putToPartition(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast = false);
+    void enQueue(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast = false);
     std::map<int, Ptr<org::esb::util::FileQueue<boost::shared_ptr<org::esb::hive::job::ProcessUnit> > > > _stream_queues;
     std::list<std::string> _running_pus;
     int _sequence_counter;
+
+    
+    
+    void exportFile();
+    
+    static bool ptsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b);
+    static bool dtsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b);
+    std::list<ProcessUnitData> _pudata;
+
+
+    //static std::map<int, StreamData> _source_stream_map;
+
+    typedef std::map<int, boost::shared_ptr<org::esb::av::Encoder> > StreamEncoderMap;
+    typedef std::map<int, StreamData> InOutStreamMap;
+    typedef boost::shared_ptr<org::esb::av::Packet> PacketPtr;
+    StreamEncoderMap _stream_encoder;
+    InOutStreamMap _in_out_stream_map;
+    std::string _target_file;
+    std::string _format;
+
   };
-//  REGISTER_TASK("DownloadTask", DownloadTask)
+  //  REGISTER_TASK("DownloadTask", DownloadTask)
 }
 #endif	/* DOWNLOADTASK_H */
 

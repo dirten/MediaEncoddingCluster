@@ -31,7 +31,8 @@
             var progressBarPill = null;
             OBJJ_PROGRESS_CALLBACK = function(percent)
             {
-                percent = 100 * percent;
+              //alert("callback");  
+              percent = 100 * percent;
 
                 if (!progressBarPill)
                     progressBarPill = document.getElementById("progressBarPill");
@@ -39,9 +40,10 @@
                 if (percent > 5)
                     progressBarPill.style.width = percent + "%";
             }
+            //progressBarPill.style.width =  "20%";
         </script>
         <!--<script src="Frameworks/Objective-J/Objective-J.js" type="text/javascript" charset="UTF-8"></script>-->
-        <script src="Frameworks/Debug/Objective-J/Objective-J.js" type="text/javascript" charset="UTF-8"></script>
+        <script src="Frameworks/Objective-J/Objective-J.js" type="text/javascript" charset="UTF-8"></script>
 
         <style type="text/css">
             body{margin:0; padding:0;}

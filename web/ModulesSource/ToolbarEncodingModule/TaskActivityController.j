@@ -70,19 +70,22 @@
 }
 - (void)loadTasksOnNotification:(CPNotification)notification
 {
-  //jobid = [notification userInfo];
-  //var not=[[CPNotification notificationWithName:@"noname" object:self userInfo:jobid]];
+  jobid = [notification userInfo];
+  //var noti=[[CPNotification notificationWithName:@"noname" object:self userInfo:jobid]];
   CPLog.debug("loadNodeEditorView:"+[notification userInfo]);
 
   [nodeEditorController _load:notification];
+  //[nodeEditorController _load:noti];
   //[self refresh];
 }
 
 - (void)refresh{
   if(jobid){
-    var request = [CPURLRequest requestWithURL:"/api/v1/job?id="+jobid];
-    [request setHTTPMethod:"GET"];
-    var connection = [CPURLConnection connectionWithRequest:request delegate:self];
+    [[CPNotificationCenter defaultCenter]
+     postNotificationName:EncodingClicked
+     object:self
+     userInfo:jobid];
+
   }
 }
 

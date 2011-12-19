@@ -20,6 +20,9 @@ namespace plugin {
     org::esb::core::OptionsDescription getOptionsDescription();
     int getPadTypes();
   private:
+    std::string _trguristr;
+    std::string _srcuristr;
+    std::string _task_uuid;
   };
 //  REGISTER_TASK("DownloadTask", DownloadTask)
 }

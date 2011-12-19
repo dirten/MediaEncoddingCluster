@@ -11,11 +11,12 @@
 #include "Graph.h"
 #include "GraphException.h"
 #include <map>
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace core {
 
-      class GraphParser {
+      class CORE_EXPORT GraphParser {
       public:
         typedef std::map<std::string, Ptr<Graph::Element> > ElementMap;
         GraphParser(std::string) throw(GraphException);

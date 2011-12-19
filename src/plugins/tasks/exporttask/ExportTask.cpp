@@ -32,7 +32,7 @@ namespace plugin {
       setStatusMessage("there is no associated job to this encoding task");
       return;
     }*/
-    _task_uuid = getContext()->getEnvironment<std::string > ("task.uuid");
+    _task_uuid = getUUID();//getContext()->getEnvironment<std::string > ("task.uuid");
     
     if (true || getContext()->contains("exporttask.format")) {
       _format = getContext()->getEnvironment<std::string > ("exporttask.format");

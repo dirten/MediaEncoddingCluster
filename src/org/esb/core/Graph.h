@@ -60,27 +60,38 @@ namespace org {
         void addElement(Ptr<Task>);
         void linkElement(Ptr<Task>,Ptr<Task>);
         void run();
+        void addStatusObserver(boost::function<void (Graph*)> func);
         std::string getStatus();
         STATUS getState();
+          int getStepCount();
+          int getProcessedStepCount();
         virtual ~Graph();
       private:
+        boost::function<void (Graph*)> statusObserver;
         static void processElement(Ptr<Element> ,db::Job & );
         std::list<Ptr<Graph::Element> > elements;
         void execute(Ptr<Element>);
         JSONNode status;
         std::string _uuid;
         STATUS _state;
-        struct Status{
+        int processedStepCount;
+        class Status{
+        public:
+          Status(){
+            uid="";
+            progress="0";
+            status=Task::NONE;
+          }
           std::string uid;
-          std::string status;
+          Task::STATUS status;
           std::string progress;
         };
         
         typedef std::map<std::string, std::string> KeyValue;
         typedef std::list<Ptr<Status> > KeyValueList;
         KeyValueList status_list;
-        void setStatus(Ptr<Status>, std::string, std::string);
-        void setProgress(Ptr<Task> , Ptr<Status>);
+        void setStatus(Task*);
+        void setProgress(Task*);
         //std::set<Ptr<Task> > _taskList;
         //std::list<Ptr<Task> > _taskLinkMap;
         //std::string _link_matrix[100][100];

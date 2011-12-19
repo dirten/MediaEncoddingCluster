@@ -1,0 +1,340 @@
+{
+	"tasks" : [
+		{
+			"name" : "InputTask",
+			"uid" : 1,
+			"data" : {
+				"infile" : "/Users/jhoelscher/Movies/ChocolateFactory.ts"
+			}
+		},
+		{
+			"name" : "EncodingTask",
+			"uid" : 2,
+			"data" : {
+				"format" : {
+					"id" : "mp4",
+					"author" : "",
+					"title" : "",
+					"copyright" : "",
+					"comment" : "",
+					"album" : "",
+					"year" : "",
+					"track" : "",
+					"genre" : "",
+					"rtphint" : "0"
+				},
+				"video" : {
+					"id" : "libx264",
+					"g" : "10",
+					"time_base_sel" : "1/25",
+					"time_base" : "1/25",
+					"frame_size" : "320x240",
+					"width" : "320",
+					"height" : "240",
+					"multipass" : false,
+					"b" : 2031,
+					"maxrate" : "3000",
+					"minrate" : "786",
+					"bt" : "150",
+					"bufsize" : "500",
+					"cqp" : "6",
+					"crf" : "23",
+					"qmin" : "10",
+					"qmax" : "51",
+					"qdiff" : "4",
+					"keyint_min" : "150",
+					"sc_threshold" : "40",
+					"bf" : "16",
+					"bframebias" : "0",
+					"b_strategy" : "2",
+					"bpyramid" : false,
+					"coder" : "1",
+					"refs" : "6",
+					"loop" : false,
+					"deblockalpha" : "0",
+					"deblockbeta" : "0",
+					"i_qfactor" : "0.71",
+					"b_qfactor" : "0.0",
+					"chromaoffset" : "0.0",
+					"qcomp" : "0.6",
+					"complexityblur" : "20",
+					"qblur" : "0.5",
+					"partp8x8" : false,
+					"partp4x4" : false,
+					"partb8x8" : false,
+					"parti8x8" : false,
+					"parti4x4" : false,
+					"directpred" : "3",
+					"wpred" : "1",
+					"me_method" : "umh",
+					"aq_mode" : "1",
+					"me_range" : "7",
+					"subq" : "6",
+					"mixed_refs" : "1",
+					"dct8x8" : "1",
+					"trellis" : "2",
+					"fastpskip" : "1",
+					"intra_refresh" : "0",
+					"mbtree" : "0",
+					"rc_lookahead" : "100"
+				},
+				"audio" : {
+					"id" : "libmp3lame",
+					"ac" : "2",
+					"ab" : "128000",
+					"ar" : "44100"
+				},
+				"id" : "6be6f596-3eb3-4bb2-a2a3-8cb43144f60a",
+				"name" : "test x264 default plain 2"
+			}
+		},
+		{
+			"name" : "OutputTask",
+			"uid" : 3,
+			"data" : {
+				"outfile":"/tmp"
+			}
+		},
+		{
+			"name" : "ExecutableTask",
+			"uid" : 4,
+			"data" : {
+				"executable" : "bin/qt-faststart"
+			}
+		},
+		{
+			"name" : "EncodingTask",
+			"uid" : 5,
+			"data" : {
+				"format" : {
+					"id" : "mp4",
+					"author" : "",
+					"title" : "",
+					"copyright" : "",
+					"comment" : "",
+					"album" : "",
+					"year" : "",
+					"track" : "",
+					"genre" : "",
+					"rtphint" : "0"
+				},
+				"video" : {
+					"id" : "libx264",
+					"time_base_sel" : "1/25",
+					"time_base" : "1/25",
+					"frame_size" : "320x240",
+					"width" : "320",
+					"height" : "240",
+					"multipass" : false,
+					"b" : "1024",
+					"maxrate" : "3000",
+					"minrate" : "786",
+					"bt" : "150",
+					"bufsize" : "500",
+					"cqp" : "6",
+					"crf" : "23",
+					"qmin" : "10",
+					"qmax" : "51",
+					"qdiff" : "4",
+					"g" : "150",
+					"keyint_min" : "150",
+					"sc_threshold" : "40",
+					"bf" : "16",
+					"bframebias" : "0",
+					"b_strategy" : "2",
+					"bpyramid" : false,
+					"coder" : "1",
+					"refs" : "6",
+					"loop" : false,
+					"deblockalpha" : "0",
+					"deblockbeta" : "0",
+					"i_qfactor" : "0.71",
+					"b_qfactor" : "0.0",
+					"chromaoffset" : "0.0",
+					"qcomp" : "0.6",
+					"complexityblur" : "20",
+					"qblur" : "0.5",
+					"partp8x8" : false,
+					"partp4x4" : false,
+					"partb8x8" : false,
+					"parti8x8" : false,
+					"parti4x4" : false,
+					"directpred" : "3",
+					"wpred" : "1",
+					"me_method" : "umh",
+					"aq_mode" : "1",
+					"me_range" : "7",
+					"subq" : "6",
+					"mixed_refs" : "1",
+					"dct8x8" : "1",
+					"trellis" : "2",
+					"fastpskip" : "1",
+					"intra_refresh" : "0",
+					"mbtree" : "0",
+					"rc_lookahead" : "100"
+				},
+				"audio" : {
+					"id" : "libmp3lame",
+					"ac" : "2",
+					"ab" : "128000",
+					"ar" : "44100"
+				},
+				"id" : "a14bda96-dbcc-4957-9d45-dcd5adbb1581",
+				"name" : "test x264 default plain"
+			}
+		},
+		{
+			"name" : "EncodingTask",
+			"uid" : 6,
+			"data" : {
+				"format" : {
+					"id" : "mp4",
+					"author" : "",
+					"title" : "",
+					"copyright" : "",
+					"comment" : "",
+					"album" : "",
+					"year" : "",
+					"track" : "",
+					"genre" : "",
+					"rtphint" : "0"
+				},
+				"video" : {
+					"id" : "libx264",
+					"time_base_sel" : "1/25",
+					"time_base" : "1/25",
+					"frame_size" : "320x240",
+					"width" : "320",
+					"height" : "240",
+					"multipass" : false,
+					"b" : 500,
+					"maxrate" : 550,
+					"minrate" : 490,
+					"bt" : 1,
+					"bufsize" : 1,
+					"cqp" : 0,
+					"crf" : 0,
+					"qmin" : 3,
+					"qmax" : 0,
+					"qdiff" : 0,
+					"g" : 51,
+					"keyint_min" : 35,
+					"sc_threshold" : 30,
+					"bf" : 2,
+					"bframebias" : 2,
+					"b_strategy" : "2",
+					"bpyramid" : 1,
+					"coder" : "1",
+					"refs" : 3,
+					"loop" : 1,
+					"deblockalpha" : "0",
+					"deblockbeta" : "0",
+					"i_qfactor" : "0.71",
+					"b_qfactor" : "0.0",
+					"chromaoffset" : "0.0",
+					"qcomp" : "0.6",
+					"complexityblur" : "20",
+					"qblur" : "0.5",
+					"partp8x8" : false,
+					"partp4x4" : false,
+					"partb8x8" : false,
+					"parti8x8" : false,
+					"parti4x4" : false,
+					"directpred" : "3",
+					"wpred" : "1",
+					"me_method" : "hex",
+					"aq_mode" : "1",
+					"me_range" : "5",
+					"subq" : "6",
+					"mixed_refs" : 0,
+					"dct8x8" : "1",
+					"trellis" : "2",
+					"fastpskip" : "1",
+					"intra_refresh" : "0",
+					"mbtree" : 1,
+					"rc_lookahead" : "0"
+				},
+				"audio" : {
+					"id" : "libmp3lame",
+					"ac" : "2",
+					"ab" : "128000",
+					"ar" : "44100"
+				},
+				"id" : "3e74a312-47b9-4082-a70c-e931f9d84ebd",
+				"name" : "test motion vector"
+			}
+		}
+	],
+	"links" : [
+		{
+			"uid" : 1,
+			"linksTo" : 2
+		},
+		{
+			"uid" : 1,
+			"linksTo" : 3
+		},
+		{
+			"uid" : 1,
+			"linksTo" : 6
+		},
+		{
+			"uid" : 1,
+			"linksTo" : 5
+		},
+		{
+			"uid" : 2,
+			"linksTo" : 4
+		},
+		{
+			"uid" : 2,
+			"linksTo" : 3
+		},
+		{
+			"uid" : 4,
+			"linksTo" : 3
+		},
+		{
+			"uid" : 5,
+			"linksTo" : 3
+		},
+		{
+			"uid" : 6,
+			"linksTo" : 3
+		}
+	],
+	"positions" : [
+		{
+			"uid" : 1,
+			"x" : 27,
+			"y" : 252
+		},
+		{
+			"uid" : 2,
+			"x" : 254,
+			"y" : 307
+		},
+		{
+			"uid" : 3,
+			"x" : 724,
+			"y" : 253
+		},
+		{
+			"uid" : 4,
+			"x" : 496,
+			"y" : 355
+		},
+		{
+			"uid" : 5,
+			"x" : 254,
+			"y" : 197
+		},
+		{
+			"uid" : 6,
+			"x" : 255,
+			"y" : 92
+		}
+	],
+	"uuid" : "ae0da5a5-c0d6-4203-a2ea-fb16dfce84db",
+	"name" : "three way encoding"
+}

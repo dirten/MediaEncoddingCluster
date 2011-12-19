@@ -11,6 +11,7 @@
 #include "PluginRegistry.h"
 #include "org/esb/lang/Ptr.h"
 #include "exports.h"
+#include "boost/function.hpp"
 #ifdef ERROR
 #undef ERROR
 #endif
@@ -39,7 +40,7 @@ namespace org {
       protected:
         void setProgressLength(unsigned int);
         unsigned int getProgressLength();
-        void setProgress(int);
+        void setProgress(unsigned int);
         void setStatus(STATUS);
         void setStatusMessage(std::string);
 
@@ -60,6 +61,10 @@ namespace org {
         virtual void setSink(std::string);
         virtual int getPadTypes();
         virtual void setUUID(std::string);
+        virtual std::string getUUID();
+        virtual void addStatusObserver( boost::function<void (Task*)> func);
+        virtual void addProgressObserver( boost::function<void (Task*)> func);
+
       private:
         unsigned int _progress;
         unsigned int _progress_length;
@@ -68,6 +73,8 @@ namespace org {
         std::string _source;
         std::string _sink;
         std::string _uuid;
+        boost::function<void (Task*)> statusObserver;
+        boost::function<void (Task*)> progressObserver;
       };
     }
   }

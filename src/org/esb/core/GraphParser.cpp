@@ -22,7 +22,7 @@ namespace org {
       };
 
       GraphParser::GraphParser(std::string graphdata)throw (GraphException) {
-        //try {
+        try {
           if (libjson::is_valid(graphdata)) {
             JSONNode node = libjson::parse(graphdata);
             /*parsing tasks from graph*/
@@ -52,9 +52,10 @@ namespace org {
           } else {
             throw GraphException("no valid json");
           }
-        //} catch (std::exception & ex) {
-        //  throw GraphException(ex.what());
-        //}
+        } catch (std::exception & ex) {
+    	    LOGERROR(ex.what());
+          throw GraphException(ex.what());
+        }
       }
 
       GraphParser::~GraphParser() {

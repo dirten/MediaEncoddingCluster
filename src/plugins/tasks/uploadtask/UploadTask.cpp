@@ -33,7 +33,9 @@ namespace plugin {
   }
   
   void UploadTask::execute() {
-        setStatus(Task::DONE);
+    Task::execute();
+    setProgressLength(1);
+    setProgress(1);
   }
 
   REGISTER_TASK("UploadTask",UploadTask );

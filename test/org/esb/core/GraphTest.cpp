@@ -28,10 +28,7 @@ using namespace std;
 bool toexit = false;
 
 void print_status(Graph * g) {
-  while (!toexit) {
     std::cerr << g->getStatus();
-    org::esb::lang::Thread::sleep2(1000);
-  }
 }
 
 void process(boost::asio::ip::tcp::endpoint e1, partitionservice::ProcessUnitCollector & col) {
@@ -68,6 +65,7 @@ int main(int argc, char** argv) {
   org::esb::core::PluginRegistry::getInstance()->load(EXPORTTASK_PLUGIN);
   org::esb::core::PluginRegistry::getInstance()->load(EXECUTABLETASK_PLUGIN);
   org::esb::core::PluginRegistry::getInstance()->load(UPLOADTASK_PLUGIN);
+  org::esb::core::PluginRegistry::getInstance()->load(OUTPUTTASK_PLUGIN);
   LOGDEBUG("using database in:" << org::esb::config::Config::get("db.url"));
   boost::shared_ptr<db::HiveDb> database = boost::shared_ptr<db::HiveDb > (new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url")));
 
@@ -104,7 +102,8 @@ int main(int argc, char** argv) {
   boost::thread t5 = go(process, e5, col);
 
   Graph graph(list, "0815");
-  boost::thread t6 = go(print_status, &graph);
+  graph.addStatusObserver(boost::bind(&print_status,_1));
+  //boost::thread t6 = go(print_status, &graph);
   graph.run();
 
   while (man->getSize("global") > 0) {
@@ -118,6 +117,7 @@ int main(int argc, char** argv) {
   t4.join();
   t5.join();
 
+  std::cerr << graph.getStatus();
 
   return 0;
 }
