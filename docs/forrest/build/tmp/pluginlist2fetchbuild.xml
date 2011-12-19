@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project default="fetchplugin">
+<?xml version="1.0" encoding="UTF-8"?><project default="fetchplugin">
 <target name="fetchplugin" depends="fetch-local-unversioned-plugin, fetch-remote-unversioned-plugin-version-forrest,fetch-remote-unversioned-plugin-unversion-forrest, final-check"/>
 <target name="fetch-local-versioned-plugin">
 <antcallback return="plugin-found" target="get-local">
@@ -11,7 +10,7 @@
 <antcallback return="plugin-found,desired.plugin.zip.present" target="download">
 <param name="download-plugin-version" value="-"/>
 <param name="download-plugin-name" value="org.apache.forrest.plugin.output.pdf"/>
-<param name="download-forrest-version" value="0.8/"/>
+<param name="download-forrest-version" value="0.9/"/>
 </antcallback>
 </target>
 <target unless="plugin-found" name="fetch-local-unversioned-plugin">
@@ -24,7 +23,7 @@
 <antcallback return="plugin-found,desired.plugin.zip.present" target="download">
 <param value="" name="download-plugin-version"/>
 <param name="download-plugin-name" value="org.apache.forrest.plugin.output.pdf"/>
-<param name="download-forrest-version" value="0.8/"/>
+<param name="download-forrest-version" value="0.9/"/>
 </antcallback>
 </target>
 <target unless="plugin-found" name="fetch-remote-unversioned-plugin-unversion-forrest">
@@ -35,16 +34,16 @@
 </antcallback>
 </target>
 <target name="get-local">
-<echo>Trying to locally get ${local-plugin-name}${local-plugin-version}</echo>
+<echo level="info">Trying to locally get ${local-plugin-name}${local-plugin-version}</echo>
 <trycatch property="plugin-found">
 <try>
-<for param="plugin-src-dir" list="/Users/jholscher/devel/apache-forrest-0.8/plugins,/Users/jholscher/devel/apache-forrest-0.8/whiteboard/plugins">
+<for param="plugin-src-dir" list="/usr/local/apache/apache-forrest-0.9/plugins,/usr/local/apache/apache-forrest-0.9/whiteboard/plugins">
 <sequential>
-<echo>Looking in local @{plugin-src-dir}</echo>
+<echo level="info">Looking in local @{plugin-src-dir}</echo>
 <if>
 <available type="dir" property="plugin.src.present" file="@{plugin-src-dir}/${local-plugin-name}${local-plugin-version}"/>
 <then>
-<echo message="Found !"/>
+<echo message="Found !" level="info"/>
 <ant target="local-deploy" antfile="@{plugin-src-dir}/${local-plugin-name}${local-plugin-version}/build.xml" dir="@{plugin-src-dir}/${local-plugin-name}${local-plugin-version}">
 <property value="true" name="no.echo.init"/>
 </ant>
@@ -55,29 +54,29 @@
 </for>
 </try>
 <catch>
-<echo>Plugin ${local-plugin-name}${local-plugin-version} deployed ! Ready to configure</echo>
+<echo level="info">Plugin ${local-plugin-name}${local-plugin-version} deployed ! Ready to configure</echo>
 </catch>
 </trycatch>
 </target>
 <target depends="keep-original-zip,get-from-remote-site,is-downloaded,remove-original-zip" name="download"/>
 <target if="original.zip.exists" depends="available-original-zip" name="keep-original-zip">
-<copy preservelastmodified="true" file="/Users/jholscher/devel/apache-forrest-0.8/build/plugins/${download-plugin-name}.zip" tofile="/Users/jholscher/devel/apache-forrest-0.8/build/plugins/${download-plugin-name}.zip.orig"/>
+<copy preservelastmodified="true" file="/usr/local/apache/apache-forrest-0.9/build/plugins/${download-plugin-name}.zip" tofile="/usr/local/apache/apache-forrest-0.9/build/plugins/${download-plugin-name}.zip.orig"/>
 </target>
 <target name="available-original-zip">
-<available property="original.zip.exists" file="/Users/jholscher/devel/apache-forrest-0.8/build/plugins/${download-plugin-name}.zip"/>
+<available property="original.zip.exists" file="/usr/local/apache/apache-forrest-0.9/build/plugins/${download-plugin-name}.zip"/>
 </target>
 <target name="get-from-remote-site">
-<echo>Tying to download ${download-plugin-name}${download-plugin-version} from the distribution site ...</echo>
+<echo level="info">Tying to download ${download-plugin-name}${download-plugin-version} from the distribution site ...</echo>
 <if>
 <not>
 <equals arg2="" arg1="${download.forrest.version}"/>
 </not>
 <then>
-<echo>Using Forrest version : ${download-forrest-version}</echo>
+<echo level="info">Using Forrest version : ${download-forrest-version}</echo>
 </then>
 </if>
-<get ignoreerrors="true" usetimestamp="true" verbose="true" src="http://forrest.apache.org/plugins//${download-forrest-version}${download-plugin-name}${download-plugin-version}.zip" dest="/Users/jholscher/devel/apache-forrest-0.8/build/plugins/${download-plugin-name}.zip"/>
-<available property="desired.plugin.zip.present" file="/Users/jholscher/devel/apache-forrest-0.8/build/plugins/${download-plugin-name}.zip"/>
+<get ignoreerrors="true" usetimestamp="true" verbose="true" src="http://forrest.apache.org/plugins//${download-forrest-version}${download-plugin-name}${download-plugin-version}.zip" dest="/usr/local/apache/apache-forrest-0.9/build/plugins/${download-plugin-name}.zip"/>
+<available property="desired.plugin.zip.present" file="/usr/local/apache/apache-forrest-0.9/build/plugins/${download-plugin-name}.zip"/>
 <condition property="plugin-found">
 <and>
 <isset property="desired.plugin.zip.present"/>
@@ -88,7 +87,7 @@
 </condition>
 </target>
 <target if="original.zip.exists" name="is-downloaded">
-<uptodate property="no-difference-found" srcfile="/Users/jholscher/devel/apache-forrest-0.8/build/plugins/${download-plugin-name}.zip" targetfile="/Users/jholscher/devel/apache-forrest-0.8/build/plugins/${download-plugin-name}.zip.orig"/>
+<uptodate property="no-difference-found" srcfile="/usr/local/apache/apache-forrest-0.9/build/plugins/${download-plugin-name}.zip" targetfile="/usr/local/apache/apache-forrest-0.9/build/plugins/${download-plugin-name}.zip.orig"/>
 <if>
 <not>
 <isset property="no-difference-found"/>
@@ -99,7 +98,7 @@
 </if>
 </target>
 <target if="original.zip.exists" name="remove-original-zip">
-<delete file="/Users/jholscher/devel/apache-forrest-0.8/build/plugins/${download-plugin-name}.zip.orig"/>
+<delete file="/usr/local/apache/apache-forrest-0.9/build/plugins/${download-plugin-name}.zip.orig"/>
 </target>
 <target depends="has-been-downloaded,downloaded-message,uptodate-message,not-found-message" name="final-check"/>
 <target if="desired.plugin.zip.present" name="has-been-downloaded">
@@ -113,10 +112,10 @@
 </condition>
 </target>
 <target if="downloaded" name="downloaded-message">
-<echo>Plugin org.apache.forrest.plugin.output.pdf downloaded ! Ready to install</echo>
+<echo level="info">Plugin org.apache.forrest.plugin.output.pdf downloaded ! Ready to install</echo>
 </target>
 <target if="up-to-date" name="uptodate-message">
-<echo>Plugin org.apache.forrest.plugin.output.pdf was up-to-date ! Ready to configure</echo>
+<echo level="info">Plugin org.apache.forrest.plugin.output.pdf was up-to-date ! Ready to configure</echo>
 <property value="true" name="plugin-found"/>
 </target>
 <target unless="desired.plugin.zip.present" name="not-found-message">
@@ -139,6 +138,6 @@
   To manually install a plugin, download the plugin zip file from
   http://forrest.apache.org/plugins/ and
   extract it into
-  /Users/jholscher/devel/apache-forrest-0.8/build/plugins/org.apache.forrest.plugin.output.pdf</fail>
+  /usr/local/apache/apache-forrest-0.9/build/plugins/org.apache.forrest.plugin.output.pdf</fail>
 </target>
 </project>

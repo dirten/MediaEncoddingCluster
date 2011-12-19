@@ -27,17 +27,17 @@ namespace plugin {
             ("uploadtask.trg", boost::program_options::value<std::string > ()->required(), "Upload task file target");
     return result;
   }
-  
-  int UploadTask::getPadTypes(){
+
+  int UploadTask::getPadTypes() {
     return Task::SOURCE;
   }
-  
+
   void UploadTask::execute() {
     Task::execute();
     setProgressLength(1);
     setProgress(1);
   }
 
-  REGISTER_TASK("UploadTask",UploadTask );
+  REGISTER_TASK("UploadTask", UploadTask);
 
 }

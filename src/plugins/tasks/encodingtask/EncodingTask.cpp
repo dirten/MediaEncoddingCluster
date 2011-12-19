@@ -35,8 +35,8 @@ namespace encodingtask {
     }
     _partition = getContext()->getEnvironment<std::string > ("encodingtask.partition");
     _task_uuid = getUUID(); //getContext()->getEnvironment<std::string > ("task.uuid");
-    _target_file=getSink();
-    
+    _target_file = getSink();
+
     //std::string profile = getContext()->getEnvironment<std::string > ("encodingtask.profile");
     std::string profiledata = getContext()->getEnvironment<std::string > ("encodingtask.profiledata");
     if (profiledata.length() == 0)
@@ -54,7 +54,7 @@ namespace encodingtask {
       _codecs = reader.getCodecList();
       _filters = reader.getFilterList();
       _preset = reader.getPreset();
-      _format=_preset["id"];
+      _format = _preset["id"];
     } catch (std::exception & ex) {
       setStatus(Task::ERROR);
       setStatusMessage(std::string("Error while parsing JSON Profile:").append(ex.what()));
@@ -352,7 +352,7 @@ namespace encodingtask {
       }
     }
 
-    org::esb::io::File fout(base + "/jobs/" + _task_uuid + "/"+_target_file);
+    org::esb::io::File fout(base + "/jobs/" + _task_uuid + "/" + _target_file);
     LOGDEBUG("Export file to : " << fout.getPath());
     if (getContext()->getEnvironment<std::string > ("exporttask.overwrite") == "false" && fout.exists()) {
       LOGDEBUG("File exist:" << _target_file);
@@ -423,7 +423,8 @@ namespace encodingtask {
     //setStatus(Task::DONE);
 
   }
-    bool EncodingTask::ptsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b) {
+
+  bool EncodingTask::ptsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b) {
     return a->getPts() < b->getPts();
   }
 

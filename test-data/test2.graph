@@ -4,7 +4,7 @@
 			"name" : "InputTask",
 			"uid" : 1,
 			"data" : {
-				"infile" : "/Users/jhoelscher/Movies/ChocolateFactory.ts"
+				"infile" : "/media/video/ChocolateFactory.ts"
 			}
 		},
 		{
@@ -99,7 +99,7 @@
 			"name" : "ExecutableTask",
 			"uid" : 4,
 			"data" : {
-				"executable" : "bin/qt-faststart"
+				"executable" : "bin/qt-faststart $source$ $sink$"
 			}
 		},
 		{

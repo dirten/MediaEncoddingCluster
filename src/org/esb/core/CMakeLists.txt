@@ -19,6 +19,7 @@ SET(core_source
   HookNotificationCenter.cpp
   Application.cpp
   Task.cpp
+  TaskException.cpp
   Graph.cpp
   GraphParser.cpp
   GraphException.cpp

@@ -96,7 +96,6 @@ namespace org {
         //status_list.push_back(s);
         //setProgress(task,s);
         if (task->getStatus() != org::esb::core::Task::ERROR) {
-
           foreach(Ptr<Graph::Element> el, e->getChilds()) {
             el->task->setSource(task->getSink());
             execute(el);

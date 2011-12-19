@@ -7,6 +7,7 @@
 
 #include "org/esb/core/PluginContext.h"
 #include "DownloadTask.h"
+#include "org/esb/core/TaskException.h"
 #include "Poco/Net/HTTPClientSession.h"
 #include "Poco/URI.h"
 #include "Poco/URIStreamOpener.h"
@@ -56,42 +57,20 @@ namespace plugin {
 
   void DownloadTask::execute() {
     Task::execute();
-    LOGDEBUG("copy " << _srcuristr << " to " << _trguristr);
     setProgressLength(1);
-    //Poco::URI uri(_srcuristr);
     Poco::File srcfile(_srcuristr);
-    if (srcfile.exists()) {
+    if (srcfile.exists()&&srcfile.isFile()) {
       Poco::File trgfile(_trguristr);
       srcfile.copyTo(_trguristr);
       setStatus(Task::DONE);
     } else {
       setStatus(Task::ERROR);
+      //throw org::esb::core::TaskException("Source File not found");
     }
     setProgress(1);
     LOGDEBUG("Download finish!");
   }
-  /*
-    class RegisterDownloadTaskFactory : public org::esb::core::TaskFactory {
-    public:
 
-      RegisterDownloadTaskFactory() {
-        org::esb::core::PluginRegistry::getInstance()->registerTaskFactory("DownloadTask", this);
-      }
-
-      ~RegisterDownloadTaskFactory() {
-      }
-
-      Ptr<org::esb::core::Task> create() {
-        return Ptr<org::esb::core::Task > (new DownloadTask());
-      }
-
-      org::esb::core::OptionsDescription getOptionsDescription() {
-        Ptr<org::esb::core::Task> t = Ptr<org::esb::core::Task>(new DownloadTask());
-        return t->getOptionsDescription();
-      }
-    } RegisterDownloadTaskFactoryInstance;
-   */
-  //REGISTER_TASK("DownloadTask",DownloadTask );
   typedef DownloadTask InputTask;
   REGISTER_TASK("InputTask", InputTask);
 }
