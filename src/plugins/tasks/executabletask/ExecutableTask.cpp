@@ -10,6 +10,7 @@
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/lang/Process.h"
+#include "org/esb/libjson/libjson.h"
 namespace plugin {
 
   ExecutableTask::ExecutableTask():Task() {
