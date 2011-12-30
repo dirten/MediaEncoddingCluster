@@ -33,7 +33,6 @@ namespace plugin {
       _trguristr = getSink();
     }
     std::string data = getContext()->getEnvironment<std::string > ("data");
-    LOGDEBUG("data");
     if (libjson::is_valid(data)) {
       JSONNode node = libjson::parse(data);
       if (node.contains("infile")) {
@@ -65,7 +64,7 @@ namespace plugin {
       setStatus(Task::DONE);
     } else {
       setStatus(Task::ERROR);
-      //throw org::esb::core::TaskException("Source File not found");
+      throw org::esb::core::TaskException("Source File not found");
     }
     setProgress(1);
     LOGDEBUG("Download finish!");

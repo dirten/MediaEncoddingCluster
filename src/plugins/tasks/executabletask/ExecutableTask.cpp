@@ -13,7 +13,7 @@
 #include "org/esb/libjson/libjson.h"
 namespace plugin {
 
-  ExecutableTask::ExecutableTask():Task() {
+  ExecutableTask::ExecutableTask() : Task() {
   }
 
   ExecutableTask::~ExecutableTask() {
@@ -22,16 +22,16 @@ namespace plugin {
   void ExecutableTask::prepare() {
     Task::prepare();
     std::string data = getContext()->getEnvironment<std::string > ("data");
-    std::string source=getSource();
-    std::string sink=getSink();
-    
+    std::string source = getSource();
+    std::string sink = getSink();
+
     LOGDEBUG("data");
     if (libjson::is_valid(data)) {
       JSONNode node = libjson::parse(data);
       if (node.contains("executable")) {
         _executable = node["executable"].as_string();
-        _executable=org::esb::util::StringUtil::replace(_executable,"$source$",source);
-        _executable=org::esb::util::StringUtil::replace(_executable,"$sink$",sink);
+        _executable = org::esb::util::StringUtil::replace(_executable, "$source$", source);
+        _executable = org::esb::util::StringUtil::replace(_executable, "$sink$", sink);
       }
     }
   }
@@ -43,19 +43,19 @@ namespace plugin {
             ("data", boost::program_options::value<std::string > ()->default_value(""), "");
     return result;
   }
-  
-  int ExecutableTask::getPadTypes(){
-    return Task::SOURCE|Task::SINK;
+
+  int ExecutableTask::getPadTypes() {
+    return Task::SOURCE | Task::SINK;
   }
-  
+
   void ExecutableTask::execute() {
     Task::execute();
-    
+
     setProgressLength(1);
     setProgress(1);
     //setStatus(Task::DONE);
   }
 
-  REGISTER_TASK("ExecutableTask",ExecutableTask );
+  REGISTER_TASK("ExecutableTask", ExecutableTask);
 
 }

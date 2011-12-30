@@ -117,7 +117,7 @@ ProfileChanged=@"ProfileChanged";
   [mainView addSubview:generalView];
   [mainView addSubview:videoView];
   [mainView addSubview:audioView];
-  
+  /*
   var data=[pdata objectForKey:@"data"];
   CPLog.debug("Data in ProfileEdit View:"+data);
   var format=[data objectForKey:@"format"];
@@ -128,6 +128,8 @@ ProfileChanged=@"ProfileChanged";
   [formatView setData:format];
   [videoView setData:video];
   [audioView setData:audio];
+  */
+  [self setData:data];
   /*
    var okButton=[[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([contentView bounds])-90,CGRectGetHeight([contentView bounds])-40,80.0,24.0)];
    [okButton setTitle:@"Save"];
@@ -151,6 +153,22 @@ ProfileChanged=@"ProfileChanged";
   
   return self;
 }
+
+-(void)setData:(id)data{
+  pdata=data
+  var data=[pdata objectForKey:@"data"];
+  CPLog.debug("Data in ProfileEdit View:"+data);
+  var format=[data objectForKey:@"format"];
+  var video=[data objectForKey:@"video"];
+  var audio=[data objectForKey:@"audio"];
+  
+  [generalView setData:data];
+  [formatView setData:format];
+  [videoView setData:video];
+  [audioView setData:audio];
+  [self setNeedsDisplay:YES];
+}
+
 - (void)save:(id)sender{
   CPLog.debug("SAVING PROFILE:"+pdata);
   

@@ -5,7 +5,9 @@
 
 -(id)initWithFrame:(CPRect)aFrame
 {
-  self=[super initWithFrame:aFrame];
+  self=[super initWithContentRect:CGRectMake(0,0,200,155) styleMask:CPClosableWindowMask|CPResizableWindowMask];
+ [self orderFront:nil];
+
   return self;
 }
 @end

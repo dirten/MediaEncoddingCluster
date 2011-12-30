@@ -33,6 +33,7 @@ int main(int argc, char** argv) {
       LOGDEBUG("task not found");
     }
   }catch(const org::esb::core::TaskException & ex){
+    LOGERROR(ex.what());
     LOGERROR(ex.displayText());
   }
   org::esb::core::PluginRegistry::close();

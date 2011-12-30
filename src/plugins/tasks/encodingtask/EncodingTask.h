@@ -49,7 +49,7 @@ namespace encodingtask {
     
     
     void exportFile();
-    
+    void observeProgress();
     static bool ptsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b);
     static bool dtsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b);
     std::list<ProcessUnitData> _pudata;

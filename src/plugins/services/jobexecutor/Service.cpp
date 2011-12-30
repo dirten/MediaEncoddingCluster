@@ -81,11 +81,10 @@ namespace jobexecutor {
           job.update();
         }catch(std::exception & ex){
           job.status=job.Status.Error;
-          job.status=job.Status.Error;
           job.update();
         }
 
-        if (job.tasks().get().count() > 0) {
+        if (false&&job.tasks().get().count() > 0) {
           int taskcount=job.tasks().get().count();
           int counter=0;
           std::vector<db::Task> tasks = job.tasks().get().orderBy(db::Task::Id).all();

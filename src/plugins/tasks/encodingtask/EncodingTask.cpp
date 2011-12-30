@@ -6,6 +6,7 @@
  */
 
 #include "org/esb/core/PluginContext.h"
+#include "org/esb/core/TaskException.h"
 #include "org/esb/util/Foreach.h"
 #include "EncodingTask.h"
 #include "org/esb/lang/Ptr.h"
@@ -58,6 +59,7 @@ namespace encodingtask {
     } catch (std::exception & ex) {
       setStatus(Task::ERROR);
       setStatusMessage(std::string("Error while parsing JSON Profile:").append(ex.what()));
+      throw org::esb::core::TaskException(getStatusMessage());
     }
   }
 
@@ -75,12 +77,17 @@ namespace encodingtask {
             ("data", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data");
     return result;
   }
-
+  
+  void EncodingTask::observeProgress(){
+    while (getStatus()==Task::EXECUTE) {
+      setProgress(getProgressLength() - partitionservice::PartitionManager::getInstance()->getSize(_partition));
+      org::esb::lang::Thread::sleep2(1 * 1000);
+    }
+  }
+  
   void EncodingTask::execute() {
     Task::execute();
-    /*check if we had some errors before*/
-    if (getStatus() == Task::ERROR)
-      return;
+    go(EncodingTask::observeProgress,this);
     /*open the input file*/
     org::esb::av::FormatInputStream fis(_srcuristr);
 
@@ -88,7 +95,7 @@ namespace encodingtask {
     if (!fis.isValid()) {
       setStatus(Task::ERROR);
       setStatusMessage(std::string("Input file \"").append(_srcuristr).append("\" is not a valid media file!"));
-      return;
+      throw org::esb::core::TaskException(getStatusMessage());
     }
 
     /*preprocessing the input streams*/
@@ -238,7 +245,6 @@ namespace encodingtask {
         //wait_for_queue = true;
       }
     }
-    LOGDEBUG("Flush streams");
     /*calling flush Method in the Packetizer to get the last pending packets from the streams*/
     packetizer.flushStreams();
     int pc = packetizer.getPacketListCount();
@@ -252,9 +258,10 @@ namespace encodingtask {
     }
 
     while (partitionservice::PartitionManager::getInstance()->getSize(_partition) > 0) {
-      setProgress(getProgressLength() - partitionservice::PartitionManager::getInstance()->getSize(_partition));
+      //setProgress(getProgressLength() - partitionservice::PartitionManager::getInstance()->getSize(_partition));
       org::esb::lang::Thread::sleep2(1 * 1000);
     }
+    
     setProgress(getProgressLength());
     exportFile();
     setStatus(Task::DONE);

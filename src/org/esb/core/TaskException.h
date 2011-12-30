@@ -12,7 +12,7 @@
 namespace org {
   namespace esb {
     namespace core {
-      POCO_DECLARE_EXCEPTION(CORE_EXPORT,TaskException,Poco::Exception);
+      POCO_DECLARE_EXCEPTION(CORE_EXPORT, TaskException, Poco::Exception);
       /*
       class TaskException {
       public:

@@ -11,7 +11,7 @@
 namespace org {
   namespace esb {
     namespace core {
-      POCO_IMPLEMENT_EXCEPTION(TaskException,Poco::Exception,"bad thing");
+      POCO_IMPLEMENT_EXCEPTION(TaskException,Poco::Exception,"TaskException");
       /*
       TaskException::TaskException() {
       }
@@ -20,6 +20,10 @@ namespace org {
       }
 
       TaskException::~TaskException() {
+      }*/
+      /*
+      char * TaskException::what() {
+        return displayText().c_str();
       }*/
     }
   }

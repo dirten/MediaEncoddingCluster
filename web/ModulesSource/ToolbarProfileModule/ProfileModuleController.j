@@ -20,6 +20,7 @@
 @import <Foundation/Foundation.j>
 @import "../../Categories/CPButtonBar+themeGray.j"
 @import "../../View/ProfileEditView.j"
+@import "../../View/LongOperationView.j"
 
 
 // import only AppKit part you need here.
@@ -46,6 +47,7 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
   @outlet CPView          profileView;
   @outlet CPButtonBar     buttonBar;
   id                      jsonData;
+  ProfileEditView         profileEditView;
   
 }
 
@@ -70,7 +72,11 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
     }
   };
   var data=[CPDictionary dictionaryWithJSObject:json recursively:YES];  
-  //[profileView addSubview:[[ProfileEditView alloc] initWithData:data]];
+  profileEditView=[[ProfileEditView alloc] initWithData:data];
+  [profileEditView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+
+  [[profileView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+  [profileView addSubview:profileEditView];
 }
 
 #pragma mark -
@@ -130,8 +136,24 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
 #pragma mark Actions
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification{
   if(jsonData.data[[[aNotification object] selectedRow]]){
-    CPLog.debug("hello profile:"+jsonData.data[[[aNotification object] selectedRow]].id);
+    CPLog.debug("hello profile 1212:"+jsonData.data[[[aNotification object] selectedRow]].id);
     selectedid=jsonData.data[[[aNotification object] selectedRow]].id;
+    var path="/api/v1/profile?id="+selectedid;
+    var response=[CPHTTPURLResponse alloc];
+    var error;
+    var raw_data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:response];
+    CPLog.debug("raw_data:"+[raw_data rawString]);
+    //var data=[raw_data JSONObject];
+    //if(data!=undefined){
+    var opWin=[[LongOperationView alloc] initWithFrame:CGRectMake(0,0,200,200)];
+    [opWin orderFront:self];
+    [opWin center];
+    var data=[CPDictionary dictionaryWithJSObject:[raw_data JSONObject] recursively:YES];
+    profileEditView=[[ProfileEditView alloc] initWithData:data];
+    [[profileView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [profileView addSubview:profileEditView];
+    //}
+    //[opWin close];
     [[CPNotificationCenter defaultCenter]
      postNotificationName:ProfileClicked
      object:self

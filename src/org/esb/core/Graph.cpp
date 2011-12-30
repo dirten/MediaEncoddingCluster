@@ -43,7 +43,6 @@ namespace org {
 
       void Graph::run() {
         _state = EXECUTE;
-
         foreach(Ptr<Graph::Element> el, elements) {
           if (el->getParents().size() == 0) {
             try {
@@ -52,7 +51,6 @@ namespace org {
               _state = ERROR;
               throw ex;
             }
-            //processElement(el, job);
           }
         }
         _state = DONE;

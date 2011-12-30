@@ -27,29 +27,28 @@
       //CPLog.debug("Looking for Data in json "+[keys objectAtIndex:i])
       //if(_json[[keys objectAtIndex:i]]!=undefined){
         if([data containsKey:[keys objectAtIndex:i]]){
-        //CPLog.debug("Data in json found "+[keys objectAtIndex:i])
-        var el=[_elements objectForKey:[keys objectAtIndex:i]];
-        var op=[_options objectForKey:[keys objectAtIndex:i]];
-        if(op.control.items){
-          //CPLog.debug("Map Key to value for"+[keys objectAtIndex:i]);
-          for(var b=0;b<op.control.items.length;b++){
-            opitem=op.control.items[b];
-            //CPLog.debug("Key="+opitem.key+" val="+_json[[keys objectAtIndex:i]]);
-            if(opitem.value==[data objectForKey:[keys objectAtIndex:i]]/*_json[[keys objectAtIndex:i]]*/)
-              [el setValue:opitem.key];
+          CPLog.debug("Data in json found "+[keys objectAtIndex:i])
+          var el=[_elements objectForKey:[keys objectAtIndex:i]];
+          var op=[_options objectForKey:[keys objectAtIndex:i]];
+          if(op.control.items){
+          CPLog.debug("Map Key to value for"+[keys objectAtIndex:i]);
+            for(var b=0;b<op.control.items.length;b++){
+              opitem=op.control.items[b];
+              CPLog.debug("Key="+opitem.value+" val="+[data objectForKey:[keys objectAtIndex:i]]);
+              if(opitem.value==[data objectForKey:[keys objectAtIndex:i]]/*_json[[keys objectAtIndex:i]]*/)
+                [el setValue:opitem.key];
+            }
+          }else{
+            [el setValue:[data objectForKey:[keys objectAtIndex:i]]];
           }
-        }else
-        {
-          [el setValue:[data objectForKey:[keys objectAtIndex:i]]];
+        }else{
+          //var el=[_elements objectForKey:[keys objectAtIndex:i]];
+          var op=[_options objectForKey:[keys objectAtIndex:i]];
+          _json[[keys objectAtIndex:i]]=op.control.defaults;
+          [_data setValue:op.control.defaults forKey:[keys objectAtIndex:i]];  
+          //CPLog.debug("setting default "+[keys objectAtIndex:i]);
         }
-      }else{
-      //var el=[_elements objectForKey:[keys objectAtIndex:i]];
-      var op=[_options objectForKey:[keys objectAtIndex:i]];
-      _json[[keys objectAtIndex:i]]=op.control.defaults;
-      [_data setValue:op.control.defaults forKey:[keys objectAtIndex:i]];  
-      //CPLog.debug("setting default "+[keys objectAtIndex:i]);
       }
-    }
     //_json.testdata='bla';
   }
   -(id)init
