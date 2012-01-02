@@ -82,6 +82,10 @@ namespace jobexecutor {
         }catch(std::exception & ex){
           job.status=job.Status.Error;
           job.update();
+          db::JobLog log(job.getDatabase());
+          log.message=ex.what();
+          log.update();
+          job.joblog().link(log);
         }
 
         if (false&&job.tasks().get().count() > 0) {

@@ -223,7 +223,7 @@ namespace graphhandler {
       fis.read(ndata);
 
       /**parsing json file*/
-      //try {
+      try {
         org::esb::core::GraphParser graphparser(ndata);
         
       db::Job job(*getContext()->database);
@@ -231,14 +231,16 @@ namespace graphhandler {
       job.uuid = (std::string)org::esb::util::PUUID();
       job.status = db::Job::Status::Waiting;
       job.graph=ndata;
+      job.created=0;
       job.update();
 
         //org::esb::core::Graph::createJob(list, getContext()->database);
         result.push_back(JSONNode("status", "ok"));
-      //} catch (org::esb::core::GraphException & ex) {
-      //  result.push_back(JSONNode("status", "error"));
-      //  result.push_back(JSONNode("message", ex.what()));
-      //}
+      } catch (org::esb::core::GraphException & ex) {
+        result.push_back(JSONNode("status", "error"));
+        result.push_back(JSONNode("message", ex.what()));
+        result.push_back(JSONNode("element", ex.getElementId()));
+      }
         /*
       if (libjson::is_valid(ndata)) {
         LOGDEBUG("Data is valid");

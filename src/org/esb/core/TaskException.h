@@ -12,16 +12,26 @@
 namespace org {
   namespace esb {
     namespace core {
-      POCO_DECLARE_EXCEPTION(CORE_EXPORT, TaskException, Poco::Exception);
-      /*
-      class TaskException {
+      //POCO_DECLARE_EXCEPTION(CORE_EXPORT, TaskException, Poco::Exception);
+
+      class TaskException : public Poco::Exception {
       public:
-        TaskException();
-        TaskException(const TaskException& orig);
-        virtual ~TaskException();
+        TaskException(int code = 0);
+        TaskException(const std::string& msg, int code = 0);
+        TaskException(const std::string& msg, const std::string& arg, int code = 0);
+        TaskException(const std::string& msg, const Poco::Exception& exc, int code = 0);
+        TaskException(const TaskException& exc);
+        ~TaskException() throw ();
+        TaskException& operator =(const TaskException& exc);
+        const char* name() const throw ();
+        const char* className() const throw ();
+        Poco::Exception* clone() const;
+        void rethrow() const;
+
+        const char * what()const throw();
       private:
 
-      };*/
+      };
     }
   }
 }

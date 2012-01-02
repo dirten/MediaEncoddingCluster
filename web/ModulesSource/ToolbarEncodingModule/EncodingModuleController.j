@@ -173,8 +173,8 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
     if([tableColumn identifier]==1){
       return [CPString stringWithFormat:@"%s test", jsonData.data[row].id ];
     }else if([tableColumn identifier]==2){
-      if(jsonData.data[row].begintime>1){
-        return [CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime ];
+      if(jsonData.data[row].created>1){
+        return [CPDate dateWithTimeIntervalSince1970:jsonData.data[row].created ];
       }else{
         return ""
       }

@@ -29,9 +29,11 @@ namespace plugin {
     Task::prepare();
     _srcuristr = getContext()->getEnvironment<std::string > ("downloadtask.src");
     _trguristr = getContext()->getEnvironment<std::string > ("downloadtask.trg");
+    
     if (_trguristr.length() == 0) {
       _trguristr = getSink();
     }
+    
     std::string data = getContext()->getEnvironment<std::string > ("data");
     if (libjson::is_valid(data)) {
       JSONNode node = libjson::parse(data);
@@ -39,6 +41,13 @@ namespace plugin {
         _srcuristr = node["infile"].as_string();
       }
     }
+    if(_srcuristr.length()==0){
+      throw org::esb::core::TaskException("No Source File given!");
+    }
+    /*
+    if(_trguristr.length()==0){
+      throw org::esb::core::TaskException("No Target File given!");
+    }*/
   }
 
   org::esb::core::OptionsDescription DownloadTask::getOptionsDescription() {

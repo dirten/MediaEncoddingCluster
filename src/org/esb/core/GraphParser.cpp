@@ -11,6 +11,7 @@
 #include "org/esb/util/Foreach.h"
 #include "org/esb/util/StringUtil.h"
 #include "Graph.h"
+#include "TaskException.h"
 namespace org {
   namespace esb {
     namespace core {
@@ -22,7 +23,7 @@ namespace org {
       };
 
       GraphParser::GraphParser(std::string graphdata)throw (GraphException) {
-        try {
+//        try {
           if (libjson::is_valid(graphdata)) {
             JSONNode node = libjson::parse(graphdata);
             /*parsing tasks from graph*/
@@ -52,10 +53,10 @@ namespace org {
           } else {
             throw GraphException("no valid json");
           }
-        } catch (std::exception & ex) {
-    	    LOGERROR(ex.what());
-          throw GraphException(ex.what());
-        }
+//        } catch (std::exception & ex) {
+//    	    LOGERROR(ex.what());
+//          throw GraphException(ex.what());
+//        }
       }
 
       GraphParser::~GraphParser() {
@@ -79,6 +80,7 @@ namespace org {
           if (!task) {
             throw GraphException(std::string("could not find a definition for task with name ").append(node["name"].as_string()));
           } else {
+          try{
             org::esb::core::OptionsDescription desc = task->getOptionsDescription();
             std::map<std::string, std::string> para;
             typedef boost::shared_ptr<boost::program_options::option_description> Option;
@@ -135,6 +137,14 @@ namespace org {
             elements[node["uid"].as_string()]->name=node["name"].as_string();
             elements[node["uid"].as_string()]->id=node["uid"].as_string();
             LOGDEBUG("Task Found: " << node["name"].as_string());
+          }catch(org::esb::core::TaskException & ex){
+            throw GraphException(ex.displayText(),node["uid"].as_string());
+          }catch(std::exception & ex){
+            throw GraphException(ex.what(),node["uid"].as_string());
+          }catch(...){
+            throw GraphException("unknown error",node["uid"].as_string());
+          }
+            
           }
         }
       }

@@ -265,7 +265,24 @@ testfunc();
   [view setNeedsDisplay:YES];
 }
 
--(void)submitNodeEditorView:(CPNotification)notification
+-(void)submitNodeEditorView:(CPNotification)notification{
+  if([view hasUnsavedChanges]){
+    var alert=[[YesNoAlert alloc] 
+                initWithLabel:@"Current Graph has unsaved changes!" 
+                question:@"Would you proceed anyway, changes will not be submitted!" 
+                yesLabel:@"proceed without saving" 
+                noLabel:@"Cancel" 
+                target:self 
+                yesAction:@selector(_submitNodeEditorView:)
+                yesObject:notification
+                noAction:nil
+                noObject:nil];
+  }else{
+    [self _submitNodeEditorView:notification];
+  }
+}
+
+-(void)_submitNodeEditorView:(CPNotification)notification
 {
   var request = [CPURLRequest requestWithURL:@"/api/v1/graph?submit&uuid="+[notification userInfo]];
   //[request setHTTPMethod:"POST"];

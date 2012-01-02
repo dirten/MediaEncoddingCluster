@@ -9,6 +9,9 @@
 #include "org/esb/util/UUID.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/lang/Thread.h"
+#include "TaskException.h"
+#include "GraphException.h"
+
 #include <list>
 namespace org {
   namespace esb {
@@ -47,7 +50,10 @@ namespace org {
           if (el->getParents().size() == 0) {
             try {
               execute(el);
-            } catch (std::exception & ex) {
+              } catch (org::esb::core::TaskException & ex) {
+              _state = ERROR;
+              throw GraphException(ex.displayText());
+            }catch (std::exception & ex) {
               _state = ERROR;
               throw ex;
             }

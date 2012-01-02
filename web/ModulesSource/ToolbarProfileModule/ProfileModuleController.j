@@ -48,7 +48,7 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
   @outlet CPButtonBar     buttonBar;
   id                      jsonData;
   ProfileEditView         profileEditView;
-  
+  id    opWin;
 }
 
 #pragma mark -
@@ -58,6 +58,7 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
  */
 - (void)awakeFromCib
 {
+  //opWin=[[LongOperationView alloc] initWithFrame:CGRectMake(0,0,200,200)];
   [buttonBar setGrayTheme];
   CPLog.debug("awakeFromCib and reload table view new bla"+self);
   var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
@@ -145,9 +146,11 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
     CPLog.debug("raw_data:"+[raw_data rawString]);
     //var data=[raw_data JSONObject];
     //if(data!=undefined){
-    var opWin=[[LongOperationView alloc] initWithFrame:CGRectMake(0,0,200,200)];
-    [opWin orderFront:self];
-    [opWin center];
+    //[opWin orderFront:self];
+    //[opWin center];
+    //[[CPRunLoop currentRunLoop] performSelectors]; 
+    //[[CPRunLoop mainRunLoop] performSelectors] ;
+    //[[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode]; 
     var data=[CPDictionary dictionaryWithJSObject:[raw_data JSONObject] recursively:YES];
     profileEditView=[[ProfileEditView alloc] initWithData:data];
     [[profileView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];

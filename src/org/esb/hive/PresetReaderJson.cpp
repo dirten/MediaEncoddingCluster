@@ -20,7 +20,7 @@ namespace org {
         if (node.contains("format") && node["format"].contains("id")) {
           _preset["id"] = node["format"]["id"].as_string();
         }else{
-          throw org::esb::lang::Exception(__FILE__,__LINE__,"invalid json given, no format attribute found");
+          throw org::esb::lang::Exception(__FILE__,__LINE__,"no format attribute found");
         }
         std::string type;
         type = "video";
@@ -44,7 +44,7 @@ namespace org {
             _codecs[type][name] = value; //.insert(std::pair<std::string, std::string>(name,value));
           }
         }else{
-          throw org::esb::lang::Exception(__FILE__,__LINE__,"invalid json given, no video attribute found");
+          throw org::esb::lang::Exception(__FILE__,__LINE__,"no video attribute found");
         }
         type = "audio";
         if (node.contains(type)) {
@@ -60,7 +60,7 @@ namespace org {
             _codecs[type][n.name()] = n.as_string(); //.insert(std::pair<std::string, std::string>(n.name(),n.as_string()));
           }
         }else{
-          throw org::esb::lang::Exception(__FILE__,__LINE__,"invalid json given, no audio attribute found");
+          throw org::esb::lang::Exception(__FILE__,__LINE__,"no audio attribute found");
         }
       }
 

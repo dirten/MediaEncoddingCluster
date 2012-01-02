@@ -25,20 +25,20 @@
 */
 @implementation CPDate (MHive)
 
-+ (CPString)dateWithFormat:(CPString)aFormat
++ (CPString)date:date withFormat:(CPString)aFormat
 {
-    var theDate = new Date();
-    return theDate.dateFormat(aFormat);
+    var theDate = new Date(date);
+    return theDate.format(aFormat);
 }
 
 - (CPString)format:(CPString)aFormat
 {
-    return self.dateFormat(aFormat);
+    return self.format(aFormat);
 }
 
 - (CPString)description
 {
-    return self.dateFormat(@"Y-m-d H:i:s");
+    return self.format(@"Y-m-d H:i:s");
 }
 
 @end

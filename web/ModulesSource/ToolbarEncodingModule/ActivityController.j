@@ -6,6 +6,7 @@
 //  Copyright (c) 2011 280 North, Inc. All rights reserved.
 //
 @import "../../View/ProgressTableDataView.j"
+//@import "/Resources/js/dateFormat.js"
 
 @implementation ActivityController: CPObject
 {
@@ -58,7 +59,9 @@
       return [CPString stringWithFormat:@"%s", jsonData.data[row].id ];
     }else if([tableColumn identifier]==2){
       if(jsonData.data[row].created>1){
-        return [CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime ];
+        //return [CPDate date:jsonData.data[row].created withFormat:@"isoDateTime"];
+        //return [CPString stringWithFormat:@"%04d-%02d-%02d %02d:%02d:%02d %s", self.getFullYear(), self.getMonth()+1, self.getDate(), self.getHours(), self.getMinutes(), self.getSeconds(), [CPDate timezoneOffsetString:self.getTimezoneOffset()]];
+        return [[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].created ] description];
       }else{
         return ""
       }

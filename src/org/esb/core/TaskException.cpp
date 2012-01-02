@@ -21,10 +21,10 @@ namespace org {
 
       TaskException::~TaskException() {
       }*/
-      /*
-      char * TaskException::what() {
+      
+      const char * TaskException::what() const throw(){
         return displayText().c_str();
-      }*/
+      }
     }
   }
 }
