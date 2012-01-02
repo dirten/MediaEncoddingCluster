@@ -55,8 +55,8 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
     - (void)applicationDidFinishLaunching:(CPNotification)aNotification
     {
       
-      if (typeof(LPCrashReporter) != "undefined")
-          [LPCrashReporter sharedErrorLogger];
+      //if (typeof(LPCrashReporter) != "undefined")
+      //    [LPCrashReporter sharedErrorLogger];
           
         var theWindow = [[CPWindow alloc] initWithContentRect:CGRectMakeZero() styleMask:CPBorderlessBridgeWindowMask],
         contentView = [theWindow contentView],
