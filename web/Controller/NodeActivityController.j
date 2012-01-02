@@ -132,6 +132,7 @@ testfunc();
   
   var alldata=[raw_data JSONObject].data[0];
   var data=alldata.graph;
+  if(alldata.graphstatus)
   CPLog.debug("graphstatus_data:"+alldata.graphstatus[data.uuid]);
   
   loadedUUID=data.uuid;
