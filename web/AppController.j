@@ -34,6 +34,7 @@ TOOLBAR_TOP_MARGIN=0.0;
 
 @import <GrowlCappuccino/GrowlCappuccino.j>
 
+@import "View/FileChooser.j"
 TOP_MARGIN=0.0;
 TOOLBAR_TOP_MARGIN=0.0;
 
@@ -55,8 +56,8 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
     - (void)applicationDidFinishLaunching:(CPNotification)aNotification
     {
       
-      if (typeof(LPCrashReporter) != "undefined")
-          [LPCrashReporter sharedErrorLogger];
+      //if (typeof(LPCrashReporter) != "undefined")
+      //    [LPCrashReporter sharedErrorLogger];
           
         var theWindow = [[CPWindow alloc] initWithContentRect:CGRectMakeZero() styleMask:CPBorderlessBridgeWindowMask],
         contentView = [theWindow contentView],
@@ -95,9 +96,9 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
         [logoToolbarItem setToolTip:@"test"];
 
         //[mainToolbar addItem:logoToolbarItem withIdentifier:@"logo"];
-        [mainToolbar addItemWithIdentifier:@"logo" label:@"" icon:[[CPBundle mainBundle] pathForResource:"logo.jpg"]  target:nil action:nil toolTip:@""];
-        //[mainToolbar addItemWithIdentifier:@"test" label:@"Log out" view:nil target:self action:@selector(toolbarItemLogoutClick:)];
-        //[mainToolbar addItemWithIdentifier:@"test" label:@"Log out with long name" icon:[[CPBundle mainBundle] pathForResource:"logo.jpg"]  target:self action:@selector(toolbarItemLogoutClick:) toolTip:@"Log out from the application"];
+        //[mainToolbar addItemWithIdentifier:@"logo" label:@"" icon:[[CPBundle mainBundle] pathForResource:"logo.jpg"]  target:nil action:nil toolTip:@""];
+        //[mainToolbar addItemWithIdentifier:@"logo" label:@"Log out" view:nil target:self action:@selector(toolbarItemLogoutClick:)];
+        [mainToolbar addItemWithIdentifier:@"logo" label:@"Log out with long name" icon:[[CPBundle mainBundle] pathForResource:"logo.jpg"]  target:self action:@selector(toolbarItemLogoutClick:) toolTip:@"Log out from the application"];
         //[mainToolbar addItemWithIdentifier:@"test" label:@"Log out with long name" icon:[[CPBundle mainBundle] pathForResource:"logo.jpg"]  target:self action:@selector(toolbarItemLogoutClick:) toolTip:@"Log out from the application"];
 
         /*
@@ -383,7 +384,16 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
 - (IBAction)toolbarItemLogoutClick:(id)sender
 {
   CPLog.debug("button clicked");
- [mainToolbar selectToolbarItem:sender];
+  var fileChooser=[[FileChooser alloc] initWithPath:@"/" andTitle:@"Input File Chooser"];
+  [fileChooser setTarget:self];
+  [fileChooser setAction:@selector(fileSelected:)];
+  
+ //[mainToolbar selectToolbarItem:sender];
+}
+
+-(void)fileSelected:(id)chooser
+{
+  CPLog.debug("Chooser="+[chooser selectedItems]);
 }
 
 - (void)connection:(CPURLConnection)aConnection didReceiveData:(CPString)data

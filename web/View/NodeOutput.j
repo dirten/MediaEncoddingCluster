@@ -40,7 +40,7 @@
 
 -(id)propertyView
 {
-  var bounds=CPRectMake(0,0,450,100);
+  var bounds=CPRectMake(0,0,500,80);
   var view=[[CPView alloc] initWithFrame:bounds];
   [view setBounds:bounds];
   //[_options setObject:data forKey:data.id];
@@ -61,8 +61,16 @@
   [field setDelegate:self];
   [field setIdentifier:@"outfile"];
 
+  var selectButton=[[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([view bounds])-90,7.0,80.0,24.0)];
+  [selectButton setTitle:@"Select File"];
+  //[selectButton setAutoresizingMask:CPViewMinXMargin|CPViewMinYMargin];
+  [selectButton setTarget:self];
+  [selectButton setAction:@selector(openBrowser)];
+
+
   [view addSubview:label];
   [view addSubview:field];
+  [view addSubview:selectButton];
 
   //CPLog.debug("orig bounds:"+CPStringFromRect(bounds));
   //CPLog.debug("orig View with bounds:"+CPStringFromRect([view bounds]));
@@ -74,6 +82,29 @@
 
   return view;
 }
+-(void)openBrowser{
+  CPLog.debug("open browser");
+  var fileChooser=[[FileChooser alloc] initWithPath:@"/" andTitle:@"Output File Chooser"];
+  [fileChooser setAllowsMultipleSelection:NO];
+  [fileChooser setTarget:self];
+  [fileChooser setAction:@selector(fileSelected:)];
+
+}
+
+-(void)fileSelected:(id)chooser
+{
+  CPLog.debug("Chooser="+[[chooser selectedItem] path]+"/"+[[chooser selectedItem] name]);
+  if([[chooser selectedItems] count]){
+    var name=[[chooser selectedItem] path];
+    if(![[chooser selectedItem] isDirectory]){
+      if(!name=="/")
+        name+="/";
+      name+=[[chooser selectedItem] name];
+    }
+    [[data objectForKey:@"data"] setObject:name forKey:@"outfile"];
+  }
+}
+
 -(id)image
 {
     var image = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"Torrents-icon.png"] size:CPSizeMake(100, 50)];

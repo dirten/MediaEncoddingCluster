@@ -1,4 +1,4 @@
-@implementation EKSpinner : CPImageView
+@implementation MHIveSpinner : CPImageView
 {
 	int _frames;
 	int _interval;
