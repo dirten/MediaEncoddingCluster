@@ -171,12 +171,14 @@ namespace org {
               def = org::esb::util::StringUtil::toString(boost::any_cast<std::string > (data));
             }
             result->getContext()->env[value->long_name()] = def;
+            result->getContext()->set<std::string>(value->long_name(), def);
           }
 
           //result->getContext()->database = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
           typedef std::map<std::string, std::string> stringmap;
           foreach(stringmap::value_type config, cfg) {
             result->getContext()->env[config.first] = config.second;
+            result->getContext()->set<std::string>(config.first, config.second);
             LOGDEBUG("Setting plugin Context : " << config.first << "=" << config.second);
           }
         }

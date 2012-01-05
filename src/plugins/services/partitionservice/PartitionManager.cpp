@@ -75,14 +75,14 @@ namespace partitionservice {
    */
   int PartitionManager::getSize(std::string partition) {
     int result = _ep_pu.size();
-    LOGDEBUG("_ep_pu size "<<partition<<"="<<result);
+    //LOGDEBUG("_ep_pu size "<<partition<<"="<<result);
     if (_partitions.count(partition) > 0) {
 
       foreach(Stream s, _partitions[partition].getStreams()) {
         result += s.getSize();
       }
     }
-    LOGDEBUG("partition size "<<partition<<"="<<result);
+    //LOGDEBUG("partition size "<<partition<<"="<<result);
     return result;
   }
 

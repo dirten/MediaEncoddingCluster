@@ -17,6 +17,8 @@
 #include "org/esb/lang/Ptr.h"
 
 #include "org/esb/libjson/libjson.h"
+#include "org/esb/io/File.h"
+#include "org/esb/util/StringUtil.h"
 namespace plugin {
 
   DownloadTask::DownloadTask():Task() {
@@ -44,6 +46,10 @@ namespace plugin {
     if(_srcuristr.length()==0){
       throw org::esb::core::TaskException("No Source File given!");
     }
+    org::esb::io::File f(_srcuristr);
+    getContext()->set<std::string>("input.name", org::esb::util::StringUtil::replace(f.getFileName(), f.getExtension(),""));
+    getContext()->set<std::string>("input.ext", f.getExtension());
+
     /*
     if(_trguristr.length()==0){
       throw org::esb::core::TaskException("No Target File given!");
@@ -68,6 +74,7 @@ namespace plugin {
     setProgressLength(1);
     Poco::File srcfile(_srcuristr);
     if (srcfile.exists()&&srcfile.isFile()) {
+
       Poco::File trgfile(_trguristr);
       srcfile.copyTo(_trguristr);
       setStatus(Task::DONE);

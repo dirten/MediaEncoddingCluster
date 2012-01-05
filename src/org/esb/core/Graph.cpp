@@ -11,6 +11,7 @@
 #include "org/esb/lang/Thread.h"
 #include "TaskException.h"
 #include "GraphException.h"
+#include "PluginContext.h"
 
 #include <list>
 namespace org {
@@ -53,6 +54,7 @@ namespace org {
               } catch (org::esb::core::TaskException & ex) {
               _state = ERROR;
               //el->task->setStatus(org::esb::core::Task::ERROR);
+              
               throw GraphException(ex.displayText());
             }catch (std::exception & ex) {
               _state = ERROR;
@@ -64,6 +66,7 @@ namespace org {
       }
 
       void Graph::execute(Ptr<Element> e) {
+        LOGDEBUG("Context:"<<e->task->getContext()->toString());
         //KeyValue s;//=new KeyValue();
         processedStepCount++;
         Ptr<Status> s(new Status());
@@ -103,6 +106,7 @@ namespace org {
         if (task->getStatus() != org::esb::core::Task::ERROR) {
           foreach(Ptr<Graph::Element> el, e->getChilds()) {
             el->task->setSource(task->getSink());
+            el->task->getContext()->merge(*task->getContext().get());
             execute(el);
           }
         }

@@ -24,6 +24,7 @@ namespace org {
       class CORE_EXPORT PluginContext {
       public:
         boost::shared_ptr<db::HiveDb> database;
+        
         template<typename T>
         T getEnvironment(std::string key){
           return boost::lexical_cast<T>(env[key]);
@@ -38,6 +39,13 @@ namespace org {
           return boost::any_cast<T>(data);
         }
         
+        template<typename T>
+        void set(std::string key, T value){
+          _props[key]=value;
+        }
+        
+        void merge(PluginContext&);
+        std::string toString();
         virtual ~PluginContext();
         bool contains(std::string);
         std::map<std::string, boost::any> _props;
