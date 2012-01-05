@@ -101,6 +101,7 @@
   [browser setDelegate:self];
   [browser setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
   [browser setTarget:self];
+  [browser setNextResponder:nil];
   [browser setAction:@selector(browserClicked:)];
   [browser setDoubleAction:@selector(dblClicked:)];
 
@@ -232,11 +233,13 @@
   //CPLog.debug("raw_data:"+[raw_data rawString]);
   
   var json=[raw_data JSONObject];
-  var arr=json.data.sort(callbackFunc);
-  for(a=0;a<arr.length;a++){
-    var newNode=[Node withData:arr[a]];
-    //CPLog.debug("new Node"+[newNode name]);
-    [node addChild:newNode];
+  if(json.data){
+    var arr=json.data.sort(callbackFunc);
+    for(a=0;a<arr.length;a++){
+      var newNode=[Node withData:arr[a]];
+      //CPLog.debug("new Node"+[newNode name]);
+      [node addChild:newNode];
+    }
   }
   CPLog.debug("OlfNode:"+[[node children] count]);
   //}

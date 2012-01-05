@@ -408,5 +408,10 @@
         <field name="name" type="string"/>
         <field name="data" type="string"/>
     </object>
+    <object name="Location">
+        <field name="uuid" type="string"/>
+        <field name="name" type="string"/>
+        <field name="data" type="string"/>
+    </object>
 
 </database>

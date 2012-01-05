@@ -52,6 +52,7 @@ namespace org {
               execute(el);
               } catch (org::esb::core::TaskException & ex) {
               _state = ERROR;
+              //el->task->setStatus(org::esb::core::Task::ERROR);
               throw GraphException(ex.displayText());
             }catch (std::exception & ex) {
               _state = ERROR;

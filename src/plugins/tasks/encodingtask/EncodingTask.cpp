@@ -87,7 +87,7 @@ namespace encodingtask {
   
   void EncodingTask::execute() {
     Task::execute();
-    go(EncodingTask::observeProgress,this);
+    //go(EncodingTask::observeProgress,this);
     /*open the input file*/
     org::esb::av::FormatInputStream fis(_srcuristr);
 
@@ -258,7 +258,7 @@ namespace encodingtask {
     }
 
     while (partitionservice::PartitionManager::getInstance()->getSize(_partition) > 0) {
-      //setProgress(getProgressLength() - partitionservice::PartitionManager::getInstance()->getSize(_partition));
+      setProgress(getProgressLength() - partitionservice::PartitionManager::getInstance()->getSize(_partition));
       org::esb::lang::Thread::sleep2(1 * 1000);
     }
     

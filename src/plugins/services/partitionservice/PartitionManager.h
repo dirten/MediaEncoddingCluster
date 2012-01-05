@@ -20,6 +20,7 @@
 #include "exports.h"
 namespace partitionservice {
       class PARTSERVICE_EXPORT PartitionManager {
+        classlogger("partitionservice.PartitionManager");
       public:
         enum Result {
           OK,
