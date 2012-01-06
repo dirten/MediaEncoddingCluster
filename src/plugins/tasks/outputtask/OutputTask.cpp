@@ -12,6 +12,8 @@
 #include "Poco/URI.h"
 #include "Poco/File.h"
 #include "org/esb/config/config.h"
+#include "org/esb/util/StringUtil.h"
+#include "org/esb/util/Foreach.h"
 
 namespace plugin {
 
@@ -29,6 +31,10 @@ namespace plugin {
       JSONNode node = libjson::parse(data);
       if (node.contains("outfile")) {
         _trguristr = node["outfile"].as_string();
+        std::list<std::string> keys=getContext()->keys();
+        foreach(std::string key, keys){
+          _trguristr = org::esb::util::StringUtil::replace(_trguristr,std::string("$").append(key).append("$"),getContext()->get<std::string>(key));
+        }
         _srcuristr = getSource();
         _task_uuid=getUUID();
       }
@@ -59,21 +65,24 @@ namespace plugin {
     std::string base = org::esb::config::Config::get("hive.tmp_path");
 
     Poco::File srcfile(base + "/jobs/" + _task_uuid + "/"+_srcuristr);
+    LOGDEBUG("copy " << srcfile.path() << " to " << _trguristr);
     if (srcfile.exists()) {
       Poco::File trgfile(_trguristr);
-      if(trgfile.isDirectory()){
-        srcfile.copyTo(_trguristr+"/"+_srcuristr);
+      LOGDEBUG("copy " << srcfile.path() << " to " << trgfile.path());
+      if(trgfile.exists() && trgfile.isDirectory()){
+        LOGDEBUG("target is directory");
+        srcfile.copyTo(trgfile.path()+"/"+_srcuristr);
       }else{
-        srcfile.copyTo(_trguristr);
+        LOGDEBUG("target is file");
+        srcfile.copyTo(trgfile.path());
       }
       setStatus(Task::DONE);
     } else {
+      LOGERROR("src file " << srcfile.path() << " does not exist");
       setStatus(Task::ERROR);
     }
     setProgress(1);
-    LOGDEBUG("Download finish!");
+    LOGDEBUG("Output finish!");
   }
-
   REGISTER_TASK("OutputTask",OutputTask );
-
 }

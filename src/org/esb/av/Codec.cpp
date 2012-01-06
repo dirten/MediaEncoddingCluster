@@ -276,8 +276,8 @@ namespace org {
         return ctx->codec_type;
       }
 
-      char *Codec::getCodecName() {
-        return ctx->codec_name;
+      const char *Codec::getCodecName() {
+        return _codec->name;
       }
 
       CodecID Codec::getCodecId() {
@@ -539,7 +539,7 @@ namespace org {
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
 
         if (_opened) {
-          LOGTRACE("void Codec::close(" << this << "");
+          LOGTRACE("void Codec::close(" << this << ")");
           //LOGINFO("Closing codec ("<<ctx->codec_id<<")");
           if (ctx) {
             if (ctx->extradata_size > 0 && !_pre_allocated) {

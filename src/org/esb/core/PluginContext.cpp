@@ -9,6 +9,7 @@
 
 #include "PluginContext.h"
 #include "org/esb/config/config.h"
+#include "org/esb/core/AppContext.h"
 
 namespace org {
   namespace esb {
@@ -31,6 +32,16 @@ namespace org {
         env.insert(ctx.env.begin(),ctx.env.end());
         _props.insert(ctx._props.begin(),ctx._props.end());
       }
+      
+      std::list<std::string> PluginContext::keys(){
+        std::list<std::string> result;
+        std::map<std::string, boost::any>::iterator prop_it=_props.begin();
+        for(;prop_it!=_props.end();prop_it++){
+          result.push_back((*prop_it).first);
+        }        
+        return result;
+      }
+      
       std::string PluginContext::toString(){
         std::string result;
         std::map<std::string, std::string>::iterator env_it=env.begin();

@@ -46,12 +46,12 @@ namespace org {
       }
 
       void HiveClient::onMessage(org::esb::signal::Message & msg) {
-        if (msg.getProperty<std::string>("hiveclient") == "start") {
-          _t=boost::thread(boost::bind(&HiveClient::start, this));
+        if (msg.getProperty<std::string > ("hiveclient") == "start") {
+          _t = boost::thread(boost::bind(&HiveClient::start, this));
           _running = true;
         } else
-          if (msg.getProperty<std::string>("hiveclient") == "stop") {
-            stop();
+          if (msg.getProperty<std::string > ("hiveclient") == "stop") {
+          stop();
         }
       }
 
@@ -62,12 +62,12 @@ namespace org {
       }
 
       void HiveClient::stop() {
-          _toHalt = true;
-          if (_running) {
-            LOGDEBUG("StopSignal Received, waiting for all work done!");
-            _t.join();
-            LOGDEBUG("stopping done!")
-          }
+        _toHalt = true;
+        if (_running) {
+          LOGDEBUG("StopSignal Received, waiting for all work done!");
+          _t.join();
+          LOGDEBUG("stopping done!")
+        }
       }
 
       void HiveClient::connect() {
@@ -89,7 +89,7 @@ namespace org {
           _sock->getOutputStream()->write(cmd);
           _oos->writeObject(org::esb::config::Config::get("partition"));
           LOGINFO("Server " << _host << " connected!!!");
-          std::cout << "Video Processor connected to Server " << _host << ":" << _port << std::endl;
+          std::cout << "Processor connected to Server " << _host << ":" << _port << std::endl;
         } catch (exception & ex) {
           LOGERROR("cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what());
           std::cout << "cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what() << std::endl;
@@ -106,7 +106,7 @@ namespace org {
           } else {
             while (!_toHalt) {
               char * text = const_cast<char*> ("get process_unit");
-              boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit;// = new org::esb::hive::job::ProcessUnit();
+              boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit; // = new org::esb::hive::job::ProcessUnit();
               try {
                 _sock->getOutputStream()->write(text, strlen(text));
                 _ois->readObject(unit);
@@ -118,7 +118,26 @@ namespace org {
                 //delete unit;
                 break;
               }
+              if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+                if (_swap_codec_list.find(unit->_source_stream) == _swap_codec_list.end()) {
+                  _swap_codec_list[unit->_source_stream] = false;
+                }
+
+                if (_swap_codec_list[unit->_source_stream]) {
+                  unit->_decoder = _decoder_list[unit->_source_stream];
+                  unit->_encoder = _encoder_list[unit->_target_stream];
+                  unit->_converter = _converter_list[unit->_target_stream];
+                }
+                _swap_codec_list[unit->_source_stream] = true;
+              }
               unit->process();
+              if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+                if (_swap_codec_list[unit->_source_stream]) {
+                  _decoder_list[unit->_source_stream] = unit->_decoder;
+                  _encoder_list[unit->_target_stream] = unit->_encoder;
+                  _converter_list[unit->_target_stream] = unit->_converter;
+                }
+              }
 
               /**
                * clear the input packets, they are no more nedded
@@ -134,6 +153,21 @@ namespace org {
                 LOGERROR("Connection to Server lost!!!" << ex.what());
                 _sock->close();
               }
+              if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+
+                if (unit->_last_process_unit) {
+                  LOGDEBUG("Last ProcessUnit for Audio received, clear out");
+                  _swap_codec_list.clear();
+                  _decoder_list.clear();
+                  _encoder_list.clear();
+                  std::map<int, org::esb::av::FrameConverter * >::iterator it = _converter_list.begin();
+                  for (; it != _converter_list.end(); it++) {
+                    delete (*it).second;
+                  }
+                  _converter_list.clear();
+                }
+              }
+
               /*
               delete unit->_decoder;
               unit->_decoder = NULL;

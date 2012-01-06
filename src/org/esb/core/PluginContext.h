@@ -9,6 +9,7 @@
 #define	PLUGINCONTEXT_H
 //#include "org/esb/db/hivedb.hpp"
 #include <map>
+#include <list>
 #include <string>
 #include <boost/lexical_cast.hpp>
 #include <boost/shared_ptr.hpp>
@@ -45,6 +46,7 @@ namespace org {
         }
         
         void merge(PluginContext&);
+        std::list<std::string> keys();
         std::string toString();
         virtual ~PluginContext();
         bool contains(std::string);

@@ -81,10 +81,12 @@ namespace org {
             uid="";
             progress="0";
             status=Task::NONE;
+            message="";
           }
           std::string uid;
           Task::STATUS status;
           std::string progress;
+          std::string message;
         };
         
         typedef std::map<std::string, std::string> KeyValue;

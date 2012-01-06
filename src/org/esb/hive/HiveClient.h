@@ -20,6 +20,10 @@
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/io/QueueInputStream.h"
 #include "org/esb/io/QueueOutputStream.h"
+#include "org/esb/av/Decoder.h"
+#include "org/esb/av/Encoder.h"
+#include "org/esb/av/FrameConverter.h"
+
 #include "exports.h"
 //#include <boost/interprocess/ipc/message_queue.hpp>
 //namespace ipc=boost::interprocess;
@@ -56,6 +60,13 @@ namespace org {
                 boost::mutex terminationMutex;
                 boost::condition ctrlCHit;
                 boost::thread _t;
+
+                std::map<int, boost::shared_ptr<org::esb::av::Decoder> > _decoder_list;
+                std::map<int, boost::shared_ptr<org::esb::av::Encoder> > _encoder_list;
+                std::map<int, org::esb::av::FrameConverter *  > _converter_list;
+
+                std::map<int, bool> _swap_codec_list;
+
 //                boost::mutex thread_read_mutex;
 //                boost::mutex thread_write_mutex;
                 void packetReader();

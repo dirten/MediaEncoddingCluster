@@ -19,6 +19,7 @@
 #include "org/esb/av/CodecPropertyTransformer.h"
 #include "org/esb/util/ScopedTimeCounter.h"
 #include "org/esb/config/config.h"
+#include "org/esb/util/StringUtil.h"
 
 namespace encodingtask {
 
@@ -77,14 +78,14 @@ namespace encodingtask {
             ("data", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data");
     return result;
   }
-  
-  void EncodingTask::observeProgress(){
-    while (getStatus()==Task::EXECUTE) {
+
+  void EncodingTask::observeProgress() {
+    while (getStatus() == Task::EXECUTE) {
       setProgress(getProgressLength() - partitionservice::PartitionManager::getInstance()->getSize(_partition));
       org::esb::lang::Thread::sleep2(1 * 1000);
     }
   }
-  
+
   void EncodingTask::execute() {
     Task::execute();
     //go(EncodingTask::observeProgress,this);
@@ -178,6 +179,10 @@ namespace encodingtask {
             sdata.encoder->setCodecOption(param.first, param.second);
             sdata.pass2encoder->setCodecOption(param.first, param.second);
           }
+          getContext()->set<std::string > ("video.codec", sdata.encoder->getCodecName());
+          getContext()->set<std::string> ("video.bitrate", org::esb::util::StringUtil::toString(sdata.encoder->getBitRate()));
+          getContext()->set<std::string> ("video.height", org::esb::util::StringUtil::toString(sdata.encoder->getHeight()));
+          getContext()->set<std::string> ("video.width", org::esb::util::StringUtil::toString(sdata.encoder->getWidth()));
         } else {
           LOGERROR("Profile does not define a video codec");
         }
@@ -192,6 +197,9 @@ namespace encodingtask {
             sdata.encoder->setCodecOption(param.first, param.second);
             sdata.pass2encoder->setCodecOption(param.first, param.second);
           }
+          getContext()->set<std::string > ("audio.codec", sdata.encoder->getCodecName());
+          getContext()->set<std::string> ("audio.bitrate", org::esb::util::StringUtil::toString(sdata.encoder->getBitRate()));
+
         } else {
           LOGERROR("Profile does not define an audio codec");
         }
@@ -261,7 +269,7 @@ namespace encodingtask {
       setProgress(getProgressLength() - partitionservice::PartitionManager::getInstance()->getSize(_partition));
       org::esb::lang::Thread::sleep2(1 * 1000);
     }
-    
+
     setProgress(getProgressLength());
     exportFile();
     setStatus(Task::DONE);
@@ -375,6 +383,17 @@ namespace encodingtask {
     /*openning the OutputStreams*/
     FormatOutputStream * fos = new FormatOutputStream(&fout, _format.c_str());
     PacketOutputStream * pos = new PacketOutputStream(fos, getSink() + ".stats");
+    if (fos->_fmt->extensions) {
+      org::esb::util::StringTokenizer tok(fos->_fmt->extensions, ",");
+      std::string ext = tok.nextToken();
+      if (ext.length()) {
+        getContext()->set<std::string > ("profile.ext", ext);
+      }
+    }
+
+    if (getContext()->get<std::string > ("profile.ext").length() == 0) {
+      getContext()->set<std::string > ("profile.ext", "unknown");
+    }
     int a = 0;
 
     foreach(StreamEncoderMap::value_type & data, _stream_encoder) {

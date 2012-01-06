@@ -69,7 +69,7 @@ class SampleFormat;*/
         /**
          * @return The name of the Codec.
          */
-        char *getCodecName();
+        const char *getCodecName();
         /**
          * @return the ID of this codec, an enum CodecID
          */

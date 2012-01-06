@@ -233,7 +233,7 @@
             for(var a=0;a<option.data.length;a++){
               var data=option.data[a];
               if([_elements containsKey:data.option]){
-                //CPLog.debug("setting data from option "+data.option+" to "+data.value);
+                CPLog.debug("setting data from option "+data.option+" to "+data.value);
                 var data_option=[_elements objectForKey:data.option];
                 [data_option setObjectValue:data.value];
                 _json[data.option]=data.value;

@@ -53,11 +53,12 @@ namespace org {
               execute(el);
               } catch (org::esb::core::TaskException & ex) {
               _state = ERROR;
+              LOGERROR("Graph:"<<ex.displayText());
               //el->task->setStatus(org::esb::core::Task::ERROR);
-              
               throw GraphException(ex.displayText());
             }catch (std::exception & ex) {
               _state = ERROR;
+              LOGERROR("Graph:"<<ex.what());
               throw ex;
             }
           }
@@ -68,7 +69,6 @@ namespace org {
       void Graph::execute(Ptr<Element> e) {
         LOGDEBUG("Context:"<<e->task->getContext()->toString());
         //KeyValue s;//=new KeyValue();
-        processedStepCount++;
         Ptr<Status> s(new Status());
         //s->progress="0";
 
@@ -103,6 +103,7 @@ namespace org {
         //s["status"] = "finished";
         //status_list.push_back(s);
         //setProgress(task,s);
+        processedStepCount++;
         if (task->getStatus() != org::esb::core::Task::ERROR) {
           foreach(Ptr<Graph::Element> el, e->getChilds()) {
             el->task->setSource(task->getSink());
@@ -143,6 +144,7 @@ namespace org {
           n.set_name(s->uid);
           n.push_back(JSONNode("status", s->status));
           n.push_back(JSONNode("progress", s->progress));
+          n.push_back(JSONNode("message", s->message));
           node.push_back(n);
         }
         //status.preparse();

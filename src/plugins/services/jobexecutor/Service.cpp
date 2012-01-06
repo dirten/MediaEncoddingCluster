@@ -12,7 +12,6 @@
 #include "org/esb/lang/Process.h"
 #include "org/esb/signal/Messenger.h"
 #include "org/esb/hive/HiveClient.h"
-#include "org/esb/hive/HiveClientAudio.h"
 #include "org/esb/util/Foreach.h"
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/core/Graph.h"
