@@ -14,7 +14,7 @@ namespace org {
     namespace core {
       //POCO_DECLARE_EXCEPTION(CORE_EXPORT, TaskException, Poco::Exception);
 
-      class TaskException : public Poco::Exception {
+      class CORE_EXPORT TaskException : public Poco::Exception {
       public:
         TaskException(int code = 0);
         TaskException(const std::string& msg, int code = 0);
