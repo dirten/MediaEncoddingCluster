@@ -9,12 +9,13 @@
 #define	GRAPHEXCEPTION_H
 
 #include "org/esb/lang/Exception.h"
+#include "exports.h"
 
 namespace org {
   namespace esb {
     namespace core {
 
-      class GraphException:public org::esb::lang::Exception {
+      class CORE_EXPORT GraphException:public org::esb::lang::Exception {
       public:
         GraphException(std::string, std::string el="");
         virtual ~GraphException() throw();
