@@ -8,12 +8,6 @@
 #include "org/esb/core/PluginContext.h"
 #include "DownloadTask.h"
 #include "org/esb/core/TaskException.h"
-#include "Poco/Net/HTTPClientSession.h"
-#include "Poco/URI.h"
-#include "Poco/URIStreamOpener.h"
-#include "Poco/StreamCopier.h"
-#include "Poco/File.h"
-#include "Poco/Exception.h"
 #include "org/esb/lang/Ptr.h"
 
 #include "org/esb/libjson/libjson.h"
@@ -72,11 +66,11 @@ namespace plugin {
   void DownloadTask::execute() {
     Task::execute();
     setProgressLength(1);
-    Poco::File srcfile(_srcuristr);
-    if (srcfile.exists()&&srcfile.isFile()) {
-
-      Poco::File trgfile(_trguristr);
-      srcfile.copyTo(_trguristr);
+    org::esb::io::File sfile(_srcuristr);
+    
+    if (sfile.exists()&&sfile.isFile()) {
+      org::esb::io::File tfile(_trguristr);
+      sfile.copyTo(tfile);
       setStatus(Task::DONE);
     } else {
       setStatus(Task::ERROR);

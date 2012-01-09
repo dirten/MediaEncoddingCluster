@@ -91,11 +91,21 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
   var bounds = [element bounds];
 
   [element setBounds:CGRectMake(frameOrigin.x-(bounds.size.width/2),frameOrigin.y-(bounds.size.height/2),bounds.size.width,bounds.size.height)];
-  [element setUid:[elements count]+1];
+  var graphicCount = [elements count];
+  var maxUid=0;
+  for (var index = graphicCount - 1; index>=0; index--)
+	{
+    var elm = [elements objectAtIndex:index];  
+    CPLog.debug("Element UID="+[elm uid]);
+    if(maxUid<[elm uid])
+      maxUid=[elm uid];
+  }
+
+  [element setUid:maxUid+1];
   [element setProgress:@" "];
 
   [elements addObject:element];
-  //CPLog.debug("UidCounter:"+[element uid]);
+  CPLog.debug("UidCounter:"+[element uid]);
   /*
   if(lastNode){
     [lastNode addTarget:element];
@@ -403,6 +413,7 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
 
 - (void)keyDown:(CPEvent)anEvent 
 { 
+  CPLog.debug("KeyCode="+[anEvent keyCode]);
   if([anEvent keyCode]==46){
     CPLog.debug("delete key pressed");
     var graphicCount = [elements count];

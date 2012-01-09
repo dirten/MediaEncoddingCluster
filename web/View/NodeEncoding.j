@@ -50,12 +50,18 @@
 }
 -(id)propertyView
 {
+  [[CPNotificationCenter defaultCenter]
+            postNotificationName:StartWaitingSpinner
+            object:self
+            userInfo:nil];
   //[[TNGrowlCenter defaultCenter] pushNotificationWithTitle:@"Loading Property View." message:"please wait!"];
   //[[CPRunLoop currentRunLoop] performSelectors]; 
- [[CPNotificationCenter defaultCenter]
+/* 
+[[CPNotificationCenter defaultCenter]
     postNotificationName:NodeEditorViewChanged
     object:self
     userInfo:nil];
+*/
   [[CPRunLoop currentRunLoop] performSelectors]; 
 
   var view=[[ProfileEditView alloc] initWithData:data];

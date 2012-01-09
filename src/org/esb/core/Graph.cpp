@@ -47,18 +47,19 @@ namespace org {
 
       void Graph::run() {
         _state = EXECUTE;
+
         foreach(Ptr<Graph::Element> el, elements) {
           if (el->getParents().size() == 0) {
             try {
               execute(el);
-              } catch (org::esb::core::TaskException & ex) {
+            } catch (org::esb::core::TaskException & ex) {
               _state = ERROR;
-              LOGERROR("Graph:"<<ex.displayText());
+              LOGERROR("Graph:" << ex.displayText());
               //el->task->setStatus(org::esb::core::Task::ERROR);
-              throw GraphException(ex.displayText());
-            }catch (std::exception & ex) {
+              throw GraphException(ex.displayText(), el->id);
+            } catch (std::exception & ex) {
               _state = ERROR;
-              LOGERROR("Graph:"<<ex.what());
+              LOGERROR("Graph:" << ex.what());
               throw ex;
             }
           }
@@ -67,7 +68,7 @@ namespace org {
       }
 
       void Graph::execute(Ptr<Element> e) {
-        LOGDEBUG("Context:"<<e->task->getContext()->toString());
+        LOGDEBUG("Context:" << e->task->getContext()->toString());
         //KeyValue s;//=new KeyValue();
         Ptr<Status> s(new Status());
         //s->progress="0";
@@ -75,7 +76,7 @@ namespace org {
         status_list.push_back(s);
         //status_list.push_back(s);
         s->uid = e->id;
-
+        status_list.back()->message="";
         Ptr<org::esb::core::Task>task = e->task;
         task->setUUID(_uuid);
 
@@ -105,10 +106,17 @@ namespace org {
         //setProgress(task,s);
         processedStepCount++;
         if (task->getStatus() != org::esb::core::Task::ERROR) {
+
           foreach(Ptr<Graph::Element> el, e->getChilds()) {
             el->task->setSource(task->getSink());
             el->task->getContext()->merge(*task->getContext().get());
-            execute(el);
+            try {
+              execute(el);
+            } catch (org::esb::core::TaskException & ex) {
+              status_list.back()->message=ex.displayText();
+              setStatus(el->task.get());
+              throw GraphException(ex.displayText(), el->id);
+            }
           }
         }
       }

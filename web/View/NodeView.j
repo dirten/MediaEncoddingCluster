@@ -20,7 +20,7 @@ OutputHandle = 2;
   BOOL        _drawInputHandle;
   BOOL        _drawOutputHandle;
   CPMenu      menu;
-  int         uid                 @accessors(property=uid);
+  int         uid;//                 @accessors(property=uid);
   float         progress            @accessors(property=progress);
   CPDictionary          data      @accessors(property=data);
 
@@ -84,6 +84,14 @@ OutputHandle = 2;
   }
   return self;
 }
+-(int)uid{
+  return uid;
+}
+
+-(int)setUid:(int)id{
+  uid=id;
+}
+
 -(CPString)frontLabel
 {
   return @"";

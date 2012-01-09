@@ -33,6 +33,7 @@ TOOLBAR_TOP_MARGIN=0.0;
 @import <LPKit/LPCrashReporter.j>
 
 @import <GrowlCappuccino/GrowlCappuccino.j>
+@import </Frameworks/EKSpinner/EKSpinner.j>
 
 @import "View/FileChooser.j"
 TOP_MARGIN=0.0;
@@ -42,6 +43,8 @@ var SliderToolbarItemIdentifier = "SliderToolbarItemIdentifier",
 AddToolbarItemIdentifier = "AddToolbarItemIdentifier",
 RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
 LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
+StartWaitingSpinner = "StartWaitingSpinner";
+StopWaitingSpinner = "StopWaitingSpinner";
 
 
 @implementation AppController : CPObject
@@ -51,13 +54,35 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
   var jsonData;
 	ContentViewController contentViewController;
     CPArray _nodeElements;
+    EKSpinner spinner;
+
     }
+-(void)startSpinner
+{
+        [spinner setIsSpinning:YES];
+
+}
+-(void)stopSpinner
+{
+        [spinner setIsSpinning:NO];
+
+}
 
     - (void)applicationDidFinishLaunching:(CPNotification)aNotification
     {
       
       if (typeof(LPCrashReporter) != "undefined")
           [LPCrashReporter sharedErrorLogger];
+  [[CPNotificationCenter defaultCenter]
+    addObserver:self
+    selector:@selector(startSpinner)
+    name:StartWaitingSpinner
+    object:nil];
+  [[CPNotificationCenter defaultCenter]
+    addObserver:self
+    selector:@selector(stopSpinner)
+    name:StopWaitingSpinner
+    object:nil];
           
         var theWindow = [[CPWindow alloc] initWithContentRect:CGRectMakeZero() styleMask:CPBorderlessBridgeWindowMask],
         contentView = [theWindow contentView],
@@ -71,6 +96,8 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
         [growl pushNotificationWithTitle:@"Hello" message:@"Hello World next 3!"];
         */
         [theWindow orderFront:self];
+        spinner = [[EKSpinner alloc] initWithFrame:CGRectMake(CGRectGetWidth([contentView bounds])/2-32, CGRectGetHeight([contentView bounds])/2-32, 64, 64) andStyle:@"big_black"];
+        [contentView addSubview:spinner];
         /*
         nodeEditor=[[NodeEditorView alloc] initWithFrame:bounds];
         [contentView addSubview:nodeEditor];
@@ -86,6 +113,11 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
         //[toolBar setDelegate:self];
         //[toolBar setVisible:true];
         //[toolBar setFrameOrigin:CGPointMake(0.0,0.0)];
+        
+         [[CPNotificationCenter defaultCenter]
+            postNotificationName:StartWaitingSpinner
+            object:self
+            userInfo:nil];
 
         mainToolbar = [[TNToolbar alloc] init];
         [theWindow setToolbar:mainToolbar];
@@ -96,9 +128,9 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
         [logoToolbarItem setToolTip:@"test"];
 
         //[mainToolbar addItem:logoToolbarItem withIdentifier:@"logo"];
-        //[mainToolbar addItemWithIdentifier:@"logo" label:@"" icon:[[CPBundle mainBundle] pathForResource:"logo.jpg"]  target:nil action:nil toolTip:@""];
+        [mainToolbar addItemWithIdentifier:@"logo" label:@"" icon:[[CPBundle mainBundle] pathForResource:"logo.jpg"]  target:nil action:nil toolTip:@""];
         //[mainToolbar addItemWithIdentifier:@"logo" label:@"Log out" view:nil target:self action:@selector(toolbarItemLogoutClick:)];
-        [mainToolbar addItemWithIdentifier:@"logo" label:@"Log out with long name" icon:[[CPBundle mainBundle] pathForResource:"logo.jpg"]  target:self action:@selector(toolbarItemLogoutClick:) toolTip:@"Log out from the application"];
+        //[mainToolbar addItemWithIdentifier:@"logo" label:@"Log out with long name" icon:[[CPBundle mainBundle] pathForResource:"logo.jpg"]  target:self action:@selector(toolbarItemLogoutClick:) toolTip:@"Log out from the application"];
         //[mainToolbar addItemWithIdentifier:@"test" label:@"Log out with long name" icon:[[CPBundle mainBundle] pathForResource:"logo.jpg"]  target:self action:@selector(toolbarItemLogoutClick:) toolTip:@"Log out from the application"];
 
         /*
@@ -125,6 +157,10 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
         [moduleController load];
 
         [mainToolbar reloadToolbarItems];
+         [[CPNotificationCenter defaultCenter]
+            postNotificationName:StopWaitingSpinner
+            object:self
+            userInfo:nil];
 
         //[contentView addSubview:splitview];
         return;

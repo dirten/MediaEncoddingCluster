@@ -55,7 +55,7 @@ NodeElementDragType = "NodeElementDragType";
         bounds.size.height -= 350.0;
         
         var photosView = [[CPCollectionView alloc] initWithFrame:bounds];
-        
+        [photosView setMaxNumberOfColumns:0];
         [photosView setAutoresizingMask:CPViewWidthSizable];
         [photosView setMinItemSize:CGSizeMake(120, 100)];
         [photosView setMaxItemSize:CGSizeMake(200, 200)];
@@ -86,8 +86,8 @@ NodeElementDragType = "NodeElementDragType";
           
           [[NodeInput alloc] init],
           [[NodeEncoding alloc] init],
-          [[NodeOutput alloc] init],
           [[NodeExecutable alloc] init],
+          [[NodeOutput alloc] init],
           [[NodeView alloc] initWithName:@"test3" withInputHandle:YES andOutputHandle:YES taskName:@""],
           [[NodeView alloc] initWithName:@"test4" withInputHandle:YES andOutputHandle:YES taskName:@""],
           [[NodeView alloc] initWithName:@"test5" withInputHandle:YES andOutputHandle:YES taskName:@""],

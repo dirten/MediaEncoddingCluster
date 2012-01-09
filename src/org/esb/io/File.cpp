@@ -119,6 +119,15 @@ bool File::canWrite() {
   return result;
 }
 
+void File::copyTo(File&trg){
+  fs::copy_file(_full_path, trg._full_path);
+}
+
+void File::moveTo(File&trg){
+  fs::copy_file(_full_path, trg._full_path);
+  deleteFile();
+}
+
 FileList File::listFiles(FileFilter & filter) {
   fs::directory_iterator end_iter;
   FileList files;

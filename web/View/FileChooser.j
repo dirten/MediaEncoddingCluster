@@ -101,7 +101,7 @@
   [browser setDelegate:self];
   [browser setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
   [browser setTarget:self];
-  [browser setNextResponder:nil];
+  //[browser setNextResponder:nil];
   [browser setAction:@selector(browserClicked:)];
   [browser setDoubleAction:@selector(dblClicked:)];
 

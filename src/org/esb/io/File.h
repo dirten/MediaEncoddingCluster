@@ -290,7 +290,8 @@ namespace org {
 
         const std::string getExtension();
         void changeExtension(const std::string &);
-
+        void copyTo(File&);
+        void moveTo(File&);
         FileList listFiles();
         FileList listFiles(FileFilter & filter);
       private:

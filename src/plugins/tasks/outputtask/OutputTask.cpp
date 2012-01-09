@@ -6,6 +6,7 @@
  */
 
 #include "org/esb/core/PluginContext.h"
+#include "org/esb/core/TaskException.h"
 #include "OutputTask.h"
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/libjson/libjson.h"
@@ -80,6 +81,7 @@ namespace plugin {
     } else {
       LOGERROR("src file " << srcfile.path() << " does not exist");
       setStatus(Task::ERROR);
+      throw org::esb::core::TaskException(std::string("src file ").append(srcfile.path()).append(" does not exist"));
     }
     setProgress(1);
     LOGDEBUG("Output finish!");

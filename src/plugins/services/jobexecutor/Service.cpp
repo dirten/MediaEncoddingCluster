@@ -16,6 +16,7 @@
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/core/Graph.h"
 #include "org/esb/core/GraphParser.h"
+#include "org/esb/core/GraphException.h"
 namespace jobexecutor {
 
   Service::Service() {
@@ -74,10 +75,22 @@ namespace jobexecutor {
         try{
           job.status=job.Status.Processing;
           job.update();
+          /**
+           * need to simply walk/execute the graph here and not int the graph class,
+           * this should be needed to keep the graph class clean from any database access
+           */
           graph.run();
           //actualizeProgress(&graph, job);
           job.status=job.Status.Completed;
           job.update();
+        }catch(org::esb::core::GraphException & ex){
+          job.status=job.Status.Error;
+          job.update();
+          db::JobLog log(job.getDatabase());
+          log.message=ex.what();
+          log.update();
+          job.joblog().link(log);
+          
         }catch(std::exception & ex){
           job.status=job.Status.Error;
           job.update();

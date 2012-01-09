@@ -225,22 +225,23 @@
   {
     CPLog.debug("checked"+[sender objectValue]);
     _json[[sender identifier]]=[sender objectValue];
+    [_data setValue:[sender objectValue] forKey:[sender identifier]];
     if([sender objectValue]==1&&[_options containsKey:[sender identifier]]){
       CPLog.debug("key found:"+[sender identifier]);
       var option=[_options objectForKey:[sender identifier]];
-          /*setting refernce data fields*/
-          if(option.data&&option.data.length>0){
-            for(var a=0;a<option.data.length;a++){
-              var data=option.data[a];
-              if([_elements containsKey:data.option]){
-                CPLog.debug("setting data from option "+data.option+" to "+data.value);
-                var data_option=[_elements objectForKey:data.option];
-                [data_option setObjectValue:data.value];
-                _json[data.option]=data.value;
-                [_data setValue:data.value forKey:data.option];    
-              }
-            }
+      /*setting refernce data fields*/
+      if(option.data&&option.data.length>0){
+        for(var a=0;a<option.data.length;a++){
+          var data=option.data[a];
+          if([_elements containsKey:data.option]){
+            CPLog.debug("setting data from option "+data.option+" to "+data.value);
+            var data_option=[_elements objectForKey:data.option];
+            [data_option setObjectValue:data.value];
+            _json[data.option]=data.value;
+            [_data setValue:data.value forKey:data.option];    
           }
+        }
+      }
     }
   }
   -(void)sliderChanged:(id)sender
