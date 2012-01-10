@@ -50,7 +50,8 @@ namespace org {
           DONE,
           INTERRUPT,
           INTERRUPTED,
-          ERROR
+          ERROR,
+          DONE_WITH_ERROR
         };
 
         Graph(std::string);
@@ -75,6 +76,7 @@ namespace org {
         std::string _uuid;
         STATUS _state;
         int processedStepCount;
+        bool haserror;
         class Status{
         public:
           Status(){

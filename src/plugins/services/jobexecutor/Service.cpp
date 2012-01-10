@@ -81,7 +81,10 @@ namespace jobexecutor {
            */
           graph.run();
           //actualizeProgress(&graph, job);
-          job.status=job.Status.Completed;
+          if(graph.getState()==org::esb::core::Graph::DONE)
+            job.status=job.Status.Completed;
+          if(graph.getState()==org::esb::core::Graph::DONE_WITH_ERROR)
+            job.status=job.Status.CompletedWithError;
           job.update();
         }catch(org::esb::core::GraphException & ex){
           job.status=job.Status.Error;

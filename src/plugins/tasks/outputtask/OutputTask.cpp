@@ -68,6 +68,9 @@ namespace plugin {
     Poco::File srcfile(base + "/jobs/" + _task_uuid + "/"+_srcuristr);
     LOGDEBUG("copy " << srcfile.path() << " to " << _trguristr);
     if (srcfile.exists()) {
+      if(_trguristr.length()==0){
+        throw org::esb::core::TaskException(std::string("target file  could not be empty"));
+      }
       Poco::File trgfile(_trguristr);
       LOGDEBUG("copy " << srcfile.path() << " to " << trgfile.path());
       if(trgfile.exists() && trgfile.isDirectory()){

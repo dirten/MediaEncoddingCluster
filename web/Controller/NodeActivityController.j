@@ -153,6 +153,9 @@ testfunc();
     if(alldata.graphstatus!=undefined&&alldata.graphstatus[task.uid]!=undefined){
       CPLog.debug("task.uid"+task.uid);
       [obj setProgress:alldata.graphstatus[task.uid].progress];
+      if(alldata.graphstatus[task.uid].message.length)
+        [obj setMessage:alldata.graphstatus[task.uid].message];
+      [obj setStatus:alldata.graphstatus[task.uid].status];
     }else{
       [obj setProgress:@" "];      
     }

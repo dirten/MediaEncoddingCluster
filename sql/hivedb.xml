@@ -239,6 +239,7 @@
           <value name="Exporting" value="5"/>
           <value name="Completed" value="6"/>
           <value name="Deleted" value="7"/>
+          <value name="CompletedWithError" value="8"/>
         </field>
         <field name="infile" type="string"/>
         <field name="outfile" type="string"/>

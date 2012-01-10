@@ -12,6 +12,7 @@
 {
   @outlet CPTableView  jobTableView;
   id jsonData;
+  id selectedid;
   
   
 }
@@ -105,6 +106,10 @@
   //if([_response statusCode]==200){
     jsonData=[data objectFromJSON];
     [jobTableView reloadData];
+    for(var a=0;a<jsonData.data.length;a++){
+      if(jsonData.data[a].id==selectedid)
+      [jobTableView selectRowIndexes:[CPIndexSet indexSetWithIndex:a] byExtendingSelection:NO];
+    }
   //}else{
     //alert(data);
   //}

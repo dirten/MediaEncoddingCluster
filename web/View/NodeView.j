@@ -9,6 +9,7 @@ OutputHandle = 2;
   CPString name;
   CPString    taskName            @accessors(property=taskName);
   CPString    labelText           @accessors(property=labelText);
+  CPString    message             @accessors(property=message);
   CPTextField label
   CPTextField fieldDescription    @accessors(property=fieldDescription);
   
@@ -21,6 +22,7 @@ OutputHandle = 2;
   BOOL        _drawOutputHandle;
   CPMenu      menu;
   int         uid;//                 @accessors(property=uid);
+  int         status              @accessors(property=status);
   float         progress            @accessors(property=progress);
   CPDictionary          data      @accessors(property=data);
 
@@ -29,6 +31,7 @@ OutputHandle = 2;
   CPImageView _imageView;
   CPTextField _taskLabelField;
   CPTextField _propLabelField;
+  CPTextField _messageField;
 
 }
 
@@ -55,9 +58,16 @@ OutputHandle = 2;
     [label setTextColor:[CPColor darkGrayColor]];
     [self addSubview:label];
     var bounds=[self bounds];
-    fieldDescription=[CPTextField labelWithTitle:@"test value"];
+    fieldDescription=[CPTextField labelWithTitle:@""];
+    //[fieldDescription setBounds:CGRectMake(0.0, 0.0, 110.0, 40.0)];
+    [fieldDescription setFrameSize:CGSizeMake(120,40)];
+
+    [fieldDescription setLineBreakMode:CPLineBreakByWordWrapping];
     var label_origin=CPPointMake(bounds.origin.x+15,bounds.origin.y-40);
     [fieldDescription setFrameOrigin:label_origin];
+    //[fieldDescription setStringValue:@"objectValue test here"];
+    [fieldDescription sizeToFit];
+
     //[fieldDescription setStringValue:@"test value"];
     //CPLog.debug("ContentRect:"+CPStringFromRect(bounds));
     inputElements=[CPArray array];
@@ -94,7 +104,7 @@ OutputHandle = 2;
 
 -(CPString)frontLabel
 {
-  return @"";
+  return @"test";
 }
 -(id)image
 {
@@ -237,7 +247,7 @@ OutputHandle = 2;
   //[view addSubview:fieldDescription];
   //[label drawRect:aRect];
   var base_value=progress;
-  if(parseInt(base_value)==base_value){
+  if(parseInt(base_value)==base_value&&status==2){
     var ind=[[CPProgressIndicator alloc] initWithFrame:CGRectMake(0,3.5, CGRectGetWidth([self bounds])-4,15)];    
     var progress_origin=CPPointMake(inHandlePoint.x+7,inHandlePoint.y+30);
     [view addSubview:ind];
@@ -245,24 +255,30 @@ OutputHandle = 2;
     [ind setDoubleValue:base_value];
     [ind setFrameOrigin:progress_origin];
   }
-  var l=parseInt(base_value)==base_value?base_value+"%":base_value;
-  var label=[CPTextField labelWithTitle:l];
-  var l_origin=CPPointMake(inHandlePoint.x+7,inHandlePoint.y+30);
-  [label setFrameOrigin:l_origin];
-  [label setTextColor:[CPColor darkGrayColor]];
-  [view addSubview:label];
+  if(status!=7){
+    var l=parseInt(base_value)==base_value?base_value+"%":base_value;
+    var label=[CPTextField labelWithTitle:l];
+    var l_origin=CPPointMake(inHandlePoint.x+7,inHandlePoint.y+30);
+
+    [label setFrameOrigin:l_origin];
+    [label setTextColor:[CPColor darkGrayColor]];
+    [view addSubview:label];
+  }
   
-  /*
-   fieldDescription=[CPTextField labelWithTitle:labelText];
-   var l_origin=CPPointMake(inHandlePoint.x+7,inHandlePoint.y-20);
+   //fieldDescription=[CPTextField labelWithTitle:labelText];
+   //fieldDescription=[CPTextField labelWithTitle:@"test daa"];
+   var l_origin=CPPointMake(inHandlePoint.x+7,inHandlePoint.y-5);
    var l_bounds=CPRectMake(inHandlePoint.x+7,inHandlePoint.y-20, 50,10);
-   [fieldDescription setBounds:l_bounds];
+   //[fieldDescription setBounds:l_bounds];
    [fieldDescription setFrameOrigin:l_origin];
-   [fieldDescription setEditable:YES];
-   [fieldDescription setPlaceholderString:@"click to enter label"];
+   //[fieldDescription setEditable:YES];
+   //[fieldDescription setPlaceholderString:@"click to enter label"];
    [fieldDescription setTextColor:[CPColor darkGrayColor]];
+   [fieldDescription setStringValue:message];
+   [fieldDescription sizeToFit];
+
    [view addSubview:fieldDescription];
-   */
+   
   [self drawRect:aRect];
   if(_drawInputHandle)
     [self drawHandleInView:view atPoint:inHandlePoint];

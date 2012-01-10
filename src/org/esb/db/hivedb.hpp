@@ -1669,6 +1669,7 @@ public:
         static const int Exporting;
         static const int Completed;
         static const int Deleted;
+        static const int CompletedWithError;
         StatusType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
     };
     class Status {
@@ -1681,6 +1682,7 @@ public:
         static const int Exporting;
         static const int Completed;
         static const int Deleted;
+        static const int CompletedWithError;
     };
     class TasksHandle : public litesql::RelationHandle<Job> {
     public:

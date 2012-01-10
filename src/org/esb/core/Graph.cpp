@@ -25,6 +25,7 @@ namespace org {
         elements = data;
         _uuid = uuid;
         _state = Graph::NONE;
+        haserror=false;
         //status=JSONNode(JSON_NODE);
         //status.set_name("status");
         JSONNode test(JSON_NODE);
@@ -50,21 +51,14 @@ namespace org {
 
         foreach(Ptr<Graph::Element> el, elements) {
           if (el->getParents().size() == 0) {
-            try {
-              execute(el);
-            } catch (org::esb::core::TaskException & ex) {
-              _state = ERROR;
-              LOGERROR("Graph:" << ex.displayText());
-              //el->task->setStatus(org::esb::core::Task::ERROR);
-              throw GraphException(ex.displayText(), el->id);
-            } catch (std::exception & ex) {
-              _state = ERROR;
-              LOGERROR("Graph:" << ex.what());
-              throw ex;
-            }
+            execute(el);
           }
         }
-        _state = DONE;
+        if(haserror){
+          _state = DONE_WITH_ERROR;
+        }else{
+          _state = DONE;
+        }
       }
 
       void Graph::execute(Ptr<Element> e) {
@@ -77,47 +71,50 @@ namespace org {
         //status_list.push_back(s);
         s->uid = e->id;
         status_list.back()->message="";
-        Ptr<org::esb::core::Task>task = e->task;
-        task->setUUID(_uuid);
+        try{
+          Ptr<org::esb::core::Task>task = e->task;
+          task->setUUID(_uuid);
 
-        task->addProgressObserver(boost::bind(&Graph::setProgress, this, _1));
-        task->addStatusObserver(boost::bind(&Graph::setStatus, this, _1));
+          task->addProgressObserver(boost::bind(&Graph::setProgress, this, _1));
+          task->addStatusObserver(boost::bind(&Graph::setStatus, this, _1));
 
-        task->setSink(org::esb::util::PUUID());
-        task->prepare();
-        //exec.push_back(JSONNode("status", "prepared"));
+          task->setSink(org::esb::util::PUUID());
+          task->prepare();
+          //exec.push_back(JSONNode("status", "prepared"));
 
 
-        //status.push_back(exec);
+          //status.push_back(exec);
 
-        //exec.push_back(JSONNode("status", "running"));
-        //go(Graph::setProgress,this,task,s);
-        //boost::thread(boost::bind(&Graph::setProgress,this,task,s));
-        task->execute();
-        //s->progress="100";
-        //exec.push_back(JSONNode("status", "cleanup"));
+          //exec.push_back(JSONNode("status", "running"));
+          //go(Graph::setProgress,this,task,s);
+          //boost::thread(boost::bind(&Graph::setProgress,this,task,s));
+          task->execute();
+          //s->progress="100";
+          //exec.push_back(JSONNode("status", "cleanup"));
 
-        task->cleanup();
+          task->cleanup();
+          status_list.back()->message="Completed";
+          //setStatus(e->task.get());
         //exec.push_back(JSONNode("status", "finished"));
 
         //status_list.remove(s);
         //s["status"] = "finished";
         //status_list.push_back(s);
         //setProgress(task,s);
-        processedStepCount++;
-        if (task->getStatus() != org::esb::core::Task::ERROR) {
-
-          foreach(Ptr<Graph::Element> el, e->getChilds()) {
-            el->task->setSource(task->getSink());
-            el->task->getContext()->merge(*task->getContext().get());
-            try {
+          processedStepCount++;
+          setStatus(e->task.get());
+          if (e->task->getStatus() != org::esb::core::Task::ERROR) {
+            foreach(Ptr<Graph::Element> el, e->getChilds()) {
+              el->task->setSource(e->task->getSink());
+              el->task->getContext()->merge(*e->task->getContext().get());
               execute(el);
-            } catch (org::esb::core::TaskException & ex) {
-              status_list.back()->message=ex.displayText();
-              setStatus(el->task.get());
-              throw GraphException(ex.displayText(), el->id);
             }
           }
+        }catch(org::esb::core::TaskException & ex){
+          status_list.back()->message=ex.displayText();
+          status_list.back()->status=org::esb::core::Task::ERROR;
+          setStatus(e->task.get());
+          //throw GraphException(ex.displayText(), e->id);
         }
       }
 
