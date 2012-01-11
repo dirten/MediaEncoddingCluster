@@ -69,6 +69,8 @@ namespace org {
       
       void Task::setStatusMessage(std::string s){
         _status_message=s;
+         if(statusObserver)
+          statusObserver(this);
       }
       std::string  Task::getStatusMessage(){
         return _status_message;

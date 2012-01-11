@@ -111,9 +111,11 @@ namespace org {
             }
           }
         }catch(org::esb::core::TaskException & ex){
-          status_list.back()->message=ex.displayText();
+          status_list.back()->message="";
+          status_list.back()->exception=ex.displayText();
           status_list.back()->status=org::esb::core::Task::ERROR;
           setStatus(e->task.get());
+          haserror=true;
           //throw GraphException(ex.displayText(), e->id);
         }
       }
@@ -134,6 +136,7 @@ namespace org {
 
       void Graph::setStatus(Task * t) {
         status_list.back()->status = t->getStatus();
+        status_list.back()->message = t->getStatusMessage();
         if (statusObserver)
           statusObserver(this);
         //status_list.remove(s);
@@ -150,6 +153,7 @@ namespace org {
           n.push_back(JSONNode("status", s->status));
           n.push_back(JSONNode("progress", s->progress));
           n.push_back(JSONNode("message", s->message));
+          n.push_back(JSONNode("exception", s->exception));
           node.push_back(n);
         }
         //status.preparse();

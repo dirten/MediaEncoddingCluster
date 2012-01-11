@@ -69,6 +69,7 @@ namespace plugin {
     LOGDEBUG("copy " << srcfile.path() << " to " << _trguristr);
     if (srcfile.exists()) {
       if(_trguristr.length()==0){
+        setStatus(Task::ERROR);
         throw org::esb::core::TaskException(std::string("target file  could not be empty"));
       }
       Poco::File trgfile(_trguristr);
@@ -81,6 +82,7 @@ namespace plugin {
         srcfile.copyTo(trgfile.path());
       }
       setStatus(Task::DONE);
+      setStatusMessage("File successful copied to the target");
     } else {
       LOGERROR("src file " << srcfile.path() << " does not exist");
       setStatus(Task::ERROR);

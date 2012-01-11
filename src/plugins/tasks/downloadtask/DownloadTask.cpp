@@ -72,6 +72,7 @@ namespace plugin {
       org::esb::io::File tfile(_trguristr);
       sfile.copyTo(tfile);
       setStatus(Task::DONE);
+      setStatusMessage("File successful copied into the workspace");
     } else {
       setStatus(Task::ERROR);
       throw org::esb::core::TaskException("Source File not found");

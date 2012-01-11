@@ -10,7 +10,7 @@
 # description: MHive Service
 
 SELF=$0
-echo $SELF
+#echo $SELF
 STATUS=-100
 # check if self is a symlink
 if [ -h $SELF  ]
@@ -23,14 +23,14 @@ then
     fi    
 else
 
-    if [ `expr index "$SELF" /` -gt 1 ]; then
+    if [ `expr index "$SELF" /` -gt "1" ]; then
         BASE_PATH=`pwd`/
     fi
     BASE_PATH=$BASE_PATH`dirname $SELF`/..
     cd $BASE_PATH
     BASE_PATH=`pwd`
 fi
-echo $BASE_PATH
+#echo $BASE_PATH
 MHIVE_BASE=$BASE_PATH
 
 #when we are on a mac then all is installed into the Resource subdirectory
@@ -67,7 +67,7 @@ unset COLUMNS
 checkproc(){
 
     lsproc=$(ps xa |grep -E "$MHIVE_BASE"|grep -E $1 |grep -v grep|awk '{print $1}')
-    echo $lsproc
+#    echo $lsproc
     return $lsproc
 }
 
@@ -91,15 +91,24 @@ status_server(){
   false
 }
 
+if [ -e /usr/X11/bin/xterm ]; then
+    term="/usr/X11/bin/xterm -ls -e"
+else
+    if [ -e /usr/bin/konsole ]; then
+	term="/usr/bin/konsole -e"
+    fi
+fi
 start_server(){
 #  LAST_DIR=`pwd`
   cd $MHIVE_BASE
     if status_runtime; then
       echo "starting mhive"
       #echo $MHIVE_BASE/bin/mhiveservice >$BASE_PATH/mhivetest
-      mkdir $MHIVE_BASE/logs
+      mkdir $MHIVE_BASE/logs 2>/dev/null
       #$MHIVE_BASE/bin/mhive -r > $MHIVE_BASE/logs/startup.log&
-      /usr/X11/bin/xterm -ls -e $MHIVE_BASE/bin/mhive -c
+     # $term = find_terminal
+     echo "terminal" $term
+      $term $MHIVE_BASE/bin/mhive -c
       #sleep 3
       #open http://localhost:8080
       STATUS=$?

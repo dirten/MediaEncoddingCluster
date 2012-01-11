@@ -180,13 +180,13 @@ int main(int argc, char * argv[]) {
                 ("queue,q", "start the Hive Queue Server")
                 ("test", "test function")
                 ;
+     */
         po::options_description priv("");
         priv.add_options()
                 ("erlang", "")
                 ("console,c", "")
                 ("quiet", "")
                 ;
-     */
     po::options_description all("all");
     setupDefaults();
     setupConfig();
@@ -219,11 +219,11 @@ int main(int argc, char * argv[]) {
       if (od.options().size() > 0)
         all.add(od);
     }
-    //priv.add(all);
+    priv.add(all);
 
     po::variables_map vm;
     try {
-      po::store(po::parse_command_line(argc, argv, all), vm);
+      po::store(po::parse_command_line(argc, argv, priv), vm);
     } catch (std::exception & ex) {
       //std::cout <<boost::diagnostic_information(ex)<<std::endl;
       std::cout << ex.what() << "!!!" << std::endl << std::endl;

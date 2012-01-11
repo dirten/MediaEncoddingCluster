@@ -155,6 +155,9 @@ testfunc();
       [obj setProgress:alldata.graphstatus[task.uid].progress];
       if(alldata.graphstatus[task.uid].message.length)
         [obj setMessage:alldata.graphstatus[task.uid].message];
+      if(alldata.graphstatus[task.uid].exception!=undefined&&
+         alldata.graphstatus[task.uid].exception.length)
+        [obj setMessage:alldata.graphstatus[task.uid].exception];
       [obj setStatus:alldata.graphstatus[task.uid].status];
     }else{
       [obj setProgress:@" "];      

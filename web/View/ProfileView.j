@@ -1,4 +1,4 @@
-@import "/Controller/ProfileEditViewController.j"
+@import "../Controller/ProfileEditViewController.j"
 ProfileViewRefresh = @"ProfileViewRefresh";
 
 ProfileDoubleClicked = @"ProfileDoubleClicked";

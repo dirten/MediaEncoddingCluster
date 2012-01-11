@@ -11,6 +11,10 @@
 #include "boost/lexical_cast.hpp"
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringTokenizer.h"
+
+#include "Poco/UUID.h"
+#include "Poco/UUIDGenerator.h"
+
 using namespace std;
 namespace org {
   namespace esb {
@@ -90,8 +94,12 @@ namespace org {
       }
 
       std::string ServiceRequest::getUUID() {
-        boost::uuids::uuid uuid = boost::uuids::random_generator()();
-        return boost::lexical_cast<std::string > (uuid);
+        Poco::UUIDGenerator& generator = Poco::UUIDGenerator::defaultGenerator();
+        Poco::UUID uuid(generator.create());
+        
+        //boost::uuids::uuid uuid = boost::uuids::random_generator()();
+        LOGDEBUG("RequestUUID:"<<uuid.toString());
+        return uuid.toString();//boost::lexical_cast<std::string > (uuid);
       }
 
       std::string ServiceRequest::getParameter(std::string key) {

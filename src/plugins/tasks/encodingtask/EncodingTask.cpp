@@ -264,6 +264,8 @@ namespace encodingtask {
         putToPartition(unit, true);
       }
     }
+    
+    setStatusMessage("100 FPS.");
 
     while (partitionservice::PartitionManager::getInstance()->getSize(_partition) > 0) {
       setProgress(getProgressLength() - partitionservice::PartitionManager::getInstance()->getSize(_partition));
@@ -273,7 +275,7 @@ namespace encodingtask {
     setProgress(getProgressLength());
     exportFile();
     setStatus(Task::DONE);
-    setStatusMessage("Encoding completed successfull");
+    setStatusMessage("Encoding completed successful");
   }
 
   void EncodingTask::putToPartition(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast) {

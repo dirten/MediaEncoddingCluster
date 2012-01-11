@@ -1,9 +1,9 @@
 @import <AppKit/CPMenuItem.j>
-@import "/View/TextBox.j"
-@import "/View/SearchBox.j"
-@import "/View/ComboBox.j"
-@import "/View/CheckBox.j"
-@import "/View/Slider.j"
+@import "TextBox.j"
+@import "SearchBox.j"
+@import "ComboBox.j"
+@import "CheckBox.j"
+@import "Slider.j"
 @implementation FormBuilder :CPView
   {
     id _json;

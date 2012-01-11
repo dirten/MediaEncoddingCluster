@@ -282,7 +282,7 @@ namespace org {
         foreach(PluginDataMap::value_type s, _plugin_data) {
 
           //delete s.second.context->database;
-          delete s.second.context;
+          //delete s.second.context;
         }
 
         foreach(SharedObjectMap::value_type row, _shared_objects) {

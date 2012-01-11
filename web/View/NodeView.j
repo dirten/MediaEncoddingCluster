@@ -50,7 +50,7 @@ OutputHandle = 2;
     //[self setBorderWidth:3.0];
     [self setBorderType:CPGrooveBorder];
     [[self contentView] setBackgroundColor:[CPColor whiteColor]];
-    //[self setBorderColor:[CPColor whiteColor]];
+    //[self setBorderColor:[CPColor redColor]];
     [self setPostsFrameChangedNotifications:YES];
     
     label=[CPTextField labelWithTitle:aName];
@@ -249,7 +249,7 @@ OutputHandle = 2;
   var base_value=progress;
   if(parseInt(base_value)==base_value&&status==2){
     var ind=[[CPProgressIndicator alloc] initWithFrame:CGRectMake(0,3.5, CGRectGetWidth([self bounds])-4,15)];    
-    var progress_origin=CPPointMake(inHandlePoint.x+7,inHandlePoint.y+30);
+    var progress_origin=CPPointMake(inHandlePoint.x+7,inHandlePoint.y+33);
     [view addSubview:ind];
     [ind startAnimation:nil];
     [ind setDoubleValue:base_value];
@@ -258,17 +258,25 @@ OutputHandle = 2;
   if(status!=7){
     var l=parseInt(base_value)==base_value?base_value+"%":base_value;
     var label=[CPTextField labelWithTitle:l];
-    var l_origin=CPPointMake(inHandlePoint.x+7,inHandlePoint.y+30);
+    var l_origin=CPPointMake(inHandlePoint.x+7,inHandlePoint.y+33);
 
     [label setFrameOrigin:l_origin];
     [label setTextColor:[CPColor darkGrayColor]];
     [view addSubview:label];
+  }else{
+    [self setBorderColor:[CPColor redColor]];
+    [self setBorderWidth:3.0];
   }
-  
+  if(status==2){
+    [self setBorderColor:[CPColor blueColor]];
+  }
+  if(status==4){
+    [self setBorderColor:[CPColor greenColor]];
+  }
    //fieldDescription=[CPTextField labelWithTitle:labelText];
    //fieldDescription=[CPTextField labelWithTitle:@"test daa"];
-   var l_origin=CPPointMake(inHandlePoint.x+7,inHandlePoint.y-5);
-   var l_bounds=CPRectMake(inHandlePoint.x+7,inHandlePoint.y-20, 50,10);
+   var l_origin=CPPointMake(inHandlePoint.x+7,inHandlePoint.y-7);
+   //var l_bounds=CPRectMake(inHandlePoint.x+7,inHandlePoint.y-20, 50,10);
    //[fieldDescription setBounds:l_bounds];
    [fieldDescription setFrameOrigin:l_origin];
    //[fieldDescription setEditable:YES];

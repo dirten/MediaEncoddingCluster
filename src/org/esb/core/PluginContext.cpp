@@ -21,6 +21,7 @@ namespace org {
 
 
       PluginContext::~PluginContext() {
+        
         //delete database;
       }
       

@@ -22,6 +22,7 @@
 #define loginit(file)/*log_init(file)*/
 #define classlogger(name)static inline log4cplus::Logger getLogger(){return log4cplus::Logger::getInstance(name);}
 #define classlogger2(CLASS,name) log4cplus::Logger CLASS##::getLogger(){return log4cplus::Logger::getInstance(name);}
+#define logger(name)static inline std::string getLoggerName(){return name;}
 
 //#define logfatal(o1)LOG4CPLUS_FATAL(getLogger(),o1);//loglevel(o1, "fatal")/*log_fatal(o1)*/
 #define LOGFATAL(o2)LOG4CPLUS_FATAL(getLogger(),o2);//loglevel(o1, "fatal")/*log_fatal(o1)*/
@@ -37,6 +38,7 @@
 
 //#define logdebug(o1)LOG4CPLUS_DEBUG(getLogger(),o1);//loglevel(o1, "debug")/*log_debug(o1)*/
 #define LOGDEBUG(o2)LOG4CPLUS_DEBUG(getLogger(),o2);//loglevel(o1, "warn")/*log_warn(o1)*/
+#define LOGDEBUG2(o2)LOG4CPLUS_DEBUG(log4cplus::Logger::getInstance(getLoggerName()),o2);//loglevel(o1, "warn")/*log_warn(o1)*/
 
 //#define logtrace(o1)LOG4CPLUS_TRACE(getLogger(),o1);//loglevel(o1, "trace")/*log_debug(o1)*/
 #define LOGTRACE(o2)LOG4CPLUS_TRACE(getLogger(),o2);//loglevel(o1, "warn")/*log_warn(o1)*/

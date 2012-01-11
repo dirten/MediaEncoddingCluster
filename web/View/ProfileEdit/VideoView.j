@@ -1,5 +1,5 @@
 @import <AppKit/CPMenuItem.j>
-@import "/View/FormBuilder.j"
+@import "../FormBuilder.j"
 @implementation VideoView :CPScrollView
   {
     id _json;

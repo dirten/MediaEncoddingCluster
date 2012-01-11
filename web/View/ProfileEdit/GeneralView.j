@@ -1,4 +1,4 @@
-@import "/View/LabelTextFieldView.j"
+@import "../LabelTextFieldView.j"
 @implementation GeneralView :CPView
   {
     FormBuilder _form;

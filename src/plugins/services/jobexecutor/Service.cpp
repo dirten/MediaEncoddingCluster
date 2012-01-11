@@ -21,6 +21,7 @@ namespace jobexecutor {
 
   Service::Service() {
     _status = NONE;
+    //LOGDEBUG2("bla fasel, test log");
   }
 
   Service::~Service() {
@@ -54,11 +55,11 @@ namespace jobexecutor {
   }
 
   void Service::run() {
-    LOGTRACEMETHOD("void JobExecutor::run() ")
+    //LOGTRACEMETHOD("void JobExecutor::run() ")
     while (_status == RUNNING) {
       litesql::DataSource<db::Job> source = litesql::select<db::Job > (*getContext()->database, db::Job::Status == db::Job::Status::Waiting);
       if (source.count() > 0) {
-        LOGDEBUG("New Job found!!!");
+        //LOGDEBUG("New Job found!!!");
         db::Job job = source.one();
         std::string graphdata=job.graph;
         org::esb::core::GraphParser graphparser(graphdata);
