@@ -1,4 +1,4 @@
-@import "/Resources/js/mustache.js"
+@import "../Resources/js/mustache.js"
 
 @implementation DetailWebView : CPWebView
   {
