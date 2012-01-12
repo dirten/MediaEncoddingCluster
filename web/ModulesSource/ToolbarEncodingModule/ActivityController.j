@@ -13,8 +13,9 @@
   @outlet CPTableView  jobTableView;
   id jsonData;
   id selectedid;
+  id growl;
   
-  
+  CPAlert stopGraph;
 }
 
 -(void)awakeFromCib{
@@ -25,7 +26,6 @@
   var column = [jobTableView tableColumnWithIdentifier:@"5"];
   CPLog.debug("Column:"+column);
   [column setDataView:progressDataView];
-
   [self refresh];
   [CPTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(refresh) userInfo:nil repeats:true];
   
@@ -133,5 +133,89 @@
   }
 }
 
+- (CPMenu)tableView:(CPTableView)aTableView menuForTableColumn:(CPTableColumn)aColumn row:(int)aRow
+{
+// menu should open/close
+// comment
+// tag
+    var menu = [[CPMenu alloc] initWithTitle:"Graph Menu"],
+    //menuItems = ["New","Submit","Rename ...", "Delete"],
+    //menuActions = [@selector(newGraph:),@selector(submit:),@selector(rename:), @selector(delete:)],
+    menuItems = ["Stop this Graph"],
+    menuActions = [@selector(stop:)],
+    numberOfSelectedIssues = [[aTableView selectedRowIndexes] count],
+    count = menuItems.length,
+    i = 0;
 
+    // if we have more than one issue selected and the user right clicks
+    // on a different issue we should just select the issue he right clicked
+    if (![[aTableView selectedRowIndexes] containsIndex:aRow])
+        [self selectGraphAtIndex:aRow];
+
+    // this might have just changed... recalculate
+    numberOfSelectedIssues = [[aTableView selectedRowIndexes] count];
+
+    for (; i < count; i++)
+    {
+        var title = menuItems[i],
+        newMenuItem = [[CPMenuItem alloc] initWithTitle:title action:menuActions[i] keyEquivalent:nil];
+        [newMenuItem setTarget:self];
+        //[newMenuItem setEnabled:(numberOfSelectedIssues === 1)];
+        //break;
+        // we want a seperator so just skip it for now
+    	[menu addItem:newMenuItem];
+    }
+
+    // add the seperator and the last item
+    //[menu addItem:[CPMenuItem separatorItem]];
+    //[menu addItem:newMenuItem];
+
+    return menu;
+}
+- (void)selectGraphAtIndex:(unsigned)index
+{
+    var indexSet = index < 0 ? [CPIndexSet indexSet] : [CPIndexSet indexSetWithIndex:index];
+
+    if (index >= 0)
+        [jobTableView scrollRowToVisible:index];
+
+    [jobTableView selectRowIndexes:indexSet byExtendingSelection:NO];
+    //[self tableViewSelectionDidChange:nil];
+}
+
+- (void)stop:(id)sender
+{
+  /*asking for a name*/
+  stopgraph=[[CPAlert alloc] init];// initWithTitle:@"Delete Graph" andText:@"are you sure to delete the graph:"+[self selectedId]];
+  [stopgraph setTitle:"Are You Sure?"];
+  [stopgraph setMessageText:"Are you sure you want to stop the Graph with ID :" + selectedid+ "?"];
+  [stopgraph setAlertStyle:CPWarningAlertStyle];
+  [stopgraph addButtonWithTitle:"Cancel"];
+  [stopgraph setDelegate:self];
+  [stopgraph addButtonWithTitle:"Stop Graph"];
+  [stopgraph runModal];
+}
+
+-(void)_stop:(id)sender
+{
+  var request = [CPURLRequest requestWithURL:"/api/v1/encoding?stop&id="+selectedid];
+  var raw_data = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+  CPLog.debug("stop raw_data:"+[raw_data rawString]);
+  var d=[raw_data JSONObject].data;
+  if(d.status=="ok"){
+    growl=[TNGrowlCenter defaultCenter];
+    //CPLog.debug("GrowlCenter"+growl);
+    [growl pushNotificationWithTitle:@"Sucess" message:@"Graph sucessful stopped"];
+  }else{
+    var alert=[CPAlert alertWithError:d.description];
+    [alert runModal];
+  }
+}
+- (void)alertDidEnd:(CPAlert)anAlert returnCode:(int)tag
+{
+  if (tag === 1){
+    [self _stop:nil];
+  }
+  [CPTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(refresh) userInfo:nil repeats:NO];
+}
 @end

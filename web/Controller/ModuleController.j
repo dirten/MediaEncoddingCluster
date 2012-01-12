@@ -1,6 +1,9 @@
 
-
-//@import "/Modules/ToolbarProfileModule/ProfileModuleController.j"
+/*
+@import "../ModulesSource/ToolbarProfileModule/ProfileModuleController.j"
+@import "../ModulesSource/ToolbarEncodingModule/EncodingModuleController.j"
+@import "../ModulesSource/EncodingFlowEditorModule/EncodingFlowEditorModuleController.j"
+*/
 ModuleTypeToolbar = @"toolbar";
 ModuleTypeTab = @"tab";
 
@@ -21,9 +24,11 @@ ModuleTypeTab = @"tab";
   CPView                          _mainModuleView                 @accessors(property=mainView);
   CPDictionary                    _loadedToolbarModules           @accessors(getter=loadedToolbarModules);
 
-    CPToolbarItem                   _currentToolbarItem;
-    CPView                          _currentToolbarModule;
-    id growl;
+  CPToolbarItem                   _currentToolbarItem;
+  CPView                          _currentToolbarModule;
+  id growl;
+  CPDictionary moduleClass;
+
 }
 
 
@@ -35,7 +40,12 @@ ModuleTypeTab = @"tab";
   self = [super init];
   _loadedToolbarModules                   = [CPDictionary dictionary];
   growl=[TNGrowlCenter defaultCenter];
-
+  moduleClass=[CPDictionary dictionary];
+  /*
+  [moduleClass setObject:[EncodingFlowEditorModuleController class] forKey:@"EncodingFlowEditorModuleController"];
+  [moduleClass setObject:[EncodingModuleController class] forKey:@"EncodingModuleController"];
+  [moduleClass setObject:[ProfileModuleController class] forKey:@"ProfileModuleController"];
+  */
   return self;
 }
 /*******************************************************************************
@@ -161,6 +171,7 @@ ModuleTypeTab = @"tab";
     CPLog.debug("Tabbtool loaded");
    [growl pushNotificationWithTitle:@"Module loaded" message:moduleName+" sucessfull loaded!"];
   [[CPRunLoop currentRunLoop] performSelectors]; 
+  [[CPRunLoop mainRunLoop] performSelectors]; 
 
 
 }
@@ -202,7 +213,12 @@ ModuleTypeTab = @"tab";
 
         //return [[[aBundle objectForInfoDictionaryKey:@"CPPrincipalClass"] alloc] initWithCibName:localizedCibName bundle:aBundle];
         //return [instance initWithCibName:localizedCibName bundle:aBundle];
-        return [[[aBundle principalClass] alloc] initWithCibName:localizedCibName bundle:aBundle];
+        
+        if([aBundle principalClass]){
+          return [[[aBundle principalClass] alloc] initWithCibName:localizedCibName bundle:aBundle];
+        } else {
+          return [[[elementClass objectForKey:[aBundle objectForInfoDictionaryKey:@"CPPrincipalClass"]] alloc] initWithCibName:localizedCibName bundle:aBundle];
+        }
         //return [[aBundle principalClass] alloc];
     }
     else

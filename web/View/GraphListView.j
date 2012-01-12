@@ -6,6 +6,7 @@
   id jsonData;
   TextInput input;
   TextInput delgraph;
+  InputWindow newWin;
 }
 
 -(id)initWithFrame:(id)frame
@@ -105,7 +106,7 @@
   // see important note about CPJSONPConnection above
   var connection = [CPURLConnection connectionWithRequest:request delegate:self];
 }
-
+gr
 -(CPString)selectedId
 {
   if([tableView selectedRow]!=-1){
@@ -128,6 +129,8 @@
 // comment
 // tag
     var menu = [[CPMenu alloc] initWithTitle:"Graph Menu"],
+    //menuItems = ["New","Submit","Rename ...", "Delete"],
+    //menuActions = [@selector(newGraph:),@selector(submit:),@selector(rename:), @selector(delete:)],
     menuItems = ["Rename ...", "Delete"],
     menuActions = [@selector(rename:), @selector(delete:)],
     numberOfSelectedIssues = [[tableView selectedRowIndexes] count],
@@ -170,6 +173,28 @@
     //[self tableViewSelectionDidChange:nil];
 }
 
+- (void)newGraph:(id)sender
+{
+  CPLog.debug("New Encoding Graph:");
+  /*asking for a name*/
+  newWin=[[InputWindow alloc] initWithTitle:@"Name for the new Graph" andText:@"please enter a Name for the new Graph." forValue:nil];
+  [newWin setDelegate:self];
+
+}
+- (void)_newGraph:(CPString)name
+{
+  CPLog.debug("New Encoding Graph execute:");
+  
+  [[CPNotificationCenter defaultCenter]
+    postNotificationName:NewNodeEditorView
+    object:name
+    userInfo:nil];
+}
+
+- (void)submit:(id)sender
+{
+
+}
 - (void)delete:(id)sender
 {
   /*asking for a name*/
@@ -215,6 +240,10 @@
   if (tag === 1){
     if(anAlert==input)
       [self _rename:name];
+    if(anAlert==newWin){
+      name=[newWin inputText];
+      [self _newGraph:name];
+    }
     if(anAlert==delgraph)
       [self _delete:[self selectedId]];
     }

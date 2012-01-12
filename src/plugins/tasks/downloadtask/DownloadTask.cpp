@@ -13,6 +13,7 @@
 #include "org/esb/libjson/libjson.h"
 #include "org/esb/io/File.h"
 #include "org/esb/util/StringUtil.h"
+#include "org/esb/config/config.h"
 namespace plugin {
 
   DownloadTask::DownloadTask():Task() {
@@ -66,10 +67,14 @@ namespace plugin {
   void DownloadTask::execute() {
     Task::execute();
     setProgressLength(1);
+    std::string base = org::esb::config::Config::get("hive.tmp_path");
     org::esb::io::File sfile(_srcuristr);
     
     if (sfile.exists()&&sfile.isFile()) {
-      org::esb::io::File tfile(_trguristr);
+      org::esb::io::File tfile(base+"/jobs/"+getUUID()+"/"+_trguristr);
+      org::esb::io::File tdir(base+"/jobs/"+getUUID());
+      tdir.mkdirs();
+      LOGDEBUG("copy srcfile "<<_srcuristr<<" to "<<base<<"/jobs/"<<getUUID()<<"/"<<_trguristr);
       sfile.copyTo(tfile);
       setStatus(Task::DONE);
       setStatusMessage("File successful copied into the workspace");

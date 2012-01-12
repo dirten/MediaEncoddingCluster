@@ -359,20 +359,23 @@ namespace org {
 
                 //job.del();
                 JSONNode ok(JSON_NODE);
-                ok.set_name("ok");
+                ok.set_name("data");
+                ok.push_back(JSONNode("status", "ok"));
                 ok.push_back(JSONNode("code", "encoding_stopped"));
                 ok.push_back(JSONNode("description", "stop encoding succesful signaled"));
                 n.push_back(ok);
               } else {
                 JSONNode error(JSON_NODE);
-                error.set_name("error");
+                error.set_name("data");
+                error.push_back(JSONNode("status", "error"));
                 error.push_back(JSONNode("code", "encoding_not_found"));
                 error.push_back(JSONNode("description", "encoding not found"));
                 n.push_back(error);
               }
             } else {
               JSONNode error(JSON_NODE);
-              error.set_name("error");
+              error.set_name("data");
+              error.push_back(JSONNode("status", "error"));
               error.push_back(JSONNode("code", "no_id"));
               error.push_back(JSONNode("description", "no id given for delete action"));
               n.push_back(error);

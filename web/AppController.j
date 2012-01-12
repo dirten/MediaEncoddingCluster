@@ -10,6 +10,9 @@ TOOLBAR_TOP_MARGIN=0.0;
 
 @import <Foundation/CPObject.j>
 @import <AppKit/AppKit.j>
+@import <TNKit/TNToolbar.j>
+@import <LPKit/LPCrashReporter.j>
+@import <GrowlCappuccino/GrowlCappuccino.j>
 @import "ProfileList.j"
 @import "Navigator.j"
 @import "View/ProfileEditView.j"
@@ -29,11 +32,8 @@ TOOLBAR_TOP_MARGIN=0.0;
 @import "Controller/ModuleController.j"
 @import "Controller/TestWindowController.j"
 //@import "Controller/NodeEditorController.j"
-@import <TNKit/TNToolbar.j>
-@import <LPKit/LPCrashReporter.j>
 
-@import <GrowlCappuccino/GrowlCappuccino.j>
-@import </Frameworks/EKSpinner/EKSpinner.j>
+//@import <Frameworks/EKSpinner/EKSpinner.j>
 
 @import "View/FileChooser.j"
 TOP_MARGIN=0.0;
@@ -54,17 +54,17 @@ StopWaitingSpinner = "StopWaitingSpinner";
   var jsonData;
 	ContentViewController contentViewController;
     CPArray _nodeElements;
-    EKSpinner spinner;
+    //EKSpinner spinner;
 
     }
 -(void)startSpinner
 {
-        [spinner setIsSpinning:YES];
+        //[spinner setIsSpinning:YES];
 
 }
 -(void)stopSpinner
 {
-        [spinner setIsSpinning:NO];
+        //[spinner setIsSpinning:NO];
 
 }
 
@@ -73,17 +73,18 @@ StopWaitingSpinner = "StopWaitingSpinner";
       
       if (typeof(LPCrashReporter) != "undefined")
           [LPCrashReporter sharedErrorLogger];
-  [[CPNotificationCenter defaultCenter]
-    addObserver:self
-    selector:@selector(startSpinner)
-    name:StartWaitingSpinner
-    object:nil];
-  [[CPNotificationCenter defaultCenter]
-    addObserver:self
-    selector:@selector(stopSpinner)
-    name:StopWaitingSpinner
-    object:nil];
-          
+      /*
+      [[CPNotificationCenter defaultCenter]
+          addObserver:self
+          selector:@selector(startSpinner)
+          name:StartWaitingSpinner
+          object:nil];
+      [[CPNotificationCenter defaultCenter]
+        addObserver:self
+        selector:@selector(stopSpinner)
+        name:StopWaitingSpinner
+        object:nil];
+        */
         var theWindow = [[CPWindow alloc] initWithContentRect:CGRectMakeZero() styleMask:CPBorderlessBridgeWindowMask],
         contentView = [theWindow contentView],
         toolBar = [[CPToolbar alloc] initWithIdentifier:"Toolbar"],
@@ -96,8 +97,12 @@ StopWaitingSpinner = "StopWaitingSpinner";
         [growl pushNotificationWithTitle:@"Hello" message:@"Hello World next 3!"];
         */
         [theWindow orderFront:self];
-        spinner = [[EKSpinner alloc] initWithFrame:CGRectMake(CGRectGetWidth([contentView bounds])/2-32, CGRectGetHeight([contentView bounds])/2-32, 64, 64) andStyle:@"big_black"];
-        [contentView addSubview:spinner];
+        //spinner = [[EKSpinner alloc] initWithFrame:CGRectMake(0, 0, 32, 32) andStyle:@"big_black"];
+        //[spinner setIsSpinning:YES];
+        //var spinnerToolbarItem       = [[CPToolbarItem alloc] initWithItemIdentifier:@"spinner"];
+        //[spinnerToolbarItem setView:spinner];
+
+        //[contentView addSubview:spinner];
         /*
         nodeEditor=[[NodeEditorView alloc] initWithFrame:bounds];
         [contentView addSubview:nodeEditor];
@@ -114,21 +119,22 @@ StopWaitingSpinner = "StopWaitingSpinner";
         //[toolBar setVisible:true];
         //[toolBar setFrameOrigin:CGPointMake(0.0,0.0)];
         
-         [[CPNotificationCenter defaultCenter]
+        /*[[CPNotificationCenter defaultCenter]
             postNotificationName:StartWaitingSpinner
             object:self
-            userInfo:nil];
-
+            userInfo:nil];*/
         mainToolbar = [[TNToolbar alloc] init];
         [theWindow setToolbar:mainToolbar];
+        /*
         var image = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"logo.jpg"] size:CPSizeMake(100, 50)];
         var logoToolbarItem       = [[CPToolbarItem alloc] initWithItemIdentifier:@"logo"];
         [logoToolbarItem setImage:image];
         [logoToolbarItem setLabel:@"test"];
         [logoToolbarItem setToolTip:@"test"];
-
-        //[mainToolbar addItem:logoToolbarItem withIdentifier:@"logo"];
+        */
+        //[mainToolbar addItem:spinnerToolbarItem withIdentifier:@"spinner"];
         [mainToolbar addItemWithIdentifier:@"logo" label:@"" icon:[[CPBundle mainBundle] pathForResource:"logo.jpg"]  target:nil action:nil toolTip:@""];
+        //[mainToolbar addItemWithIdentifier:@"spinner" label:@"" view:spinner  target:nil action:nil];
         //[mainToolbar addItemWithIdentifier:@"logo" label:@"Log out" view:nil target:self action:@selector(toolbarItemLogoutClick:)];
         //[mainToolbar addItemWithIdentifier:@"logo" label:@"Log out with long name" icon:[[CPBundle mainBundle] pathForResource:"logo.jpg"]  target:self action:@selector(toolbarItemLogoutClick:) toolTip:@"Log out from the application"];
         //[mainToolbar addItemWithIdentifier:@"test" label:@"Log out with long name" icon:[[CPBundle mainBundle] pathForResource:"logo.jpg"]  target:self action:@selector(toolbarItemLogoutClick:) toolTip:@"Log out from the application"];
@@ -143,6 +149,8 @@ StopWaitingSpinner = "StopWaitingSpinner";
         [mainToolbar setPosition:3 forToolbarItemIdentifier:@"Test"];
         */
         [mainToolbar setPosition:0 forToolbarItemIdentifier:@"logo"];
+        //[mainToolbar setPosition:-1 forToolbarItemIdentifier:@"spinner"];
+        //[mainToolbar reloadToolbarItems];
         //[mainToolbar setPosition:1 forToolbarItemIdentifier:@"test"];
         //[mainToolbar setPosition:2 forToolbarItemIdentifier:CPToolbarSeparatorItemIdentifier];
 
@@ -157,11 +165,12 @@ StopWaitingSpinner = "StopWaitingSpinner";
         [moduleController load];
 
         [mainToolbar reloadToolbarItems];
+        /*
          [[CPNotificationCenter defaultCenter]
             postNotificationName:StopWaitingSpinner
             object:self
             userInfo:nil];
-
+            */
         //[contentView addSubview:splitview];
         return;
         splitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];

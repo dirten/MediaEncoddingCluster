@@ -136,6 +136,11 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
 #pragma mark -
 #pragma mark Actions
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification{
+   [[CPNotificationCenter defaultCenter]
+      postNotificationName:StartWaitingSpinner
+      object:self
+      userInfo:nil];
+
   if(jsonData.data[[[aNotification object] selectedRow]]){
     CPLog.debug("hello profile 1212:"+jsonData.data[[[aNotification object] selectedRow]].id);
     selectedid=jsonData.data[[[aNotification object] selectedRow]].id;

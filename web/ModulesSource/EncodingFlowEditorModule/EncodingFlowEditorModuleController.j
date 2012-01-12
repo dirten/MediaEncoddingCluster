@@ -62,7 +62,7 @@ var editorController;
   var plusButton             = [CPButtonBar plusButton];
   [plusButton setTitle:@"Load"];
 
-
+  /*
   var loadButton=[[CPButton alloc] initWithFrame:CGRectMake(0, 0, 55, 25)];
   [loadButton setTitle:@"Load"];
   [loadButton setAutoresizingMask:CPViewMinXMargin|CPViewMinYMargin];
@@ -70,7 +70,8 @@ var editorController;
   [loadButton setTarget:self];
   
   [loadButton setAction:@selector(load:)];
-
+  [buttons addObject:loadButton];
+  */
   var saveButton=[[CPButton alloc] initWithFrame:CGRectMake(0, 0, 55, 25)];
   [saveButton setTitle:@"Save"];
   [saveButton setAutoresizingMask:CPViewMinXMargin|CPViewMinYMargin];
@@ -91,7 +92,6 @@ var editorController;
   [submitButton setAction:@selector(submit:)];
 
   //[buttons addObject:plusButton];
-  [buttons addObject:loadButton];
   [buttons addObject:saveButton];
   [buttons addObject:newButton];
   [buttons addObject:submitButton];
