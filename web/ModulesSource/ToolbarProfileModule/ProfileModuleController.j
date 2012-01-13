@@ -49,6 +49,8 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
   id                      jsonData;
   ProfileEditView         profileEditView;
   id    opWin;
+  InputWindow input;
+  CPDictionary pdata;
 }
 
 #pragma mark -
@@ -60,6 +62,33 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
 {
   //opWin=[[LongOperationView alloc] initWithFrame:CGRectMake(0,0,200,200)];
   [buttonBar setGrayTheme];
+
+
+  var saveButton=[[CPButton alloc] initWithFrame:CGRectMake(0, 0, 55, 25)];
+  [saveButton setTitle:@"Save"];
+  [saveButton setAutoresizingMask:CPViewMinXMargin|CPViewMinYMargin];
+  //[saveButton setBordered:NO];
+  [saveButton setTarget:self];
+  [saveButton setAction:@selector(save:)];
+
+  var newButton=[[CPButton alloc] initWithFrame:CGRectMake(0, 0, 55, 25)];
+  [newButton setTitle:@"New"];
+  [newButton setAutoresizingMask:CPViewMinXMargin|CPViewMinYMargin];
+  [newButton setTarget:self];
+  [newButton setAction:@selector(new:)];
+
+  var deleteButton=[[CPButton alloc] initWithFrame:CGRectMake(0, 0, 55, 25)];
+  [deleteButton setTitle:@"Delete"];
+  [deleteButton setAutoresizingMask:CPViewMinXMargin|CPViewMinYMargin];
+  [deleteButton setTarget:self];
+  [deleteButton setAction:@selector(delete:)];
+
+  var buttons=[CPArray array];
+  [buttons addObject:saveButton];
+  [buttons addObject:newButton];
+  [buttons addObject:deleteButton];
+  [buttonBar setButtons:buttons];
+
   CPLog.debug("awakeFromCib and reload table view new bla"+self);
   var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
   [request setHTTPMethod:"GET"];
@@ -72,12 +101,15 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
       "audio":{}
     }
   };
-  var data=[CPDictionary dictionaryWithJSObject:json recursively:YES];  
+  pdata=[CPDictionary dictionaryWithJSObject:json recursively:YES];  
+  //CPLog.debug("awakeFromCib profileEdirtView"+CPStringFromRect([profileView bounds]));
+  /*
   profileEditView=[[ProfileEditView alloc] initWithData:data];
   [profileEditView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-
   [[profileView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
   [profileView addSubview:profileEditView];
+  */
+  //[profileEditView setFrameSize:[profileView bounds]];
 }
 
 #pragma mark -
@@ -140,6 +172,7 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
       postNotificationName:StartWaitingSpinner
       object:self
       userInfo:nil];
+    [[profileView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
   if(jsonData.data[[[aNotification object] selectedRow]]){
     CPLog.debug("hello profile 1212:"+jsonData.data[[[aNotification object] selectedRow]].id);
@@ -156,10 +189,13 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
     //[[CPRunLoop currentRunLoop] performSelectors]; 
     //[[CPRunLoop mainRunLoop] performSelectors] ;
     //[[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode]; 
-    var data=[CPDictionary dictionaryWithJSObject:[raw_data JSONObject] recursively:YES];
-    profileEditView=[[ProfileEditView alloc] initWithData:data];
-    [[profileView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+  //CPLog.debug("awakeFromCib profileEdirtView"+CPStringFromRect([profileView bounds]));
+  //CPLog.debug("awakeFromCib profileEdirtView"+CPStringFromRect([profileView bounds]));
+
+    pdata=[CPDictionary dictionaryWithJSObject:[raw_data JSONObject] recursively:YES];
+    profileEditView=[[ProfileEditView alloc] initWithData:pdata];
     [profileView addSubview:profileEditView];
+    [profileEditView setFrameSize:CPSizeMake([profileView bounds].size.width,[profileView bounds].size.height)];
     //}
     //[opWin close];
     [[CPNotificationCenter defaultCenter]
@@ -200,6 +236,91 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
     if([tableColumn identifier]==2){
       return [CPString stringWithFormat:@"%s", jsonData.data[row].name ];
     }
+}
+
+
+
+
+- (void)delete:(id)sender
+{
+  CPLog.debug("Delete Encoding Profile:");
+    var alert=[[YesNoAlert alloc] 
+                initWithLabel:@"Delete current selected Profile!" 
+                question:@"Do you really want to delete the Profile:"+selectedid
+                yesLabel:@"Delete" 
+                noLabel:@"Cancel" 
+                target:self 
+                yesAction:@selector(_delete:)
+                yesObject:selectedid
+                noAction:nil
+                noObject:nil]; 
+}
+
+-(void)_delete:(id)data
+{
+  var request = [CPURLRequest requestWithURL:@"/api/v1/profile?id="+data];
+  [request setHTTPMethod:"DELETE"];
+  var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+  CPLog.debug("DeleteResult:"+[result rawString]);
+  [[profileView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+  var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
+  [request setHTTPMethod:"GET"];
+  var connection = [CPURLConnection connectionWithRequest:request delegate:self];
+  selectedid=0;
+  [profileTableView selectRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
+}
+
+- (void)save:(id)sender
+{
+    CPLog.debug("SAVING Encoding Profile:"+ JSON.stringify([pdata toJSON].data));
+    var url="/api/v1/profile";
+    if(selectedid)
+      url+="?id="+selectedid;
+    CPLog.debug("Saving Profile URL="+url);
+    var request = [CPURLRequest requestWithURL:url];
+    [request setHTTPMethod:"POST"];
+    [request setHTTPBody:JSON.stringify([pdata toJSON].data)];
+    var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+    [[TNGrowlCenter defaultCenter] pushNotificationWithTitle:@"Profile Saved" message:"Profile successful saved"];
+    CPLog.debug("SAVING Encoding Profile Result:"+ [result rawString]);
+    var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
+    [request setHTTPMethod:"GET"];
+    var connection = [CPURLConnection connectionWithRequest:request delegate:self];
+}
+
+- (void)new:(id)sender
+{
+  CPLog.debug("New Encoding Profile:");
+    json={
+    "data":{
+      "format":{},
+      "video":{},
+      "audio":{}
+    }
+  };
+  pdata=[CPDictionary dictionaryWithJSObject:json recursively:YES];  
+  //CPLog.debug("awakeFromCib profileEdirtView"+CPStringFromRect([profileView bounds]));
+  [profileTableView selectRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
+  
+  profileEditView=[[ProfileEditView alloc] initWithData:pdata];
+  [profileEditView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+  [[profileView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+  [profileView addSubview:profileEditView];
+  selectedid=0;
+
+}
+
+
+- (void)alertDidEnd:(CPAlert)anAlert returnCode:(int)tag
+{
+  if(anAlert==input){
+    var name=[input inputText];
+    if (tag === 1)
+      [self _new:name];
+      var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
+      [request setHTTPMethod:"GET"];
+      var connection = [CPURLConnection connectionWithRequest:request delegate:self];
+  }
 }
 
 @end

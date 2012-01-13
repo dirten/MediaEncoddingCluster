@@ -199,7 +199,7 @@ ModuleTypeTab = @"tab";
     {
         CPLog.debug("MODULE LOADER: " + moduleIdentifier + " : Found the translation en" 
             + " strings information as expected at " + localizationStringsURL)
-        var plist = [CPPropertyListSerialization propertyListFromData:[CPData dataWithRawString:req.responseText] format:nil];
+        //var plist = [CPPropertyListSerialization propertyListFromData:[CPData dataWithRawString:req.responseText] format:nil];
 
         //[aBundle setValue:plist forTable:@"Localizable"];
         //var classname=[aBundle objectForInfoDictionaryKey:@"CPPrincipalClass"];

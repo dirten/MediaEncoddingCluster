@@ -19,12 +19,12 @@
 }
 
 -(void)awakeFromCib{
-  CPLog.debug("awaked from cib!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+  CPLog.debug("awaked from cib ActivityController")
   var progressDataView=[ProgressTableDataView new];
-  CPLog.debug("ProgressTableDataView:"+progressDataView);
-  CPLog.debug("JobTable:"+jobTableView);
+  //CPLog.debug("ProgressTableDataView:"+progressDataView);
+  //CPLog.debug("JobTable:"+jobTableView);
   var column = [jobTableView tableColumnWithIdentifier:@"5"];
-  CPLog.debug("Column:"+column);
+  //CPLog.debug("Column:"+column);
   [column setDataView:progressDataView];
   [self refresh];
   [CPTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(refresh) userInfo:nil repeats:true];
@@ -160,7 +160,7 @@
         var title = menuItems[i],
         newMenuItem = [[CPMenuItem alloc] initWithTitle:title action:menuActions[i] keyEquivalent:nil];
         [newMenuItem setTarget:self];
-        //[newMenuItem setEnabled:(numberOfSelectedIssues === 1)];
+        [newMenuItem setEnabled:jsonData.data[aRow].statuscode==1];
         //break;
         // we want a seperator so just skip it for now
     	[menu addItem:newMenuItem];

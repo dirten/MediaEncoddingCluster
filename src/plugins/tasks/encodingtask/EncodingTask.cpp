@@ -90,12 +90,13 @@ namespace encodingtask {
     Task::execute();
     //go(EncodingTask::observeProgress,this);
     /*open the input file*/
-    org::esb::av::FormatInputStream fis(_srcuristr);
+    std::string base = org::esb::config::Config::get("hive.tmp_path");
+    org::esb::av::FormatInputStream fis(base+"/jobs/"+getUUID()+"/"+_srcuristr);
 
     /*check the input is valid*/
     if (!fis.isValid()) {
       setStatus(Task::ERROR);
-      setStatusMessage(std::string("Input file \"").append(_srcuristr).append("\" is not a valid media file!"));
+      setStatusMessage(std::string("Input file ").append(_srcuristr).append(" is not a valid media file!"));
       throw org::esb::core::TaskException(getStatusMessage());
     }
 

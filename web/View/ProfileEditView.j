@@ -40,6 +40,7 @@ ProfileChanged=@"ProfileChanged";
 }
 -(id)initWithFrame:(GCRect)aFrame{
   var self=[super initWithFrame:aFrame];
+  [self setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
   CPLog.debug("ProfileEditView INIT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
   splitview = [[CPSplitView alloc] initWithFrame:aFrame];
   [splitview setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
@@ -54,9 +55,13 @@ ProfileChanged=@"ProfileChanged";
   //var self=[super init];
   //var self=[super initWithContentRect:CGRectMake(280,50,700,500) styleMask:CPClosableWindowMask|CPResizableWindowMask];
   var self=[super initWithFrame:CGRectMake(0,0,700,500)];
+  //var self=[super initWithFrame:CGRectMakeZero()];
+  //var self=[super init];
+  [self setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
+
   var contentView=self;//[self contentView];
   items = [CPDictionary dictionaryWithObjects:[ [], [], [], []] forKeys:[@"Audio",@"Video",@"Format",@"General"]];
-  CPLog.debug("here"+CPStringFromRect([contentView bounds]));
+  //CPLog.debug("here"+CPStringFromRect([contentView bounds]));
   
   splitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
   [splitview setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];

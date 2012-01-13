@@ -151,7 +151,7 @@ gr
         newMenuItem = [[CPMenuItem alloc] initWithTitle:title action:menuActions[i] keyEquivalent:nil];
         [newMenuItem setTarget:self];
         var st=jsonData.data[[tableView selectedRow]].status;
-        [newMenuItem setEnabled:parseInt(st)==st];
+        //[newMenuItem setEnabled:parseInt(st)==st];
         //break;
         // we want a seperator so just skip it for now
     	[menu addItem:newMenuItem];

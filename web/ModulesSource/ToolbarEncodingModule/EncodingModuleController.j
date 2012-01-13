@@ -52,7 +52,7 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
  */
 - (void)awakeFromCib
 {
-  CPLog.debug("awakeFromCib and reload table view new bla");
+  CPLog.debug("awakeFromCib and reload table view new EncodingModuleController");
   
   jsonData={"data":[]};
   [jobTableView reloadData];

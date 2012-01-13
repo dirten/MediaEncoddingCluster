@@ -76,7 +76,7 @@
       [_form buildFormView:data];
     }catch(err)
     {
-      CPLog.debug(err);
+      CPLog.debug("AudioView::loadCodecUI:"+err);
       var path = [[CPBundle mainBundle] pathForResource:@"UI/encoder.audio.default.gui"];
       _data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:nil];
       data=[[_data rawString] objectFromJSON];
@@ -92,6 +92,7 @@
 
       [_form buildFormView:data];
     }
+    CPLog.debug("AudioView::loadCodecUI complete");
   }
 
 @end

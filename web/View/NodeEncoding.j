@@ -146,6 +146,9 @@
 
 -(void)open:(id)aSender
 {
+  [[TNGrowlCenter defaultCenter] pushNotificationWithTitle:@"Loading Property View." message:"please wait!"];
+  [[CPRunLoop currentRunLoop] performSelectors];
+  [[CPRunLoop mainRunLoop] performSelectors];
   CPLog.debug("open clicked:"+aSender);
   var view=[self propertyView];
   if(!view)return;

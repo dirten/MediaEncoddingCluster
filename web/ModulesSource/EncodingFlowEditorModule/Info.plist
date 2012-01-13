@@ -19,12 +19,12 @@
 	<key>PluginDisplayName</key>
 	<dict>
 		<key>en</key>
-		<string>Encoding Flow Builder</string>
+		<string>Flow Builder</string>
 		<key>de</key>
 		<string>Test Modul</string>
 	</dict>
 	<key>ToolbarIndex</key>
-	<integer>6</integer>
+	<integer>4</integer>
 	<key>ToolTip</key>
 	<string>open the Encoding Flow Builder</string>
 	<key>InsertionType</key>
