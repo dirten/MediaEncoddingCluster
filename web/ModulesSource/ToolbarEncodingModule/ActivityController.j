@@ -11,6 +11,8 @@
 @implementation ActivityController: CPObject
 {
   @outlet CPTableView  jobTableView;
+  @outlet CPView       webView;
+  id                   activityWebView;
   id jsonData;
   id selectedid;
   id growl;
@@ -27,6 +29,8 @@
   //CPLog.debug("Column:"+column);
   [column setDataView:progressDataView];
   [self refresh];
+  activityWebView=[[[DetailWebView alloc] initWithFrame:[webView bounds]] initWithTemplate:"JobWebView"];
+  [webView addSubview:activityWebView];
   [CPTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(refresh) userInfo:nil repeats:true];
   
 }
@@ -57,7 +61,7 @@
     // return a CPString instance that will be displayed in a regular column (CPTextField)
     //CPLog.debug([tableColumn identifier]);
     if([tableColumn identifier]==1){
-      return [CPString stringWithFormat:@"%s", jsonData.data[row].id ];
+      return [CPString stringWithFormat:@"%s (%s)", jsonData.data[row].graphname, jsonData.data[row].infile];
     }else if([tableColumn identifier]==2){
       if(jsonData.data[row].created>1){
         //return [CPDate date:jsonData.data[row].created withFormat:@"isoDateTime"];
@@ -126,6 +130,7 @@
   if(jsonData.data[[[aNotification object] selectedRow]]){
     CPLog.debug("hello new activity selected:"+jsonData.data[[[aNotification object] selectedRow]].id);
     selectedid=jsonData.data[[[aNotification object] selectedRow]].id;
+    //[activityWebView setData:jsonData.data[[[aNotification object] selectedRow]]];
     [[CPNotificationCenter defaultCenter]
      postNotificationName:EncodingClicked
      object:self

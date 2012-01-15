@@ -79,6 +79,7 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
   [[self subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
   elements=[CPArray array];
   unsavedChanges=NO;
+  _name="";
   [self setNeedsDisplay:YES];
 }
 - (void)performDragOperation:(CPDraggingInfo)aSender
@@ -122,18 +123,20 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
   CPLog.debug("menu Button:"+[anEvent buttonNumber]);
   var point=[self convertPoint:[anEvent locationInWindow] fromView:nil];
   currentSelectedElement=[self graphicUnderPoint:point];
+  //[currentSelectedElement setBorderWidth:3.0];
+  //[currentSelectedElement setBorderColor:[CPColor greenColor]];
   if([currentSelectedElement class]!=CPNull){
     CPLog.debug("selected graphic:"+CPStringFromRect([currentSelectedElement bounds]));
     var menu=[currentSelectedElement menuForNodeItem];
     CPLog.debug("Menu:"+menu);
-    /*
-    select=currentSelectedElement;
-    [select setBorderWidth:3.0];
-    [select setBorderColor:[CPColor greenColor]];
-    select=[CPNull null];
-    */
+    
     movingView=NO;  
-    currentSelectedElement=[CPNull null];
+    //currentSelectedElement=[CPNull null];
+    var newMenuItem = [[CPMenuItem alloc] initWithTitle:@"delete" action:@selector(removeSelectedElement) keyEquivalent:nil];
+    //[newMenuItem setEnabled:menuActions[i]!=nil];
+    [newMenuItem setTarget:self];    
+    [menu addItem:newMenuItem];
+    select=currentSelectedElement;
     return menu;
    }
 }
@@ -411,44 +414,49 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
     return YES; 
 } 
 
+-(void)removeSelectedElement
+{
+  var graphicCount = [elements count];
+  for (var index = graphicCount - 1; index>=0; index--) 
+  {
+    var element = [elements objectAtIndex:index];
+    if(element==select){
+      [elements removeObject:element];
+      var sources=[element inputElements];
+      var sourcesCount = [sources count];
+      for (var index2 = sourcesCount - 1; index2>=0; index2--) 
+      {
+        var source = [sources objectAtIndex:index2];
+        [[source outputElements] removeObject:element];
+      }
+      //alert("remove");
+      [self setNeedsDisplay:YES];
+    }
+    if(element==selectedPathSource){
+      //CPLog.debug("selected Path found");
+      //[elements removeObject:element];
+      var targets=[element outputElements];
+      var targetsCount = [targets count];
+      for (var index2 = targetsCount - 1; index2>=0; index2--) 
+      {
+        var target = [targets objectAtIndex:index2];
+        if(target==selectedPathTarget){
+          [[element outputElements] removeObject:target];            
+          [[target inputElements] removeObject:element];            
+        }
+      }
+      //alert("remove");
+      [self setNeedsDisplay:YES];
+    }
+  }
+  
+}
 - (void)keyDown:(CPEvent)anEvent 
 { 
   CPLog.debug("KeyCode="+[anEvent keyCode]);
   if([anEvent keyCode]==46){
     CPLog.debug("delete key pressed");
-    var graphicCount = [elements count];
-    for (var index = graphicCount - 1; index>=0; index--) 
-    {
-      var element = [elements objectAtIndex:index];
-      if(element==select){
-        [elements removeObject:element];
-        var sources=[element inputElements];
-        var sourcesCount = [sources count];
-        for (var index2 = sourcesCount - 1; index2>=0; index2--) 
-        {
-          var source = [sources objectAtIndex:index2];
-          [[source outputElements] removeObject:element];
-        }
-        //alert("remove");
-        [self setNeedsDisplay:YES];
-      }
-      if(element==selectedPathSource){
-        //CPLog.debug("selected Path found");
-        //[elements removeObject:element];
-        var targets=[element outputElements];
-        var targetsCount = [targets count];
-        for (var index2 = targetsCount - 1; index2>=0; index2--) 
-        {
-          var target = [targets objectAtIndex:index2];
-          if(target==selectedPathTarget){
-            [[element outputElements] removeObject:target];            
-            [[target inputElements] removeObject:element];            
-          }
-        }
-        //alert("remove");
-        [self setNeedsDisplay:YES];
-      }
-    }
+    [self removeSelectedElement];
   }
 //    alert([anEvent keyCode]); 
 } 
@@ -497,7 +505,7 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
         var endPoint=[target inHandlePoint];
         var color=[CPColor grayColor];
         if([self checkPathAtPoint:dragLocation from:startPoint to:endPoint]){
-          var color=[CPColor greenColor];
+          color=[CPColor greenColor];
         }
         [self drawLinkFrom:startPoint to:endPoint withColor:color];
       }
@@ -523,7 +531,7 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
         var endPoint=[target inHandlePoint];
         var color=[CPColor grayColor];
         if([self checkPathAtPoint:dragLocation from:startPoint to:endPoint]){
-          var color=[CPColor greenColor];
+          color=[CPColor greenColor];
           selectedPathSource=element;
           selectedPathTarget=target;
           

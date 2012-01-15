@@ -231,6 +231,8 @@ namespace graphhandler {
       job.uuid = (std::string)org::esb::util::PUUID();
       job.status = db::Job::Status::Waiting;
       job.graph=ndata;
+      job.graphname=graphparser.getName();
+      job.infile=graphparser.getInfile();
       job.created=0;
       job.update();
 

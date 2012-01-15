@@ -1,4 +1,5 @@
 
+SelectGraphByUUID = @"SelectGraphByUUID";
 
 @implementation GraphListView : CPScrollView
 {
@@ -7,6 +8,7 @@
   TextInput input;
   TextInput delgraph;
   InputWindow newWin;
+  id selectUUID;
 }
 
 -(id)initWithFrame:(id)frame
@@ -34,6 +36,11 @@
     [self setDocumentView:tableView];
     [self setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [self refresh];
+    [[CPNotificationCenter defaultCenter]
+      addObserver:self
+      selector:@selector(selectGraphAtUUID:)
+      name:SelectGraphByUUID
+      object:nil];
   }
   return self;
 }
@@ -59,6 +66,10 @@
       str=jsonData.data[row].name;
     }else{
       str=jsonData.data[row].uuid;    
+    }
+    if(selectUUID==jsonData.data[row].uuid){
+      [self selectGraphAtIndex:row];
+      selectUUID="";
     }
     //var str=jsonData.data[row].name.length>0?jsonData.data[row].name:jsonData.data[row].uuid;
     return [CPString stringWithFormat:@"%s", str];
@@ -106,7 +117,7 @@
   // see important note about CPJSONPConnection above
   var connection = [CPURLConnection connectionWithRequest:request delegate:self];
 }
-gr
+
 -(CPString)selectedId
 {
   if([tableView selectedRow]!=-1){
@@ -163,6 +174,20 @@ gr
 
     return menu;
 }
+
+- (void)selectGraphAtUUID:(id)notification
+{
+  var uuid=[notification userInfo];
+  selectUUID=uuid;
+  for(a=0;a<jsonData.data.length;a++){
+    CPLog.debug("data.uuid="+jsonData.data[a].uuid+" uuid="+uuid);
+    if(jsonData.data[a].uuid==uuid){
+      [self selectGraphAtIndex:a];
+      break;
+    }
+  }
+}
+
 - (void)selectGraphAtIndex:(unsigned)index
 {
     var indexSet = index < 0 ? [CPIndexSet indexSet] : [CPIndexSet indexSetWithIndex:index];
@@ -185,7 +210,7 @@ gr
 - (void)_newGraph:(CPString)name
 {
   CPLog.debug("New Encoding Graph execute:");
-  
+  //[self refresh];
   [[CPNotificationCenter defaultCenter]
     postNotificationName:NewNodeEditorView
     object:name
@@ -228,11 +253,11 @@ gr
 - (void)_delete:(CPString)uuid
 {
   CPLog.debug("Rename Encoding Graph:");
-  
   [[CPNotificationCenter defaultCenter]
     postNotificationName:DeleteNodeEditorView
     object:uuid
     userInfo:[self selectedId]];
+  [self selectGraphAtIndex:-1];
 }
 
 - (void)alertDidEnd:(CPAlert)anAlert returnCode:(int)tag

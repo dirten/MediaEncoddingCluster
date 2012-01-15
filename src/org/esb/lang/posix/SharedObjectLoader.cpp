@@ -27,7 +27,7 @@
 
 #include "../SharedObjectLoader.h"
 #include "../NotFoundException.h"
-#include "org/esb/util/Log.h"
+//#include "org/esb/util/Log.h"
 #include <dlfcn.h>
 namespace org {
   namespace esb {
@@ -68,9 +68,9 @@ namespace org {
       SharedObjectLoader::~SharedObjectLoader() {
         //LOGDEBUG("SharedObjectLoader::~SharedObjectLoader():"<<_filename)
         if(dlclose(_lib_handle)){
-          LOGERROR("closing shared object : "<<_filename<<" : "<<dlerror());
+          //LOGERROR("closing shared object : "<<_filename<<" : "<<dlerror());
         }else{
-          LOGDEBUG("successfully closed shared object:"<<_filename);
+          //LOGDEBUG("successfully closed shared object:"<<_filename);
         }
       }
     }

@@ -228,6 +228,11 @@ testfunc();
   CPLog.debug("Graph Save Result"+[result rawString]);
   loadedUUID=[result JSONObject].uuid;
   //[[notification object] refresh];
+    [[CPNotificationCenter defaultCenter]
+      postNotificationName:SelectGraphByUUID
+      object:self
+      userInfo:loadedUUID];
+
   [view setName:loadedName];
   [view setNeedsDisplay:YES];
 }

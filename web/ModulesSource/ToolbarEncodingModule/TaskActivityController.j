@@ -8,6 +8,7 @@
 {
   @outlet CPTableView     taskTableView;
   @outlet NodeEditorView  nodeEditorView;
+  @outlet CPView          webView;
   id jsonData;
   CPString jobid;
   NodeEditorController nodeEditorController;
@@ -28,6 +29,8 @@
   [CPTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(refresh) userInfo:nil repeats:true];
   //[[NodeEditorController alloc] initWithView:theView]
   nodeEditorController=[[NodeActivityController alloc] initWithView:nodeEditorView];
+  activityWebView=[[[DetailWebView alloc] initWithFrame:[webView bounds]] initWithTemplate:"TaskWebView"];
+  [webView addSubview:activityWebView];
 
 }
 

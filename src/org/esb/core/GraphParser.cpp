@@ -26,6 +26,9 @@ namespace org {
 //        try {
           if (libjson::is_valid(graphdata)) {
             JSONNode node = libjson::parse(graphdata);
+            if(node.contains("name")){
+              name=node["name"].as_string();
+            }
             /*parsing tasks from graph*/
             if (node.contains("tasks")) {
               int s = node["tasks"].size();
@@ -62,7 +65,15 @@ namespace org {
       GraphParser::~GraphParser() {
         elements.clear();
       }
-
+      
+      std::string GraphParser::getName(){
+        return name;
+      }
+      
+      std::string GraphParser::getInfile(){
+        return infile;
+      }
+      
       void GraphParser::parse(JSONNode&) {
 
       }
@@ -73,7 +84,10 @@ namespace org {
         } else {
           if (!node.contains("uid")) {
             throw GraphException("no uid for element");
-            
+          }
+          if(node.contains("name")&&node["name"].as_string()=="InputTask"){
+            if(node.contains("data")&&node["data"].contains("infile"))
+              infile=node["data"]["infile"].as_string();
           }
           /*first create an empty named task to resolve the required parameter for it*/
           Ptr<org::esb::core::Task>task = org::esb::core::PluginRegistry::getInstance()->createTask(node["name"].as_string(), std::map<std::string, std::string > ());

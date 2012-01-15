@@ -232,10 +232,25 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
   
   if([tableColumn identifier]==1){
     return [CPString stringWithFormat:@"%s", jsonData.data[row].id ];
-  }else
+  }else{
     if([tableColumn identifier]==2){
       return [CPString stringWithFormat:@"%s", jsonData.data[row].name ];
     }
+  }
+    CPLog.debug("RowId="+jsonData.data[row].id+" selected="+selectedid);
+    if(jsonData.data[row].id==selectedid){
+      [self selectProfileAtIndex:row];
+    }
+}
+- (void)selectProfileAtIndex:(unsigned)index
+{
+    var indexSet = index < 0 ? [CPIndexSet indexSet] : [CPIndexSet indexSetWithIndex:index];
+
+    if (index >= 0)
+        [profileTableView scrollRowToVisible:index];
+
+    [profileTableView selectRowIndexes:indexSet byExtendingSelection:NO];
+    //[self tableViewSelectionDidChange:nil];
 }
 
 
@@ -281,8 +296,19 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
     [request setHTTPMethod:"POST"];
     [request setHTTPBody:JSON.stringify([pdata toJSON].data)];
     var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
-    [[TNGrowlCenter defaultCenter] pushNotificationWithTitle:@"Profile Saved" message:"Profile successful saved"];
     CPLog.debug("SAVING Encoding Profile Result:"+ [result rawString]);
+    var mdata=[result JSONObject];
+    if(mdata.error!=undefined){
+       var stopWarn = [[CPAlert alloc] init];
+       [stopWarn setTitle:"Failed to save the Profile?"];
+       [stopWarn setMessageText:mdata.error.description];
+       [stopWarn setAlertStyle:CPWarningAlertStyle];
+       [stopWarn addButtonWithTitle:"Close"];
+       [stopWarn runModal];
+    }else{
+      [[TNGrowlCenter defaultCenter] pushNotificationWithTitle:@"Profile Saved" message:"Profile successful saved"];
+      selectedid=mdata.id;
+    }
     var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
     [request setHTTPMethod:"GET"];
     var connection = [CPURLConnection connectionWithRequest:request delegate:self];
@@ -306,6 +332,8 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
   [profileEditView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
   [[profileView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
   [profileView addSubview:profileEditView];
+  [profileEditView setFrameSize:CPSizeMake([profileView bounds].size.width,[profileView bounds].size.height)];
+
   selectedid=0;
 
 }

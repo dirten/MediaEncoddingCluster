@@ -71,6 +71,8 @@ namespace org {
           push_back(JSONNode("outfile",job.outfile.value()));
           push_back(JSONNode("status",job.getStatusText()));
           push_back(JSONNode("statuscode",job.status.value()));
+          push_back(JSONNode("graphname",job.graphname.value()));
+          push_back(JSONNode("infile",job.infile.value()));
           std::string profileid;
           if (libjson::is_valid(job.data.value())) {
             JSONNode profile = libjson::parse(job.data.value());

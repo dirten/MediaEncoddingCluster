@@ -252,6 +252,7 @@
         <field name="partitionname" type="string"/>
         <field name="graph" type="string"/>
         <field name="graphstatus" type="string"/>
+        <field name="graphname" type="string"/>
         <method name="getStatusText" returntype="std::string"/>
     </object>
 

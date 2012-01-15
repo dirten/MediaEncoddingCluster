@@ -22,6 +22,8 @@ namespace org {
         GraphParser(std::string) throw(GraphException);
         virtual ~GraphParser();
         ElementMap & getElementMap();
+        std::string getName();
+        std::string getInfile();
       private:
         void parse(JSONNode&);
         void parseTask(JSONNode&);
@@ -31,6 +33,8 @@ namespace org {
         void verifyCycle(Ptr<Graph::Element> element);
         
         ElementMap elements;
+        std::string name;
+        std::string infile;
 
       };
     }

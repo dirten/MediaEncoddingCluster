@@ -1798,6 +1798,8 @@ public:
     litesql::Field<std::string> graph;
     static const Job::StatusType Graphstatus;
     litesql::Field<std::string> graphstatus;
+    static const Job::StatusType Graphname;
+    litesql::Field<std::string> graphname;
     static void initValues();
 protected:
     void defaults();
