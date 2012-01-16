@@ -92,7 +92,7 @@
   <repositories>
     <repository>
       <id>esb-repo</id>
-      <url>http://codergrid.de/repository</url>
+      <url>http://trac.codergrid.de/repository</url>
     </repository>
   </repositories>
   <distributionManagement>
