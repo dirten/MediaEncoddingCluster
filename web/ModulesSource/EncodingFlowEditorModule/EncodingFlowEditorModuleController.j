@@ -36,6 +36,8 @@ var editorController;
   @outlet CPButtonBar     inspectButtonBar;
   @outlet CPAccordionView accView;
 
+  //GraphListView   graphListView2;
+
   //id editorController;
   TextInput input;
   CPAlert unsaveWarn;

@@ -515,7 +515,8 @@ namespace org {
             LOGERROR("error in openning Codec (" << ctx->codec_id << ")");
 
           } else {
-            LOGDEBUG("Codec opened:" << ctx->codec_id);
+            std::string codec_mode=(_mode == ENCODER)?"Encoder":"Decoder";
+            LOGDEBUG(codec_mode<<" opened:" << ctx->codec_id);
             fifo = av_fifo_alloc(1024);
             _opened = true;
           }

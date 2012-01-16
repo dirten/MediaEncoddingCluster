@@ -28,6 +28,7 @@ TOOLBAR_TOP_MARGIN=0.0;
 @import "View/DetailWebView.j"
 @import "View/NodeEditorView.j"
 @import "View/NodeElementPanel.j"
+@import "View/GraphListView.j"
 
 @import "Controller/ModuleController.j"
 @import "Controller/TestWindowController.j"
@@ -91,12 +92,15 @@ StopWaitingSpinner = "StopWaitingSpinner";
         bounds = [contentView bounds];
         var growl=[TNGrowlCenter defaultCenter];
         [growl setView:contentView];
+        //var listView=[[GraphListView alloc] initWithFrame:[contentView bounds]];
+        //[contentView addSubview:listView];
         /*
         [growl pushNotificationWithTitle:@"Hello" message:@"Hello World!"];
         [growl pushNotificationWithTitle:@"Hello" message:@"Hello World next!"];
         [growl pushNotificationWithTitle:@"Hello" message:@"Hello World next 3!"];
         */
         [theWindow orderFront:self];
+        //return;
         //spinner = [[EKSpinner alloc] initWithFrame:CGRectMake(0, 0, 32, 32) andStyle:@"big_black"];
         //[spinner setIsSpinning:YES];
         //var spinnerToolbarItem       = [[CPToolbarItem alloc] initWithItemIdentifier:@"spinner"];

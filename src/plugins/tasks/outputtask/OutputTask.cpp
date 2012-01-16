@@ -32,6 +32,10 @@ namespace plugin {
       JSONNode node = libjson::parse(data);
       if (node.contains("outfile")) {
         _trguristr = node["outfile"].as_string();
+        Poco::File trgfile(_trguristr);
+         if(trgfile.exists() && trgfile.isDirectory()){
+           _trguristr+="$input.name$.$profile.ext$";
+         }
         std::list<std::string> keys=getContext()->keys();
         foreach(std::string key, keys){
           _trguristr = org::esb::util::StringUtil::replace(_trguristr,std::string("$").append(key).append("$"),getContext()->get<std::string>(key));

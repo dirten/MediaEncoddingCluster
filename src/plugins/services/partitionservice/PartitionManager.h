@@ -48,6 +48,8 @@ namespace partitionservice {
         void collectProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit,boost::asio::ip::tcp::endpoint ep);
         boost::shared_ptr<org::esb::hive::job::ProcessUnit>getProcessUnit(boost::asio::ip::tcp::endpoint ep);
         int getSize(std::string partition);
+        int getFps();
+        void resetFps();
       private:
         /*
         class Endpoint{
@@ -120,6 +122,8 @@ namespace partitionservice {
         boost::mutex _partition_mutex;
         std::map<Endpoint,boost::shared_ptr<org::esb::hive::job::ProcessUnit> > _ep_pu;
         std::map<Endpoint,Partition > _ep_part;
+        int _fps;
+        int _pus;
       };
     }
 

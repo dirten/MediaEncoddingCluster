@@ -57,6 +57,17 @@ namespace encodingtask {
       _filters = reader.getFilterList();
       _preset = reader.getPreset();
       _format = _preset["id"];
+
+      getContext()->set<std::string > ("video.codec", _codecs["video"]["codec_id"]);
+      getContext()->set<std::string> ("video.bitrate", _codecs["video"]["b"]);
+      getContext()->set<std::string> ("video.height", _codecs["video"]["height"]);
+      getContext()->set<std::string> ("video.width", _codecs["video"]["width"]);
+
+      getContext()->set<std::string > ("audio.codec", _codecs["audio"]["codec_id"]);
+      getContext()->set<std::string> ("audio.bitrate", _codecs["audio"]["ab"]);
+      getContext()->set<std::string> ("audio.channels", _codecs["audio"]["ac"]);
+      getContext()->set<std::string> ("audio.samples", _codecs["audio"]["ar"]);
+
     } catch (std::exception & ex) {
       setStatus(Task::ERROR);
       setStatusMessage(std::string("Error while parsing JSON Profile:").append(ex.what()));
@@ -180,10 +191,6 @@ namespace encodingtask {
             sdata.encoder->setCodecOption(param.first, param.second);
             sdata.pass2encoder->setCodecOption(param.first, param.second);
           }
-          getContext()->set<std::string > ("video.codec", sdata.encoder->getCodecName());
-          getContext()->set<std::string> ("video.bitrate", org::esb::util::StringUtil::toString(sdata.encoder->getBitRate()));
-          getContext()->set<std::string> ("video.height", org::esb::util::StringUtil::toString(sdata.encoder->getHeight()));
-          getContext()->set<std::string> ("video.width", org::esb::util::StringUtil::toString(sdata.encoder->getWidth()));
         } else {
           LOGERROR("Profile does not define a video codec");
         }
@@ -198,8 +205,6 @@ namespace encodingtask {
             sdata.encoder->setCodecOption(param.first, param.second);
             sdata.pass2encoder->setCodecOption(param.first, param.second);
           }
-          getContext()->set<std::string > ("audio.codec", sdata.encoder->getCodecName());
-          getContext()->set<std::string> ("audio.bitrate", org::esb::util::StringUtil::toString(sdata.encoder->getBitRate()));
 
         } else {
           LOGERROR("Profile does not define an audio codec");
@@ -235,8 +240,8 @@ namespace encodingtask {
        * this is for the behaviour that the server process restarts an unfinished encoding
        * @TODO: writing detailed tests for this !!!
        */
-      if (stream_map[packet->packet->stream_index].last_start_dts > packet->packet->dts)
-        continue;
+      //if (stream_map[packet->packet->stream_index].last_start_dts > packet->packet->dts)
+      //  continue;
       //              LOGTRACE("Packet DTS:"<<packet->toString());
       //pPacket->setStreamIndex(stream_map[pPacket->getStreamIndex()].outstream);
       //LOGDEBUG("PacketStreamIndex:"<<packet->getStreamIndex());
@@ -247,6 +252,7 @@ namespace encodingtask {
           return;
         }
         PacketListPtr packets = packetizer.removePacketList();
+        LOGDEBUG("PacketListStartPts="<<packets.front()->getPts()<<" PacketListEndPts="<<packets.back()->getPts())
         boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit = builder.build(packets);
         putToPartition(unit);
 
@@ -266,15 +272,23 @@ namespace encodingtask {
       }
     }
     
-    setStatusMessage("100 FPS.");
-
+    int prev_fps=0;
     while (partitionservice::PartitionManager::getInstance()->getSize(_partition) > 0) {
       setProgress(getProgressLength() - partitionservice::PartitionManager::getInstance()->getSize(_partition));
       org::esb::lang::Thread::sleep2(1 * 1000);
+      if(prev_fps!=partitionservice::PartitionManager::getInstance()->getFps()){
+        prev_fps=partitionservice::PartitionManager::getInstance()->getFps();
+        std::string fps=org::esb::util::StringUtil::toString(partitionservice::PartitionManager::getInstance()->getFps());
+        fps+=" Frames/sec.";
+        setStatusMessage(fps);
+        
+        
+      }
     }
 
     setProgress(getProgressLength());
     exportFile();
+    partitionservice::PartitionManager::getInstance()->resetFps();
     setStatus(Task::DONE);
     setStatusMessage("Encoding completed successful");
   }

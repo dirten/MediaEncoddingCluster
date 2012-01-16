@@ -107,6 +107,7 @@ namespace org {
             while (!_toHalt) {
               char * text = const_cast<char*> ("get process_unit");
               boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit; // = new org::esb::hive::job::ProcessUnit();
+              
               try {
                 _sock->getOutputStream()->write(text, strlen(text));
                 _ois->readObject(unit);
@@ -115,30 +116,10 @@ namespace org {
                 _sock->close();
               }
               if (!unit || unit->_input_packets.size() == 0) {
-                //delete unit;
                 break;
               }
-              if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
-                if (_swap_codec_list.find(unit->_source_stream) == _swap_codec_list.end()) {
-                  _swap_codec_list[unit->_source_stream] = false;
-                }
 
-                if (_swap_codec_list[unit->_source_stream]) {
-                  unit->_decoder = _decoder_list[unit->_source_stream];
-                  unit->_encoder = _encoder_list[unit->_target_stream];
-                  unit->_converter = _converter_list[unit->_target_stream];
-                }
-                _swap_codec_list[unit->_source_stream] = true;
-              }
-              unit->process();
-              if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
-                if (_swap_codec_list[unit->_source_stream]) {
-                  _decoder_list[unit->_source_stream] = unit->_decoder;
-                  _encoder_list[unit->_target_stream] = unit->_encoder;
-                  _converter_list[unit->_target_stream] = unit->_converter;
-                }
-              }
-
+              processUnit(unit);
               /**
                * clear the input packets, they are no more nedded
                * they only consumes Network bandwidth and cpu on the server
@@ -153,28 +134,14 @@ namespace org {
                 LOGERROR("Connection to Server lost!!!" << ex.what());
                 _sock->close();
               }
-              if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
-
-                if (unit->_last_process_unit) {
-                  LOGDEBUG("Last ProcessUnit for Audio received, clear out");
-                  _swap_codec_list.clear();
-                  _decoder_list.clear();
-                  _encoder_list.clear();
-                  std::map<int, org::esb::av::FrameConverter * >::iterator it = _converter_list.begin();
-                  for (; it != _converter_list.end(); it++) {
-                    delete (*it).second;
-                  }
-                  _converter_list.clear();
-                }
-              }
 
               /*
               delete unit->_decoder;
               unit->_decoder = NULL;
               delete unit->_encoder;
               unit->_encoder = NULL;*/
-              delete unit->_converter;
-              unit->_converter = NULL;
+              //delete unit->_converter;
+              //unit->_converter = NULL;
               //delete unit;
               //_toHalt=true;
 
@@ -189,6 +156,47 @@ namespace org {
 
         boost::mutex::scoped_lock terminationLock(terminationMutex);
         ctrlCHit.notify_all();
+      }
+
+      void HiveClient::processUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit) {
+        if (!unit || unit->_input_packets.size() == 0) {
+          //delete unit;
+          return;
+        }
+        if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+          if (_swap_codec_list.find(unit->_source_stream) == _swap_codec_list.end()) {
+            _swap_codec_list[unit->_source_stream] = false;
+          }
+
+          if (_swap_codec_list[unit->_source_stream]) {
+            unit->_decoder = _decoder_list[unit->_source_stream];
+            unit->_encoder = _encoder_list[unit->_target_stream];
+            unit->_converter = _converter_list[unit->_target_stream];
+          }
+          _swap_codec_list[unit->_source_stream] = true;
+        }
+        unit->process();
+        if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+          if (_swap_codec_list[unit->_source_stream]) {
+            _decoder_list[unit->_source_stream] = unit->_decoder;
+            _encoder_list[unit->_target_stream] = unit->_encoder;
+            _converter_list[unit->_target_stream] = unit->_converter;
+          }
+        }
+        if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+
+          if (unit->_last_process_unit) {
+            LOGDEBUG("Last ProcessUnit for Audio received, clear out");
+            _swap_codec_list.clear();
+            _decoder_list.clear();
+            _encoder_list.clear();
+            std::map<int, org::esb::av::FrameConverter * >::iterator it = _converter_list.begin();
+            for (; it != _converter_list.end(); it++) {
+              delete (*it).second;
+            }
+            _converter_list.clear();
+          }
+        }
       }
     }
   }

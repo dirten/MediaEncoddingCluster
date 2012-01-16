@@ -168,10 +168,6 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
 #pragma mark -
 #pragma mark Actions
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification{
-   [[CPNotificationCenter defaultCenter]
-      postNotificationName:StartWaitingSpinner
-      object:self
-      userInfo:nil];
     [[profileView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
   if(jsonData.data[[[aNotification object] selectedRow]]){
@@ -194,14 +190,11 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
 
     pdata=[CPDictionary dictionaryWithJSObject:[raw_data JSONObject] recursively:YES];
     profileEditView=[[ProfileEditView alloc] initWithData:pdata];
+  //return;
     [profileView addSubview:profileEditView];
     [profileEditView setFrameSize:CPSizeMake([profileView bounds].size.width,[profileView bounds].size.height)];
     //}
     //[opWin close];
-    [[CPNotificationCenter defaultCenter]
-     postNotificationName:ProfileClicked
-     object:self
-     userInfo:selectedid];
   }
 }
 

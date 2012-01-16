@@ -76,9 +76,18 @@ ProcessUnit::ProcessUnit() {
   _discard_audio_bytes = -1;
   _converter = NULL;
   id = 0;
+  _fps=0;
 }
 
 ProcessUnit::~ProcessUnit() {
+}
+
+void ProcessUnit::setFps(int fps){
+  _fps=fps;
+}
+
+int ProcessUnit::getFps(){
+  return _fps;
 }
 
 void ProcessUnit::setJobId(std::string uuid) {
@@ -91,6 +100,7 @@ std::string ProcessUnit::getJobId() {
 
 void ProcessUnit::process() {
   std::ostringstream oss;
+  _start = microsec_clock::local_time();
   if (_encoder->getCodecOption("multipass") == "1" || _encoder->getCodecOption("multipass") == "true") {
     LOGDEBUG("Two Pass Enabled");
     setProperty("2pass", "true");
@@ -126,8 +136,13 @@ void ProcessUnit::process() {
     processInternal();
   }
   org::esb::io::File statsfile(oss.str());
+  _end = microsec_clock::local_time();
   if(statsfile.exists()){
     statsfile.deleteFile();
+  }
+  if(_encoder->getCodecType()==AVMEDIA_TYPE_VIDEO){
+    time_duration diff = _end - _start;
+    _fps=_input_packets.size()/diff.total_seconds();
   }
 }
 

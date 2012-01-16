@@ -40,10 +40,12 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/serialization/shared_ptr.hpp>
+#include "boost/date_time/posix_time/posix_time.hpp"
 #include "org/esb/util/Log.h"
 #include "../exports.h"
 using namespace std;
 using namespace org::esb::av;
+using namespace boost::posix_time;
 namespace org {
     namespace esb {
         namespace hive {
@@ -66,6 +68,8 @@ namespace org {
                     void setProperty(std::string, std::string);
                     std::string getProperty(std::string);
                     bool hasProperty(std::string);
+                    void setFps(int);
+                    int getFps();
                     //	private:
                     //	        friend class boost::serialization::access;
 
@@ -117,6 +121,7 @@ namespace org {
                         ar & _properties;
                         ar & _job_id;
                         ar & _sequence;
+                        ar & _fps;
                     }
                 private:
                   Frame * convertToRgb(Frame *);
@@ -125,6 +130,9 @@ namespace org {
                   void decodeLastPacket(Packet * pac);
                   std::map<std::string, std::string> _properties;
                   int calculatePsnr(Frame * ref, Frame * enc);
+                  int _fps;
+                  ptime _start;
+                  ptime _end;
 
                 };
 

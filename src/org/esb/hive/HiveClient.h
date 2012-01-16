@@ -46,6 +46,7 @@ namespace org {
                 void process();
                 void process2();
                 void onMessage(org::esb::signal::Message&);
+                void processUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit);
             private:
                 bool _toHalt;
                 bool _running;

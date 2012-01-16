@@ -1,4 +1,6 @@
 
+@import "../Controller/NodeEditorController.j"
+
 SelectGraphByUUID = @"SelectGraphByUUID";
 
 @implementation GraphListView : CPScrollView

@@ -40,6 +40,8 @@ namespace partitionservice {
 
   PartitionManager::PartitionManager() {
     //_con = new org::esb::mq::QueueConnection("safmq://admin:@localhost:20202");
+    _fps=0;
+    _pus=0;
   }
 
   PartitionManager::~PartitionManager() {
@@ -286,12 +288,28 @@ namespace partitionservice {
     ous.close();
     
     if(_ep_pu.count(ep)){
+      if(unit->getFps()>0){
+        //std::cerr <<"hallo fps="<<_fps<<" unit.fps="<<unit->getFps()<<" pus="<<_pus<<std::endl;
+        _pus++;
+        _fps+=unit->getFps();
+      }
       _ep_pu.erase(ep);
     }else{
       LOGERROR("Endpoint have not previously getting a ProcessUnit");
     }
   }
+  
+  int PartitionManager::getFps(){
+    int fps=0;
+    if(_fps>0&&_pus>0)
+      fps=_fps/_pus;
+    return fps;
+  }
 
+  void PartitionManager::resetFps(){
+    _fps=0;
+    _pus=0;
+  }
   /*
 
   bool PartitionManager::getPartition(std::string name, Partition & partition) {

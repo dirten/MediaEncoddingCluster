@@ -13,6 +13,7 @@
 #include "org/esb/util/Foreach.h"
 #include "org/esb/core/PluginRegistry.h"
 #include "org/esb/hive/Environment.h"
+#include "org/esb/hive/HiveClient.h"
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/config/config.h"
@@ -34,13 +35,12 @@ void print_status(Graph * g) {
 void process(boost::asio::ip::tcp::endpoint e1, partitionservice::ProcessUnitCollector & col) {
   boost::shared_ptr<org::esb::hive::job::ProcessUnit> pu;
   partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
+  org::esb::hive::HiveClient client("",0);
   do {
     pu = man->getProcessUnit(e1);
     if (pu) {
-      //if(pu->getDecoder()->getCodecType()==AVMEDIA_TYPE_AUDIO)
-      //  org::esb::lang::Thread::sleep2(10*1000);
-      pu->process();
-      pu->_input_packets.clear();
+
+      client.processUnit(pu);
       man->collectProcessUnit(pu, e1);
       //col.putProcessUnit(pu);
     } else {
@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
   LOGDEBUG("using database in:" << org::esb::config::Config::get("db.url"));
   boost::shared_ptr<db::HiveDb> database = boost::shared_ptr<db::HiveDb > (new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url")));
 
-  /*Loading profile from disk*/
+  /*Loading flow from disk*/
   org::esb::io::FileInputStream fis(argv[1]);
   std::string graph_data;
   fis.read(graph_data);
@@ -96,11 +96,12 @@ int main(int argc, char** argv) {
   assert(man->joinPartition("global", e4, partitionservice::PartitionManager::TYPE_AUDIO) == partitionservice::PartitionManager::OK);
   partitionservice::ProcessUnitCollector col("collector");
   boost::thread t1 = go(process, e1, col);
+  
   boost::thread t2 = go(process, e2, col);
   boost::thread t3 = go(process, e3, col);
   boost::thread t4 = go(process, e4, col);
   boost::thread t5 = go(process, e5, col);
-
+  
   Graph graph(list, "0815");
   graph.addStatusObserver(boost::bind(&print_status,_1));
   //boost::thread t6 = go(print_status, &graph);
