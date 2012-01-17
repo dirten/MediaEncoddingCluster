@@ -15,6 +15,7 @@
 #include "org/esb/config/config.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/util/Foreach.h"
+#include "boost/date_time/posix_time/ptime.hpp"
 
 namespace plugin {
 

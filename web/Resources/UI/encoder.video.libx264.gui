@@ -10,7 +10,7 @@
 	    {"id":"time_base_sel", "type":"string","title":"Frame Rate","group":"picture_settings","unit":"fps","persist":true,
 		"control":{
 		    "type":"ComboBox",
-		    "defaults":"1/25",
+		    "defaults":"",
 		    "items":[
 			{"key":"Same as Source","value":"","data":[{"option":"time_base", "value":""}]},
 			{"key":"1/10","value":"1/10","data":[{"option":"time_base", "value":"1/10"}]},
@@ -23,11 +23,11 @@
 		    ]
 		}
 	    },
-	    {"id":"time_base", "type":"string","title":"Frame Rate","group":"picture_settings","unit":"fps","control":{"type":"TextBox","defaults":"1/25"}},
+	    {"id":"time_base", "type":"string","title":"Frame Rate","group":"picture_settings","unit":"fps","control":{"type":"TextBox","defaults":""}},
 	    {"id":"frame_size", "type":"string","title":"Frame Size","group":"picture_settings","unit":"pixel","persist":true,
 		"control":{
 		    "type":"ComboBox",
-		    "defaults":"720x576",
+		    "defaults":"",
 		    "items":[
 			{"key":"Same as Source","value":"","data":[{"option":"width", "value":""},{"option":"height", "value":""}]},
 			{"key":"VCD (320x240)","value":"320x240","data":[{"option":"width", "value":"320"},{"option":"height", "value":"240"}]},
@@ -39,8 +39,8 @@
 		    ]
 		}
 	    },
-	    {"id":"width", "type":"string", "title":"Width","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":"720"}},
-	    {"id":"height", "type":"string", "title":"Height","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":"576"}},
+	    {"id":"width", "type":"string", "title":"Width","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":""}},
+	    {"id":"height", "type":"string", "title":"Height","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":""}},
 	    {"id":"multipass", "type":"int", "title":"2 Pass encoding","group":"rate_settings","unit":"Yes/No","control":{"type":"CheckBox","defaults":false},"data":[{"option":"cqp", "value":"0"},{"option":"crf", "value":"0"}]},
 	    {"id":"b", "type":"int", "title":"Bitrate","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"1024","min":1,"max":10240}},
 	    {"id":"maxrate", "type":"int", "title":"Max. Bitrate","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"3000","min":1,"max":10240}},

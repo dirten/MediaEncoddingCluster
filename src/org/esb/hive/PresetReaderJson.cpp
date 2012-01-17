@@ -19,6 +19,9 @@ namespace org {
         JSONNode node = libjson::parse(data);
         if (node.contains("format") && node["format"].contains("id")) {
           _preset["id"] = node["format"]["id"].as_string();
+          if(node.contains("name")){
+            _preset["name"]=node["name"].as_string();
+          }
         }else{
           throw org::esb::lang::Exception(__FILE__,__LINE__,"no format attribute found");
         }

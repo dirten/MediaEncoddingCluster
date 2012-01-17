@@ -58,6 +58,7 @@ namespace encodingtask {
       _preset = reader.getPreset();
       _format = _preset["id"];
 
+      getContext()->set<std::string > ("profile.name", _preset["name"]);
       getContext()->set<std::string > ("video.codec", _codecs["video"]["codec_id"]);
       getContext()->set<std::string> ("video.bitrate", _codecs["video"]["b"]);
       getContext()->set<std::string> ("video.height", _codecs["video"]["height"]);

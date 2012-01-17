@@ -30,7 +30,20 @@ namespace org {
       }
       
       void PluginContext::merge(PluginContext&ctx){
+        std::map<std::string, std::string>::iterator inenvit=ctx.env.begin();
+        for(;inenvit!=ctx.env.end();inenvit++){
+          if((*inenvit).first!="data"){
+            env.erase((*inenvit).first);
+          }
+        }
+        
         env.insert(ctx.env.begin(),ctx.env.end());
+        std::map<std::string, boost::any>::iterator propsit=_props.begin();
+        for(;propsit!=_props.end();propsit++){
+          if((*propsit).first!="data"){
+            _props.erase((*propsit).first);
+          }
+        }
         _props.insert(ctx._props.begin(),ctx._props.end());
       }
       

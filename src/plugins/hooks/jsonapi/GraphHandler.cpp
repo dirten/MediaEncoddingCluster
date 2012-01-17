@@ -28,6 +28,9 @@
 #include "org/esb/core/GraphParser.h"
 #include "org/esb/core/GraphException.h"
 
+#include "Poco/RegularExpression.h"
+#include "Poco/String.h"
+
 namespace graphhandler {
 
   GraphHandler::GraphHandler() {
@@ -214,6 +217,7 @@ namespace graphhandler {
     org::esb::api::ServiceResponse*sres = ((org::esb::api::ServiceResponse*) res);
     JSONNode result(JSON_NODE);
     std::string uuid = sreq->getParameter("uuid");
+    std::string inputfile = sreq->getParameter("infile");
     boost::shared_ptr<db::HiveDb> db = getContext()->database;
     std::string user_path = org::esb::config::Config::get("hive.graph_path");
     org::esb::io::File f(user_path + "/" + uuid + ".graph");
@@ -225,16 +229,55 @@ namespace graphhandler {
       /**parsing json file*/
       try {
         org::esb::core::GraphParser graphparser(ndata);
-        
-      db::Job job(*getContext()->database);
+        if(inputfile.length()>0)
+          graphparser.setInfile(inputfile);
+        org::esb::io::File infile(graphparser.getInfile());
+        if(infile.exists()&&infile.isDirectory()){
+          org::esb::io::FileList list=infile.listFiles();
+          foreach(Ptr<org::esb::io::File> file,list){
+            graphparser.setInfile(file->getPath());
+            db::Job job(*getContext()->database);
+            job.uuid = (std::string)org::esb::util::PUUID();
+            job.status = db::Job::Status::Waiting;
+            job.graph = graphparser.getGraphString();
+            job.graphname = graphparser.getName();
+            job.infile = file->getPath();
+            job.created = 0;
+            job.update();            
+          }
+        }else if(infile.exists()&&infile.isFile()){
+          db::Job job(*getContext()->database);
+          job.uuid = (std::string)org::esb::util::PUUID();
+          job.status = db::Job::Status::Waiting;
+          job.graph = graphparser.getGraphString();
+          job.graphname = graphparser.getName();
+          job.infile = graphparser.getInfile();
+          job.created = 0;
+          job.update();
+        }else{
+          std::string reg=infile.getPath();
+          reg=Poco::replace(reg,".","\\.");
+          reg=Poco::replace(reg,"*",".*");
+          Poco::RegularExpression re(reg);
+          org::esb::io::File wld(infile.getFilePath());
 
-      job.uuid = (std::string)org::esb::util::PUUID();
-      job.status = db::Job::Status::Waiting;
-      job.graph=ndata;
-      job.graphname=graphparser.getName();
-      job.infile=graphparser.getInfile();
-      job.created=0;
-      job.update();
+          org::esb::io::FileList list=wld.listFiles();
+          foreach(Ptr<org::esb::io::File> file, list) {
+            if (re.match(file->getPath())) {
+              LOGDEBUG("File Found:" << file->getPath());
+              graphparser.setInfile(file->getPath());
+              db::Job job(*getContext()->database);
+              job.uuid = (std::string)org::esb::util::PUUID();
+              job.status = db::Job::Status::Waiting;
+              job.graph = graphparser.getGraphString();
+              job.graphname = graphparser.getName();
+              job.infile = file->getPath();
+              job.created = 0;
+              job.update();            
+            }
+          }
+
+        }
 
         //org::esb::core::Graph::createJob(list, getContext()->database);
         result.push_back(JSONNode("status", "ok"));
@@ -243,19 +286,19 @@ namespace graphhandler {
         result.push_back(JSONNode("message", ex.what()));
         result.push_back(JSONNode("element", ex.getElementId()));
       }
-        /*
-      if (libjson::is_valid(ndata)) {
-        LOGDEBUG("Data is valid");
-        JSONNode inode = libjson::parse(ndata);
-        graph::GraphVerifier * v = graph::GraphVerifier::getInstance();
-        if (!v->verify(inode, getContext()->database)) {
-          result=v->getResult();
-        } else {
-          result.push_back(JSONNode("status", "ok"));
-        }
+      /*
+    if (libjson::is_valid(ndata)) {
+      LOGDEBUG("Data is valid");
+      JSONNode inode = libjson::parse(ndata);
+      graph::GraphVerifier * v = graph::GraphVerifier::getInstance();
+      if (!v->verify(inode, getContext()->database)) {
+        result=v->getResult();
       } else {
-        result.push_back(JSONNode("status", "error"));
-      }*/
+        result.push_back(JSONNode("status", "ok"));
+      }
+    } else {
+      result.push_back(JSONNode("status", "error"));
+    }*/
     }
     LOGDEBUG("perform submit for uuid" << uuid);
     sres->setStatus(org::esb::api::ServiceResponse::OK);

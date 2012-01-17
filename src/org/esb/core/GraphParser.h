@@ -19,11 +19,13 @@ namespace org {
       class CORE_EXPORT GraphParser {
       public:
         typedef std::map<std::string, Ptr<Graph::Element> > ElementMap;
-        GraphParser(std::string) throw(GraphException);
+        GraphParser(std::string) throw (GraphException);
         virtual ~GraphParser();
         ElementMap & getElementMap();
         std::string getName();
         std::string getInfile();
+        void setInfile(std::string);
+        std::string getGraphString();
       private:
         void parse(JSONNode&);
         void parseTask(JSONNode&);
@@ -31,10 +33,11 @@ namespace org {
         void verifyLinks();
         void verifyCycle();
         void verifyCycle(Ptr<Graph::Element> element);
-        
+
         ElementMap elements;
         std::string name;
         std::string infile;
+        JSONNode _baseNode;
 
       };
     }

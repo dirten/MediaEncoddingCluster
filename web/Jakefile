@@ -55,7 +55,7 @@ app (APPNAME, function(task)
 	print("Executing TaskName"+aTaskName+" in Subproject ");
 	print(ENV["CONFIGURATION"]);
 	ENV["CONFIG"]=ENV["CONFIGURATION"];
-	JAKE.subjake(subprojects, aTaskName, ENV);
+	//JAKE.subjake(subprojects, aTaskName, ENV);
 
 	/*build modules.plist*/
 	

@@ -32,7 +32,21 @@
   [label setFrameOrigin:CGPointMake(5.0,10.0)];
   [label setAlignment:CPRightTextAlignment];
   //var pdata=[data objectForKey:@"data"];
-  var field = [TextBox textFieldWithStringValue:@"" placeholder:@"type in file location" width:350];
+  //var field = [TextBox textFieldWithStringValue:@"" placeholder:@"type in file location" width:350];
+  var field = [CPTextField textFieldWithStringValue:@"" placeholder:@"type in file location" width:CGRectGetWidth([view bounds])-90];
+  
+  //var field = [[LPMultiLineTextField alloc] initWithFrame:CGRectMake(0,0,350,50)];// textFieldWithStringValue:@"" placeholder:@"type in file location" width:350];
+  /*
+  var field = [[LPMultiLineTextField alloc] initWithFrame:CGRectMake(0.0, 0.0, 350, 129.0)];
+  [field setTheme:[CPTheme defaultTheme]];
+  [field setPlaceholderString:@"type in file location"];
+  [field setBordered:YES];
+  [field setBezeled:YES];
+  [field setEditable:YES];
+  [field sizeToFit];
+  */
+  
+
   controller=[[CPObjectController alloc] init];
   [controller bind:@"contentObject" toObject:self withKeyPath:@"data" options:nil];    
   [field 
@@ -43,7 +57,7 @@
   ];
   [field setFrameOrigin:CGPointMake(60.0,5.0)];
   [field setDelegate:self];
-  [field setIdentifier:@"infile"];
+  //[field setIdentifier:@"infile"];
 
   var selectButton=[[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([view bounds])-90,7.0,80.0,24.0)];
   [selectButton setTitle:@"Select File"];

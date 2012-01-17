@@ -165,7 +165,7 @@
         var title = menuItems[i],
         newMenuItem = [[CPMenuItem alloc] initWithTitle:title action:menuActions[i] keyEquivalent:nil];
         [newMenuItem setTarget:self];
-        [newMenuItem setEnabled:jsonData.data[aRow].statuscode==1];
+        [newMenuItem setEnabled:jsonData.data[aRow].statuscode==1||jsonData.data[aRow].statuscode==0];
         //break;
         // we want a seperator so just skip it for now
     	[menu addItem:newMenuItem];

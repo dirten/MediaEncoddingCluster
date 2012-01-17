@@ -171,13 +171,13 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
     [[profileView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
   if(jsonData.data[[[aNotification object] selectedRow]]){
-    CPLog.debug("hello profile 1212:"+jsonData.data[[[aNotification object] selectedRow]].id);
+    //CPLog.debug("hello profile 1212:"+jsonData.data[[[aNotification object] selectedRow]].id);
     selectedid=jsonData.data[[[aNotification object] selectedRow]].id;
     var path="/api/v1/profile?id="+selectedid;
     var response=[CPHTTPURLResponse alloc];
     var error;
     var raw_data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:response];
-    CPLog.debug("raw_data:"+[raw_data rawString]);
+    //CPLog.debug("raw_data:"+[raw_data rawString]);
     //var data=[raw_data JSONObject];
     //if(data!=undefined){
     //[opWin orderFront:self];
@@ -187,17 +187,26 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
     //[[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode]; 
   //CPLog.debug("awakeFromCib profileEdirtView"+CPStringFromRect([profileView bounds]));
   //CPLog.debug("awakeFromCib profileEdirtView"+CPStringFromRect([profileView bounds]));
-
     pdata=[CPDictionary dictionaryWithJSObject:[raw_data JSONObject] recursively:YES];
-    profileEditView=[[ProfileEditView alloc] initWithData:pdata];
-  //return;
-    [profileView addSubview:profileEditView];
-    [profileEditView setFrameSize:CPSizeMake([profileView bounds].size.width,[profileView bounds].size.height)];
+  var name="";  
+  if([raw_data JSONObject].data)
+      name=[raw_data JSONObject].data.name
+  [[TNGrowlCenter defaultCenter] pushNotificationWithTitle:@"Please wait" message:@"Please whait while loading profile "+name];
+  [CPTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(open:) userInfo:pdata repeats:NO];
+
     //}
     //[opWin close];
   }
 }
+-(void)open:(id)data
+{
+    //CPLog.debug("Open Data:"+[data userInfo]);
+    pdata=[data userInfo];
+    profileEditView=[[ProfileEditView alloc] initWithData:pdata];
+    [profileView addSubview:profileEditView];
+    [profileEditView setFrameSize:CPSizeMake([profileView bounds].size.width,[profileView bounds].size.height)];
 
+}
 
 #pragma mark -
 #pragma mark Delegates

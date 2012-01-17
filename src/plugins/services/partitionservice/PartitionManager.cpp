@@ -90,6 +90,10 @@ namespace partitionservice {
 
   PartitionManager::Result PartitionManager::leavePartition(std::string name, boost::asio::ip::tcp::endpoint ep) {
     PartitionManager::Result result = PartitionManager::NOT_IN_PARTITION;
+    /* @TODO: when client crashes, put back the ProcessUnit to the queue
+     * that should be handled by an other Client
+     */
+
     _ep_stream.erase(ep);
 
     foreach(PartitionMap::value_type & partition, _partitions) {
