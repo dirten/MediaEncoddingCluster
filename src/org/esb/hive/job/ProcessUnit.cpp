@@ -142,7 +142,10 @@ void ProcessUnit::process() {
   }
   if(_encoder->getCodecType()==AVMEDIA_TYPE_VIDEO){
     time_duration diff = _end - _start;
-    _fps=_input_packets.size()/diff.total_seconds();
+    if(diff.total_seconds()>0)
+      _fps=_input_packets.size()/diff.total_seconds();
+    else
+      _fps=_input_packets.size();
   }
 }
 
