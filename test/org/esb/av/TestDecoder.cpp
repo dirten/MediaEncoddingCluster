@@ -215,7 +215,7 @@ void testDecodeAudio(){
 
 
 void testVideoDecoderTimings(){
-  Decoder dec((CodecID)-1);
+  Decoder dec((CodecID)13);
   dec.setTimeBase(1,25);
   dec.setWidth(320);
   dec.setHeight(240);
@@ -231,10 +231,11 @@ void testVideoDecoderTimings(){
   Packet p;
   Frame * frame=NULL;
   frame=dec.decode2(p);
-  
   delete frame;
+  
   frame=dec.decode2(p);
   delete frame;
+  
   frame=dec.decode2(p);
   delete frame;
 }
