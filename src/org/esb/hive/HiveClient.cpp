@@ -57,6 +57,7 @@ namespace org {
 
       void HiveClient::start() {
         _toHalt = false;
+        _running = true;
         connect();
         process();
       }
