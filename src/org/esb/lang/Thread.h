@@ -44,6 +44,7 @@
 using namespace std;
 //using namespace org::esb::lang;
 #define go(func,...)boost::thread (boost::bind(&func,__VA_ARGS__))
+
 namespace org{
 namespace esb{
 namespace lang{   

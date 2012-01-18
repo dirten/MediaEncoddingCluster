@@ -20,11 +20,13 @@ namespace clientcontroller {
 
   void Service::onMessage(org::esb::signal::Message &msg) {
     if (msg.containsProperty("server_up_event")) {
+      LOGDEBUG("Server Up event received");
       string host = msg.getProperty<std::string > ("host");
       int port = msg.getProperty<int>("port");
       startClientNodes(host, port);
 
     } else if (msg.containsProperty("server_down_event")) {
+      LOGDEBUG("Server Down event received");
       stopClientNodes();
     }
   }
@@ -77,7 +79,11 @@ namespace clientcontroller {
   }
 
   void Service::stopClientNodes() {
+    boost::mutex::scoped_lock stopLock(stopMutex);
+
+    LOGDEBUG("void Service::stopClientNodes()");
     foreach(Ptr<org::esb::hive::HiveClient> client, _client_list){
+      LOGDEBUG("Client");
       client->stop();
       client.reset();
     }

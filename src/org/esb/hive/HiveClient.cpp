@@ -13,6 +13,7 @@
 #include "HiveClient.h"
 #include "org/esb/hive/protocol/PartitionHandler.h"
 #include "org/esb/config/config.h"
+#include "org/esb/net/SocketException.h"
 
 //#include "Version.h"
 namespace org {
@@ -66,7 +67,9 @@ namespace org {
         _toHalt = true;
         if (_running) {
           LOGDEBUG("StopSignal Received, waiting for all work done!");
-          _t.join();
+          //_t.join();
+          boost::mutex::scoped_lock terminationLock(terminationMutex);
+          ctrlCHit.wait(terminationLock);
           LOGDEBUG("stopping done!")
         }
       }
@@ -148,13 +151,17 @@ namespace org {
 
             }
           }
-          org::esb::lang::Thread::sleep2(5000);
+          if(!_toHalt)
+            org::esb::lang::Thread::sleep2(5000);
         }
 
         std::string cmd = LEAVE_PARTITION;
+        try{
         _sock->getOutputStream()->write(cmd);
         _oos->writeObject(org::esb::config::Config::get("partition"));
-
+        }catch(org::esb::net::SocketException & ex){
+          LOGDEBUG("error while leaving partition:"<<ex.what());
+        }
         boost::mutex::scoped_lock terminationLock(terminationMutex);
         ctrlCHit.notify_all();
       }

@@ -60,14 +60,19 @@ namespace encodingtask {
 
       getContext()->set<std::string > ("profile.name", _preset["name"]);
       getContext()->set<std::string > ("video.codec", _codecs["video"]["codec_id"]);
-      getContext()->set<std::string> ("video.bitrate", _codecs["video"]["b"]);
-      getContext()->set<std::string> ("video.height", _codecs["video"]["height"]);
-      getContext()->set<std::string> ("video.width", _codecs["video"]["width"]);
+      if (_codecs["video"].count("multipass") && _codecs["video"]["multipass"] == "1") {
+        getContext()->set<std::string > ("video.passes", "2");
+      } else {
+        getContext()->set<std::string > ("video.passes", "1");
+      }
+      getContext()->set<std::string > ("video.bitrate", _codecs["video"]["b"]);
+      getContext()->set<std::string > ("video.height", _codecs["video"]["height"]);
+      getContext()->set<std::string > ("video.width", _codecs["video"]["width"]);
 
       getContext()->set<std::string > ("audio.codec", _codecs["audio"]["codec_id"]);
-      getContext()->set<std::string> ("audio.bitrate", _codecs["audio"]["ab"]);
-      getContext()->set<std::string> ("audio.channels", _codecs["audio"]["ac"]);
-      getContext()->set<std::string> ("audio.samples", _codecs["audio"]["ar"]);
+      getContext()->set<std::string > ("audio.bitrate", _codecs["audio"]["ab"]);
+      getContext()->set<std::string > ("audio.channels", _codecs["audio"]["ac"]);
+      getContext()->set<std::string > ("audio.samples", _codecs["audio"]["ar"]);
 
     } catch (std::exception & ex) {
       setStatus(Task::ERROR);
@@ -75,7 +80,14 @@ namespace encodingtask {
       throw org::esb::core::TaskException(getStatusMessage());
     }
   }
-
+  void EncodingTask::cleanup(){
+    std::string base = org::esb::config::Config::get("hive.tmp_path");
+    org::esb::io::File infile(base + "/jobs/" + getUUID() + "/" + _srcuristr);
+    if(infile.exists()){
+      infile.deleteFile();
+    }
+  }
+  
   int EncodingTask::getPadTypes() {
     return Task::SINK | Task::SOURCE;
   }
@@ -103,7 +115,7 @@ namespace encodingtask {
     //go(EncodingTask::observeProgress,this);
     /*open the input file*/
     std::string base = org::esb::config::Config::get("hive.tmp_path");
-    org::esb::av::FormatInputStream fis(base+"/jobs/"+getUUID()+"/"+_srcuristr);
+    org::esb::av::FormatInputStream fis(base + "/jobs/" + getUUID() + "/" + _srcuristr);
 
     /*check the input is valid*/
     if (!fis.isValid()) {
@@ -184,6 +196,21 @@ namespace encodingtask {
         if (_codecs["video"].count("codec_id") != 0) {
           sdata.encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["video"]["codec_id"]));
           sdata.pass2encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["video"]["codec_id"]));
+            if (_codecs["video"].count("width") == 0 ||
+                    atoi(_codecs["video"]["width"].c_str()) == 0 ||
+                    _codecs["video"].count("height") == 0 ||
+                    atoi(_codecs["video"]["height"].c_str()) == 0) {
+              _codecs["video"]["width"]=org::esb::util::StringUtil::toString(sdata.decoder->getWidth());
+              _codecs["video"]["height"]=org::esb::util::StringUtil::toString(sdata.decoder->getHeight());
+              LOGDEBUG("setting video size from input to : "<<_codecs["video"]["width"]<<"*"<<_codecs["video"]["height"]);
+            }
+            if (_codecs["video"].count("time_base") == 0 || _codecs["video"]["time_base"].length() == 0) {
+              std::ostringstream oss;
+              oss << sdata.decoder->getFrameRate().den << "/" << sdata.decoder->getFrameRate().num;
+              _codecs["video"]["time_base"]= oss.str();
+              LOGDEBUG("setting framerate from input to : "<<oss.str());
+            }
+
           org::esb::av::CodecPropertyTransformer transformer(_codecs["video"]);
           std::map<std::string, std::string> params = transformer.getCodecProperties();
 
@@ -253,7 +280,7 @@ namespace encodingtask {
           return;
         }
         PacketListPtr packets = packetizer.removePacketList();
-        LOGDEBUG("PacketListStartPts="<<packets.front()->getPts()<<" PacketListEndPts="<<packets.back()->getPts())
+        LOGDEBUG("PacketListStartPts=" << packets.front()->getPts() << " PacketListEndPts=" << packets.back()->getPts())
         boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit = builder.build(packets);
         putToPartition(unit);
 
@@ -272,18 +299,16 @@ namespace encodingtask {
         putToPartition(unit, true);
       }
     }
-    
-    int prev_fps=0;
+
+    int prev_fps = 0;
     while (partitionservice::PartitionManager::getInstance()->getSize(_partition) > 0) {
       setProgress(getProgressLength() - partitionservice::PartitionManager::getInstance()->getSize(_partition));
       org::esb::lang::Thread::sleep2(1 * 1000);
-      if(prev_fps!=partitionservice::PartitionManager::getInstance()->getFps()){
-        prev_fps=partitionservice::PartitionManager::getInstance()->getFps();
-        std::string fps=org::esb::util::StringUtil::toString(partitionservice::PartitionManager::getInstance()->getFps());
-        fps+=" Frames/sec.";
+      if (prev_fps != partitionservice::PartitionManager::getInstance()->getFps()) {
+        prev_fps = partitionservice::PartitionManager::getInstance()->getFps();
+        std::string fps = org::esb::util::StringUtil::toString(partitionservice::PartitionManager::getInstance()->getFps());
+        fps += " Frames/sec.";
         setStatusMessage(fps);
-        
-        
       }
     }
 
@@ -400,7 +425,7 @@ namespace encodingtask {
     }
     /*openning the OutputStreams*/
     FormatOutputStream * fos = new FormatOutputStream(&fout, _format.c_str());
-    PacketOutputStream * pos = new PacketOutputStream(fos, getSink() + ".stats");
+    PacketOutputStream * pos = new PacketOutputStream(fos, base + "/jobs/" + _task_uuid + "/" +getSink() + ".stats");
     if (fos->_fmt->extensions) {
       org::esb::util::StringTokenizer tok(fos->_fmt->extensions, ",");
       std::string ext = tok.nextToken();

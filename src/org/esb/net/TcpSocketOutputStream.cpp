@@ -78,7 +78,8 @@ namespace org {
            */
           int sent = boost::asio::write(*_socket, boost::asio::buffer(buffer, len), boost::asio::transfer_all(), error);
           if (error)
-            throw boost::system::system_error(error);
+            throw SocketException(std::string("while writing on socket:").append(error.message()));
+            //throw boost::system::system_error(error.);
           else if (sent != len)
             throw SocketException("writing size is not equal to len");
           //            remaining -= sent;

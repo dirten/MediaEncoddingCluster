@@ -36,6 +36,8 @@ namespace jobexecutor {
   }
 
   void Service::startService() {
+    /*clean up interrupted encodings*/
+    
     _status = RUNNING;
     go(Service::run, this);
   }

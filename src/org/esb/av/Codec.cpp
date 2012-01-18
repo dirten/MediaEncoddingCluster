@@ -510,7 +510,7 @@ namespace org {
         }
 
         try {
-
+          ctx->thread_count=1;
           if (avcodec_open(ctx, _codec) < 0) {
             LOGERROR("error in openning Codec (" << ctx->codec_id << ")");
 
@@ -538,7 +538,7 @@ namespace org {
 
       void Codec::close() {
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
-
+        
         if (_opened) {
           LOGTRACE("void Codec::close(" << this << ")");
           //LOGINFO("Closing codec ("<<ctx->codec_id<<")");
@@ -548,7 +548,6 @@ namespace org {
             }
             avcodec_close(ctx);
           }
-
           //          LOGDEBUG( "recently fifo size:" << av_fifo_size(fifo));
           if (fifo)
             av_fifo_free(fifo);

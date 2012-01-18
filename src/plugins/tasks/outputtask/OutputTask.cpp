@@ -35,7 +35,7 @@ namespace plugin {
         _trguristr = node["outfile"].as_string();
         Poco::File trgfile(_trguristr);
          if(trgfile.exists() && trgfile.isDirectory()){
-           _trguristr+="$input.name$.$profile.ext$";
+           _trguristr+="/$input.name$.$profile.ext$";
          }
         std::list<std::string> keys=getContext()->keys();
         foreach(std::string key, keys){
@@ -88,6 +88,7 @@ namespace plugin {
       }
       setStatus(Task::DONE);
       setStatusMessage("File successful copied to the target");
+      srcfile.remove(false);
     } else {
       LOGERROR("src file " << srcfile.path() << " does not exist");
       setStatus(Task::ERROR);

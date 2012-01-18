@@ -26,6 +26,7 @@ namespace encodingtask {
     virtual ~EncodingTask();
     void prepare();
     void execute();
+    void cleanup();
     org::esb::core::OptionsDescription getOptionsDescription();
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> getProcessUnit();
     void putProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>);

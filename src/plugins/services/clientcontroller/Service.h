@@ -30,6 +30,7 @@ namespace clientcontroller {
     void startClientNodes(std::string host, int port);
     void stopClientNodes();
     std::list<Ptr<org::esb::hive::HiveClient> > _client_list;
+    boost::mutex stopMutex;
     //Ptr<org::esb::hive::HiveClientAudio> _client_audio;
   };
   REGISTER_SERVICE("clientcontroller", Service);

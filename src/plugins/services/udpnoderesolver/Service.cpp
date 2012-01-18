@@ -33,7 +33,7 @@ public:
     if (node.getData("type") == "server") {
       LOGDEBUG("Server Node down")
       org::esb::signal::Messenger::getInstance().sendMessage(
-              org::esb::signal::Message().setProperty("server_server_event", "").
+              org::esb::signal::Message().setProperty("server_down_event", "").
               setProperty("host", node.getIpAddress().to_string()).
               setProperty("port", atoi(node.getData("port").c_str()))
               );

@@ -77,37 +77,51 @@ namespace partitionservice {
    */
   int PartitionManager::getSize(std::string partition) {
     int result = _ep_pu.size();
-    //LOGDEBUG("_ep_pu size "<<partition<<"="<<result);
+    LOGDEBUG("_ep_pu size "<<partition<<"="<<result);
     if (_partitions.count(partition) > 0) {
 
       foreach(Stream s, _partitions[partition].getStreams()) {
         result += s.getSize();
       }
     }
-    //LOGDEBUG("partition size "<<partition<<"="<<result);
+    LOGDEBUG("partition size "<<partition<<"="<<result);
     return result;
   }
 
   PartitionManager::Result PartitionManager::leavePartition(std::string name, boost::asio::ip::tcp::endpoint ep) {
     PartitionManager::Result result = PartitionManager::NOT_IN_PARTITION;
+    LOGDEBUG("PartitionManager::leavePartition(std::string name, boost::asio::ip::tcp::endpoint ep) name="<<name<<" ep="<<ep);
     /* @TODO: when client crashes, put back the ProcessUnit to the queue
      * that should be handled by an other Client
      */
 
     _ep_stream.erase(ep);
-
+    
+    if(_ep_pu.count(ep)){
+      Type t;
+      if (_ep_pu[ep]->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+        t = partitionservice::PartitionManager::TYPE_AUDIO;
+      } else if (_ep_pu[ep]->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
+        t = partitionservice::PartitionManager::TYPE_VIDEO;
+      }
+      putProcessUnit(name.length()==0?"global":name,_ep_pu[ep],t);
+      _ep_pu.erase(ep);
+    }
     foreach(PartitionMap::value_type & partition, _partitions) {
 
       foreach(Endpoint end, partition.second.getEndpoints()) {
         if (end == ep) {
+          LOGDEBUG("partition.second.removeEndpoint(end);");
           partition.second.removeEndpoint(end);
           result = PartitionManager::OK;
+          return result;
+
         }
       }
-
+      return result;
       foreach(Stream str, partition.second.getStreams()) {
         Stream & s = partition.second.getStream(str.getId());
-
+        
         foreach(Endpoint end, s.getEndpoints()) {
           LOGDEBUG("Endpoint" << ep << " from stream" << str.getId());
           if (end == ep) {

@@ -132,9 +132,10 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
     
     movingView=NO;  
     //currentSelectedElement=[CPNull null];
-    var newMenuItem = [[CPMenuItem alloc] initWithTitle:@"delete" action:@selector(removeSelectedElement) keyEquivalent:nil];
+    var newMenuItem = [[CPMenuItem alloc] initWithTitle:@"Delete" action:@selector(removeSelectedElement) keyEquivalent:nil];
     //[newMenuItem setEnabled:menuActions[i]!=nil];
     [newMenuItem setTarget:self];    
+    [menu addItem:[CPMenuItem separatorItem]];
     [menu addItem:newMenuItem];
     select=currentSelectedElement;
     return menu;
