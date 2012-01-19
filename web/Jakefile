@@ -23,8 +23,8 @@ var subprojects = ["ModulesSource/EncodingFlowEditorModule","ModulesSource/Toolb
 app (APPNAME, function(task)
 {	
     ENV["APPNAME"]=APPNAME;
-    task.setBuildIntermediatesPath(FILE.join("Build", APPNAME+".build", configuration));
-    task.setBuildPath(FILE.join("Build", configuration));
+    task.setBuildIntermediatesPath(FILE.join("./Build", APPNAME+".build", configuration));
+    task.setBuildPath(FILE.join("./Build", configuration));
     //task.setPreventsNib2Cib(true);
 
     task.setProductName(APPNAME);
@@ -52,10 +52,9 @@ app (APPNAME, function(task)
 {
     task (aTaskName, function()
     {
-	print("Executing TaskName"+aTaskName+" in Subproject ");
-	print(ENV["CONFIGURATION"]);
+	print("Executing Task:"+aTaskName+" in Subproject ");
 	ENV["CONFIG"]=ENV["CONFIGURATION"];
-	//JAKE.subjake(subprojects, aTaskName, ENV);
+	JAKE.subjake(subprojects, aTaskName, ENV);
 
 	/*build modules.plist*/
 	
@@ -75,8 +74,15 @@ app (APPNAME, function(task)
         plist +="    </array>\n";
 	plist +="    </dict>\n";
 	plist +="</plist>";
-        FILE.write(FILE.join("Build", configuration, APPNAME, "Modules","modules.plist"),plist);
+        FILE.write(FILE.join(".","Build", configuration, APPNAME, "Modules","modules.plist"),plist);
         //FILE.write(FILE.join("Modules","modules.plist"),plist);
+        /*subprojects.forEach(
+    	    function(project){
+		print("Executing TaskName"+aTaskName+" in Subproject:"+project);
+    		JAKE.subjake(project, aTaskName, ENV);
+    	    }
+    	);*/
+
     });
 });
 

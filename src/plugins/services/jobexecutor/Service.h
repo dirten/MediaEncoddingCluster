@@ -40,6 +40,7 @@ namespace jobexecutor {
     db::Job * _job;
     Ptr<org::esb::core::Task> _current_task;
     void actualizeProgress(org::esb::core::Graph *);
+    org::esb::core::Graph _current_graph;
   };
   REGISTER_SERVICE("jobexecutor", Service);
 }

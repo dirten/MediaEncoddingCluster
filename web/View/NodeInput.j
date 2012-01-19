@@ -16,6 +16,7 @@
     }
   };
   data=[CPDictionary dictionaryWithJSObject:json recursively:YES];  
+  [self setTaskDescription:@"The Input Type will copy the Source File into the workspace. It should define a local File on the Server."];
   return self;
 }
 -(CPString)frontLabel

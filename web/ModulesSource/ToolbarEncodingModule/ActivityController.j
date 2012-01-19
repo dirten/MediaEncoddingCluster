@@ -15,6 +15,7 @@
   id                   activityWebView;
   id jsonData;
   id selectedid;
+  id selectedRowIndex;
   id growl;
   
   CPAlert stopGraph;
@@ -128,6 +129,7 @@
 
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification{
   if(jsonData.data[[[aNotification object] selectedRow]]){
+    selectedROwIndex=[[aNotification object] selectedRow];
     CPLog.debug("hello new activity selected:"+jsonData.data[[[aNotification object] selectedRow]].id);
     selectedid=jsonData.data[[[aNotification object] selectedRow]].id;
     //[activityWebView setData:jsonData.data[[[aNotification object] selectedRow]]];
@@ -146,8 +148,8 @@
     var menu = [[CPMenu alloc] initWithTitle:"Graph Menu"],
     //menuItems = ["New","Submit","Rename ...", "Delete"],
     //menuActions = [@selector(newGraph:),@selector(submit:),@selector(rename:), @selector(delete:)],
-    menuItems = ["Stop this Graph"],
-    menuActions = [@selector(stop:)],
+    menuItems = ["Stop this Flow","Restart this Flow"],
+    menuActions = [@selector(stop:),@selector(restart:)],
     numberOfSelectedIssues = [[aTableView selectedRowIndexes] count],
     count = menuItems.length,
     i = 0;
@@ -165,7 +167,12 @@
         var title = menuItems[i],
         newMenuItem = [[CPMenuItem alloc] initWithTitle:title action:menuActions[i] keyEquivalent:nil];
         [newMenuItem setTarget:self];
-        [newMenuItem setEnabled:jsonData.data[aRow].statuscode==1||jsonData.data[aRow].statuscode==0];
+        if(i==0){
+          [newMenuItem setEnabled:jsonData.data[aRow].statuscode==1||jsonData.data[aRow].statuscode==0];
+        }else{
+          //[newMenuItem setEnabled:jsonData.data[aRow].statuscode!=1];
+        }
+          
         //break;
         // we want a seperator so just skip it for now
     	[menu addItem:newMenuItem];
@@ -188,12 +195,27 @@
     //[self tableViewSelectionDidChange:nil];
 }
 
+- (void)restart:(id)sender
+{
+  var request = [CPURLRequest requestWithURL:"/api/v1/encoding?restart&id="+selectedid];
+  var raw_data = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+  CPLog.debug("restart raw_data:"+[raw_data rawString]);
+  var d=[raw_data JSONObject].data;
+  if(d.status=="ok"){
+    growl=[TNGrowlCenter defaultCenter];
+    //CPLog.debug("GrowlCenter"+growl);
+    [growl pushNotificationWithTitle:@"Sucess" message:@"Graph sucessful restarted"];
+  }else{
+    var alert=[CPAlert alertWithError:d.description];
+    [alert runModal];
+  }
+}
 - (void)stop:(id)sender
 {
   /*asking for a name*/
   stopgraph=[[CPAlert alloc] init];// initWithTitle:@"Delete Graph" andText:@"are you sure to delete the graph:"+[self selectedId]];
   [stopgraph setTitle:"Are You Sure?"];
-  [stopgraph setMessageText:"Are you sure you want to stop the Graph with ID :" + selectedid+ "?"];
+  [stopgraph setMessageText:"Are you sure you want to stop the Graph with ID :" + [CPString stringWithFormat:@"%s (%s)", jsonData.data[selectedROwIndex].graphname, jsonData.data[selectedROwIndex].infile]+ "?"];
   [stopgraph setAlertStyle:CPWarningAlertStyle];
   [stopgraph addButtonWithTitle:"Cancel"];
   [stopgraph setDelegate:self];

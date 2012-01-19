@@ -84,7 +84,7 @@ namespace encodingtask {
     std::string base = org::esb::config::Config::get("hive.tmp_path");
     org::esb::io::File infile(base + "/jobs/" + getUUID() + "/" + _srcuristr);
     if(infile.exists()){
-      infile.deleteFile();
+      //infile.deleteFile();
     }
   }
   

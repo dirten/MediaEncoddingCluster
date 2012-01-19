@@ -132,6 +132,10 @@ testfunc();
   
   var alldata=[raw_data JSONObject].data[0];
   var data=alldata.graph;
+  if(data==undefined){
+    [growl pushNotificationWithTitle:@"Failed to load the Flow?" message:"The Server returns an unknown Flow Format!"];
+     return;
+  }
   if(alldata.graphstatus)
   CPLog.debug("graphstatus_data:"+alldata.graphstatus[data.uuid]);
   

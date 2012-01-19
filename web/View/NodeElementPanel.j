@@ -141,36 +141,47 @@ NodeElementDragType = "NodeElementDragType";
 
 @implementation NodeItemView : CPBox
 {
-    CPTextField textField;
+  CPTextField textField;
+  CPTextField descField;
   CPImageView imageView;
-    NodeView node;
+  NodeView node;
 }
 
 - (void)setRepresentedObject:(id)anObject
 {
-    //[self setBounds:[anObject bounds]];
-    [self setCornerRadius:3.0];
-    //[self setBorderWidth:3.0];
-    //return;
-    //[self setBorderType:CPGrooveBorder];
-    //[self setPostsFrameChangedNotifications:YES];
+  CPLog.debug("ElementViewBounds"+CGStringFromRect([self bounds]));
+  CPLog.debug("ElementViewBounds"+CGStringFromRect([anObject bounds]));
+  //[self setBounds:[anObject bounds]];
+  [self setCornerRadius:3.0];
+  //[self setBorderWidth:3.0];
+  //return;
+  //[self setBorderType:CPGrooveBorder];
+  //[self setPostsFrameChangedNotifications:YES];
 
-    //[self addSubview:anObject];
-  if ([anObject image])
-  { 
-    imageView=[[CPImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 110.0, 110.0)];
+  //[self addSubview:anObject];
+  if(!imageView){
+    imageView=[[CPImageView alloc] initWithFrame:CGRectMake(230.0, 25.0, 60.0, 60.0)];
+  }
+  if ([anObject image]){ 
     //[imageView setAlphaValue:0.5];
     [imageView setImage:[anObject image]];
     [self addSubview:imageView];
   }
-  if (!textField)
-    { 
-        textField = [[CPTextField alloc] initWithFrame:CGRectMake(87.0, 80.0, 145.0, 20.0)];
-        [textField setFont:[CPFont boldSystemFontOfSize:12.0]];
-      [textField setAlphaValue:0.5];
-        [self addSubview:textField];
-    }
-    [textField setStringValue:[anObject name]];
+  if (!textField){ 
+    textField = [[CPTextField alloc] initWithFrame:CGRectMake(230.0, 10.0, 145.0, 20.0)];
+    [textField setFont:[CPFont boldSystemFontOfSize:12.0]];
+    //[textField setAlphaValue:0.5];
+    [self addSubview:textField];
+  }
+  [textField setStringValue:[anObject name]];
+  if (!descField){ 
+    descField = [[CPTextField alloc] initWithFrame:CGRectMake(10.0, 10.0, 220.0, 100.0)];
+    //[descField setFont:[CPFont boldSystemFontOfSize:12.0]];
+    [descField setAlphaValue:0.8];
+    [descField setLineBreakMode:CPLineBreakByWordWrapping];
+    [self addSubview:descField];
+  }
+  [descField setStringValue:[anObject taskDescription]];
 }
 
 - (void)setSelected:(BOOL)isSelected

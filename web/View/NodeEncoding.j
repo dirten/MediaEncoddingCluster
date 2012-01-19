@@ -24,6 +24,7 @@
   };
   data=[CPDictionary dictionaryWithJSObject:json recursively:YES];  
   CPLog.debug("Data in Contruct:"+data);
+  [self setTaskDescription:@"The Encoding Type will process the Source File from the workspace. It should define the target File Format end Encoding options."];
   //popoverView=[[CPPopover alloc] init];
   //viewController=[[CPViewController alloc] init];
   //[popoverView setContentViewController:viewController];

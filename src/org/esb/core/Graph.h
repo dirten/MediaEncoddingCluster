@@ -51,9 +51,11 @@ namespace org {
           INTERRUPT,
           INTERRUPTED,
           ERROR,
-          DONE_WITH_ERROR
+          DONE_WITH_ERROR,
+          CANCELED
         };
 
+        Graph();
         Graph(std::string);
         Graph(std::list<Ptr<Graph::Element> >, std::string uuid="");
         static void createJob(std::list<Ptr<Graph::Element> >,boost::shared_ptr<db::HiveDb>);
@@ -67,6 +69,7 @@ namespace org {
           int getStepCount();
           int getProcessedStepCount();
         virtual ~Graph();
+        void cancel();
       private:
         boost::function<void (Graph*)> statusObserver;
         static void processElement(Ptr<Element> ,db::Job & );
@@ -98,6 +101,8 @@ namespace org {
         KeyValueList status_list;
         void setStatus(Task*);
         void setProgress(Task*);
+        bool _isCanceled;
+        Ptr<org::esb::core::Task> _current_task;
         //std::set<Ptr<Task> > _taskList;
         //std::list<Ptr<Task> > _taskLinkMap;
         //std::string _link_matrix[100][100];

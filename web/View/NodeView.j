@@ -10,6 +10,7 @@ OutputHandle = 2;
   CPString    taskName            @accessors(property=taskName);
   CPString    labelText           @accessors(property=labelText);
   CPString    message             @accessors(property=message);
+  CPString    taskDescription     @accessors(property=taskDescription);
   CPTextField label
   CPTextField fieldDescription    @accessors(property=fieldDescription);
   

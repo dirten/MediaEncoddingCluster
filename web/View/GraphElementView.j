@@ -8,10 +8,10 @@ CPArray elements;
 {
   self=[super initWithFrame:aFrame];
   var elementsView = [[CPCollectionView alloc] initWithFrame:aFrame];
-  //[elementsView setMaxNumberOfColumns:1];
+  [elementsView setMaxNumberOfColumns:1];
   [elementsView setAutoresizingMask:CPViewWidthSizable];
-  [elementsView setMinItemSize:CGSizeMake(150, 100)];
-  [elementsView setMaxItemSize:CGSizeMake(250, 100)];
+  [elementsView setMinItemSize:CGSizeMake(150, 80)];
+  [elementsView setMaxItemSize:CGSizeMake(300, 80)];
   [elementsView setDelegate:self];
 
   var elementPrototype = [[CPCollectionViewItem alloc] init],
@@ -26,8 +26,8 @@ CPArray elements;
   elements = [
     [[NodeInput alloc] init],
     [[NodeEncoding alloc] init],
-    [[NodeOutput alloc] init],
-    [[NodeExecutable alloc] init]
+    [[NodeOutput alloc] init]
+    //[[NodeExecutable alloc] init]
   ];
   [elementsView setContent:elements];
   return self;

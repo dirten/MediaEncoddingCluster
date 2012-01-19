@@ -4,7 +4,7 @@
 RefreshNodeEditorView=@"RefreshNodeEditorView";
 NodeEditorViewChanged=@"NodeEditorViewChanged";
 
-@implementation NodeEditorView: CPView
+@implementation NodeEditorView: CPScrollView
 {
   CPArray elements @accessors(property=elements);
   id currentSelectedElement;
@@ -35,6 +35,7 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
     uidCounter=0;
 
     movingView=NO;
+    name = @"no name";
     [self setBackgroundColor:[CPColor whiteColor]];
   [[CPNotificationCenter defaultCenter]
     addObserver:self

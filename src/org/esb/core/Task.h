@@ -64,7 +64,8 @@ namespace org {
         virtual std::string getUUID();
         virtual void addStatusObserver( boost::function<void (Task*)> func);
         virtual void addProgressObserver( boost::function<void (Task*)> func);
-
+        virtual void cancel();
+        bool    isCanceled();
       private:
         unsigned int _progress;
         unsigned int _progress_length;
@@ -75,6 +76,7 @@ namespace org {
         std::string _uuid;
         boost::function<void (Task*)> statusObserver;
         boost::function<void (Task*)> progressObserver;
+        bool _isCanceled;
       };
     }
   }

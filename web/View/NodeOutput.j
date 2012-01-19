@@ -14,6 +14,7 @@
     }
   };
   data=[CPDictionary dictionaryWithJSObject:json recursively:YES];  
+  [self setTaskDescription:@"The Output Type will copy the Result File from the workspace to a defined Target. It should define a local File on the Server."];
 
   return self;
 }

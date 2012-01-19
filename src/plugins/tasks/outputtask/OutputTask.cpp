@@ -88,7 +88,7 @@ namespace plugin {
       }
       setStatus(Task::DONE);
       setStatusMessage("File successful copied to the target");
-      srcfile.remove(false);
+      //srcfile.remove(false);
     } else {
       LOGERROR("src file " << srcfile.path() << " does not exist");
       setStatus(Task::ERROR);

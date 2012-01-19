@@ -14,6 +14,8 @@
     }
   };
   data=[CPDictionary dictionaryWithJSObject:json recursively:YES];  
+  [self setTaskDescription:@"The Executable Type will process the Source File given as parameter. It should define a server side installed executable and the in/output Filename."];
+
   return self;
 }
 -(id)image

@@ -19,7 +19,7 @@
 	<key>PluginDisplayName</key>
 	<dict>
 		<key>en</key>
-		<string>Encoding Activity</string>
+		<string>Flow Activity</string>
 		<key>de</key>
 		<string>Encoding Modul</string>
 	</dict>

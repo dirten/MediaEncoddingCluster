@@ -15,6 +15,7 @@ namespace org {
         _progress_length=0;
         _progress=0;
         setProgress(0);
+        _isCanceled=false;
       }
 
       Task::~Task() {
@@ -109,7 +110,13 @@ namespace org {
       void Task::addProgressObserver( boost::function<void (Task*)> func){
         progressObserver=func;      
       }
-
+      void Task::cancel(){
+        _isCanceled=true;
+      }
+      
+      bool Task::isCanceled(){
+        return _isCanceled;
+      }
     }
   }
 }

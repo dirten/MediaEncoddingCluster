@@ -11,6 +11,7 @@
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/io/File.h"
+#include "Poco/File.h"
 #include "org/esb/av/AV.h"
 #include "org/esb/av/FormatBaseStream.h"
 #include "org/esb/libjson/libjson.h"
@@ -311,6 +312,7 @@ namespace org {
           std::string id = req->getParameter("id");
           bool delflag = req->hasParameter("delete");
           bool stopflag = req->hasParameter("stop");
+          bool restartflag = req->hasParameter("restart");
           bool fullflag = req->hasParameter("full");
           if (delflag) {
             if (id.length() > 0) {
@@ -358,7 +360,7 @@ namespace org {
                 job.status = job.status == db::Job::Status::Processing ? db::Job::Status::Stopping : db::Job::Status::Stopped;
                 job.update();
                 std::string job_id = org::esb::util::StringUtil::toString(job.id);
-                org::esb::signal::Messenger::getInstance().sendMessage(org::esb::signal::Message().setProperty("processunitcontroller", "STOP_JOB").setProperty("job_id", job_id));
+                org::esb::signal::Messenger::getInstance().sendMessage(org::esb::signal::Message().setProperty("jobexecutor", "STOP_JOB").setProperty("job_id", job_id));
 
                 //job.del();
                 JSONNode ok(JSON_NODE);
@@ -381,6 +383,45 @@ namespace org {
               error.push_back(JSONNode("status", "error"));
               error.push_back(JSONNode("code", "no_id"));
               error.push_back(JSONNode("description", "no id given for delete action"));
+              n.push_back(error);
+            }
+          } else if (restartflag) {
+            if (id.length() > 0) {
+              //LOGDEBUG("loading encoding data for id " << id);
+              litesql::DataSource<db::Job>s = litesql::select<db::Job > (*_db, db::Job::Uuid == id);
+              if (s.count() == 1) {
+                db::Job job = s.one();
+                std::string base = org::esb::config::Config::get("hive.tmp_path");
+                Poco::File jobdir(base + "/jobs/" + job.uuid.value());
+                if (jobdir.exists()) {
+                  LOGDEBUG("delete the previous created job directory");
+                  jobdir.remove(true);
+                }
+                job.graphstatus="";
+                job.status = job.status = db::Job::Status::Waiting;
+                job.update();
+
+                //job.del();
+                JSONNode ok(JSON_NODE);
+                ok.set_name("data");
+                ok.push_back(JSONNode("status", "ok"));
+                ok.push_back(JSONNode("code", "encoding_restarted"));
+                ok.push_back(JSONNode("description", "restart encoding succesful signaled"));
+                n.push_back(ok);
+              } else {
+                JSONNode error(JSON_NODE);
+                error.set_name("data");
+                error.push_back(JSONNode("status", "error"));
+                error.push_back(JSONNode("code", "encoding_not_found"));
+                error.push_back(JSONNode("description", "encoding not found"));
+                n.push_back(error);
+              }
+            } else {
+              JSONNode error(JSON_NODE);
+              error.set_name("data");
+              error.push_back(JSONNode("status", "error"));
+              error.push_back(JSONNode("code", "no_id"));
+              error.push_back(JSONNode("description", "no id given for restart action"));
               n.push_back(error);
             }
           } else if (id.length() > 0) {
