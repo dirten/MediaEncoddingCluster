@@ -17,7 +17,9 @@ testfunc();
 {
   NodeEditorView view;
   CPDictionary elementClasses;
+  CPDictionary elements;
   id loadedUUID;
+  id alldata  @accessors(property=data);
   CPString loadedName;
   id growl;
 }
@@ -32,6 +34,8 @@ testfunc();
   [elementClass setObject:[NodeOutput class] forKey:@"OutputTask"];
   [elementClass setObject:[NodeExecutable class] forKey:@"ExecutableTask"];
   loadedUUID="";
+  elements=[CPDictionary dictionary];
+
   growl=[TNGrowlCenter defaultCenter];
 
     return self;
@@ -128,9 +132,9 @@ testfunc();
   var error;
   var raw_data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:response];
   CPLog.debug("raw_data:"+[raw_data rawString]);
-  CPLog.debug("json_data:"+[raw_data JSONObject]);
+  //CPLog.debug("json_data:"+[raw_data JSONObject]);
   
-  var alldata=[raw_data JSONObject].data[0];
+  alldata=[raw_data JSONObject].data[0];
   var data=alldata.graph;
   if(data==undefined){
     [growl pushNotificationWithTitle:@"Failed to load the Flow?" message:"The Server returns an unknown Flow Format!"];
@@ -139,52 +143,86 @@ testfunc();
   if(alldata.graphstatus)
   CPLog.debug("graphstatus_data:"+alldata.graphstatus[data.uuid]);
   
-  loadedUUID=data.uuid;
-  loadedName=data.name;
-  //CPLog.debug("Obj:"+data.tasks.length);
-  var elements=[CPDictionary dictionary];
-  [view clearElements];
-  for(a=0;a<data.tasks.length;a++){
-    var task=data.tasks[a];
-    var taskdata=undefined;
-    if(data.tasks[a].data)
-      taskdata={data:data.tasks[a].data};
-    
-    //CPLog.debug("TaskData:"+JSON.stringify(taskdata));
-    var obj=[[[elementClass objectForKey:task.name] alloc] init];
-    [obj setUid:task.uid];
-    [obj setBoundsOrigin:CPPointMake(data.positions[a].x,data.positions[a].y)];
-    if(alldata.graphstatus!=undefined&&alldata.graphstatus[task.uid]!=undefined){
-      CPLog.debug("task.uid"+task.uid);
-      [obj setProgress:alldata.graphstatus[task.uid].progress];
-      if(alldata.graphstatus[task.uid].message!=undefined&&
-          alldata.graphstatus[task.uid].message.length)
-        [obj setMessage:alldata.graphstatus[task.uid].message];
-      if(alldata.graphstatus[task.uid].exception!=undefined&&
-         alldata.graphstatus[task.uid].exception.length)
-        [obj setMessage:alldata.graphstatus[task.uid].exception];
-      [obj setStatus:alldata.graphstatus[task.uid].status];
-    }else{
-      [obj setProgress:@" "];      
+  if(loadedUUID!=data.uuid){
+    loadedUUID=data.uuid;
+    loadedName=data.name;
+    [view clearElements];
+    elements=[CPDictionary dictionary];
+    for(a=0;a<data.tasks.length;a++){
+      var task=data.tasks[a];
+      var taskdata=undefined;
+      if(data.tasks[a].data)
+        taskdata={data:data.tasks[a].data};
+
+      //CPLog.debug("TaskData:"+JSON.stringify(taskdata));
+      var obj=[[[elementClass objectForKey:task.name] alloc] init];
+      [obj setUid:task.uid];
+      [obj setBoundsOrigin:CPPointMake(data.positions[a].x,data.positions[a].y)];
+      if(alldata.graphstatus!=undefined&&alldata.graphstatus[task.uid]!=undefined){
+        CPLog.debug("task.uid"+task.uid);
+        [obj setProgress:alldata.graphstatus[task.uid].progress];
+        if(alldata.graphstatus[task.uid].message!=undefined&&
+            alldata.graphstatus[task.uid].message.length)
+          [obj setMessage:alldata.graphstatus[task.uid].message];
+        if(alldata.graphstatus[task.uid].exception!=undefined&&
+           alldata.graphstatus[task.uid].exception.length)
+          [obj setMessage:alldata.graphstatus[task.uid].exception];
+        [obj setStatus:alldata.graphstatus[task.uid].status];
+      }else{
+        [obj setProgress:@" "];      
+      }
+      if(taskdata!=undefined)
+        [obj setData:[CPDictionary dictionaryWithJSObject:taskdata recursively:YES]];
+      [[view elements] addObject:obj];
+      [elements setObject:obj forKey:task.uid];
+
+      //[view setNeedsDisplay:YES];
+      //CPLog.debug("Data:"+obj);
     }
-    if(taskdata!=undefined)
-      [obj setData:[CPDictionary dictionaryWithJSObject:taskdata recursively:YES]];
-    [[view elements] addObject:obj];
-    [elements setObject:obj forKey:task.uid];
-    
-    //[view setNeedsDisplay:YES];
-    //CPLog.debug("Data:"+obj);
+    for(a=0;a<data.links.length;a++){
+      var link=data.links[a];
+      var src=[elements objectForKey:link.uid];
+      var trg=[elements objectForKey:link.linksTo];
+      //CPLog.debug("SourceHandle:"+CPStringFromPoint([src outHandlePoint]));
+      //CPLog.debug("SourceHandle:"+CPStringFromPoint([trg inHandlePoint]));
+      [src addTarget:trg];
+      [trg addSource:src];
+    }
+    [view setName:loadedName];
+  }else{
+    [[[elements objectEnumerator] allObjects] makeObjectsPerformSelector:@selector(setProgress:) withObject:@" "];
+    [[[elements objectEnumerator] allObjects] makeObjectsPerformSelector:@selector(setMessage:) withObject:@" "];
+    [[[elements objectEnumerator] allObjects] makeObjectsPerformSelector:@selector(setStatus:) withObject:-1];
+    for(a=0;a<data.tasks.length;a++){
+      var task=data.tasks[a];
+      var taskdata=undefined;
+      if(data.tasks[a].data)
+        taskdata={data:data.tasks[a].data};
+
+      //CPLog.debug("TaskData:"+JSON.stringify(taskdata));
+      //var obj=[[view elements] objectAtIndex:a];
+      var obj=[elements objectForKey:task.uid];//[[[elementClass objectForKey:task.name] alloc] init];
+      CPLog.debug("Object = "+obj);
+      //[obj setUid:task.uid];
+      //[obj setBoundsOrigin:CPPointMake(data.positions[a].x,data.positions[a].y)];
+      if(alldata.graphstatus!=undefined&&alldata.graphstatus[task.uid]!=undefined){
+        CPLog.debug("task.uid"+task.uid+" set progress="+alldata.graphstatus[task.uid].progress);
+        
+        [obj setProgress:alldata.graphstatus[task.uid].progress];
+        if(alldata.graphstatus[task.uid].message!=undefined&&
+            alldata.graphstatus[task.uid].message.length)
+          [obj setMessage:alldata.graphstatus[task.uid].message];
+        if(alldata.graphstatus[task.uid].exception!=undefined&&
+           alldata.graphstatus[task.uid].exception.length)
+          [obj setMessage:alldata.graphstatus[task.uid].exception];
+        [obj setStatus:alldata.graphstatus[task.uid].status];
+      }else{
+        [obj setProgress:@" "];      
+      }
+      //[obj setNeedsDisplay:YES];
+    }
   }
-  for(a=0;a<data.links.length;a++){
-    var link=data.links[a];
-    var src=[elements objectForKey:link.uid];
-    var trg=[elements objectForKey:link.linksTo];
-    //CPLog.debug("SourceHandle:"+CPStringFromPoint([src outHandlePoint]));
-    //CPLog.debug("SourceHandle:"+CPStringFromPoint([trg inHandlePoint]));
-    [src addTarget:trg];
-    [trg addSource:src];
-  }
-  [view setName:loadedName];
+  //CPLog.debug("Obj:"+data.tasks.length);
   [view setNeedsDisplay:YES];
 }
 

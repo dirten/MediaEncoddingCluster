@@ -26,12 +26,26 @@
   var column = [taskTableView tableColumnWithIdentifier:@"3"];
   [column setDataView:progressDataView];
   [self refresh];
-  [CPTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(refresh) userInfo:nil repeats:true];
+  [CPTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(refresh) userInfo:nil repeats:true];
   //[[NodeEditorController alloc] initWithView:theView]
   nodeEditorController=[[NodeActivityController alloc] initWithView:nodeEditorView];
-  activityWebView=[[[DetailWebView alloc] initWithFrame:[webView bounds]] initWithTemplate:"TaskWebView"];
+  [nodeEditorView setDelegate:self];
+  var bundle      = [CPBundle bundleForClass:[self class]]
+  activityWebView=[[[DetailWebView alloc] initWithFrame:[webView bounds]] initWithTemplate:[bundle pathForResource:@"TaskWebView.html"]];
   [webView addSubview:activityWebView];
 
+}
+-(void)selectionDidChangeInEditorView:element{
+  CPLog.debug("Selection in node view Changed to"+element);
+  CPLog.debug("Selection Json:"+JSON.stringify([nodeEditorController data]));
+  var elements=[nodeEditorController data].graph.tasks;
+  for(var a=0;a<elements.length;a++){
+    var task=[nodeEditorController data].graph.tasks[a];
+    if(task.uid==[element uid]){
+      [activityWebView setData:task];
+      break;
+    }
+  }
 }
 
 - (int)numberOfRowsInTableView:(CPTableView)tabView
@@ -71,6 +85,7 @@
     alert(data);
   }
 }
+
 - (void)loadTasksOnNotification:(CPNotification)notification
 {
   jobid = [notification userInfo];

@@ -30,7 +30,9 @@
   //CPLog.debug("Column:"+column);
   [column setDataView:progressDataView];
   [self refresh];
-  activityWebView=[[[DetailWebView alloc] initWithFrame:[webView bounds]] initWithTemplate:"JobWebView"];
+  var bundle      = [CPBundle bundleForClass:[self class]]
+  activityWebView=[[[DetailWebView alloc] initWithFrame:[webView bounds]] initWithTemplate:[bundle pathForResource:@"JobWebView.html"]];
+  //activityWebView=[[[DetailWebView alloc] initWithFrame:[webView bounds]] initWithTemplate:"Resources/JobWebView.html"];
   [webView addSubview:activityWebView];
   [CPTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(refresh) userInfo:nil repeats:true];
   
@@ -132,7 +134,7 @@
     selectedROwIndex=[[aNotification object] selectedRow];
     CPLog.debug("hello new activity selected:"+jsonData.data[[[aNotification object] selectedRow]].id);
     selectedid=jsonData.data[[[aNotification object] selectedRow]].id;
-    //[activityWebView setData:jsonData.data[[[aNotification object] selectedRow]]];
+    [activityWebView setData:jsonData.data[[[aNotification object] selectedRow]]];
     [[CPNotificationCenter defaultCenter]
      postNotificationName:EncodingClicked
      object:self

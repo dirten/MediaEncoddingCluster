@@ -10,7 +10,7 @@
   -(void)initWithTemplate:(CPString)template
   {
     var request = new CFHTTPRequest();
-    request.open("GET", "Resources/"+template+".html", true);
+    request.open("GET", template, true);
 
     request.onsuccess = function()
     {
@@ -34,8 +34,8 @@
   }
   -(void)setData:(id)data
   {
-    _id=data.id;
-    CPLog.debug("Data Id"+_id);
+    //_id=data.id;
+    CPLog.debug("Data Id DetailWebView"+JSON.stringify(data));
     //CPLog.debug("Data Renderfunc"+data.renderfunc);
     /*
     for (var key in data){

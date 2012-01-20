@@ -25,7 +25,7 @@ app (APPNAME, function(task)
     ENV["APPNAME"]=APPNAME;
     task.setBuildIntermediatesPath(FILE.join("./Build", APPNAME+".build", configuration));
     task.setBuildPath(FILE.join("./Build", configuration));
-    //task.setPreventsNib2Cib(true);
+    task.setPreventsNib2Cib(true);
 
     task.setProductName(APPNAME);
     task.setIdentifier("org.esb."+APPNAME);

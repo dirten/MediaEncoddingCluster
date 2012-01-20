@@ -16,6 +16,7 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
   CPString _name  @accessors(property=name);
   CGPoint     dragLocation;
   id lastNode;
+  id delegate               @accessors(property=delegate);
   BOOL isDrawingLink;
   BOOL movingView;
   BOOL unsavedChanges       @accessors(property=unsavedChanges);
@@ -60,6 +61,7 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
   }
   return self;
 }
+
 -(void)nodeEditorViewChanged
 {
   unsavedChanges=YES;
@@ -186,7 +188,10 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
     select=currentSelectedElement;
     [select setBorderWidth:3.0];
     [select setBorderColor:[CPColor greenColor]];
-   }
+    if([delegate respondsToSelector:@selector(selectionDidChangeInEditorView:)]){
+      [delegate selectionDidChangeInEditorView:select];
+    }
+  }
 
   if(currentSelectedHandle!=nil){
     CPLog.debug("currentSelectedHandle:"+CPStringFromPoint(currentSelectedHandle));

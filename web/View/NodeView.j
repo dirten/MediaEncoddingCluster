@@ -193,7 +193,7 @@ OutputHandle = 2;
  */
 -(void)drawContentsInView:(id)view inRect:(id)aRect
 {
-  //CPLog.debug("-(void)drawContentsInView:(id)view inRect:(id)aRect:"+CPStringFromRect(aRect));
+  CPLog.debug("-(void)drawContentsInView:(id)view inRect:(id)aRect:"+CPStringFromRect(aRect)+" progress="+progress);
   //[label drawRect:aRect];
   var context = [[CPGraphicsContext currentContext] graphicsPort];
   var bounds=[self bounds];
