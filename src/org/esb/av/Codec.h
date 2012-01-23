@@ -158,6 +158,7 @@ class SampleFormat;*/
           ar & _bytes_discard;
           ar & ctx->bits_per_coded_sample;
           ar & _options;
+          ar & ctx->codec_type;
 
           if (_mode == Codec::DECODER) {
             ar & ctx->extradata_size;
@@ -192,7 +193,8 @@ class SampleFormat;*/
           ar & _bytes_discard;
           ar & ctx->bits_per_coded_sample;
           ar & _options;
-          
+          ar & ctx->codec_type;
+
           if (_mode == Codec::DECODER) {
             ar & ctx->extradata_size;
             //LOGDEBUG("Extra data"<<ctx->extradata_size);

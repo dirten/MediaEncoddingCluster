@@ -172,20 +172,27 @@ namespace org {
           return;
         }
         if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+          LOGDEBUG("special handling audio")
           if (_swap_codec_list.find(unit->_source_stream) == _swap_codec_list.end()) {
             _swap_codec_list[unit->_source_stream] = false;
           }
 
           if (_swap_codec_list[unit->_source_stream]) {
+            LOGDEBUG("Swapping codec for audio encoding");
             unit->_decoder = _decoder_list[unit->_source_stream];
             unit->_encoder = _encoder_list[unit->_target_stream];
             unit->_converter = _converter_list[unit->_target_stream];
+          }else{
+            LOGDEBUG("audio no swap!!!");
           }
           _swap_codec_list[unit->_source_stream] = true;
+        }else{
+          LOGDEBUG("no audio codec");
         }
         unit->process();
         if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
           if (_swap_codec_list[unit->_source_stream]) {
+            LOGDEBUG("swap back to hold the data");
             _decoder_list[unit->_source_stream] = unit->_decoder;
             _encoder_list[unit->_target_stream] = unit->_encoder;
             _converter_list[unit->_target_stream] = unit->_converter;

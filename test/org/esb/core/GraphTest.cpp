@@ -96,12 +96,12 @@ int main(int argc, char** argv) {
   assert(man->joinPartition("global", e4, partitionservice::PartitionManager::TYPE_AUDIO) == partitionservice::PartitionManager::OK);
   partitionservice::ProcessUnitCollector col("collector");
   boost::thread t1 = go(process, e1, col);
-  
+  /*
   boost::thread t2 = go(process, e2, col);
   boost::thread t3 = go(process, e3, col);
   boost::thread t4 = go(process, e4, col);
   boost::thread t5 = go(process, e5, col);
-  
+  */
   Graph graph(list, "0815");
   graph.addStatusObserver(boost::bind(&print_status,_1));
   //boost::thread t6 = go(print_status, &graph);
@@ -112,12 +112,12 @@ int main(int argc, char** argv) {
   }
   toexit = true;
   t1.join();
-
+/*
   t2.join();
   t3.join();
   t4.join();
   t5.join();
-
+*/
   std::cerr << graph.getStatus();
 
   return 0;

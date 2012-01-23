@@ -19,6 +19,7 @@ testfunc();
   CPDictionary elementClasses;
   CPDictionary elements;
   id loadedUUID;
+  id loadedJobID;
   id alldata  @accessors(property=data);
   CPString loadedName;
   id growl;
@@ -143,7 +144,8 @@ testfunc();
   if(alldata.graphstatus)
   CPLog.debug("graphstatus_data:"+alldata.graphstatus[data.uuid]);
   
-  if(loadedUUID!=data.uuid){
+  if(loadedJobID!=[notification userInfo]){
+    loadedJobID=[notification userInfo];
     loadedUUID=data.uuid;
     loadedName=data.name;
     [view clearElements];
@@ -190,9 +192,9 @@ testfunc();
     }
     [view setName:loadedName];
   }else{
-    [[[elements objectEnumerator] allObjects] makeObjectsPerformSelector:@selector(setProgress:) withObject:@" "];
-    [[[elements objectEnumerator] allObjects] makeObjectsPerformSelector:@selector(setMessage:) withObject:@" "];
-    [[[elements objectEnumerator] allObjects] makeObjectsPerformSelector:@selector(setStatus:) withObject:-1];
+    //[[[elements objectEnumerator] allObjects] makeObjectsPerformSelector:@selector(setProgress:) withObject:@" "];
+    //[[[elements objectEnumerator] allObjects] makeObjectsPerformSelector:@selector(setMessage:) withObject:@" "];
+    //[[[elements objectEnumerator] allObjects] makeObjectsPerformSelector:@selector(setStatus:) withObject:-1];
     for(a=0;a<data.tasks.length;a++){
       var task=data.tasks[a];
       var taskdata=undefined;

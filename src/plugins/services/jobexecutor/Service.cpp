@@ -34,7 +34,7 @@ namespace jobexecutor {
   void Service::onMessage(org::esb::signal::Message &msg) {
     if (msg.getProperty<std::string > ("jobexecutor") == "STOP_JOB") {
       LOGDEBUG("STOP_JOB request");
-      _current_graph.cancel();
+      //_current_graph.cancel();
     }
   }
 
@@ -75,8 +75,10 @@ namespace jobexecutor {
     LOGDEBUG("Reading Graph Progress");
     int gprogress = (graph->getProcessedStepCount()*100) / graph->getStepCount();
     _job->graphstatus = graph->getStatus();
+    std::cout<<graph->getStatus()<<std::endl;
     _job->progress = gprogress;
     _job->update();
+    //std::cout<<*_job<<std::endl;
     //org::esb::lang::Thread::sleep2(1000);
     //}
   }
@@ -100,7 +102,7 @@ namespace jobexecutor {
           }
           _job = &job;
           org::esb::core::Graph graph(list, job.uuid);
-          _current_graph=graph;
+          //_current_graph=graph;
           graph.addStatusObserver(boost::bind(&Service::actualizeProgress, this, _1));
           //go(Service::actualizeProgress, this, &graph,job);
 
@@ -159,7 +161,7 @@ namespace jobexecutor {
             }
             try {
               _current_task = org::esb::core::PluginRegistry::getInstance()->createTask(dbtask.name, cfg);
-              _current_task->getContext()->_props["job"] = job;
+              //_current_task->getContext()->_props["job"] = job;
               //go(Service::actualizeProgress, this, _current_task,dbtask);
               _current_task->prepare();
               dbtask.status = dbtask.Status.Processing;

@@ -29,22 +29,24 @@ namespace org {
         return _props.count(key)>0;
       }
       
-      void PluginContext::merge(PluginContext&ctx){
-        std::map<std::string, std::string>::iterator inenvit=ctx.env.begin();
-        for(;inenvit!=ctx.env.end();inenvit++){
-          if((*inenvit).first!="data"){
+      void PluginContext::merge(Ptr<PluginContext> ctx){
+        std::map<std::string, std::string>::iterator inenvit=ctx->env.begin();
+        for(;inenvit!=ctx->env.end();inenvit++){
+          if((*inenvit).first!="data"&&env.count((*inenvit).first)){
             env.erase((*inenvit).first);
           }
         }
         
-        env.insert(ctx.env.begin(),ctx.env.end());
-        std::map<std::string, boost::any>::iterator propsit=_props.begin();
-        for(;propsit!=_props.end();propsit++){
-          if((*propsit).first!="data"){
+        env.insert(ctx->env.begin(),ctx->env.end());
+        //return;
+        
+        std::map<std::string, boost::any>::iterator propsit=ctx->_props.begin();
+        for(;propsit!=ctx->_props.end();propsit++){
+          if((*propsit).first!="data"&&_props.count((*propsit).first)){
             _props.erase((*propsit).first);
           }
         }
-        _props.insert(ctx._props.begin(),ctx._props.end());
+        _props.insert(ctx->_props.begin(),ctx->_props.end());
       }
       
       std::list<std::string> PluginContext::keys(){

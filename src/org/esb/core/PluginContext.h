@@ -15,6 +15,9 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/any.hpp>
 #include "exports.h"
+
+#include "org/esb/lang/Ptr.h"
+
 namespace db{
   class HiveDb;
 }
@@ -45,13 +48,13 @@ namespace org {
           _props[key]=value;
         }
         
-        void merge(PluginContext&);
+        void merge(Ptr<PluginContext>);
         std::list<std::string> keys();
         std::string toString();
         virtual ~PluginContext();
         bool contains(std::string);
-        std::map<std::string, boost::any> _props;
       private:
+        std::map<std::string, boost::any> _props;
         friend class PluginRegistry;
         PluginContext();
         std::map<std::string, std::string> env;

@@ -18,8 +18,8 @@ namespace org {
   namespace esb {
     namespace core {
 
-      Graph::Graph() {
-      }
+     // Graph::Graph() {
+     // }
 
       Graph::Graph(std::string graph) {
         throw GraphException("Constructor not supported", "-1");
@@ -52,9 +52,9 @@ namespace org {
       }
 
       void Graph::cancel() {
-        if (_current_task)
+        /*if (_current_task)
           _current_task->cancel();
-        _isCanceled = true;
+        _isCanceled = true;*/
       }
 
       void Graph::run() {
@@ -88,11 +88,7 @@ namespace org {
         status_list.back()->message = "";
         try {
           Ptr<org::esb::core::Task>task = e->task;
-          if (_isCanceled) {
-            task->cancel();
-            //return;
-          } else {
-            _current_task = task;
+            //_current_task = task;
             task->setUUID(_uuid);
 
             task->addProgressObserver(boost::bind(&Graph::setProgress, this, _1));
@@ -121,14 +117,13 @@ namespace org {
             //s["status"] = "finished";
             //status_list.push_back(s);
             //setProgress(task,s);
-          }
           processedStepCount++;
           setStatus(e->task.get());
 
           if (e->task->getStatus() != org::esb::core::Task::ERROR) {
             foreach(Ptr<Graph::Element> el, e->getChilds()) {
               el->task->setSource(e->task->getSink());
-              el->task->getContext()->merge(*e->task->getContext().get());
+              el->task->getContext()->merge(e->task->getContext());
               execute(el);
             }
           }

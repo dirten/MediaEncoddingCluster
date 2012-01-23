@@ -17,6 +17,7 @@ namespace org {
        * initialize the FrameConverter with the parameters from the De/Encoder
        */
       FrameConverter::FrameConverter(Decoder * dec, Encoder * enc) {
+        LOGDEBUG("FrameConverter::FrameConverter(Decoder * dec, Encoder * enc)");
         _swsContext = NULL;
         _audioCtx = NULL;
         _frameRateCompensateBase = 0;

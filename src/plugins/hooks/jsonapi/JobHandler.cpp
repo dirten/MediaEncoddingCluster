@@ -145,7 +145,7 @@ namespace jobhandler {
           para[key]=v;
         }
         task = org::esb::core::PluginRegistry::getInstance()->createTask(root["name"].as_string(), para);
-        task->getContext()->_props["job"]=job;
+        //task->getContext()->_props["job"]=job;
         task->prepare();
         if(task->getStatus()==org::esb::core::Task::ERROR){
           result=root["name"].as_string();

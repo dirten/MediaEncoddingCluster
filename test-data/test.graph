@@ -4,7 +4,7 @@
 			"name" : "InputTask",
 			"uid" : 1,
 			"data" : {
-				"infile" : "/Users/jhoelscher/bripper/test.dvd"
+				"infile" : "/Users/jhoelscher/Movies/ChocolateFactory.ts"
 			}
 		},
 		{
@@ -29,15 +29,15 @@
 					"id" : "libx264",
 					"qscale" : "4",
 					"b" : 250,
-					"coder" : "1",
-					"psnr" : "1",
-					"loop" : "1",
+					"coder" : "0",
+					"psnr" : "0",
+					"loop" : "0",
 					"cmp" : "chroma",
 					"me_method" : "esa",
-					"parti8x8" : "1",
-					"parti4x4" : "1",
-					"partp4x4" : "1",
-					"partp8x8" : "1",
+					"parti8x8" : "0",
+					"parti4x4" : "0",
+					"partp4x4" : "0",
+					"partp8x8" : "0",
 					"partb8x8" : "0",
 					"subq" : "8",
 					"me_range" : "16",
@@ -54,7 +54,7 @@
 					"bf" : "3",
 					"refs" : "16",
 					"directpred" : "3",
-					"trellis" : "1",
+					"trellis" : "0",
 					"wpred" : "1",
 					"mixed_refs" : "1",
 					"dct8x8" : "1",
@@ -67,7 +67,7 @@
 					"height" : "240",
 					"time_base_sel" : "1/25",
 					"frame_size" : "240x120",
-					"multipass" : 1,
+					"multipass" : 0,
 					"maxrate" : 300,
 					"minrate" : 200,
 					"bt" : 50,
@@ -84,7 +84,7 @@
 					"aq_mode" : "1",
 					"intra_refresh" : "0",
 					"mbtree" : "0",
-					"rc_lookahead" : "100"
+					"rc_lookahead" : "0"
 				},
 				"audio" : {
 					"id" : "libmp3lame",
@@ -210,11 +210,11 @@
 	"links" : [
 		{
 			"uid" : 1,
-			"linksTo" : 5
+			"linksTo" : 2
 		},
 		{
 			"uid" : 1,
-			"linksTo" : 2
+			"linksTo" : 5
 		},
 		{
 			"uid" : 2,
