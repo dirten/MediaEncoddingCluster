@@ -111,7 +111,7 @@ namespace org {
             while (!_toHalt) {
               char * text = const_cast<char*> ("get process_unit");
               boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit; // = new org::esb::hive::job::ProcessUnit();
-              
+
               try {
                 _sock->getOutputStream()->write(text, strlen(text));
                 _ois->readObject(unit);
@@ -122,8 +122,11 @@ namespace org {
               if (!unit || unit->_input_packets.size() == 0) {
                 break;
               }
-
-              processUnit(unit);
+              try {
+                processUnit(unit);
+              } catch (std::exception & ex) {
+                LOGERROR("processUnit(unit):" << ex.what());
+              }
               /**
                * clear the input packets, they are no more nedded
                * they only consumes Network bandwidth and cpu on the server
@@ -151,16 +154,16 @@ namespace org {
 
             }
           }
-          if(!_toHalt)
+          if (!_toHalt)
             org::esb::lang::Thread::sleep2(5000);
         }
 
         std::string cmd = LEAVE_PARTITION;
-        try{
-        _sock->getOutputStream()->write(cmd);
-        _oos->writeObject(org::esb::config::Config::get("partition"));
-        }catch(org::esb::net::SocketException & ex){
-          LOGDEBUG("error while leaving partition:"<<ex.what());
+        try {
+          _sock->getOutputStream()->write(cmd);
+          _oos->writeObject(org::esb::config::Config::get("partition"));
+        } catch (org::esb::net::SocketException & ex) {
+          LOGDEBUG("error while leaving partition:" << ex.what());
         }
         boost::mutex::scoped_lock terminationLock(terminationMutex);
         ctrlCHit.notify_all();
@@ -179,14 +182,17 @@ namespace org {
 
           if (_swap_codec_list[unit->_source_stream]) {
             LOGDEBUG("Swapping codec for audio encoding");
-            unit->_decoder = _decoder_list[unit->_source_stream];
-            unit->_encoder = _encoder_list[unit->_target_stream];
-            unit->_converter = _converter_list[unit->_target_stream];
-          }else{
+            if (_decoder_list[unit->_source_stream])
+              unit->_decoder = _decoder_list[unit->_source_stream];
+            if (_encoder_list[unit->_target_stream])
+              unit->_encoder = _encoder_list[unit->_target_stream];
+            if (_converter_list[unit->_target_stream])
+              unit->_converter = _converter_list[unit->_target_stream];
+          } else {
             LOGDEBUG("audio no swap!!!");
           }
           _swap_codec_list[unit->_source_stream] = true;
-        }else{
+        } else {
           LOGDEBUG("no audio codec");
         }
         unit->process();

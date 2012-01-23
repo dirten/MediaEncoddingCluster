@@ -154,7 +154,7 @@ add_library (util ${UTIL_LINK_TYPE}
   util/UUID.cpp
 )
 
-TARGET_LINK_LIBRARIES(util lang)
+TARGET_LINK_LIBRARIES(util lang ${POCO_LIB_FOUNDATION})
 
 IF(UNIX AND NOT APPLE)
     TARGET_LINK_LIBRARIES(util rt)

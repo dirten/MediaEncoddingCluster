@@ -15,7 +15,7 @@ namespace org {
         _progress_length=0;
         _progress=0;
         setProgress(0);
-        _isCanceled=false;
+        
       }
 
       Task::~Task() {
@@ -36,7 +36,7 @@ namespace org {
       }
 
       void Task::interrupt() {
-        setStatus(INTERRUPT);
+        setStatus(CANCEL);
       }
       
       int Task::getProgress() {
@@ -110,12 +110,13 @@ namespace org {
       void Task::addProgressObserver( boost::function<void (Task*)> func){
         progressObserver=func;      
       }
+
       void Task::cancel(){
-        _isCanceled=true;
+        _status=CANCEL;
       }
       
       bool Task::isCanceled(){
-        return _isCanceled;
+        return _status==CANCEL;
       }
     }
   }

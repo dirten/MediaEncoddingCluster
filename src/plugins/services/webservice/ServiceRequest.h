@@ -62,6 +62,7 @@ namespace org {
         mg_connection *_conn;
         const mg_request_info *_request_info;
         boost::any userobject;
+        std::string _uuid;
       };
     }
   }

@@ -281,6 +281,12 @@ namespace partitionservice {
       if(_ep_pu.count(ep)){
         LOGERROR("Endpoint is allready Processing a ProcessUnit");
       }
+      if(result->_decoder->getCodecType()==AVMEDIA_TYPE_VIDEO){
+        TimingStruct d;
+        d.frames=result->_input_packets.size();
+        d.send=Poco::Timestamp();
+        _timingList[ep].push_back(d);
+      }
       _ep_pu[ep]=result;
     }
     LOGDEBUG("Leave PartitionManager::getProcessUnit");
@@ -307,9 +313,34 @@ namespace partitionservice {
     
     if(_ep_pu.count(ep)){
       if(unit->getFps()>0){
-        //std::cerr <<"hallo fps="<<_fps<<" unit.fps="<<unit->getFps()<<" pus="<<_pus<<std::endl;
-        _pus++;
-        _fps+=unit->getFps();
+        
+        std::cerr <<"hallo unit.fps="<<unit->getFps()<<std::endl;
+        //_pus++;
+        //_fps+=unit->getFps();
+      }
+      if(_timingList.count(ep)){
+        _timingList[ep].back().recv=Poco::Timestamp();
+
+        int frames=0;
+        Poco::Timestamp start;
+        Poco::Timestamp end;
+        bool havedata=false;
+        foreach(TimingMap::value_type & timingmap, _timingList){
+          foreach(TimingList::value_type & timing, timingmap.second){
+            if(timing.send<start)
+              start=timing.send;
+            if(timing.recv>end)
+              end=timing.recv;
+            frames+=timing.frames;
+            havedata=true;
+          }
+        }
+
+        Poco::Timestamp::TimeDiff diff=end-start;
+        LOGDEBUG("TimeDiff="<<diff);
+
+        if(frames>0&&diff>0&&havedata)
+          _fps=frames/(diff/1000/1000);
       }
       _ep_pu.erase(ep);
     }else{
@@ -318,15 +349,14 @@ namespace partitionservice {
   }
   
   int PartitionManager::getFps(){
-    int fps=0;
-    if(_fps>0&&_pus>0)
-      fps=_fps/_pus;
-    return fps;
+    //int fps=0;
+    return _fps;
   }
 
   void PartitionManager::resetFps(){
     _fps=0;
     _pus=0;
+    _timingList.clear();
   }
   /*
 

@@ -5,6 +5,7 @@
 #include "Frame.h"
 //#include "swscale.h"
 #include <iostream>
+#include "org/esb/lang/Exception.h"
 
 #define MAX_AUDIO_PACKET_SIZE (128 * 1024)
 using namespace std;
@@ -58,8 +59,10 @@ namespace org {
           Format out = enc->getInputFormat();
 
           _swsContext = sws_getContext(in.width, in.height, in.pixel_format, out.width, out.height, out.pixel_format, sws_flags, NULL, NULL, NULL);
-          if (_swsContext == NULL)
+          if (_swsContext == NULL){
             LOGERROR("Could not initialize SWSCALE");
+            throw org::esb::lang::Exception("Could not initialize SWSCALE");
+          }
         }
       }
 
@@ -286,12 +289,14 @@ namespace org {
           inchannels = in_frame.channels;
           if (_audioCtx)audio_resample_close(_audioCtx);
           if (_dec->getCodecType() == AVMEDIA_TYPE_AUDIO && _enc->getCodecType() == AVMEDIA_TYPE_AUDIO) {
-            if (_dec->getSampleFormat() != SAMPLE_FMT_S16)
+            if (_dec->getSampleFormat() != SAMPLE_FMT_S16){
               LOGWARN("Warning, using s16 intermediate sample format for resampling\n");
-            _audioCtx = av_audio_resample_init(_enc->getChannels(), _dec->getChannels(), _enc->getSampleRate(), _dec->getSampleRate(), _enc->getSampleFormat(), _dec->getSampleFormat(), 16, 10, 0, 0.8 // this line is simple copied from ffmpeg
-                    );
-            if (!_audioCtx)
+            }
+            _audioCtx = av_audio_resample_init(_enc->getChannels(), _dec->getChannels(), _enc->getSampleRate(), _dec->getSampleRate(), _enc->getSampleFormat(), _dec->getSampleFormat(), 16, 10, 0, 0.8 );
+            if (!_audioCtx){
               LOGERROR("Could not initialize Audio Resample Context");
+              throw org::esb::lang::Exception(__FILE__,__LINE__,"Could not initialize Audio Resample Context");
+            }
           }
         }
 

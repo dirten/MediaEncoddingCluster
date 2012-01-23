@@ -19,7 +19,7 @@ namespace org {
       class CORE_EXPORT GraphParser {
       public:
         typedef std::map<std::string, Ptr<Graph::Element> > ElementMap;
-        GraphParser(std::string) throw (GraphException);
+        GraphParser(std::string, std::string infile="") throw (GraphException);
         virtual ~GraphParser();
         ElementMap & getElementMap();
         std::string getName();

@@ -14,7 +14,7 @@
 //#include "org/esb/mq/QueueConnection.h"
 #include "org/esb/util/Queue.h"
 #include "Partition.h"
-
+#include "Poco/Timestamp.h"
 #include <map>
 #include <list>
 #include "exports.h"
@@ -124,6 +124,14 @@ namespace partitionservice {
         std::map<Endpoint,Partition > _ep_part;
         int _fps;
         int _pus;
+        struct TimingStruct{
+          int frames;
+          Poco::Timestamp send;
+          Poco::Timestamp recv;
+        };
+        typedef std::list<TimingStruct> TimingList;
+        typedef std::map<Endpoint, TimingList> TimingMap;
+        TimingMap _timingList;
       };
     }
 

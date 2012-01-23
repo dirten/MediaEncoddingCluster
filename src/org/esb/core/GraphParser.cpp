@@ -22,18 +22,23 @@ namespace org {
         bool finished;
       };
 
-      GraphParser::GraphParser(std::string graphdata)throw (GraphException) {
+      GraphParser::GraphParser(std::string graphdata, std::string infile)throw (GraphException) {
         //        try {
         if (libjson::is_valid(graphdata)) {
-          JSONNode node = libjson::parse(graphdata);
-          if (node.contains("name")) {
-            name = node["name"].as_string();
+          _baseNode = libjson::parse(graphdata);
+          
+          if (_baseNode.contains("name")) {
+            name = _baseNode["name"].as_string();
+          }
+          /*setting alternative input file name*/
+          if(infile.length()>0){
+            setInfile(infile);
           }
           /*parsing tasks from graph*/
-          if (node.contains("tasks")) {
-            int s = node["tasks"].size();
+          if (_baseNode.contains("tasks")) {
+            int s = _baseNode["tasks"].size();
             for (int a = 0; a < s; a++) {
-              JSONNode task = node["tasks"].at(a);
+              JSONNode & task = _baseNode["tasks"].at(a);
               parseTask(task);
             }
           } else {
@@ -41,16 +46,15 @@ namespace org {
           }
 
           /*parsing links from graph*/
-          if (node.contains("links")) {
-            int s = node["links"].size();
+          if (_baseNode.contains("links")) {
+            int s = _baseNode["links"].size();
             for (int a = 0; a < s; a++) {
-              JSONNode link = node["links"].at(a);
+              JSONNode & link = _baseNode["links"].at(a);
               parseLink(link);
             }
           } else {
             throw GraphException("no links are defined in the graph");
           }
-          _baseNode = node;
           return;
           verifyLinks();
           verifyCycle();
@@ -81,6 +85,11 @@ namespace org {
           int s = _baseNode["tasks"].size();
           for (int a = 0; a < s; a++) {
             JSONNode & task = _baseNode["tasks"].at(a);
+            if(task.contains("name")){
+            LOGDEBUG("TaskName="<<task["name"].as_string());
+            }else{
+              LOGERROR("Task have no name");
+            }
             if (task.contains("name") && task["name"].as_string() == "InputTask") {
               if (task.contains("data") && task["data"].contains("infile")){
                 LOGDEBUG("setting infile for graph to:"<<infile);

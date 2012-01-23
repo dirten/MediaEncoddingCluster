@@ -52,9 +52,9 @@ namespace org {
       }
 
       void Graph::cancel() {
-        /*if (_current_task)
+        if (_current_task)
           _current_task->cancel();
-        _isCanceled = true;*/
+        _isCanceled = true;
       }
 
       void Graph::run() {
@@ -88,7 +88,7 @@ namespace org {
         status_list.back()->message = "";
         try {
           Ptr<org::esb::core::Task>task = e->task;
-            //_current_task = task;
+            _current_task = task;
             task->setUUID(_uuid);
 
             task->addProgressObserver(boost::bind(&Graph::setProgress, this, _1));

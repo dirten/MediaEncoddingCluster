@@ -55,8 +55,8 @@ void process(boost::asio::ip::tcp::endpoint e1, partitionservice::ProcessUnitCol
  */
 int main(int argc, char** argv) {
   Log::open();
-  if (argc < 2) {
-    std::cout << "usage: " << argv[0] << " <graph_path> " << std::endl;
+  if (argc < 3) {
+    std::cout << "usage: " << argv[0] << " <graph_path> <input_file>" << std::endl;
   }
 
   org::esb::hive::Environment::build(argc, argv);
@@ -73,7 +73,9 @@ int main(int argc, char** argv) {
   org::esb::io::FileInputStream fis(argv[1]);
   std::string graph_data;
   fis.read(graph_data);
-  GraphParser graphparser(graph_data);
+  GraphParser graphparser(graph_data,argv[2]);
+  
+  
   GraphParser::ElementMap & el = graphparser.getElementMap();
   std::list<Ptr<Graph::Element> > list;
 

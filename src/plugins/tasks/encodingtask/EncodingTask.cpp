@@ -81,6 +81,7 @@ namespace encodingtask {
     }
   }
   void EncodingTask::cleanup(){
+    partitionservice::PartitionManager::getInstance()->resetFps();
     std::string base = org::esb::config::Config::get("hive.tmp_path");
     org::esb::io::File infile(base + "/jobs/" + getUUID() + "/" + _srcuristr);
     if(infile.exists()){
@@ -136,6 +137,7 @@ namespace encodingtask {
       sdata.last_start_dts = 0;
       sdata.min_packet_count = 0;
       sdata.outstream = a;
+      sdata.instream = is->index;
       /*create the decoder objects*/
       sdata.decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is));
       sdata.pass2decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is));
@@ -253,7 +255,7 @@ namespace encodingtask {
     ProcessUnitBuilder builder(stream_map);
     Packet * packet;
 
-    while (getStatus() != Task::INTERRUPT && getStatus() != Task::ERROR && (packet = pis.readPacket()) != NULL) {
+    while (!isCanceled() && getStatus() != Task::ERROR && (packet = pis.readPacket()) != NULL) {
       /**
        * building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
        */
@@ -274,11 +276,6 @@ namespace encodingtask {
       //pPacket->setStreamIndex(stream_map[pPacket->getStreamIndex()].outstream);
       //LOGDEBUG("PacketStreamIndex:"<<packet->getStreamIndex());
       if (packetizer.putPacket(pPacket)) {
-        LOGDEBUG("PacketizerListPtr ready, build ProcessUnit");
-        if (getStatus() == Task::INTERRUPT) {
-          setStatus(Task::INTERRUPTED);
-          return;
-        }
         PacketListPtr packets = packetizer.removePacketList();
         LOGDEBUG("PacketListStartPts=" << packets.front()->getPts() << " PacketListEndPts=" << packets.back()->getPts())
         boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit = builder.build(packets);
@@ -301,7 +298,7 @@ namespace encodingtask {
     }
 
     int prev_fps = 0;
-    while (partitionservice::PartitionManager::getInstance()->getSize(_partition) > 0) {
+    while (!isCanceled()&&partitionservice::PartitionManager::getInstance()->getSize(_partition) > 0) {
       setProgress(getProgressLength() - partitionservice::PartitionManager::getInstance()->getSize(_partition));
       org::esb::lang::Thread::sleep2(1 * 1000);
       if (prev_fps != partitionservice::PartitionManager::getInstance()->getFps()) {
@@ -311,7 +308,11 @@ namespace encodingtask {
         setStatusMessage(fps);
       }
     }
-
+    if(isCanceled()){
+      setStatus(CANCELED);
+      setStatusMessage("Encoding Task Canceled");
+      return;
+    }
     setProgress(getProgressLength());
     exportFile();
     partitionservice::PartitionManager::getInstance()->resetFps();

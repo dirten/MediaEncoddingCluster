@@ -75,6 +75,8 @@ ProcessUnit::ProcessUnit() {
   _keep_aspect_ratio = 0;
   _discard_audio_bytes = -1;
   _converter = NULL;
+  _job_id="";
+  _sequence=0;
   id = 0;
   _fps=0;
 }

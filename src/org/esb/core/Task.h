@@ -27,8 +27,8 @@ namespace org {
           EXECUTE,
           CLEANUP,
           DONE,
-          INTERRUPT,
-          INTERRUPTED,
+          CANCEL,
+          CANCELED,
           ERROR
         };
         enum PAD_TYPE {
@@ -76,7 +76,7 @@ namespace org {
         std::string _uuid;
         boost::function<void (Task*)> statusObserver;
         boost::function<void (Task*)> progressObserver;
-        bool _isCanceled;
+        //bool _isCanceled;
       };
     }
   }
