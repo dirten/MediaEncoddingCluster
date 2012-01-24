@@ -228,9 +228,9 @@ namespace graphhandler {
 
       /**parsing json file*/
       try {
-        org::esb::core::GraphParser graphparser(ndata);
-        if(inputfile.length()>0)
-          graphparser.setInfile(inputfile);
+        org::esb::core::GraphParser graphparser(ndata,inputfile);
+        //if(inputfile.length()>0)
+        //  graphparser.setInfile(inputfile);
         org::esb::io::File infile(graphparser.getInfile());
         if(infile.exists()&&infile.isDirectory()){
           org::esb::io::FileList list=infile.listFiles();

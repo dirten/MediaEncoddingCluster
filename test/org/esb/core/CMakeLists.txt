@@ -10,6 +10,7 @@ add_executable (HookNotificationCenterTest HookNotificationCenterTest.cpp)
 add_executable (BoostAnyCastTest BoostAnyCastTest.cpp)
 add_executable (GraphTest GraphTest.cpp)
 add_executable (GraphParserTest GraphParserTest.cpp)
+add_executable (HTTPServerTest HTTPServerTest.cpp)
 
 target_link_libraries (PluginRegistryTest lang hive)
 target_link_libraries (PluginLoaderTest io core)
@@ -17,11 +18,13 @@ target_link_libraries (HookNotificationCenterTest core)
 target_link_libraries (BoostAnyCastTest core)
 target_link_libraries (GraphTest encodingtask core)
 target_link_libraries (GraphParserTest core)
+target_link_libraries (HTTPServerTest core_http)
 
 ADD_TEST(core.PluginRegistryTest ${EXECUTABLE_OUTPUT_PATH}/PluginRegistryTest)
 ADD_TEST(core.PluginLoaderTest ${EXECUTABLE_OUTPUT_PATH}/PluginLoaderTest)
 ADD_TEST(core.HookNotificationCenterTest ${EXECUTABLE_OUTPUT_PATH}/HookNotificationCenterTest)
 ADD_TEST(core.GraphParserTest ${EXECUTABLE_OUTPUT_PATH}/GraphParserTest ${MEC_SOURCE_DIR}/test-data/test.graph)
+#ADD_TEST(core.HTTPServerTest ${EXECUTABLE_OUTPUT_PATH}/HTTPServerTest)
 
 
 add_library (plugin SHARED

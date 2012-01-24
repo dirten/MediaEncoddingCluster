@@ -14,7 +14,7 @@ SET(lang_source
     ProcessException.cpp
     ProcessListener.cpp
     NotFoundException.cpp
-#    Object.cpp
+    Object.cpp
 )
 IF(NOT WIN32)
   SET(lang_source

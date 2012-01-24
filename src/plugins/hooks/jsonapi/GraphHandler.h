@@ -36,6 +36,7 @@ namespace graphhandler {
     std::string _base_uri;
   };
   REGISTER_HOOK("web.api.Service", GraphHandler, GraphHandler::handleRequest, 11);
+  //REGISTER_WEB_HANDLER("/api/v1/graph/{uuid}", POST, GraphSaveHandler);
 }
 #endif	/* JOBHANDLER_H */
 

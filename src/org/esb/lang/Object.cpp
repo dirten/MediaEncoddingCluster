@@ -6,3 +6,9 @@
  */
 
 #include "Object.h"
+namespace org {
+  namespace esb {
+    namespace lang {
+    }
+  }
+}

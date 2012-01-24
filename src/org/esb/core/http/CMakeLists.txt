@@ -1,0 +1,30 @@
+ADD_DEFINITIONS(-DCORE_BUILD_SHARED)
+
+MESSAGE("CORE Build Type" ${CORE_LINK_TYPE})
+
+include_directories (${BREAKPAD_INCLUDE_DIR})
+LINK_DIRECTORIES(${BREAKPAD_LIB_DIR})
+
+SET(core_http_source
+  Server.cpp
+  HTTPRequest.cpp
+  HTTPResponse.cpp
+)
+
+add_library (core_http SHARED
+  ${core_http_source}
+)
+
+TARGET_LINK_LIBRARIES(core_http
+  ${POCO_LIB_NET}
+  ${POCO_LIB_FOUNDATION}
+  util
+)
+SET_TARGET_PROPERTIES( core_http PROPERTIES PREFIX "libmhive-")
+
+INSTALL(TARGETS core_http
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
+#    ARCHIVE DESTINATION ${LIB_INSTALL_DIR}
+)

@@ -7,7 +7,7 @@
 
 #ifndef OBJECT_H
 #define	OBJECT_H
-#include "boost/intrusive_ptr.hpp"
+#include "Poco/RefCountedObject.h"
 #include "exports.h"
 namespace org {
   namespace esb {
@@ -15,23 +15,13 @@ namespace org {
       
 
       template <typename T=std::string>
-      class LANG_EXPORT Object : public boost::intrusive_ptr<T> {
+      class LANG_EXPORT Object : public Poco::RefCountedObject {
       public:
 
-        Object() : references(0) {
-        }
-        virtual ~Object();
+        Object():RefCountedObject(){}
+        virtual ~Object(){}
       private:
-        long references;
-
-        void intrusive_ptr_add_ref(){
-
-        }
-
       };
-        void intrusive_ptr_release(Object<> * p){
-
-        }
     }
   }
 }

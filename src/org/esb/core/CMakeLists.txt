@@ -48,3 +48,5 @@ INSTALL(TARGETS core
 #    ARCHIVE DESTINATION ${LIB_INSTALL_DIR}
 )
 ENDIF(SHARED_CORE)
+
+add_subdirectory (http)
