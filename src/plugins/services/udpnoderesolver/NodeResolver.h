@@ -83,7 +83,7 @@ namespace org {
       };
 
       class UDPNODERSOLVER_EXPORT NodeListener {
-        classlogger("org.esb.hive.NodeListener")
+        classlogger("org.esb.UdpNodeListener")
       public:
         virtual void onNodeUp(Node & node) = 0;
         virtual void onNodeDown(Node & node) = 0;
@@ -91,7 +91,7 @@ namespace org {
       };
 
       class UDPNODERSOLVER_EXPORT NodeResolver{
-        classlogger("org.esb.hive.NodeResolver")
+        classlogger("org.esb.UdpNodeResolver")
       public:
         typedef std::list<Ptr<Node> > NodeList;
         NodeResolver(const boost::asio::ip::address& listen_address, const boost::asio::ip::address& multicast_address, int, Node);

@@ -55,6 +55,8 @@ namespace org {
       }
       
       SharedObjectLoader::~SharedObjectLoader() {
+        if(hMod)
+          FreeLibrary(hMod);
       }
     }
   }

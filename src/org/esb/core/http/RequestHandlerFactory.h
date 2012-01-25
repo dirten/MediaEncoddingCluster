@@ -17,6 +17,9 @@ namespace org{
         class RequestHandlerFactory: public Poco::Net::HTTPRequestHandlerFactory{
           void addRequestHandler(RequestHandler&);
           RequestHandler * createRequestHandler(HTTPRequest&);
+          Poco::Net::HTTPRequestHandler*createRequestHandler(Poco::Net::HTTPServerRequest&){
+            return NULL;
+          }
         };
       }
     }
