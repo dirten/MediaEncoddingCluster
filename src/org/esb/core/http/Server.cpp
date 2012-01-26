@@ -20,8 +20,8 @@ namespace org {
           _params->setMaxThreads(16);
         }
         
-        void Server::setRequestHandlerFactory(RequestHandlerFactory &factory){
-          _httpserver=new Poco::Net::HTTPServer(&factory,*_socket.get(), _params);
+        void Server::setRequestHandlerFactory(RequestHandlerFactory *factory){
+          _httpserver=new Poco::Net::HTTPServer(factory,*_socket.get(), _params);
         }
 
         Server::~Server() {

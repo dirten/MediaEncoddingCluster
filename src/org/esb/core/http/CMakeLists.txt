@@ -8,6 +8,8 @@ LINK_DIRECTORIES(${BREAKPAD_LIB_DIR})
 SET(core_http_source
   Server.cpp
   HTTPRequest.cpp
+  HTTPServerRequest.cpp
+  HTTPServerResponse.cpp
   HTTPResponse.cpp
 )
 
@@ -17,7 +19,9 @@ add_library (core_http SHARED
 
 TARGET_LINK_LIBRARIES(core_http
   ${POCO_LIB_NET}
+  ${POCO_LIB_NET_UTIL}
   ${POCO_LIB_FOUNDATION}
+  ${POCO_LIB_XML}
   util
 )
 SET_TARGET_PROPERTIES( core_http PROPERTIES PREFIX "libmhive-")

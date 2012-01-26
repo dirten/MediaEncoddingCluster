@@ -9,7 +9,7 @@
 #define	JOBHANDLER_H
 #include "org/esb/db/hivedb.hpp"
 
-#include "org/esb/core/HookPlugin.h"
+#include "org/esb/core/WebHookPlugin.h"
 #include "org/esb/core/Request.h"
 #include "org/esb/core/Response.h"
 #include "org/esb/libjson/JSONNode.h"
@@ -17,7 +17,12 @@
 #include "exports.h"
 namespace graphhandler {
 
-  class JSONAPI_EXPORT GraphHandler : public org::esb::core::HookPlugin {
+  class JSONAPI_EXPORT GraphSaveHandler : public org::esb::core::WebHookPlugin {
+  public:
+    void handle(org::esb::core::http::HTTPServerRequest&, org::esb::core::http::HTTPServerResponse&);
+  };
+
+  class JSONAPI_EXPORT GraphHandler : public org::esb::core::WebHookPlugin {
     classlogger("jsonapi.GraphHandler")
   public:
     GraphHandler();
@@ -35,8 +40,13 @@ namespace graphhandler {
     void save(JSONNode&root, std::string & uuid);
     std::string _base_uri;
   };
-  REGISTER_HOOK("web.api.Service", GraphHandler, GraphHandler::handleRequest, 11);
-  //REGISTER_WEB_HANDLER("/api/v1/graph/{uuid}", POST, GraphSaveHandler);
+  //REGISTER_HOOK("web.api.Service", GraphHandler, GraphHandler::handleRequest, 11);
+  typedef GraphSaveHandler GraphSaveHandler2;
+  
+  
+  REGISTER_WEB_HOOK("/api/v1/graph/{uuid}", POST, GraphSaveHandler);
+  REGISTER_WEB_HOOK("/api/v1/graph/{uuid}", GET, GraphSaveHandler2);
 }
 #endif	/* JOBHANDLER_H */
+
 

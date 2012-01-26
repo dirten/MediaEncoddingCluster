@@ -23,6 +23,7 @@ SET(core_source
   Graph.cpp
   GraphParser.cpp
   GraphException.cpp
+  WebHookHandlerFactory.cpp
 )
 
 add_library (core ${CORE_LINK_TYPE}

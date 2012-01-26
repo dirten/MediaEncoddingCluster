@@ -22,7 +22,7 @@ namespace org {
           virtual ~Server();
           void start();
           void stop();
-          void setRequestHandlerFactory(RequestHandlerFactory &);
+          void setRequestHandlerFactory(RequestHandlerFactory *);
         private:
           Ptr<Poco::Net::ServerSocket> _socket;
           Ptr<Poco::Net::HTTPServer> _httpserver;

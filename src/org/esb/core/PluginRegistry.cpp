@@ -104,6 +104,7 @@ namespace org {
         LOGDEBUG("register HookPlugin " << name);
         _plug_map[name] = plugin;
       }
+      
 
       void PluginRegistry::registerHookProvider(std::string name, HookProvider*plugin) {
         _hook_provider_map[name] = plugin;
@@ -111,6 +112,12 @@ namespace org {
 
       void PluginRegistry::registerTaskFactory(std::string name, TaskFactory *factory) {
         _task_factories[name] = factory;
+      }
+
+      void PluginRegistry::registerWebHookFactory(std::string name, WebHookFactory *factory) {
+        _webhook_handler_factory.registerHandlerFactory(factory);
+        //_webhook_factories[name]=factory;
+        //_task_factories[name] = factory;
       }
 
       std::list<std::string> PluginRegistry::getTaskNameList() {

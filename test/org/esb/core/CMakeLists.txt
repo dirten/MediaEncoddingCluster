@@ -18,7 +18,7 @@ target_link_libraries (HookNotificationCenterTest core)
 target_link_libraries (BoostAnyCastTest core)
 target_link_libraries (GraphTest encodingtask core)
 target_link_libraries (GraphParserTest core)
-target_link_libraries (HTTPServerTest core_http)
+target_link_libraries (HTTPServerTest core_http hive)
 
 ADD_TEST(core.PluginRegistryTest ${EXECUTABLE_OUTPUT_PATH}/PluginRegistryTest)
 ADD_TEST(core.PluginLoaderTest ${EXECUTABLE_OUTPUT_PATH}/PluginLoaderTest)

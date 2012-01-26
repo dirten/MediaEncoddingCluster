@@ -11,11 +11,15 @@
 #include "boost/program_options.hpp"
 #include "org/esb/lang/Ptr.h"
 #include "exports.h"
+#define ENGINE_VERSION 1
+
 namespace org {
   namespace esb {
     namespace core {
       class PluginContext;
       class Task;
+      class WebHookPlugin;
+      
       typedef boost::program_options::options_description OptionsDescription;
       //typedef boost::program_options::value Value;
 
@@ -49,8 +53,18 @@ namespace org {
       public:
         virtual Ptr<Interface> create() = 0;
         virtual OptionsDescription getOptionsDescription()=0;
+        int getEngineVersion(){return ENGINE_VERSION;}
       };
       typedef Factory<Task> TaskFactory;
+
+      template<typename Interface>
+      class WebHook : public Interface {
+      public:
+        virtual std::string getUrl() = 0;
+        virtual std::string getMethod() = 0;
+      };
+
+      typedef WebHook<Factory<WebHookPlugin> > WebHookFactory;
 
     }
   }

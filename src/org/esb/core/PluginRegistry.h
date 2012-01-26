@@ -13,6 +13,7 @@
 #include "org/esb/util/Log.h"
 #include "Plugin.h"
 #include "org/esb/lang/SharedObjectLoader.h"
+#include "WebHookHandlerFactory.h"
 #include "org/esb/lang/Ptr.h"
 #include "exports.h"
 namespace org {
@@ -37,6 +38,7 @@ namespace org {
         void CORE_EXPORT registerHookProvider(std::string, HookProvider*);
         //void CORE_EXPORT registerTaskFactory(std::string,Ptr<TaskFactory>);
         void CORE_EXPORT registerTaskFactory(std::string,TaskFactory*);
+        void CORE_EXPORT registerWebHookFactory(std::string name, WebHookFactory *factory);
         void CORE_EXPORT startServerServices();
         void CORE_EXPORT startClientServices();
         void CORE_EXPORT stopServices();
@@ -56,6 +58,7 @@ namespace org {
         virtual ~PluginRegistry();
         static PluginRegistry * _instance;
         void loadFile(std::string);
+        WebHookHandlerFactory _webhook_handler_factory;
         struct PluginData{
           std::string name;
           Plugin * plugin;
@@ -70,8 +73,11 @@ namespace org {
         std::map<std::string,PluginData> _plugin_data;
         //std::map<std::string,Ptr<TaskFactory> > _task_factories;
         typedef std::map<std::string,TaskFactory *> TaskFactoryMap;
+        typedef std::map<std::string,WebHookFactory *> WebHookFactoryMap;
 
         TaskFactoryMap _task_factories;
+        WebHookFactoryMap _webhook_factories;
+
         std::map<std::string,std::string> _config_data;
       };
     }

@@ -8,17 +8,21 @@
 #ifndef REQUESTHANDLERFACTORY_H
 #define	REQUESTHANDLERFACTORY_H
 #include "Poco/Net/HTTPRequestHandlerFactory.h"
+#include "Poco/Net/HTTPServerRequest.h"
 #include "RequestHandler.h"
-#include "HTTPRequest.h"
+#include "HTTPServerRequest.h"
 namespace org{
   namespace esb{
     namespace core{
       namespace http{
         class RequestHandlerFactory: public Poco::Net::HTTPRequestHandlerFactory{
           void addRequestHandler(RequestHandler&);
-          RequestHandler * createRequestHandler(HTTPRequest&);
-          Poco::Net::HTTPRequestHandler*createRequestHandler(Poco::Net::HTTPServerRequest&){
-            return NULL;
+        public:
+          virtual RequestHandler * createHandler(HTTPServerRequest&)=0;
+          Poco::Net::HTTPRequestHandler* createRequestHandler(const Poco::Net::HTTPServerRequest&req){
+            Poco::Net::HTTPServerRequest * ptr=const_cast<Poco::Net::HTTPServerRequest *>(&req);
+            HTTPServerRequest* httpPtr=static_cast<HTTPServerRequest*>(ptr);
+            return createHandler(*httpPtr);
           }
         };
       }
