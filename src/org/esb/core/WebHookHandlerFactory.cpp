@@ -15,13 +15,14 @@ namespace org {
       }
 
       org::esb::core::http::RequestHandler * WebHookHandlerFactory::createHandler(org::esb::core::http::HTTPServerRequest&req) {
-        foreach(WebHookPluginMap::value_type plugin,_webhook_plugin_list){
+        foreach(WebHookFactory * factory,_webhook_factory_list){
+          return NULL;//factory->create().get();
         }
       }
 
       void WebHookHandlerFactory::registerHandlerFactory(WebHookFactory *factory) {
         _webhook_factory_list.push_back(factory);
-        _webhook_plugin_list[factory->getUrl()]=factory->create();
+        //_webhook_plugin_list[factory->getUrl()]=factory->create();
       }
 
       WebHookHandlerFactory::~WebHookHandlerFactory() {

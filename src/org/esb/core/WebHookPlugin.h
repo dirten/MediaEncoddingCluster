@@ -17,7 +17,7 @@ namespace org {
   namespace esb {
     namespace core {
 
-      class WebHookPlugin : public Plugin {
+      class WebHookPlugin : public Plugin, org::esb::core::http::RequestHandler {
       public:
         virtual void handle(org::esb::core::http::HTTPServerRequest& request, org::esb::core::http::HTTPServerResponse& response) = 0;
 

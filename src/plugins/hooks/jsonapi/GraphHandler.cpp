@@ -41,9 +41,9 @@ namespace graphhandler {
 
   }
   
-  void GraphSaveHandler::handle(org::esb::core::http::HTTPServerRequest&, org::esb::core::http::HTTPServerResponse&){
-    
-  }
+//  void GraphSaveHandler::handle(org::esb::core::http::HTTPServerRequest&, org::esb::core::http::HTTPServerResponse&){
+//    
+//  }
 
   void GraphHandler::handleRequest(org::esb::core::Request*req, org::esb::core::Response*res) {
     org::esb::api::ServiceRequest*sreq = ((org::esb::api::ServiceRequest*) req);
