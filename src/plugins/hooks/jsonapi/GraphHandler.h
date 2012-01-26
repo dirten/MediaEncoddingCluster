@@ -9,7 +9,7 @@
 #define	JOBHANDLER_H
 #include "org/esb/db/hivedb.hpp"
 
-//#include "org/esb/core/WebHookPlugin.h"
+#include "org/esb/core/WebHookPlugin.h"
 #include "org/esb/core/HookPlugin.h"
 
 #include "org/esb/core/Request.h"
@@ -18,12 +18,12 @@
 
 #include "exports.h"
 namespace graphhandler {
-  /*
-  class JSONAPI_EXPORT GraphSaveHandler : public org::esb::core::WebHookPlugin {
+  
+  class JSONAPI_EXPORT GraphListHandler : public org::esb::core::WebHookPlugin {
   public:
     void handle(org::esb::core::http::HTTPServerRequest&, org::esb::core::http::HTTPServerResponse&);
   };
-*/
+
   class JSONAPI_EXPORT GraphHandler : public org::esb::core::HookPlugin {
     classlogger("jsonapi.GraphHandler")
   public:
@@ -46,7 +46,7 @@ namespace graphhandler {
   //typedef GraphSaveHandler GraphSaveHandler2;
   
   
-  //REGISTER_WEB_HOOK("/api/v1/graph/{uuid}", POST, GraphSaveHandler);
+  REGISTER_WEB_HOOK("/api/v1/graph", POST, GraphListHandler);
   //REGISTER_WEB_HOOK("/api/v1/graph/{uuid}", GET, GraphSaveHandler2);
 }
 #endif	/* JOBHANDLER_H */

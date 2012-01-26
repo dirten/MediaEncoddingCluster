@@ -40,10 +40,57 @@ namespace graphhandler {
   GraphHandler::~GraphHandler() {
 
   }
-  
-//  void GraphSaveHandler::handle(org::esb::core::http::HTTPServerRequest&, org::esb::core::http::HTTPServerResponse&){
-//    
-//  }
+
+  void GraphListHandler::handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
+    res.setChunkedTransferEncoding(true);
+    res.setContentType("text/plain");
+
+    JSONNode result(JSON_NODE);
+    std::string user_path = org::esb::config::Config::get("hive.graph_path");
+
+    org::esb::io::File f(user_path + "/");
+    org::esb::io::FileList files = f.listFiles();
+    JSONNode data(JSON_ARRAY);
+    data.set_name("data");
+    result.push_back(JSONNode("status", "ok"));
+    std::string uuid = "0815"; //req.get->getUUID();
+    result.push_back(JSONNode("uuid", uuid));
+
+    foreach(Ptr<org::esb::io::File> file, files) {
+      /**load graph file*/
+      org::esb::io::FileInputStream fis(file.get());
+      std::string ndata;
+      fis.read(ndata);
+
+      /**parsing json file*/
+      if (libjson::is_valid(ndata)) {
+        //LOGDEBUG("Data is valid");
+        JSONNode inode = libjson::parse(ndata);
+        std::string name;
+        if (inode.contains("name")) {
+          name = inode["name"].as_string();
+        }
+        if (inode.contains("uuid")) {
+          uuid = inode["uuid"].as_string();
+        } else {
+          //file->deleteFile();
+          //inode.push_back(JSONNode("uuid",uuid));
+          //save(inode, uuid);
+        }
+        JSONNode file_node(JSON_NODE);
+        file_node.set_name("graph");
+        file_node.push_back(JSONNode("uuid", uuid));
+        file_node.push_back(JSONNode("name", name));
+        data.push_back(file_node);
+      }
+    }
+    result.push_back(data);
+
+
+
+    std::ostream& ostr = res.send();
+    ostr << result.write_formatted();
+  }
 
   void GraphHandler::handleRequest(org::esb::core::Request*req, org::esb::core::Response*res) {
     org::esb::api::ServiceRequest*sreq = ((org::esb::api::ServiceRequest*) req);
@@ -232,13 +279,14 @@ namespace graphhandler {
 
       /**parsing json file*/
       try {
-        org::esb::core::GraphParser graphparser(ndata,inputfile);
+        org::esb::core::GraphParser graphparser(ndata, inputfile);
         //if(inputfile.length()>0)
         //  graphparser.setInfile(inputfile);
         org::esb::io::File infile(graphparser.getInfile());
-        if(infile.exists()&&infile.isDirectory()){
-          org::esb::io::FileList list=infile.listFiles();
-          foreach(Ptr<org::esb::io::File> file,list){
+        if (infile.exists() && infile.isDirectory()) {
+          org::esb::io::FileList list = infile.listFiles();
+
+          foreach(Ptr<org::esb::io::File> file, list) {
             graphparser.setInfile(file->getPath());
             db::Job job(*getContext()->database);
             job.uuid = (std::string)org::esb::util::PUUID();
@@ -247,9 +295,9 @@ namespace graphhandler {
             job.graphname = graphparser.getName();
             job.infile = file->getPath();
             job.created = 0;
-            job.update();            
+            job.update();
           }
-        }else if(infile.exists()&&infile.isFile()){
+        } else if (infile.exists() && infile.isFile()) {
           db::Job job(*getContext()->database);
           job.uuid = (std::string)org::esb::util::PUUID();
           job.status = db::Job::Status::Waiting;
@@ -258,14 +306,15 @@ namespace graphhandler {
           job.infile = graphparser.getInfile();
           job.created = 0;
           job.update();
-        }else{
-          std::string reg=infile.getPath();
-          reg=Poco::replace(reg,".","\\.");
-          reg=Poco::replace(reg,"*",".*");
+        } else {
+          std::string reg = infile.getPath();
+          reg = Poco::replace(reg, ".", "\\.");
+          reg = Poco::replace(reg, "*", ".*");
           Poco::RegularExpression re(reg);
           org::esb::io::File wld(infile.getFilePath());
 
-          org::esb::io::FileList list=wld.listFiles();
+          org::esb::io::FileList list = wld.listFiles();
+
           foreach(Ptr<org::esb::io::File> file, list) {
             if (re.match(file->getPath())) {
               LOGDEBUG("File Found:" << file->getPath());
@@ -277,7 +326,7 @@ namespace graphhandler {
               job.graphname = graphparser.getName();
               job.infile = file->getPath();
               job.created = 0;
-              job.update();            
+              job.update();
             }
           }
 

@@ -6,6 +6,7 @@
  */
 
 #include "WebHookHandlerFactory.h"
+#include "WebHookPlugin.h"
 #include "org/esb/util/Foreach.h"
 namespace org {
   namespace esb {
@@ -15,8 +16,12 @@ namespace org {
       }
 
       org::esb::core::http::RequestHandler * WebHookHandlerFactory::createHandler(org::esb::core::http::HTTPServerRequest&req) {
+        //LOGDEBUG("WebHookHandlerFactory::createHandler");
         foreach(WebHookFactory * factory,_webhook_factory_list){
-          return NULL;//factory->create().get();
+          WebHookPlugin * ptr=factory->create();
+          //LOGDEBUG(ptr);
+          //LOGDEBUG(static_cast<org::esb::core::http::RequestHandler *>(ptr));
+          return static_cast<org::esb::core::http::RequestHandler *>(ptr);
         }
       }
 

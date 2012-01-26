@@ -1,4 +1,5 @@
 SET(SHARED_CORE on)
+add_subdirectory (http)
 
 IF(SHARED_CORE)
     SET(CORE_LINK_TYPE SHARED)
@@ -38,6 +39,7 @@ TARGET_LINK_LIBRARIES(core
   util
   ${POCO_LIB_NET}
   ${POCO_LIB_FOUNDATION}
+  core_http
 )
 SET_TARGET_PROPERTIES( core PROPERTIES PREFIX "libmhive-")
 
@@ -50,4 +52,3 @@ INSTALL(TARGETS core
 )
 ENDIF(SHARED_CORE)
 
-add_subdirectory (http)

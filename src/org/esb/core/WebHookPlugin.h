@@ -5,8 +5,8 @@
  * Created on 30. August 2011, 16:46
  */
 
-#ifndef HOOKPLUGIN_H
-#define	HOOKPLUGIN_H
+#ifndef WEBHOOKPLUGIN_H
+#define	WEBHOOKPLUGIN_H
 #include "Plugin.h"
 #include "PluginRegistry.h"
 #include "HookNotificationCenter.h"
@@ -17,9 +17,9 @@ namespace org {
   namespace esb {
     namespace core {
 
-      class WebHookPlugin : public Plugin, org::esb::core::http::RequestHandler {
+      class WebHookPlugin : public org::esb::core::http::RequestHandler, public Plugin {
       public:
-        virtual void handle(org::esb::core::http::HTTPServerRequest& request, org::esb::core::http::HTTPServerResponse& response) = 0;
+        //virtual void handle(org::esb::core::http::HTTPServerRequest& request, org::esb::core::http::HTTPServerResponse& response) = 0;
 
         virtual ~WebHookPlugin() {
         };
@@ -45,8 +45,8 @@ namespace org {
                                         std::string tmpname=#clazz; \
                                         org::esb::core::PluginRegistry::getInstance()->registerWebHookFactory(tmpname, this); \
                                 } \
-                                Ptr<org::esb::core::WebHookPlugin> create() { \
-                                        return Ptr<org::esb::core::WebHookPlugin>(new clazz()); \
+                                org::esb::core::WebHookPlugin* create() { \
+                                        return static_cast<org::esb::core::WebHookPlugin*>(new clazz()); \
                                 } \
                                 org::esb::core::OptionsDescription getOptionsDescription() { \
                                         return Ptr<org::esb::core::WebHookPlugin>(new clazz())->getOptionsDescription(); \

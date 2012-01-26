@@ -58,13 +58,16 @@ namespace org {
       typedef Factory<Task> TaskFactory;
 
       template<typename Interface>
-      class WebHook : public Interface {
+      class WebHook  {
       public:
+        virtual Interface * create() = 0;
+        virtual OptionsDescription getOptionsDescription()=0;
+        int getEngineVersion(){return ENGINE_VERSION;}
         virtual std::string getUrl() = 0;
         virtual std::string getMethod() = 0;
       };
 
-      typedef WebHook<Factory<WebHookPlugin> > WebHookFactory;
+      typedef WebHook<WebHookPlugin> WebHookFactory;
 
     }
   }
