@@ -18,13 +18,6 @@ class TestObject : public Object<TestObject> {
  * 
  */
 int main(int argc, char** argv) {
-  TestObject * obj=new TestObject();
-  delete obj;
-  TestObject bla;
-  std::cout<<bla.referenceCount()<<std::endl;
-  
-  //TestObject bla1=bla;
-  //std::cout<<bla.referenceCount()<<std::endl;
   return 0;
 }
 

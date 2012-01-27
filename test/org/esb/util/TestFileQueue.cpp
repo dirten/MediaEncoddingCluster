@@ -13,6 +13,7 @@ using namespace org::esb::lang;
 void queue_receiver(int msgcount, int wait){
   for(int a=0;a<msgcount;a++){
     /*will block on empty queue*/
+    //LOGDEBUG("try dequeue:");
     int c = q.dequeue();
     LOGDEBUG("dequeue:"<<c);
     Thread::sleep2(wait);
@@ -93,9 +94,10 @@ void test_multi_receiver2multi_sender(){
 
 int main(){
   Log::open("");
+  //org::esb::lang::Thread::sleep2(10*1000);
   test_single_sender2receiver();
   test_multi_sender2single_receiver();
   test_multi_receiver2single_sender();
   test_multi_receiver2multi_sender();
-  //Log::close();
+  Log::close();
 }

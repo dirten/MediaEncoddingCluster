@@ -6,9 +6,6 @@
  */
 #include "org/esb/db/hivedb.hpp"
 #include <cstdlib>
-#include "org/esb/core/PluginRegistry.h"
-#include "org/esb/core/PluginContext.h"
-#include "org/esb/core/Task.h"
 
 #include "org/esb/util/Log.h"
 #include "org/esb/io/FileInputStream.h"
@@ -19,6 +16,9 @@
 #include "org/esb/lang/Thread.h"
 #include "org/esb/util/UUID.h"
 #include "org/esb/hive/Environment.h"
+#include "org/esb/core/PluginRegistry.h"
+#include "org/esb/core/PluginContext.h"
+#include "org/esb/core/Task.h"
 using namespace std;
 bool toexit=false;
 void process(boost::asio::ip::tcp::endpoint e1, partitionservice::ProcessUnitCollector & col) {
