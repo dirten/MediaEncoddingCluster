@@ -9,6 +9,7 @@
 #include "WebHookPlugin.h"
 #include "org/esb/util/Foreach.h"
 #include "Poco/RegularExpression.h"
+#include "org/esb/util/UUID.h"
 namespace org {
   namespace esb {
     namespace core {
@@ -32,7 +33,7 @@ namespace org {
                 var=url.substr(posVec[1].offset,posVec[1].length);
                 LOGDEBUG("substr:"<<url.substr(posVec[1].offset,posVec[1].length));
                 std::string needle=std::string("{")+url.substr(posVec[1].offset,posVec[1].length)+"}";
-                url=Poco::replace(url,needle,std::string("(.*)"));
+                url=Poco::replace(url,needle,std::string("(.+)"));
                 LOGDEBUG("new Url:"<<url);
               }
               
@@ -48,6 +49,7 @@ namespace org {
                   req.add(var,req.getURI().substr(posVec2[1].offset,posVec2[1].length));
                 }
               }
+              req.add("requestUUID",org::esb::util::PUUID());
               WebHookPlugin * ptr=factory->create();
               return static_cast<org::esb::core::http::RequestHandler *>(ptr);
             }

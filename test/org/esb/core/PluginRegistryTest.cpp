@@ -46,6 +46,8 @@ int main(int argc, char** argv) {
     //func(1);
   } catch (NotFoundException & ex) {
     LOGERROR("catch error:" << ex.what());
+  }catch(std::exception & ex){
+    LOGERROR("catch error:" << ex.what());
   }
   Log::close();
   return 0;

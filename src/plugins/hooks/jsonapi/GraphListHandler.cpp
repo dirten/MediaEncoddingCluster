@@ -23,7 +23,7 @@ public:
     data.set_name("data");
     result.push_back(JSONNode("status", "ok"));
     std::string uuid = "0815"; //req.get->getUUID();
-    result.push_back(JSONNode("uuid", uuid));
+    result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
 
     foreach(Ptr<org::esb::io::File> file, files) {
       /**load graph file*/
