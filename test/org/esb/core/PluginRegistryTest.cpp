@@ -39,9 +39,6 @@ int main(int argc, char** argv) {
     {
     SharedObjectLoader loader(f.getParent() + "/libplugin." + ext);
     }
-    {
-    SharedObjectLoader loader2(f.getParent() + "/libplugin." + ext);
-    }
     //func = (fptr) loader.getFunctionHandle("initPlugin");
     //func(1);
   } catch (NotFoundException & ex) {
