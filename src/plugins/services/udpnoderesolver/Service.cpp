@@ -5,6 +5,8 @@
  * Created on 5. Oktober 2011, 16:38
  */
 #include "Service.h"
+#include "org/esb/lang/Thread.h"
+
 //#include "config.h"
 #include "org/esb/config/config.h"
 #include "NodeResolver.h"

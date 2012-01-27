@@ -48,6 +48,8 @@ int main(int argc, char** argv) {
     LOGERROR("catch error:" << ex.what());
   }catch(std::exception & ex){
     LOGERROR("catch error:" << ex.what());
+  }catch(...){
+    LOGERROR("unknown catch error:");
   }
   Log::close();
   return 0;

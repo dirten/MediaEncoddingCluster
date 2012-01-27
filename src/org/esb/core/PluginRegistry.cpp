@@ -20,6 +20,7 @@
 #include "Task.h"
 #include "Poco/Net/HTTPStreamFactory.h"
 #include "Poco/Net/FTPStreamFactory.h"
+#include "WebHookHandlerFactory.h"
 //#include "org/esb/api/ApiWebServer.h"
 namespace org {
   namespace esb {

@@ -13,7 +13,6 @@
 #include "org/esb/util/Log.h"
 #include "Plugin.h"
 #include "org/esb/lang/SharedObjectLoader.h"
-#include "WebHookHandlerFactory.h"
 #include "org/esb/lang/Ptr.h"
 #include "http/Server.h"
 
@@ -28,6 +27,7 @@ namespace org {
       class HookPlugin;
       class HookProvider;
       class Task;
+      class WebHookHandlerFactory;
       
       class PluginRegistry {
         classlogger("org.esb.core.PluginRegistry")
