@@ -25,8 +25,8 @@ namespace org {
           void stop();
           void setRequestHandlerFactory(RequestHandlerFactory *);
         private:
-          Ptr<Poco::Net::ServerSocket> _socket;
-          Ptr<Poco::Net::HTTPServer> _httpserver;
+          Poco::Net::ServerSocket * _socket;
+          Poco::Net::HTTPServer * _httpserver;
           Poco::Net::HTTPServerParams * _params;
         };
       }

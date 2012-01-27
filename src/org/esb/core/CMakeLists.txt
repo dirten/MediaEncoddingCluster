@@ -37,7 +37,7 @@ TARGET_LINK_LIBRARIES(core
   hive
   db
   util
-  ${POCO_LIB_NET}
+  #${POCO_LIB_NET}
   ${POCO_LIB_FOUNDATION}
   core_http
 )

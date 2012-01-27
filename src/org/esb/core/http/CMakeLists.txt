@@ -7,10 +7,8 @@ LINK_DIRECTORIES(${BREAKPAD_LIB_DIR})
 
 SET(core_http_source
   Server.cpp
-  HTTPRequest.cpp
   HTTPServerRequest.cpp
   HTTPServerResponse.cpp
-  HTTPResponse.cpp
 )
 
 add_library (core_http SHARED

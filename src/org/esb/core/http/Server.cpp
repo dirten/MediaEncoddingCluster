@@ -21,10 +21,14 @@ namespace org {
         }
         
         void Server::setRequestHandlerFactory(RequestHandlerFactory *factory){
-          _httpserver=new Poco::Net::HTTPServer(factory,*_socket.get(), _params);
+          _httpserver=new Poco::Net::HTTPServer(factory,*_socket, _params);
         }
 
         Server::~Server() {
+          delete _httpserver;
+          _httpserver=NULL;
+          delete _socket;
+          _socket=NULL;
         }
         
         void Server::start(){

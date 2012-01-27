@@ -60,7 +60,7 @@ namespace org {
         virtual ~PluginRegistry();
         static PluginRegistry * _instance;
         void loadFile(std::string);
-        WebHookHandlerFactory _webhook_handler_factory;
+        WebHookHandlerFactory * _webhook_handler_factory;
         struct PluginData{
           std::string name;
           Plugin * plugin;
@@ -75,10 +75,10 @@ namespace org {
         std::map<std::string,PluginData> _plugin_data;
         //std::map<std::string,Ptr<TaskFactory> > _task_factories;
         typedef std::map<std::string,TaskFactory *> TaskFactoryMap;
-        typedef std::map<std::string,WebHookFactory *> WebHookFactoryMap;
+        //typedef std::map<std::string,WebHookFactory *> WebHookFactoryMap;
 
         TaskFactoryMap _task_factories;
-        WebHookFactoryMap _webhook_factories;
+        //WebHookFactoryMap _webhook_factories;
 
         std::map<std::string,std::string> _config_data;
         org::esb::core::http::Server * server;

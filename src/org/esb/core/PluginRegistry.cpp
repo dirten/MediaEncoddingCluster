@@ -115,7 +115,7 @@ namespace org {
       }
 
       void PluginRegistry::registerWebHookFactory(std::string name, WebHookFactory *factory) {
-        _webhook_handler_factory.registerHandlerFactory(factory);
+        _webhook_handler_factory->registerHandlerFactory(factory);
         //_webhook_factories[name]=factory;
         //_task_factories[name] = factory;
       }
@@ -152,7 +152,7 @@ namespace org {
         Poco::Net::HTTPStreamFactory::registerFactory();
         Poco::Net::FTPStreamFactory::registerFactory();
         server=new org::esb::core::http::Server(4000);
-        server->setRequestHandlerFactory(&_webhook_handler_factory);
+        server->setRequestHandlerFactory(_webhook_handler_factory=new WebHookHandlerFactory());
         server->start();
       }
 
@@ -299,6 +299,7 @@ namespace org {
         }
         server->stop();
         delete server;
+        server=NULL;
       }
     }
     namespace api {
