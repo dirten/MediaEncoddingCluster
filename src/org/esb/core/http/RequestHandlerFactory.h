@@ -11,11 +11,12 @@
 #include "Poco/Net/HTTPServerRequest.h"
 #include "RequestHandler.h"
 #include "HTTPServerRequest.h"
+#include "exports.h"
 namespace org{
   namespace esb{
     namespace core{
       namespace http{
-        class RequestHandlerFactory: public Poco::Net::HTTPRequestHandlerFactory{
+        class CORE_HTTP_EXPORT RequestHandlerFactory: public Poco::Net::HTTPRequestHandlerFactory{
           void addRequestHandler(RequestHandler&);
         public:
           virtual RequestHandler * createHandler(HTTPServerRequest&)=0;

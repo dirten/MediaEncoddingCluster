@@ -12,11 +12,12 @@
 #include "Poco/Net/HTTPServerResponse.h"
 #include "HTTPServerRequest.h"
 #include "HTTPServerResponse.h"
+#include "exports.h"
 namespace org{
   namespace esb{
     namespace core{
       namespace http{
-        class RequestHandler: public Poco::Net::HTTPRequestHandler{
+        class CORE_HTTP_EXPORT RequestHandler: public Poco::Net::HTTPRequestHandler{
         public:
           virtual void handle(HTTPServerRequest& request, HTTPServerResponse& response)=0;
           void handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response){

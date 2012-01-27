@@ -15,6 +15,8 @@
 #include "org/esb/lang/SharedObjectLoader.h"
 #include "WebHookHandlerFactory.h"
 #include "org/esb/lang/Ptr.h"
+#include "http/Server.h"
+
 #include "exports.h"
 namespace org {
   namespace esb {
@@ -79,6 +81,7 @@ namespace org {
         WebHookFactoryMap _webhook_factories;
 
         std::map<std::string,std::string> _config_data;
+        org::esb::core::http::Server * server;
       };
     }
   }

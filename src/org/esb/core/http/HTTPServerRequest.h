@@ -8,12 +8,13 @@
 #ifndef HTTPSERVERREQUEST_H
 #define	HTTPSERVERREQUEST_H
 #include "Poco/Net/HTTPServerRequest.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace core {
       namespace http {
 
-        class HTTPServerRequest : public Poco::Net::HTTPServerRequest {
+        class CORE_HTTP_EXPORT HTTPServerRequest : public Poco::Net::HTTPServerRequest {
         public:
           HTTPServerRequest();
           virtual ~HTTPServerRequest();

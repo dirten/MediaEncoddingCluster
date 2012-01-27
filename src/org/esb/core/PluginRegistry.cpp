@@ -20,7 +20,6 @@
 #include "Task.h"
 #include "Poco/Net/HTTPStreamFactory.h"
 #include "Poco/Net/FTPStreamFactory.h"
-#include "http/Server.h"
 //#include "org/esb/api/ApiWebServer.h"
 namespace org {
   namespace esb {
@@ -152,7 +151,7 @@ namespace org {
       PluginRegistry::PluginRegistry() {
         Poco::Net::HTTPStreamFactory::registerFactory();
         Poco::Net::FTPStreamFactory::registerFactory();
-        org::esb::core::http::Server * server=new org::esb::core::http::Server(4000);
+        server=new org::esb::core::http::Server(4000);
         server->setRequestHandlerFactory(&_webhook_handler_factory);
         server->start();
       }
@@ -298,6 +297,8 @@ namespace org {
         foreach(SharedObjectMap::value_type row, _shared_objects) {
           delete row.second;
         }
+        server->stop();
+        delete server;
       }
     }
     namespace api {

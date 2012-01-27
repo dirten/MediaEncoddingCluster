@@ -19,11 +19,7 @@
 #include "exports.h"
 namespace graphhandler {
   
-  class JSONAPI_EXPORT GraphListHandler : public org::esb::core::WebHookPlugin {
-  public:
-    void handle(org::esb::core::http::HTTPServerRequest&, org::esb::core::http::HTTPServerResponse&);
-  };
-  
+  /*
   class JSONAPI_EXPORT GraphLoadHandler : public org::esb::core::WebHookPlugin {
   public:
     void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res){
@@ -34,7 +30,7 @@ namespace graphhandler {
     ostr<<req.get("uuid");
   }
   };
-
+*/
   class JSONAPI_EXPORT GraphHandler : public org::esb::core::HookPlugin {
     classlogger("jsonapi.GraphHandler")
   public:
@@ -54,11 +50,11 @@ namespace graphhandler {
     std::string _base_uri;
   };
   REGISTER_HOOK("web.api.Service", GraphHandler, GraphHandler::handleRequest, 11);
-  typedef GraphListHandler GraphListHandler2;
+  //typedef GraphListHandler GraphListHandler2;
   
   
-  REGISTER_WEB_HOOK("/api/v1/graph/?$", GET, GraphListHandler);
-  REGISTER_WEB_HOOK("/api/v1/graph/{uuid}", GET, GraphLoadHandler);
+  //REGISTER_WEB_HOOK("/api/v1/graph/?$", GET, GraphListHandler);
+  //REGISTER_WEB_HOOK("/api/v1/graph/{uuid}", GET, GraphLoadHandler);
 }
 #endif	/* JOBHANDLER_H */
 

@@ -32,12 +32,13 @@ namespace org {
 
       void HookNotificationCenter::postHook(std::string name, Request * req, Response * res) {
         boost::mutex::scoped_lock enqueue_lock(hook_mutex);
+        /*
         foreach(FuncMap::value_type & data, _hook_map["*"]) {
           foreach(FuncList::value_type & list, data.second) {
             list(req, res);
           }
         }
-
+        */
         if (_hook_map.count(name) > 0) {
           foreach(FuncMap::value_type & data, _hook_map[name]) {
             foreach(FuncList::value_type & list, data.second) {

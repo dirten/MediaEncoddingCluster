@@ -8,12 +8,13 @@
 #ifndef HTTPSERVERRESPONSE_H
 #define	HTTPSERVERRESPONSE_H
 #include "Poco/Net/HTTPServerResponse.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace core {
       namespace http {
 
-        class HTTPServerResponse: public Poco::Net::HTTPServerResponse {
+        class CORE_HTTP_EXPORT HTTPServerResponse: public Poco::Net::HTTPServerResponse {
         public:
           HTTPServerResponse();
           virtual ~HTTPServerResponse();
