@@ -10,15 +10,19 @@
 #include "org/esb/util/Foreach.h"
 #include "Poco/RegularExpression.h"
 #include "org/esb/util/UUID.h"
+#include "org/esb/config/config.h"
 namespace org {
   namespace esb {
     namespace core {
 
       WebHookHandlerFactory::WebHookHandlerFactory() {
+        _user_path = org::esb::config::Config::get("hive.graph_path");
+
       }
 
       org::esb::core::http::RequestHandler * WebHookHandlerFactory::createHandler(org::esb::core::http::HTTPServerRequest&req) {
         //LOGDEBUG("WebHookHandlerFactory::createHandler");
+        LOGDEBUG("WebHookFactory.size()"<<_webhook_factory_list.size());
         foreach(WebHookFactory * factory,_webhook_factory_list){
           LOGDEBUG(factory->getUrl()<<" / "<<req.getURI());
           if(factory->getMethod()==req.getMethod()){
@@ -26,30 +30,44 @@ namespace org {
             std::string url=factory->getUrl();
             Poco::RegularExpression reholder(".*\\{(.*)\\}.*");
             Poco::RegularExpression::MatchVec posVec;
-            std::string var;
+            //std::string var;
+            std::map<int,std::string> varVec;
             if(reholder.match(url,0,posVec)){
               LOGDEBUG("posVec:"<<posVec.size());
+              for(int a=1;a<posVec.size();a++){
+                varVec[a]=url.substr(posVec[a].offset,posVec[a].length);
+                LOGDEBUG("substr:"<<varVec[a]);
+                std::string needle=std::string("{")+url.substr(posVec[a].offset,posVec[a].length)+"}";
+                url=Poco::replace(url,needle,std::string("(.+)"));
+                LOGDEBUG("new Url:"<<url);
+              }
+              /*
               if(posVec.size()==2){
                 var=url.substr(posVec[1].offset,posVec[1].length);
                 LOGDEBUG("substr:"<<url.substr(posVec[1].offset,posVec[1].length));
                 std::string needle=std::string("{")+url.substr(posVec[1].offset,posVec[1].length)+"}";
                 url=Poco::replace(url,needle,std::string("(.+)"));
                 LOGDEBUG("new Url:"<<url);
-              }
-              
+              }*/
             }
             Poco::RegularExpression re(url);
             //LOGDEBUG(factory->getUrl()<<" / "<<req.getURI());
             Poco::RegularExpression::MatchVec posVec2;
             if(re.match(req.getURI(),0,posVec2)){
               LOGDEBUG("found:"<<posVec2.size());
+              for(int a=1;a<posVec2.size();a++){
+                LOGDEBUG("setting parameter "<<varVec[a]<<"="<<req.getURI().substr(posVec2[a].offset,posVec2[a].length));
+                req.add(varVec[a],req.getURI().substr(posVec2[a].offset,posVec2[a].length));
+              }
+              /*
               if(var.length()){
                 if(posVec2.size()==2){
                   LOGDEBUG("setting parameter "<<var<<"="<<req.getURI().substr(posVec2[1].offset,posVec2[1].length));
                   req.add(var,req.getURI().substr(posVec2[1].offset,posVec2[1].length));
                 }
-              }
+              }*/
               req.add("requestUUID",org::esb::util::PUUID());
+              req.add("user_path",_user_path);
               WebHookPlugin * ptr=factory->create();
               return static_cast<org::esb::core::http::RequestHandler *>(ptr);
             }

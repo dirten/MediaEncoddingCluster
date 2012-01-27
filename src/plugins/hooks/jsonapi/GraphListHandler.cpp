@@ -22,7 +22,7 @@ public:
     JSONNode data(JSON_ARRAY);
     data.set_name("data");
     result.push_back(JSONNode("status", "ok"));
-    std::string uuid = "0815"; //req.get->getUUID();
+    std::string uuid ;//= "0815"; //req.get->getUUID();
     result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
 
     foreach(Ptr<org::esb::io::File> file, files) {
@@ -41,10 +41,6 @@ public:
         }
         if (inode.contains("uuid")) {
           uuid = inode["uuid"].as_string();
-        } else {
-          //file->deleteFile();
-          //inode.push_back(JSONNode("uuid",uuid));
-          //save(inode, uuid);
         }
         JSONNode file_node(JSON_NODE);
         file_node.set_name("graph");
@@ -54,13 +50,8 @@ public:
       }
     }
     result.push_back(data);
-
-
-
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();
-
-
   }
 };
 REGISTER_WEB_HOOK("/api/v1/graph/?$", GET, GraphListHandler);

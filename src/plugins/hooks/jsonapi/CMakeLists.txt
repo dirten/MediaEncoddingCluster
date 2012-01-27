@@ -19,6 +19,10 @@ add_library (jsonapi SHARED
   GraphHandler.cpp
   GraphListHandler.cpp
   GraphLoadHandler.cpp
+  GraphUpdateHandler.cpp
+  GraphCreateHandler.cpp
+  GraphDeleteHandler.cpp
+  GraphSubmitHandler.cpp
   GraphVerifier.cpp
   GraphTaskCreator.cpp
 )

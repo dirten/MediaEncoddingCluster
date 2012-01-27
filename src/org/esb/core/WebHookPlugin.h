@@ -32,6 +32,10 @@ namespace org {
 }
 #define GET "GET"
 #define POST "POST"
+#define PUT "PUT"
+#define DELETE "DELETE"
+#define HEAD "HEAD"
+#define OPTIONS "OPTIONS"
 
 //#define UNIQUE2(x,y) x##y
 //#define UNIQUE1(x,y) UNIQUE2(x,y)

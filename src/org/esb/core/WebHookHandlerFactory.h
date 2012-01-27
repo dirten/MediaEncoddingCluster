@@ -25,6 +25,7 @@ namespace org {
         void registerHandlerFactory(WebHookFactory *factory);
       private:
         std::list<WebHookFactory*> _webhook_factory_list;
+        std::string _user_path;
         //typedef std::map<std::string, org::esb::lang::Ptr<WebHookPlugin> > WebHookPluginMap;
         //WebHookPluginMap _webhook_plugin_list;
       };
