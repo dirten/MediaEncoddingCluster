@@ -58,7 +58,7 @@ namespace graphhandler {
   
   
   REGISTER_WEB_HOOK("/api/v1/graph/?$", GET, GraphListHandler);
-  REGISTER_WEB_HOOK("/api/v1/graph/{uuid}/?.*", GET, GraphLoadHandler);
+  REGISTER_WEB_HOOK("/api/v1/graph/{uuid}", GET, GraphLoadHandler);
 }
 #endif	/* JOBHANDLER_H */
 
