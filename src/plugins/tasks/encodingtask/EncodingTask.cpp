@@ -4,11 +4,8 @@
  * 
  * Created on 19. Oktober 2011, 11:41
  */
-
-#include "org/esb/core/PluginContext.h"
-#include "org/esb/core/TaskException.h"
+#include "org/esb/db/hivedb.hpp"
 #include "org/esb/util/Foreach.h"
-#include "EncodingTask.h"
 #include "org/esb/lang/Ptr.h"
 #include "Packetizer.h"
 #include "ProcessUnitBuilder.h"
@@ -20,6 +17,9 @@
 #include "org/esb/util/ScopedTimeCounter.h"
 #include "org/esb/config/config.h"
 #include "org/esb/util/StringUtil.h"
+#include "org/esb/core/PluginContext.h"
+#include "org/esb/core/TaskException.h"
+#include "EncodingTask.h"
 
 namespace encodingtask {
 

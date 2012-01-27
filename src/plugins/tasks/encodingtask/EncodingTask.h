@@ -7,9 +7,8 @@
 
 #ifndef DOWNLOADTASK_H
 #define	DOWNLOADTASK_H
-#include "org/esb/db/hivedb.hpp"
+//#include "org/esb/db/hivedb.hpp"
 
-#include "org/esb/core/Task.h"
 #include "exports.h"
 #include "org/esb/hive/PresetReaderJson.h"
 #include "org/esb/hive/job/ProcessUnit.h"
@@ -17,6 +16,7 @@
 #include "org/esb/util/Queue.h"
 #include "ProcessUnitData.h"
 #include "StreamData.h"
+#include "org/esb/core/Task.h"
 
 namespace encodingtask {
 

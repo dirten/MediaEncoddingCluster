@@ -8,9 +8,9 @@
 #ifndef SERVICE_H
 #define	SERVICE_H
 #include "org/esb/signal/MessageListener.h"
-#include "org/esb/core/ServicePlugin.h"
 #include "org/esb/hive/HiveClient.h"
 #include "org/esb/hive/HiveClientAudio.h"
+#include "org/esb/core/ServicePlugin.h"
 
 #include <list>
 namespace clientcontroller {
