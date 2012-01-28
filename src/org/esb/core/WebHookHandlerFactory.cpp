@@ -56,8 +56,8 @@ namespace org {
             if(re.match(req.getURI(),0,posVec2)){
               LOGDEBUG("found:"<<posVec2.size());
               for(int a=1;a<posVec2.size();a++){
-                LOGDEBUG("setting parameter "<<varVec[a]<<"="<<req.getURI().substr(posVec2[a].offset,posVec2[a].length));
-                req.add(varVec[a],req.getURI().substr(posVec2[a].offset,posVec2[a].length));
+                LOGDEBUG("setting parameter "<<varVec[a]<<"="<<req.getURI().substr(posVec2[a].offset,posVec2[a].length+1));
+                req.add(varVec[a],req.getURI().substr(posVec2[a].offset,posVec2[a].length+1));
               }
               /*
               if(var.length()){

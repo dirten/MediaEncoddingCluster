@@ -55,6 +55,7 @@ public:
         error.set_name("error");
         error.push_back(JSONNode("code", "parse_error"));
         error.push_back(JSONNode("description", "no valid json format given"));
+	error.push_back(JSONNode("graph", partHandler.getData()));
         result.push_back(error);
       }
     } else {

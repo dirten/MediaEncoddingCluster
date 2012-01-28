@@ -22,6 +22,7 @@ public:
     std::string uuid = req.get("uuid");
     LOGDEBUG("uuid="<<uuid);
     org::esb::io::File f(user_path + "/" + uuid + ".graph");
+    LOGDEBUG(f.getPath());
     if (f.exists()) {
       org::esb::io::FileInputStream fis(&f);
       std::string ndata;
