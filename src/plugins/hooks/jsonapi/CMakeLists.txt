@@ -26,15 +26,30 @@ add_library (jsonapi SHARED
   GraphSubmitHandler.cpp
   GraphVerifier.cpp
   GraphTaskCreator.cpp
+
+#API Handling of all File/Media Requests
   fileapi/FileHandler.cpp
   fileapi/MediaHandler.cpp
+
+#API Handling of all Format/Codec Requests
   av/FormatListHandler.cpp
   av/FormatLoadHandler.cpp
   av/CodecListHandler.cpp
+
+#API Handling of all Profile Requests
   profile/ProfileListHandler.cpp
   profile/ProfileLoadHandler.cpp
   profile/ProfileCreateHandler.cpp
   profile/ProfileUpdateHandler.cpp
+
+#API Handling of all Encoding Requests
+  encoding/EncodingListHandler.cpp
+  encoding/EncodingLoadHandler.cpp
+  encoding/EncodingCreateHandler.cpp
+  encoding/EncodingStopHandler.cpp
+  encoding/EncodingDeleteHandler.cpp
+  encoding/EncodingRestartHandler.cpp
+
 )
 
 TARGET_LINK_LIBRARIES(jsonapi

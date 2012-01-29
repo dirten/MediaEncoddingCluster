@@ -26,7 +26,7 @@ public:
       try {
         if (libjson::is_valid(data)) {
           JSONNode inode = libjson::parse(data);
-          std::string msg=org::esb::plugin::PresetVerifier::verify(inode);
+          std::string msg=checkJsonProfile(inode);
           if (msg.length() > 0) {
             result.setStatus("error", msg);
           } else {
@@ -48,6 +48,33 @@ public:
     res.setContentType("text/plain");
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();
+  }
+  std::string checkJsonProfile(JSONNode&root) {
+    std::string result;
+    /*check the root conatins required data*/
+    if (!root.contains( "name")) {
+      result = "no profile name given!";
+    } else
+      if (!root.contains("format")) {
+      result = "no format attribute found!";
+    } else
+      if (!root.contains("video")) {
+      result = "no video attribute found!";
+    } else
+      if (!root.contains("audio")) {
+      result = "no audio attribute found!";
+    } else
+      if (!root["format"].contains( "id")) {
+      result = "no id attribute found in attribute \"format\"!";
+    } else
+      if (!root["video"].contains("id")) {
+      result = "no id attribute found in attribute \"video\"!";
+    } else
+      if (!root["audio"].contains("id")) {
+      result = "no id attribute found in attribute \"audio\"!";
+    }else
+      result = org::esb::plugin::PresetVerifier::verify(root);
+    return result;
   }
 
 };

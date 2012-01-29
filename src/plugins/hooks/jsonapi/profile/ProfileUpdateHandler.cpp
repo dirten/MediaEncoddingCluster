@@ -26,17 +26,24 @@ public:
       try {
         if (libjson::is_valid(data)) {
           JSONNode inode = libjson::parse(data);
-          std::string msg=org::esb::plugin::PresetVerifier::verify(inode);
+          std::string msg = checkJsonProfile(inode);
           if (msg.length() > 0) {
             result.setStatus("error", msg);
           } else {
             db::HiveDb db("sqlite3", req.get("db.url"));
-            db::Preset preset(db);
-            preset.data = data;
-            preset.uuid = req.get("requestUUID");
-            preset.name = inode["name"].as_string();
-            preset.update();
-            result.setStatus("ok", "Profile successful created");
+            std::string iddata = req.get("profileid");
+            litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == iddata);
+            if (s.count() == 1) {
+              LOGDEBUG("Update profile");
+              db::Preset preset = s.one();
+              preset.data = data;
+              preset.name = inode["name"].as_string();
+              preset.update();
+              result.push_back(JSONNode("id", iddata));
+            } else {
+              result.setStatus("error", "profile with the given id not found");
+              res.setStatusAndReason(res.HTTP_NOT_FOUND, "profile with the given id not found");
+            }
           }
         } else {
           result.setStatus("error", "no valid json format given");
@@ -50,6 +57,34 @@ public:
     ostr << result.write_formatted();
   }
 
+  std::string checkJsonProfile(JSONNode&root) {
+    std::string result;
+    /*check the root conatins required data*/
+    if (!root.contains("name")) {
+      result = "no profile name given!";
+    } else
+      if (!root.contains("format")) {
+      result = "no format attribute found!";
+    } else
+      if (!root.contains("video")) {
+      result = "no video attribute found!";
+    } else
+      if (!root.contains("audio")) {
+      result = "no audio attribute found!";
+    } else
+      if (!root["format"].contains("id")) {
+      result = "no id attribute found in attribute \"format\"!";
+    } else
+      if (!root["video"].contains("id")) {
+      result = "no id attribute found in attribute \"video\"!";
+    } else
+      if (!root["audio"].contains("id")) {
+      result = "no id attribute found in attribute \"audio\"!";
+    }else
+      result = org::esb::plugin::PresetVerifier::verify(root);
+    return result;
+  }
+
 };
-REGISTER_WEB_HOOK("/api/v1/profile/?$", PUT, ProfileUpdateHandler);
+REGISTER_WEB_HOOK("/api/v1/profile/{profileid}$", PUT, ProfileUpdateHandler);
 
