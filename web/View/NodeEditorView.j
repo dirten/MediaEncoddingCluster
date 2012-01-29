@@ -326,6 +326,9 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
 
 -(void)drawLinkFrom:(CPPoint)startPoint to:(CPPoint)endPoint withColor:(CPColor)inlineColor
 {
+  CPLog.debug("Start  Point : "+CPStringFromPoint(startPoint));
+  CPLog.debug("End  Point : "+CPStringFromPoint(endPoint));
+
   var p0=CPMakePoint(startPoint.x,startPoint.y);
   var p3=CPMakePoint(endPoint.x,endPoint.y);
 
@@ -375,11 +378,12 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
   [path stroke];
 
 
-  //CPLog.debug("PathCount:"+path._path.count);
+  CPLog.debug("PathCount:"+path._path.count);
 }
 
 -(BOOL)checkPathAtPoint:(CPPoint)point from:(CPPoint)from to:(CPPoint)to
 {
+//return NO;
     var isContentsUnderPoint = NO;
   var startPoint=CPPointMake(from.x>to.x?to.x:from.x, from.y>to.y?to.y:from.y);
   var bounds=CPMakeRect(startPoint.x,startPoint.y,Math.abs(to.x-from.x),  Math.abs(to.y-from.y)+10);
@@ -532,8 +536,8 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
       for (var index2 = targetCount - 1; index2>=0; index2--) 
       {
         var target = [targets objectAtIndex:index2];
-        //CPLog.debug("Source UID:"+[element uid]);
-        //CPLog.debug("Target UID:"+[target uid]);
+        CPLog.debug("Source UID:"+[element uid]);
+        CPLog.debug("Target UID:"+[target uid]);
         var startPoint=[element outHandlePoint];  
         var endPoint=[target inHandlePoint];
         var color=[CPColor grayColor];

@@ -50,4 +50,4 @@ public:
     ostr << result.write_formatted();
   }
 };
-REGISTER_WEB_HOOK("/api/v1/graph/{uuid}[^/]", GET, GraphLoadHandler);
+REGISTER_WEB_HOOK("/api/v1/graph/{uuid}", GET, GraphLoadHandler);

@@ -104,7 +104,7 @@
 			}
 		},
 		{
-			"name" : "UploadTask",
+			"name" : "OutputTask",
 			"uid" : 4,
 			"data" : {
 				"outfile" : "/tmp/test"
@@ -200,7 +200,7 @@
 			}
 		},
 		{
-			"name" : "UploadTask",
+			"name" : "OutputTask",
 			"uid" : 6,
 			"data" : {
 				"outfile" : "/upload"
@@ -265,5 +265,5 @@
 			"y" : 287
 		}
 	],
-	"name" : "new shiny encoding flow"
+	"name" : "new shiny encoding flow 2"
 }

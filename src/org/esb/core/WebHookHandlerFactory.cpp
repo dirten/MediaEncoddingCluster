@@ -56,8 +56,8 @@ namespace org {
             if(re.match(req.getURI(),0,posVec2)){
               LOGDEBUG("found:"<<posVec2.size());
               for(int a=1;a<posVec2.size();a++){
-                LOGDEBUG("setting parameter "<<varVec[a]<<"="<<req.getURI().substr(posVec2[a].offset,posVec2[a].length+1));
-                req.add(varVec[a],req.getURI().substr(posVec2[a].offset,posVec2[a].length+1));
+                LOGDEBUG("setting parameter "<<varVec[a]<<"="<<req.getURI().substr(posVec2[a].offset,posVec2[a].length));
+                req.add(varVec[a],req.getURI().substr(posVec2[a].offset,posVec2[a].length));
               }
               /*
               if(var.length()){
@@ -68,6 +68,7 @@ namespace org {
               }*/
               req.add("requestUUID",org::esb::util::PUUID());
               req.add("user_path",_user_path);
+              req.add("db.url",org::esb::config::Config::get("db.url"));
               WebHookPlugin * ptr=factory->create();
               return static_cast<org::esb::core::http::RequestHandler *>(ptr);
             }

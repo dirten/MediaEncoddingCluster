@@ -5,6 +5,7 @@
 #include "Poco/CountingStream.h"
 #include "Poco/NullStream.h"
 #include "Poco/StreamCopier.h"
+#include "Poco/Net/NetException.h"
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
 
@@ -31,6 +32,12 @@ public:
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
     JSONNode result(JSON_NODE);
     result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
+    if(req.getContentLength()==0){
+      res.setChunkedTransferEncoding(false);
+      result.push_back(JSONNode("status", "error"));
+      result.push_back(JSONNode("message", "Request could not be empty!"));
+      res.setStatusAndReason(res.HTTP_BAD_REQUEST, "Request could not be empty!");
+    }else
     if (req.getContentLength() < 1024 * 1024) {
       std::string uuid = req.get("uuid");
       org::esb::io::File f(req.get("user_path") + "/" + uuid + ".graph");
@@ -50,10 +57,12 @@ public:
           result.push_back(inode);
           //result = inode;
         } else {
+          LOGERROR("Invalid JSON"<<partHandler.getData());
           JSONNode error(JSON_NODE);
           error.set_name("error");
           error.push_back(JSONNode("code", "parse_error"));
-          error.push_back(JSONNode("description", "no valid json format given"));
+          error.push_back(JSONNode("description", "no valid json format given!"));
+          res.setStatusAndReason(res.HTTP_BAD_REQUEST, "no valid json format given!");
           result.push_back(error);
         }
       }else{
@@ -67,6 +76,7 @@ public:
       result.push_back(JSONNode("message", "Request size to big!"));
       res.setStatusAndReason(res.HTTP_BAD_REQUEST, "Request size to big!");
     }
+    //throw Poco::Net::HTTPException("Tets Exception",res.HTTP_BAD_REQUEST);
     res.setContentType("text/plain");
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();

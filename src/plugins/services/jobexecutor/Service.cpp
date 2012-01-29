@@ -75,7 +75,7 @@ namespace jobexecutor {
     LOGDEBUG("Reading Graph Progress");
     int gprogress = (graph->getProcessedStepCount()*100) / graph->getStepCount();
     _job->graphstatus = graph->getStatus();
-    std::cout<<graph->getStatus()<<std::endl;
+    //std::cout<<graph->getStatus()<<std::endl;
     _job->progress = gprogress;
     _job->update();
     //std::cout<<*_job<<std::endl;

@@ -122,7 +122,6 @@ namespace filehandler {
       org::esb::io::FileList flist = f.listFiles();
       JSONNode array(JSON_ARRAY);
       array.set_name("data");
-
       foreach(org::esb::io::FileList::value_type &file, flist) {
         buildFile(*file.get(), array);
       }
