@@ -5,7 +5,7 @@
 #include "org/esb/config/config.h"
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileInputStream.h"
-#include "exports.h"
+#include "../exports.h"
 
 class JSONAPI_EXPORT GraphListHandler : public org::esb::core::WebHookPlugin {
 public:

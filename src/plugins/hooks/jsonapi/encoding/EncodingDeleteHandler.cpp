@@ -12,16 +12,12 @@
 
 class JSONAPI_EXPORT EncodingDeleteHandler : public org::esb::core::WebHookPlugin {
 public:
-
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
-
-
     JSONResult result;
     result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
     db::HiveDb db("sqlite3", req.get("db.url"));
     JSONNode c(JSON_ARRAY);
     c.set_name("data");
-
     std::string id = req.get("encodingid");
     LOGDEBUG("loading encoding data for id " << id);
     litesql::DataSource<db::Job>s = litesql::select<db::Job > (db, db::Job::Uuid == id);
@@ -39,20 +35,9 @@ public:
       result.setStatus("error", "encoding not found");
       res.setStatusAndReason(res.HTTP_NOT_FOUND, "encoding not found");
     }
-
     res.setContentType("text/plain");
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();
   }
-
 };
 REGISTER_WEB_HOOK("/api/v1/encoding/{encodingid}/delete", PUT, EncodingDeleteHandler);
-
-
-
-
-
-
-
-
-

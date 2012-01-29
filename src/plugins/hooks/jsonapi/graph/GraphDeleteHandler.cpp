@@ -8,7 +8,7 @@
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
 
-#include "exports.h"
+#include "../exports.h"
 
 class JSONAPI_EXPORT GraphDeleteHandler : public org::esb::core::WebHookPlugin {
 public:

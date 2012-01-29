@@ -9,7 +9,7 @@
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/util/UUID.h"
 
-#include "exports.h"
+#include "../exports.h"
 
 class GraphPartHandler : public Poco::Net::PartHandler {
 public:

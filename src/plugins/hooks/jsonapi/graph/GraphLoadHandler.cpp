@@ -1,7 +1,7 @@
 #include "org/esb/core/WebHookPlugin.h"
 #include "org/esb/libjson/libjson.h"
 
-#include "exports.h"
+#include "../exports.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileInputStream.h"

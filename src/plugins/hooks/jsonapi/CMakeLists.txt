@@ -18,14 +18,14 @@ add_library (jsonapi SHARED
   ConfigHandler.cpp
   JobHandler.cpp
   GraphHandler.cpp
-  GraphListHandler.cpp
-  GraphLoadHandler.cpp
-  GraphUpdateHandler.cpp
-  GraphCreateHandler.cpp
-  GraphDeleteHandler.cpp
-  GraphSubmitHandler.cpp
-  GraphVerifier.cpp
-  GraphTaskCreator.cpp
+  graph/GraphListHandler.cpp
+  graph/GraphLoadHandler.cpp
+  graph/GraphUpdateHandler.cpp
+  graph/GraphCreateHandler.cpp
+  graph/GraphDeleteHandler.cpp
+  graph/GraphSubmitHandler.cpp
+  #GraphVerifier.cpp
+  #GraphTaskCreator.cpp
 
 #API Handling of all File/Media Requests
   fileapi/FileHandler.cpp
