@@ -13,8 +13,7 @@ public:
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
 
 
-    JSONResult result;
-    result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
+    JSONResult result(req.get("requestUUID"));
     db::HiveDb db("sqlite3", req.get("db.url"));
     std::string id = req.get("encodingid");
     litesql::DataSource<db::Job>s = litesql::select<db::Job > (db, db::Job::Uuid == id && db::Job::Status != db::Job::Status::Deleted);

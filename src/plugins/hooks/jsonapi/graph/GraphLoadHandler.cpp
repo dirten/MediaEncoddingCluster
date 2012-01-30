@@ -1,5 +1,6 @@
 #include "org/esb/core/WebHookPlugin.h"
 #include "org/esb/libjson/libjson.h"
+#include "../JSONResult.h"
 
 #include "../exports.h"
 #include "org/esb/util/Log.h"
@@ -13,14 +14,12 @@ public:
     LOGDEBUG("Loading graph");
     res.setChunkedTransferEncoding(true);
     res.setContentType("text/plain");
-    std::string user_path = req.get("user_path");
+    std::string user_path = req.get("hive.graph_path");
 
     std::ostream& ostr = res.send();
-    JSONNode result(JSON_NODE);
-    result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
+    JSONResult result(req.get("requestUUID"));
 
     std::string uuid = req.get("uuid");
-    LOGDEBUG("uuid="<<uuid);
     org::esb::io::File f(user_path + "/" + uuid + ".graph");
     LOGDEBUG(f.getPath());
     if (f.exists()) {
@@ -35,17 +34,12 @@ public:
         if (inode.contains("uuid")) {
           uuid = inode["uuid"].as_string();
         } 
-        result.push_back(JSONNode("status", "ok"));
-        inode.set_name("data");
-        result.push_back(inode);
+        result.setData(inode);
       }else{
-        result.push_back(JSONNode("status", "error"));
-        result.push_back(JSONNode("message", "graph is invalid"));
-        
+        result.setStatus("error", "graph is invalid");        
       }
     } else {
-      result.push_back(JSONNode("status", "error"));
-      result.push_back(JSONNode("message", "graph not found"));
+      result.setStatus("error", "graph not found");
     }
     ostr << result.write_formatted();
   }

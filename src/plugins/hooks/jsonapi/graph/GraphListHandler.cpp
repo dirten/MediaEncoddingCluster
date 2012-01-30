@@ -5,6 +5,7 @@
 #include "org/esb/config/config.h"
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileInputStream.h"
+#include "../JSONResult.h"
 #include "../exports.h"
 
 class JSONAPI_EXPORT GraphListHandler : public org::esb::core::WebHookPlugin {
@@ -14,16 +15,12 @@ public:
     res.setChunkedTransferEncoding(true);
     res.setContentType("text/plain");
 
-    JSONNode result(JSON_NODE);
+    JSONResult result(req.get("requestUUID"));
     std::string user_path = org::esb::config::Config::get("hive.graph_path");
 
     org::esb::io::File f(user_path + "/");
     org::esb::io::FileList files = f.listFiles();
     JSONNode data(JSON_ARRAY);
-    data.set_name("data");
-    result.push_back(JSONNode("status", "ok"));
-    std::string uuid ;//= "0815"; //req.get->getUUID();
-    result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
 
     foreach(Ptr<org::esb::io::File> file, files) {
       /**load graph file*/
@@ -36,6 +33,7 @@ public:
         //LOGDEBUG("Data is valid");
         JSONNode inode = libjson::parse(ndata);
         std::string name;
+        std::string uuid;
         if (inode.contains("name")) {
           name = inode["name"].as_string();
         }
@@ -49,7 +47,7 @@ public:
         data.push_back(file_node);
       }
     }
-    result.push_back(data);
+    result.setData(data);
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();
   }

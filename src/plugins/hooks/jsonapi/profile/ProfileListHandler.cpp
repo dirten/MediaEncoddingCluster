@@ -13,8 +13,7 @@ public:
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
 
 
-    JSONResult result;
-    result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
+    JSONResult result(req.get("requestUUID"));
     db::HiveDb db("sqlite3", req.get("db.url"));
     vector<db::Preset> presets = litesql::select<db::Preset > (db).orderBy(db::Preset::Name).all();
     JSONNode c(JSON_ARRAY);

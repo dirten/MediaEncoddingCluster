@@ -30,6 +30,7 @@
 #include <assert.h>
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringUtil.h"
+#include "FormatBaseStream.h"
 
 
 using namespace std;
@@ -374,7 +375,7 @@ namespace org {
 
         //        boost::mutex::scoped_lock scoped_lock(open_close_mutex);
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
-        //ctx->strict_std_compliance = FF_COMPLIANCE_VERY_STRICT;
+        ctx->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
         if (_opened) {
           //LOGERROR("Codec is allready openned! codec id"<<getCodecId());
           return _opened;
@@ -441,6 +442,7 @@ namespace org {
         //        if (findCodec(_mode)) {
         //          ctx = avcodec_alloc_context();
         //          setParams();
+        
         if (false && _codec->capabilities & CODEC_CAP_TRUNCATED) {
           ctx->flags = 0; // |= CODEC_FLAG_TRUNCATED;
           cout << "CodecCapTruncated" << endl;
@@ -513,7 +515,6 @@ namespace org {
           ctx->thread_count=1;
           if (avcodec_open(ctx, _codec) < 0) {
             LOGERROR("error in openning Codec (" << ctx->codec_id << ")");
-
           } else {
             std::string codec_mode=(_mode == ENCODER)?"Encoder":"Decoder";
             LOGDEBUG(codec_mode<<" opened:" << ctx->codec_id);

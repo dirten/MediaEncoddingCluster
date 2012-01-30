@@ -7,6 +7,7 @@
 #include "Poco/StreamCopier.h"
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
+#include "../JSONResult.h"
 
 #include "../exports.h"
 
@@ -39,8 +40,7 @@ class JSONAPI_EXPORT GraphSubmitHandler : public org::esb::core::WebHookPlugin {
 public:
 
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
-    JSONNode result(JSON_NODE);
-    result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
+    JSONResult result(req.get("requestUUID"));
     std::string uuid = req.get("uuid");
     LOGDEBUG("Submit Handler1212:" << uuid);
     //LOGDEBUG("Submit Handler1212:" <<req.get("file"));
@@ -63,7 +63,7 @@ public:
     ostr << result.write_formatted();
   }
 };
-REGISTER_WEB_HOOK("/api/v1/graph/{uuid}/submit", PUT, GraphSubmitHandler);
+REGISTER_WEB_HOOK("/api/v1/graph/{uuid}/submit", POST, GraphSubmitHandler);
 
 
 

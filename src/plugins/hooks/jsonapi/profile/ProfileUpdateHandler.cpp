@@ -16,8 +16,7 @@ class JSONAPI_EXPORT ProfileUpdateHandler : public org::esb::core::WebHookPlugin
 public:
 
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
-    JSONResult result;
-    result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
+    JSONResult result(req.get("requestUUID"));
     if (req.getContentLength() > 1024 * 1024) {
       result.setStatus("error", "Post data to big, maximum allowed size is 1024KB");
     } else {

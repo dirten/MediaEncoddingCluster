@@ -82,8 +82,8 @@ namespace org {
 
         }
          */
-        boost::shared_ptr<org::esb::av::Encoder> venc = boost::shared_ptr<org::esb::av::Encoder>(new org::esb::av::Encoder(codecs["video"]["codec_id"]));//org::esb::hive::CodecFactory::getStreamEncoder(codecs["video"]);
-        boost::shared_ptr<org::esb::av::Encoder> aenc = boost::shared_ptr<org::esb::av::Encoder>(new org::esb::av::Encoder(codecs["audio"]["codec_id"]));//org::esb::hive::CodecFactory::getStreamEncoder(codecs["audio"]);
+        boost::shared_ptr<org::esb::av::Encoder> venc = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(codecs["video"]["codec_id"])); //org::esb::hive::CodecFactory::getStreamEncoder(codecs["video"]);
+        boost::shared_ptr<org::esb::av::Encoder> aenc = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(codecs["audio"]["codec_id"])); //org::esb::hive::CodecFactory::getStreamEncoder(codecs["audio"]);
 
         foreach(rowtype::value_type & row, codecs["video"]) {
           venc->setCodecOption(row.first, row.second);
@@ -93,47 +93,57 @@ namespace org {
           aenc->setCodecOption(row.first, row.second);
         }
         if (!venc->open()) {
-          result = "Could not open video encoder, please check your profile for the video encoder";
+          result = "Could not open video encoder:";
+          std::list<std::string> messages = org::esb::av::FormatBaseStream::getLastAvMessage(aenc->ctx);
+          std::list<std::string>::iterator it = messages.begin();
+          for (; it != messages.end(); it++) {
+            result+=(*it);
+          }
           LOGERROR(result);
           return result;
         }
         if (!aenc->open()) {
-          result = "Could not open audio encoder, please check your profile for the audio encoder";
+          result = "Could not open audio encoder:";
+          std::list<std::string> messages = org::esb::av::FormatBaseStream::getLastAvMessage(aenc->ctx);
+          std::list<std::string>::iterator it = messages.begin();
+          for (; it != messages.end(); it++) {
+            result+=(*it);
+          }
           LOGERROR(result);
           return result;
         }
         /*openning the OutputStreams*/
-        org::esb::io::File fout(org::esb::config::Config::get("hive.tmp_path")+"/test");
+        org::esb::io::File fout(org::esb::config::Config::get("hive.tmp_path") + "/test");
 
         org::esb::av::FormatOutputStream * fos = new org::esb::av::FormatOutputStream(&fout, ofmt->name);
         org::esb::av::PacketOutputStream * pos = new org::esb::av::PacketOutputStream(fos);
-        pos->setEncoder(*venc.get(),0);
-        pos->setEncoder(*aenc.get(),1);
-        if(!pos->init()){
+        pos->setEncoder(*venc.get(), 0);
+        pos->setEncoder(*aenc.get(), 1);
+        if (!pos->init()) {
           result = "Could not initialize outputfile, please check your profile for more information look into the server logfile";
           LOGERROR(result);
-          return result;          
+          return result;
         }
         org::esb::av::Packet vp;
         vp.setStreamIndex(0);
-        vp.setTimeBase(1,25);
+        vp.setTimeBase(1, 25);
         org::esb::av::Packet ap;
         ap.setStreamIndex(1);
-        ap.setTimeBase(1,25);
-        if(pos->writePacket(vp)){
+        ap.setTimeBase(1, 25);
+        if (pos->writePacket(vp)) {
           result = "unable to write a video packet to the outputstream, please check your profile for more information look into the server logfile";
           LOGERROR(result);
-          return result;                    
+          return result;
         }
-        if(pos->writePacket(ap)){
+        if (pos->writePacket(ap)) {
           result = "unable to write an audio packet to the outputstream, please check your profile for more information look into the server logfile";
           LOGERROR(result);
-          return result;          
+          return result;
         }
-        if(!pos->close()){
+        if (!pos->close()) {
           result = "unable to write the trailer to the outputstream, please check your profile for more information look into the server logfile";
           LOGERROR(result);
-          return result;          
+          return result;
         }
         pos->close();
         fos->close();

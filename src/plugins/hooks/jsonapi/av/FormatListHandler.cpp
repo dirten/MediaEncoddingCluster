@@ -4,6 +4,7 @@
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/util/Foreach.h"
 
+#include "../JSONResult.h"
 #include "../exports.h"
 
 class JSONAPI_EXPORT FormatListHandler : public org::esb::core::WebHookPlugin {
@@ -44,10 +45,8 @@ public:
     valid_formats.insert("webm");
 
 
-    JSONNode result(JSON_NODE);
-    result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
+    JSONResult result(req.get("requestUUID"));
     JSONNode c(JSON_ARRAY);
-    c.set_name("data");
     AVOutputFormat *ofmt = NULL;
     int a = 0;
     while ((ofmt = av_oformat_next(ofmt))) {

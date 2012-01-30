@@ -13,8 +13,7 @@ public:
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
 
 
-    JSONResult result;
-    result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
+    JSONResult result(req.get("requestUUID"));
     db::HiveDb db("sqlite3", req.get("db.url"));
     std::string id=req.get("profileid");
     litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == id);
@@ -24,9 +23,11 @@ public:
         JSONNode data = libjson::parse(preset.data);
         data.set_name("data");
         if (data.contains("id")) {
-          data["id"] = JSONNode("id", id);
-        } else {
-          data.push_back(JSONNode("id", id));
+          data["id"].clear();
+        } else if(data.contains("uuid")){
+          data["uuid"] = JSONNode("uuid", id);
+        }else{
+          data.push_back(JSONNode("uuid", id));
         }
         result.setData(data);
         result.setStatus("ok");

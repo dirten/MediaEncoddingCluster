@@ -8,6 +8,7 @@
 #include "Poco/Net/NetException.h"
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
+#include "../JSONResult.h"
 
 #include "../exports.h"
 
@@ -30,50 +31,38 @@ class JSONAPI_EXPORT GraphUpdateHandler : public org::esb::core::WebHookPlugin {
 public:
 
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
-    JSONNode result(JSON_NODE);
-    result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
-    if(req.getContentLength()==0){
+    JSONResult result(req.get("requestUUID"));
+    if (req.getContentLength() == 0) {
       res.setChunkedTransferEncoding(false);
-      result.push_back(JSONNode("status", "error"));
-      result.push_back(JSONNode("message", "Request could not be empty!"));
+      result.setStatus("error", "Request could not be empty!");
       res.setStatusAndReason(res.HTTP_BAD_REQUEST, "Request could not be empty!");
-    }else
-    if (req.getContentLength() < 1024 * 1024) {
+    } else
+      if (req.getContentLength() < 1024 * 1024) {
       std::string uuid = req.get("uuid");
-      org::esb::io::File f(req.get("user_path") + "/" + uuid + ".graph");
+      org::esb::io::File f(req.get("hive.graph_path") + "/" + uuid + ".graph");
       if (f.exists()) {
-        GraphPartHandler partHandler;
-        Poco::Net::HTMLForm form(req, req.stream(), partHandler);
-        if (libjson::is_valid(partHandler.getData())) {
-          JSONNode inode = libjson::parse(partHandler.getData());
+        std::string data;
+        Poco::StreamCopier::copyToString(req.stream(), data);
+        if (libjson::is_valid(data)) {
+          JSONNode inode = libjson::parse(data);
           if (inode.contains("uuid")) {
             uuid = inode["uuid"].as_string();
           } else {
             inode.push_back(JSONNode("uuid", uuid));
           }
           /*save method should here*/
-          save(inode, uuid, req.get("user_path"));
-          result.push_back(JSONNode("status","ok"));
-          result.push_back(inode);
-          //result = inode;
+          save(inode, uuid, req.get("hive.graph_path"));
         } else {
-          LOGERROR("Invalid JSON"<<partHandler.getData());
-          JSONNode error(JSON_NODE);
-          error.set_name("error");
-          error.push_back(JSONNode("code", "parse_error"));
-          error.push_back(JSONNode("description", "no valid json format given!"));
+          result.setStatus("error", "no valid json format given!");
           res.setStatusAndReason(res.HTTP_BAD_REQUEST, "no valid json format given!");
-          result.push_back(error);
         }
-      }else{
-        result.push_back(JSONNode("status", "error"));
-        result.push_back(JSONNode("message", "graph for update not found!"));
+      } else {
+        result.setStatus("error", "graph for update not found!");
         res.setStatusAndReason(res.HTTP_NOT_FOUND, "graph for update not found!");
       }
     } else {
       res.setChunkedTransferEncoding(false);
-      result.push_back(JSONNode("status", "error"));
-      result.push_back(JSONNode("message", "Request size to big!"));
+      result.setStatus("error", "Request size to big!");
       res.setStatusAndReason(res.HTTP_BAD_REQUEST, "Request size to big!");
     }
     //throw Poco::Net::HTTPException("Tets Exception",res.HTTP_BAD_REQUEST);
@@ -88,5 +77,5 @@ public:
     fos.write(node.write_formatted());
   }
 };
-REGISTER_WEB_HOOK("/api/v1/graph/{uuid}", PUT, GraphUpdateHandler);
+REGISTER_WEB_HOOK("/api/v1/graph/{uuid}", POST, GraphUpdateHandler);
 

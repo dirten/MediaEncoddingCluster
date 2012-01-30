@@ -8,6 +8,7 @@
 #include "org/esb/io/File.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/util/Foreach.h"
+#include "org/esb/util/UUID.h"
 #include "../JSONResult.h"
 #include "../PresetVerifier.h"
 #include "../exports.h"
@@ -16,8 +17,7 @@ class JSONAPI_EXPORT ProfileCreateHandler : public org::esb::core::WebHookPlugin
 public:
 
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
-    JSONResult result;
-    result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
+    JSONResult result(req.get("requestUUID"));
     if (req.getContentLength() > 1024 * 1024) {
       result.setStatus("error", "Post data to big, maximum allowed size is 1024KB");
     } else {
@@ -30,13 +30,15 @@ public:
           if (msg.length() > 0) {
             result.setStatus("error", msg);
           } else {
+            std::string uuid=org::esb::util::PUUID();
             db::HiveDb db("sqlite3", req.get("db.url"));
             db::Preset preset(db);
             preset.data = data;
-            preset.uuid = req.get("requestUUID");
+            preset.uuid = uuid;
             preset.name = inode["name"].as_string();
             preset.update();
             result.setStatus("ok", "Profile successful created");
+            result.push_back(JSONNode("uuid", uuid));
           }
         } else {
           result.setStatus("error", "no valid json format given");
@@ -78,4 +80,4 @@ public:
   }
 
 };
-REGISTER_WEB_HOOK("/api/v1/profile/?$", PUT, ProfileCreateHandler);
+REGISTER_WEB_HOOK("/api/v1/profile/?$", POST, ProfileCreateHandler);

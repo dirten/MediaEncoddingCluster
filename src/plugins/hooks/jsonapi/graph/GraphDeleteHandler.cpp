@@ -7,6 +7,7 @@
 #include "Poco/StreamCopier.h"
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
+#include "../JSONResult.h"
 
 #include "../exports.h"
 
@@ -14,24 +15,15 @@ class JSONAPI_EXPORT GraphDeleteHandler : public org::esb::core::WebHookPlugin {
 public:
 
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
-    JSONNode result(JSON_NODE);
-    result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
-    if (req.getContentLength() < 1024 * 1024) {
-      std::string uuid = req.get("uuid");
-      org::esb::io::File f(req.get("user_path") + "/" + uuid + ".graph");
-      if (f.exists()) {
-        f.deleteFile();
-        result.push_back(JSONNode("status","ok"));
-   }else{
-        result.push_back(JSONNode("status", "error"));
-        result.push_back(JSONNode("message", "graph for delete not found!"));
-        res.setStatusAndReason(res.HTTP_NOT_FOUND, "graph for delete not found!");
-      }
+    JSONResult result(req.get("requestUUID"));
+    std::string uuid = req.get("uuid");
+    org::esb::io::File f(req.get("user_path") + "/" + uuid + ".graph");
+    if (f.exists()) {
+      f.deleteFile();
+      result.push_back(JSONNode("uuid", uuid));
     } else {
-      res.setChunkedTransferEncoding(false);
-      result.push_back(JSONNode("status", "error"));
-      result.push_back(JSONNode("message", "Request size to big!"));
-      res.setStatusAndReason(res.HTTP_BAD_REQUEST, "Request size to big!");
+      result.setStatus("message", "graph for delete not found!");
+      res.setStatusAndReason(res.HTTP_NOT_FOUND, "graph for delete not found!");
     }
     res.setContentType("text/plain");
     std::ostream& ostr = res.send();

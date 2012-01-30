@@ -67,7 +67,7 @@ namespace org {
                 }
               }*/
               req.add("requestUUID",org::esb::util::PUUID());
-              req.add("user_path",_user_path);
+              req.add("hive.graph_path",_user_path);
               req.add("db.url",org::esb::config::Config::get("db.url"));
               req.add("hive.tmp_path",org::esb::config::Config::get("hive.tmp_path"));
               WebHookPlugin * ptr=factory->create();

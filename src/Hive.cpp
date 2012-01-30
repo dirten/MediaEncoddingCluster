@@ -25,6 +25,7 @@
 
 #include "org/esb/hive/DirectoryScanner.h"
 #include "org/esb/av/AV.h"
+#include "org/esb/av/FormatBaseStream.h"
 
 #include "org/esb/hive/FileImporter.h"
 #include "org/esb/hive/FileExporter.h"
@@ -110,6 +111,7 @@ int _port = 0;
 bool quiet = false;
 
 int main(int argc, char * argv[]) {
+  org::esb::av::FormatBaseStream::initialize();
   //org::esb::core::Application(argc, argv);
   //isatty(0);
   /*setting default path to Program*/

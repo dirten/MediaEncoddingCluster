@@ -24,7 +24,7 @@ add_library (jsonapi SHARED
   graph/GraphCreateHandler.cpp
   graph/GraphDeleteHandler.cpp
   graph/GraphSubmitHandler.cpp
-  #GraphVerifier.cpp
+  GraphVerifier.cpp
   #GraphTaskCreator.cpp
 
 #API Handling of all File/Media Requests

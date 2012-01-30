@@ -8,37 +8,22 @@
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/util/UUID.h"
+#include "../JSONResult.h"
 
 #include "../exports.h"
-
-class GraphPartHandler : public Poco::Net::PartHandler {
-public:
-
-  void handlePart(const Poco::Net::MessageHeader&header, std::istream&stream) {
-    Poco::CountingInputStream cistr(stream);
-    Poco::StreamCopier::copyToString(cistr, _data);
-  }
-
-  std::string getData() {
-    return _data;
-  }
-private:
-  std::string _data;
-};
 
 class JSONAPI_EXPORT GraphCreateHandler : public org::esb::core::WebHookPlugin {
 public:
 
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
-    JSONNode result(JSON_NODE);
-    result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
+    JSONResult result(req.get("requestUUID"));
     if (req.getContentLength() < 1024 * 1024) {
       std::string uuid = org::esb::util::PUUID();
 
-      GraphPartHandler partHandler;
-      Poco::Net::HTMLForm form(req, req.stream(), partHandler);
-      if (libjson::is_valid(partHandler.getData())) {
-        JSONNode inode = libjson::parse(partHandler.getData());
+      std::string data;
+      Poco::StreamCopier::copyToString(req.stream(), data);
+      if (libjson::is_valid(data)) {
+        JSONNode inode = libjson::parse(data);
         if (inode.contains("uuid")) {
           JSONNode tmp=JSONNode("uuid", uuid);
           inode["uuid"].swap(tmp);
@@ -46,22 +31,17 @@ public:
           inode.push_back(JSONNode("uuid", uuid));
         }
         /*save method should here*/
-        save(inode, uuid, req.get("user_path"));
-        result.push_back(JSONNode("status","ok"));
-        result.push_back(inode);
+        save(inode, uuid, req.get("hive.graph_path"));
+        result.push_back(JSONNode("uuid", uuid));
         //result = inode;
       } else {
-        JSONNode error(JSON_NODE);
-        error.set_name("error");
-        error.push_back(JSONNode("code", "parse_error"));
-        error.push_back(JSONNode("description", "no valid json format given"));
-	error.push_back(JSONNode("graph", partHandler.getData()));
-        result.push_back(error);
+        res.setChunkedTransferEncoding(false);
+        result.setStatus("error", "no valid json format given");
+        res.setStatusAndReason(res.HTTP_BAD_REQUEST, "no valid json format given");
       }
     } else {
       res.setChunkedTransferEncoding(false);
-      result.push_back(JSONNode("status", "error"));
-      result.push_back(JSONNode("message", "Request size to big!"));
+      result.setStatus("error", "Request size to big!");
       res.setStatusAndReason(res.HTTP_BAD_REQUEST, "Request size to big!");
     }
     res.setContentType("text/plain");
@@ -75,6 +55,6 @@ public:
     fos.write(node.write_formatted());
   }
 };
-REGISTER_WEB_HOOK("/api/v1/graph/?$", PUT, GraphCreateHandler);
+REGISTER_WEB_HOOK("/api/v1/graph/?$", POST, GraphCreateHandler);
 
 

@@ -9,6 +9,7 @@
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/util/UUID.h"
 #include "org/esb/util/Foreach.h"
+#include "../JSONResult.h"
 
 #include "../exports.h"
 
@@ -16,8 +17,7 @@ class JSONAPI_EXPORT FileHandler : public org::esb::core::WebHookPlugin {
 public:
 
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
-    JSONNode result(JSON_NODE);
-    result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
+    JSONResult result(req.get("requestUUID"));
     if (req.has("path")) {
       std::string path = req.get("path");
       result.push_back(JSONNode("path", req.get("path")));
