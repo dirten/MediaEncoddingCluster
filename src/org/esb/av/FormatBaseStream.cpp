@@ -119,7 +119,7 @@ namespace org {
         std::string msgPtr = org::esb::util::StringUtil::trim(ptrLine, "\n");
         if (logMap.count(ptrString)) {
           if(logMap.at(ptrString).size()>MAX_HISTORY){
-            logMap.at(ptrString).erase(--logMap.at(ptrString).end());
+            logMap[ptrString].erase(--logMap[ptrString].end());
           }
         }
         logMap[ptrString].push_front(msgPtr);
