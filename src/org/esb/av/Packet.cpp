@@ -279,13 +279,13 @@ std::string Packet::toString() {
           ":KF" << isKeyFrame();
   std::string type;
   switch (_pict_type) {
-    case FF_I_TYPE: type = "I";
+    case AV_PICTURE_TYPE_I: type = "I";
       break;
-    case FF_B_TYPE: type = "B";
+    case AV_PICTURE_TYPE_B: type = "B";
       break;
-    case FF_BI_TYPE: type = "BI";
+    case AV_PICTURE_TYPE_BI: type = "BI";
       break;
-    case FF_P_TYPE: type = "P";
+    case AV_PICTURE_TYPE_P: type = "P";
       break;
     default:type = "U";
       break;

@@ -1,7 +1,7 @@
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
-#include <libavcodec/opt.h>
+#include <libavutil/opt.h>
 #include <libavutil/avutil.h>
 #include <libswscale/swscale.h>
 #include <libavutil/fifo.h>
@@ -23,12 +23,12 @@ int main(int argc, char ** argv) {
 
   char * filename = argv[1];
   int sid = atoi(argv[2]);
-  if (av_open_input_file(&formatCtx, filename, NULL, 0, NULL) != 0) {
+  if (avformat_open_input(&formatCtx, filename, NULL,  NULL) != 0) {
     std::cout << "could not open file" << filename << std::endl;
     return 0;
   }
 //  formatCtx->debug = 5;
-  if (av_find_stream_info(formatCtx) < 0) {
+  if (avformat_find_stream_info(formatCtx,NULL) < 0) {
     std::cout << "could not read stream info " << filename << std::endl;
     return 0;
   }
@@ -84,25 +84,25 @@ int main(int argc, char ** argv) {
       if (bytes < 0)
         std::cout << "Decoding failed" << std::endl;
       switch (pic.pict_type) {
-        case FF_B_TYPE:
+        case AV_PICTURE_TYPE_B:
           std::cout << ("B");
           break;
-        case FF_I_TYPE:
+        case AV_PICTURE_TYPE_I:
           std::cout << ("I");
           break;
-        case FF_P_TYPE:
+        case AV_PICTURE_TYPE_P:
           std::cout << ("P");
           break;
-        case FF_S_TYPE:
+        case AV_PICTURE_TYPE_S:
           std::cout << ("S");
           break;
-        case FF_SI_TYPE:
+        case AV_PICTURE_TYPE_SI:
           std::cout << ("SI");
           break;
-        case FF_SP_TYPE:
+        case AV_PICTURE_TYPE_SP:
           std::cout << ("SP");
           break;
-        case FF_BI_TYPE:
+        case AV_PICTURE_TYPE_BI:
           std::cout << ("BI");
           break;
         default:

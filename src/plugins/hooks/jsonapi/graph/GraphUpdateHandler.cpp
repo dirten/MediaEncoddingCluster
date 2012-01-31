@@ -31,7 +31,7 @@ class JSONAPI_EXPORT GraphUpdateHandler : public org::esb::core::WebHookPlugin {
 public:
 
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
-    JSONResult result(req.get("requestUUID"));
+    JSONResult result(req);
     if (req.getContentLength() == 0) {
       res.setChunkedTransferEncoding(false);
       result.setStatus("error", "Request could not be empty!");
@@ -77,5 +77,5 @@ public:
     fos.write(node.write_formatted());
   }
 };
-REGISTER_WEB_HOOK("/api/v1/graph/{uuid}", POST, GraphUpdateHandler);
+REGISTER_WEB_HOOK("/api/v1/flow/{uuid}", POST, GraphUpdateHandler);
 

@@ -86,7 +86,7 @@ class SampleFormat;*/
         void setGopSize(int size);
         void setChannels(int size);
         void setSampleRate(int size);
-        void setSampleFormat(SampleFormat size);
+        void setSampleFormat(AVSampleFormat size);
         void setFlag(int flag);
         void setCodecId(CodecID);
         int getWidth();
@@ -95,7 +95,7 @@ class SampleFormat;*/
         int getSampleRate();
         int getBitRate();
         int getFlags();
-        SampleFormat getSampleFormat();
+        AVSampleFormat getSampleFormat();
         int getChannels();
         int getGopSize();
         int getBitsPerCodedSample();
@@ -211,6 +211,7 @@ class SampleFormat;*/
         BOOST_SERIALIZATION_SPLIT_MEMBER();
 
         AVCodec * _codec;
+        AVDictionary * _codec_opts;
         bool findCodec(int mode);
         AVCodec * findCodecByName(std::string name, int mode);
 

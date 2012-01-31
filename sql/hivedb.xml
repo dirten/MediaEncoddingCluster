@@ -325,18 +325,20 @@
     </relation>
 
     <object name="Watchfolder">
-        <field name="infolder" type="string"/>
-        <field name="outfolder" type="string"/>
-        <field name="outfiletemplate" type="string"/>
-        <field name="extensionfilter" type="string"/>
-        <field name="interval" type="string"/>
+        <field name="folder" type="string"/>
+        <field name="filefilter" type="string"/>
+        <field name="subdirs" type="integer"/>
+        <field name="flowuuid" type="string"/>
+        <field name="interval" type="integer"/>
+        <field name="start" type="datetime"/>
+        <field name="end" type="datetime"/>
     </object>
-
+    <!--
     <relation id="WatchfolderProfile">
         <relate object="Watchfolder" handle="preset"/>
         <relate object="Preset" handle="watchfolder"/>
     </relation>
-
+    -->
     <object name="ProcessUnit">
         <field name="sorcestream" type="integer"/>
         <field name="targetstream" type="integer"/>

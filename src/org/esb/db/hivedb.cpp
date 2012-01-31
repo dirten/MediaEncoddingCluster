@@ -353,7 +353,7 @@ ProfileGroup2Profile::Row::Row(const litesql::Database& db, const litesql::Recor
         profile = rec[0];
     }
 }
-const std::string ProfileGroup2Profile::table__("_267d55f4e69650bd0564c68c2fa8408c");
+const std::string ProfileGroup2Profile::table__("_60a643d384d1f6c6ddeba5bb8ac0fc3e");
 const litesql::FieldType ProfileGroup2Profile::Profile("Profile1","INTEGER",table__);
 const litesql::FieldType ProfileGroup2Profile::ProfileGroup("ProfileGroup2","INTEGER",table__);
 void ProfileGroup2Profile::link(const litesql::Database& db, const db::Profile& o0, const db::ProfileGroup& o1) {
@@ -402,7 +402,7 @@ ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::Row::Row(cons
         profileGroup1 = rec[0];
     }
 }
-const std::string ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::table__("_64009c1d97bb5b4cf1b03d26f16638b8");
+const std::string ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::table__("_2d57c481daf84ed6d04cd9e705469b3f");
 const litesql::FieldType ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup1("ProfileGroup1","INTEGER",table__);
 const litesql::FieldType ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup2("ProfileGroup2","INTEGER",table__);
 void ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::link(const litesql::Database& db, const db::ProfileGroup& o0, const db::ProfileGroup& o1) {
@@ -696,7 +696,7 @@ CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::Row::Row(const lit
         codecPreset = rec[0];
     }
 }
-const std::string CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::table__("_ff51b9e09851ae43e0331cedda32947c");
+const std::string CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::table__("_165bce89be0b4f99d8ddeba7a26a23a7");
 const litesql::FieldType CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::CodecPreset("CodecPreset1","INTEGER",table__);
 const litesql::FieldType CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::CodecPresetParameter("CodecPresetParameter2","INTEGER",table__);
 void CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::link(const litesql::Database& db, const db::CodecPreset& o0, const db::CodecPresetParameter& o1) {
@@ -745,7 +745,7 @@ CodecPresetProfileRelationVideoCodecPreset2Profile::Row::Row(const litesql::Data
         codecPreset = rec[0];
     }
 }
-const std::string CodecPresetProfileRelationVideoCodecPreset2Profile::table__("_a8e88dbe1e3684df9d977cb3a518f566");
+const std::string CodecPresetProfileRelationVideoCodecPreset2Profile::table__("_b477e426317c3764439827c70cd95621");
 const litesql::FieldType CodecPresetProfileRelationVideoCodecPreset2Profile::CodecPreset("CodecPreset1","INTEGER",table__);
 const litesql::FieldType CodecPresetProfileRelationVideoCodecPreset2Profile::Profile("Profile2","INTEGER",table__);
 void CodecPresetProfileRelationVideoCodecPreset2Profile::link(const litesql::Database& db, const db::CodecPreset& o0, const db::Profile& o1) {
@@ -794,7 +794,7 @@ CodecPresetProfileRelationAudioCodecPreset2Profile::Row::Row(const litesql::Data
         codecPreset = rec[0];
     }
 }
-const std::string CodecPresetProfileRelationAudioCodecPreset2Profile::table__("_a8b2620caf1164c9487f807d57a216b5");
+const std::string CodecPresetProfileRelationAudioCodecPreset2Profile::table__("_c47426250800c92cff81a427efb64c83");
 const litesql::FieldType CodecPresetProfileRelationAudioCodecPreset2Profile::CodecPreset("CodecPreset1","INTEGER",table__);
 const litesql::FieldType CodecPresetProfileRelationAudioCodecPreset2Profile::Profile("Profile2","INTEGER",table__);
 void CodecPresetProfileRelationAudioCodecPreset2Profile::link(const litesql::Database& db, const db::CodecPreset& o0, const db::Profile& o1) {
@@ -1225,55 +1225,6 @@ template <> litesql::DataSource<db::Stream> JobDetailStreamRelationJobInStream::
     sel.result(Stream.fullName());
     sel.where(srcExpr);
     return DataSource<db::Stream>(db, db::Stream::Id.in(sel) && expr);
-}
-PresetWatchfolderRelationWatchfolderProfile::Row::Row(const litesql::Database& db, const litesql::Record& rec)
-         : watchfolder(PresetWatchfolderRelationWatchfolderProfile::Watchfolder), preset(PresetWatchfolderRelationWatchfolderProfile::Preset) {
-    switch(rec.size()) {
-    case 2:
-        watchfolder = rec[1];
-    case 1:
-        preset = rec[0];
-    }
-}
-const std::string PresetWatchfolderRelationWatchfolderProfile::table__("_a14a3ba7f7d547ae0085ce998d728839");
-const litesql::FieldType PresetWatchfolderRelationWatchfolderProfile::Preset("Preset1","INTEGER",table__);
-const litesql::FieldType PresetWatchfolderRelationWatchfolderProfile::Watchfolder("Watchfolder2","INTEGER",table__);
-void PresetWatchfolderRelationWatchfolderProfile::link(const litesql::Database& db, const db::Preset& o0, const db::Watchfolder& o1) {
-    Record values;
-    Split fields;
-    fields.push_back(Preset.name());
-    values.push_back(o0.id);
-    fields.push_back(Watchfolder.name());
-    values.push_back(o1.id);
-    db.insert(table__, values, fields);
-}
-void PresetWatchfolderRelationWatchfolderProfile::unlink(const litesql::Database& db, const db::Preset& o0, const db::Watchfolder& o1) {
-    db.delete_(table__, (Preset == o0.id && Watchfolder == o1.id));
-}
-void PresetWatchfolderRelationWatchfolderProfile::del(const litesql::Database& db, const litesql::Expr& expr) {
-    db.delete_(table__, expr);
-}
-litesql::DataSource<PresetWatchfolderRelationWatchfolderProfile::Row> PresetWatchfolderRelationWatchfolderProfile::getRows(const litesql::Database& db, const litesql::Expr& expr) {
-    SelectQuery sel;
-    sel.result(Preset.fullName());
-    sel.result(Watchfolder.fullName());
-    sel.source(table__);
-    sel.where(expr);
-    return DataSource<PresetWatchfolderRelationWatchfolderProfile::Row>(db, sel);
-}
-template <> litesql::DataSource<db::Preset> PresetWatchfolderRelationWatchfolderProfile::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
-    SelectQuery sel;
-    sel.source(table__);
-    sel.result(Preset.fullName());
-    sel.where(srcExpr);
-    return DataSource<db::Preset>(db, db::Preset::Id.in(sel) && expr);
-}
-template <> litesql::DataSource<db::Watchfolder> PresetWatchfolderRelationWatchfolderProfile::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
-    SelectQuery sel;
-    sel.source(table__);
-    sel.result(Watchfolder.fullName());
-    sel.where(srcExpr);
-    return DataSource<db::Watchfolder>(db, db::Watchfolder::Id.in(sel) && expr);
 }
 JobProcessUnitRelationProcessUnitJob::Row::Row(const litesql::Database& db, const litesql::Record& rec)
          : processUnit(JobProcessUnitRelationProcessUnitJob::ProcessUnit), job(JobProcessUnitRelationProcessUnitJob::Job) {
@@ -3266,24 +3217,6 @@ litesql::DataSource<Job> Preset::JobHandle::get(const litesql::Expr& expr, const
 litesql::DataSource<JobPresetRelation::Row> Preset::JobHandle::getRows(const litesql::Expr& expr) {
     return JobPresetRelation::getRows(owner->getDatabase(), expr && (JobPresetRelation::Preset == owner->id));
 }
-Preset::WatchfolderHandle::WatchfolderHandle(const Preset& owner)
-         : litesql::RelationHandle<Preset>(owner) {
-}
-void Preset::WatchfolderHandle::link(const Watchfolder& o0) {
-    PresetWatchfolderRelationWatchfolderProfile::link(owner->getDatabase(), *owner, o0);
-}
-void Preset::WatchfolderHandle::unlink(const Watchfolder& o0) {
-    PresetWatchfolderRelationWatchfolderProfile::unlink(owner->getDatabase(), *owner, o0);
-}
-void Preset::WatchfolderHandle::del(const litesql::Expr& expr) {
-    PresetWatchfolderRelationWatchfolderProfile::del(owner->getDatabase(), expr && PresetWatchfolderRelationWatchfolderProfile::Preset == owner->id);
-}
-litesql::DataSource<Watchfolder> Preset::WatchfolderHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
-    return PresetWatchfolderRelationWatchfolderProfile::get<Watchfolder>(owner->getDatabase(), expr, (PresetWatchfolderRelationWatchfolderProfile::Preset == owner->id) && srcExpr);
-}
-litesql::DataSource<PresetWatchfolderRelationWatchfolderProfile::Row> Preset::WatchfolderHandle::getRows(const litesql::Expr& expr) {
-    return PresetWatchfolderRelationWatchfolderProfile::getRows(owner->getDatabase(), expr && (PresetWatchfolderRelationWatchfolderProfile::Preset == owner->id));
-}
 const std::string Preset::type__("Preset");
 const std::string Preset::table__("Preset_");
 const std::string Preset::sequence__("Preset_seq");
@@ -3342,9 +3275,6 @@ Preset::UserHandle Preset::user() {
 }
 Preset::JobHandle Preset::job() {
     return Preset::JobHandle(*this);
-}
-Preset::WatchfolderHandle Preset::watchfolder() {
-    return Preset::WatchfolderHandle(*this);
 }
 std::string Preset::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
     tables.push_back(table__);
@@ -3407,7 +3337,6 @@ void Preset::delRelations() {
     PresetProjectRelation::del(*db, (PresetProjectRelation::Preset == id));
     PresetUserRelation::del(*db, (PresetUserRelation::Preset == id));
     JobPresetRelation::del(*db, (JobPresetRelation::Preset == id));
-    PresetWatchfolderRelationWatchfolderProfile::del(*db, (PresetWatchfolderRelationWatchfolderProfile::Preset == id));
 }
 void Preset::update() {
     if (!inDatabase) {
@@ -6106,56 +6035,48 @@ std::ostream & operator<<(std::ostream& os, JobDetail o) {
     return os;
 }
 const litesql::FieldType Watchfolder::Own::Id("id_","INTEGER","Watchfolder_");
-Watchfolder::PresetHandle::PresetHandle(const Watchfolder& owner)
-         : litesql::RelationHandle<Watchfolder>(owner) {
-}
-void Watchfolder::PresetHandle::link(const Preset& o0) {
-    PresetWatchfolderRelationWatchfolderProfile::link(owner->getDatabase(), o0, *owner);
-}
-void Watchfolder::PresetHandle::unlink(const Preset& o0) {
-    PresetWatchfolderRelationWatchfolderProfile::unlink(owner->getDatabase(), o0, *owner);
-}
-void Watchfolder::PresetHandle::del(const litesql::Expr& expr) {
-    PresetWatchfolderRelationWatchfolderProfile::del(owner->getDatabase(), expr && PresetWatchfolderRelationWatchfolderProfile::Watchfolder == owner->id);
-}
-litesql::DataSource<Preset> Watchfolder::PresetHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
-    return PresetWatchfolderRelationWatchfolderProfile::get<Preset>(owner->getDatabase(), expr, (PresetWatchfolderRelationWatchfolderProfile::Watchfolder == owner->id) && srcExpr);
-}
-litesql::DataSource<PresetWatchfolderRelationWatchfolderProfile::Row> Watchfolder::PresetHandle::getRows(const litesql::Expr& expr) {
-    return PresetWatchfolderRelationWatchfolderProfile::getRows(owner->getDatabase(), expr && (PresetWatchfolderRelationWatchfolderProfile::Watchfolder == owner->id));
-}
 const std::string Watchfolder::type__("Watchfolder");
 const std::string Watchfolder::table__("Watchfolder_");
 const std::string Watchfolder::sequence__("Watchfolder_seq");
 const litesql::FieldType Watchfolder::Id("id_","INTEGER",table__);
 const litesql::FieldType Watchfolder::Type("type_","TEXT",table__);
-const litesql::FieldType Watchfolder::Infolder("infolder_","TEXT",table__);
-const litesql::FieldType Watchfolder::Outfolder("outfolder_","TEXT",table__);
-const litesql::FieldType Watchfolder::Outfiletemplate("outfiletemplate_","TEXT",table__);
-const litesql::FieldType Watchfolder::Extensionfilter("extensionfilter_","TEXT",table__);
-const litesql::FieldType Watchfolder::Interval("interval_","TEXT",table__);
+const litesql::FieldType Watchfolder::Folder("folder_","TEXT",table__);
+const litesql::FieldType Watchfolder::Filefilter("filefilter_","TEXT",table__);
+const litesql::FieldType Watchfolder::Subdirs("subdirs_","INTEGER",table__);
+const litesql::FieldType Watchfolder::Flowuuid("flowuuid_","TEXT",table__);
+const litesql::FieldType Watchfolder::Interval("interval_","INTEGER",table__);
+const litesql::FieldType Watchfolder::Start("start_","INTEGER",table__);
+const litesql::FieldType Watchfolder::End("end_","INTEGER",table__);
 void Watchfolder::defaults() {
     id = 0;
+    subdirs = 0;
+    interval = 0;
+    start = 0;
+    end = 0;
 }
 Watchfolder::Watchfolder(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), infolder(Infolder), outfolder(Outfolder), outfiletemplate(Outfiletemplate), extensionfilter(Extensionfilter), interval(Interval) {
+     : litesql::Persistent(db), id(Id), type(Type), folder(Folder), filefilter(Filefilter), subdirs(Subdirs), flowuuid(Flowuuid), interval(Interval), start(Start), end(End) {
     defaults();
 }
 Watchfolder::Watchfolder(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), infolder(Infolder), outfolder(Outfolder), outfiletemplate(Outfiletemplate), extensionfilter(Extensionfilter), interval(Interval) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), folder(Folder), filefilter(Filefilter), subdirs(Subdirs), flowuuid(Flowuuid), interval(Interval), start(Start), end(End) {
     defaults();
-    size_t size = (rec.size() > 7) ? 7 : rec.size();
+    size_t size = (rec.size() > 9) ? 9 : rec.size();
     switch(size) {
-    case 7: interval = convert<const std::string&, std::string>(rec[6]);
+    case 9: end = convert<const std::string&, litesql::DateTime>(rec[8]);
+        end.setModified(false);
+    case 8: start = convert<const std::string&, litesql::DateTime>(rec[7]);
+        start.setModified(false);
+    case 7: interval = convert<const std::string&, int>(rec[6]);
         interval.setModified(false);
-    case 6: extensionfilter = convert<const std::string&, std::string>(rec[5]);
-        extensionfilter.setModified(false);
-    case 5: outfiletemplate = convert<const std::string&, std::string>(rec[4]);
-        outfiletemplate.setModified(false);
-    case 4: outfolder = convert<const std::string&, std::string>(rec[3]);
-        outfolder.setModified(false);
-    case 3: infolder = convert<const std::string&, std::string>(rec[2]);
-        infolder.setModified(false);
+    case 6: flowuuid = convert<const std::string&, std::string>(rec[5]);
+        flowuuid.setModified(false);
+    case 5: subdirs = convert<const std::string&, int>(rec[4]);
+        subdirs.setModified(false);
+    case 4: filefilter = convert<const std::string&, std::string>(rec[3]);
+        filefilter.setModified(false);
+    case 3: folder = convert<const std::string&, std::string>(rec[2]);
+        folder.setModified(false);
     case 2: type = convert<const std::string&, std::string>(rec[1]);
         type.setModified(false);
     case 1: id = convert<const std::string&, int>(rec[0]);
@@ -6163,23 +6084,22 @@ Watchfolder::Watchfolder(const litesql::Database& db, const litesql::Record& rec
     }
 }
 Watchfolder::Watchfolder(const Watchfolder& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), infolder(obj.infolder), outfolder(obj.outfolder), outfiletemplate(obj.outfiletemplate), extensionfilter(obj.extensionfilter), interval(obj.interval) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), folder(obj.folder), filefilter(obj.filefilter), subdirs(obj.subdirs), flowuuid(obj.flowuuid), interval(obj.interval), start(obj.start), end(obj.end) {
 }
 const Watchfolder& Watchfolder::operator=(const Watchfolder& obj) {
     if (this != &obj) {
         id = obj.id;
         type = obj.type;
-        infolder = obj.infolder;
-        outfolder = obj.outfolder;
-        outfiletemplate = obj.outfiletemplate;
-        extensionfilter = obj.extensionfilter;
+        folder = obj.folder;
+        filefilter = obj.filefilter;
+        subdirs = obj.subdirs;
+        flowuuid = obj.flowuuid;
         interval = obj.interval;
+        start = obj.start;
+        end = obj.end;
     }
     litesql::Persistent::operator=(obj);
     return *this;
-}
-Watchfolder::PresetHandle Watchfolder::preset() {
-    return Watchfolder::PresetHandle(*this);
 }
 std::string Watchfolder::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
     tables.push_back(table__);
@@ -6191,21 +6111,27 @@ std::string Watchfolder::insert(litesql::Record& tables, litesql::Records& field
     fields.push_back(type.name());
     values.push_back(type);
     type.setModified(false);
-    fields.push_back(infolder.name());
-    values.push_back(infolder);
-    infolder.setModified(false);
-    fields.push_back(outfolder.name());
-    values.push_back(outfolder);
-    outfolder.setModified(false);
-    fields.push_back(outfiletemplate.name());
-    values.push_back(outfiletemplate);
-    outfiletemplate.setModified(false);
-    fields.push_back(extensionfilter.name());
-    values.push_back(extensionfilter);
-    extensionfilter.setModified(false);
+    fields.push_back(folder.name());
+    values.push_back(folder);
+    folder.setModified(false);
+    fields.push_back(filefilter.name());
+    values.push_back(filefilter);
+    filefilter.setModified(false);
+    fields.push_back(subdirs.name());
+    values.push_back(subdirs);
+    subdirs.setModified(false);
+    fields.push_back(flowuuid.name());
+    values.push_back(flowuuid);
+    flowuuid.setModified(false);
     fields.push_back(interval.name());
     values.push_back(interval);
     interval.setModified(false);
+    fields.push_back(start.name());
+    values.push_back(start);
+    start.setModified(false);
+    fields.push_back(end.name());
+    values.push_back(end);
+    end.setModified(false);
     fieldRecs.push_back(fields);
     valueRecs.push_back(values);
     return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
@@ -6223,28 +6149,31 @@ void Watchfolder::addUpdates(Updates& updates) {
     prepareUpdate(updates, table__);
     updateField(updates, table__, id);
     updateField(updates, table__, type);
-    updateField(updates, table__, infolder);
-    updateField(updates, table__, outfolder);
-    updateField(updates, table__, outfiletemplate);
-    updateField(updates, table__, extensionfilter);
+    updateField(updates, table__, folder);
+    updateField(updates, table__, filefilter);
+    updateField(updates, table__, subdirs);
+    updateField(updates, table__, flowuuid);
     updateField(updates, table__, interval);
+    updateField(updates, table__, start);
+    updateField(updates, table__, end);
 }
 void Watchfolder::addIDUpdates(Updates& updates) {
 }
 void Watchfolder::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Id);
     ftypes.push_back(Type);
-    ftypes.push_back(Infolder);
-    ftypes.push_back(Outfolder);
-    ftypes.push_back(Outfiletemplate);
-    ftypes.push_back(Extensionfilter);
+    ftypes.push_back(Folder);
+    ftypes.push_back(Filefilter);
+    ftypes.push_back(Subdirs);
+    ftypes.push_back(Flowuuid);
     ftypes.push_back(Interval);
+    ftypes.push_back(Start);
+    ftypes.push_back(End);
 }
 void Watchfolder::delRecord() {
     deleteFromTable(table__, id);
 }
 void Watchfolder::delRelations() {
-    PresetWatchfolderRelationWatchfolderProfile::del(*db, (PresetWatchfolderRelationWatchfolderProfile::Watchfolder == id));
 }
 void Watchfolder::update() {
     if (!inDatabase) {
@@ -6282,11 +6211,13 @@ std::auto_ptr<Watchfolder> Watchfolder::upcastCopy() {
     Watchfolder* np = new Watchfolder(*this);
     np->id = id;
     np->type = type;
-    np->infolder = infolder;
-    np->outfolder = outfolder;
-    np->outfiletemplate = outfiletemplate;
-    np->extensionfilter = extensionfilter;
+    np->folder = folder;
+    np->filefilter = filefilter;
+    np->subdirs = subdirs;
+    np->flowuuid = flowuuid;
     np->interval = interval;
+    np->start = start;
+    np->end = end;
     np->inDatabase = inDatabase;
     return auto_ptr<Watchfolder>(np);
 }
@@ -6294,11 +6225,13 @@ std::ostream & operator<<(std::ostream& os, Watchfolder o) {
     os << "-------------------------------------" << std::endl;
     os << o.id.name() << " = " << o.id << std::endl;
     os << o.type.name() << " = " << o.type << std::endl;
-    os << o.infolder.name() << " = " << o.infolder << std::endl;
-    os << o.outfolder.name() << " = " << o.outfolder << std::endl;
-    os << o.outfiletemplate.name() << " = " << o.outfiletemplate << std::endl;
-    os << o.extensionfilter.name() << " = " << o.extensionfilter << std::endl;
+    os << o.folder.name() << " = " << o.folder << std::endl;
+    os << o.filefilter.name() << " = " << o.filefilter << std::endl;
+    os << o.subdirs.name() << " = " << o.subdirs << std::endl;
+    os << o.flowuuid.name() << " = " << o.flowuuid << std::endl;
     os << o.interval.name() << " = " << o.interval << std::endl;
+    os << o.start.name() << " = " << o.start << std::endl;
+    os << o.end.name() << " = " << o.end << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -7800,7 +7733,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Task_","table","CREATE TABLE Task_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,name_ TEXT,parameter_ TEXT,statustext_ TEXT,progress_ INTEGER,status_ INTEGER,sortorder_ INTEGER)"));
     res.push_back(Database::SchemaItem("JobLog_","table","CREATE TABLE JobLog_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,message_ TEXT)"));
     res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + backend->getRowIDType() + ",type_ TEXT,lastpts_ DOUBLE,lastdts_ DOUBLE,deinterlace_ INTEGER)"));
-    res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,infolder_ TEXT,outfolder_ TEXT,outfiletemplate_ TEXT,extensionfilter_ TEXT,interval_ TEXT)"));
+    res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,folder_ TEXT,filefilter_ TEXT,subdirs_ INTEGER,flowuuid_ TEXT,interval_ INTEGER,start_ INTEGER,end_ INTEGER)"));
     res.push_back(Database::SchemaItem("ProcessUnit_","table","CREATE TABLE ProcessUnit_ (id_ " + backend->getRowIDType() + ",type_ TEXT,sorcestream_ INTEGER,targetstream_ INTEGER,timebasenum_ INTEGER,timebaseden_ INTEGER,startts_ DOUBLE,endts_ DOUBLE,framecount_ INTEGER,send_ INTEGER,recv_ INTEGER)"));
     res.push_back(Database::SchemaItem("User_","table","CREATE TABLE User_ (id_ " + backend->getRowIDType() + ",type_ TEXT,authname_ TEXT,authpass_ TEXT,company_ TEXT,firstname_ TEXT,lastname_ TEXT,street_ TEXT,city_ TEXT,zip_ TEXT,country_ TEXT,state_ TEXT,telefone_ TEXT,fax_ TEXT,email_ TEXT,www_ TEXT,language_ TEXT,licensekey_ TEXT,apikey_ TEXT,registered_ INTEGER,fileroot_ TEXT)"));
     res.push_back(Database::SchemaItem("UserGroup_","table","CREATE TABLE UserGroup_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ INTEGER,nodecount_ INTEGER)"));
@@ -7815,16 +7748,16 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Preset_Project_","table","CREATE TABLE Preset_Project_ (Preset1 INTEGER,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("Preset_User_","table","CREATE TABLE Preset_User_ (Preset1 INTEGER,User2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_Profile_","table","CREATE TABLE Filter_Profile_ (Filter1 INTEGER,Profile2 INTEGER)"));
-    res.push_back(Database::SchemaItem("_267d55f4e69650bd0564c68c2fa8408c","table","CREATE TABLE _267d55f4e69650bd0564c68c2fa8408c (Profile1 INTEGER,ProfileGroup2 INTEGER)"));
-    res.push_back(Database::SchemaItem("_64009c1d97bb5b4cf1b03d26f16638b8","table","CREATE TABLE _64009c1d97bb5b4cf1b03d26f16638b8 (ProfileGroup1 INTEGER,ProfileGroup2 INTEGER)"));
+    res.push_back(Database::SchemaItem("_60a643d384d1f6c6ddeba5bb8ac0fc3e","table","CREATE TABLE _60a643d384d1f6c6ddeba5bb8ac0fc3e (Profile1 INTEGER,ProfileGroup2 INTEGER)"));
+    res.push_back(Database::SchemaItem("_2d57c481daf84ed6d04cd9e705469b3f","table","CREATE TABLE _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup1 INTEGER,ProfileGroup2 INTEGER)"));
     res.push_back(Database::SchemaItem("Profile_ProfileParameter_","table","CREATE TABLE Profile_ProfileParameter_ (Profile1 INTEGER,ProfileParameter2 INTEGER)"));
     res.push_back(Database::SchemaItem("Profile_Project_","table","CREATE TABLE Profile_Project_ (Profile1 INTEGER,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("Stream_StreamParameter_","table","CREATE TABLE Stream_StreamParameter_ (Stream1 INTEGER,StreamParameter2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_Stream_","table","CREATE TABLE Filter_Stream_ (Filter1 INTEGER,Stream2 INTEGER)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream_","table","CREATE TABLE MediaFile_Stream_ (MediaFile1 INTEGER,Stream2 INTEGER UNIQUE)"));
-    res.push_back(Database::SchemaItem("_ff51b9e09851ae43e0331cedda32947c","table","CREATE TABLE _ff51b9e09851ae43e0331cedda32947c (CodecPreset1 INTEGER,CodecPresetParameter2 INTEGER)"));
-    res.push_back(Database::SchemaItem("_a8e88dbe1e3684df9d977cb3a518f566","table","CREATE TABLE _a8e88dbe1e3684df9d977cb3a518f566 (CodecPreset1 INTEGER,Profile2 INTEGER)"));
-    res.push_back(Database::SchemaItem("_a8b2620caf1164c9487f807d57a216b5","table","CREATE TABLE _a8b2620caf1164c9487f807d57a216b5 (CodecPreset1 INTEGER,Profile2 INTEGER)"));
+    res.push_back(Database::SchemaItem("_165bce89be0b4f99d8ddeba7a26a23a7","table","CREATE TABLE _165bce89be0b4f99d8ddeba7a26a23a7 (CodecPreset1 INTEGER,CodecPresetParameter2 INTEGER)"));
+    res.push_back(Database::SchemaItem("_b477e426317c3764439827c70cd95621","table","CREATE TABLE _b477e426317c3764439827c70cd95621 (CodecPreset1 INTEGER,Profile2 INTEGER)"));
+    res.push_back(Database::SchemaItem("_c47426250800c92cff81a427efb64c83","table","CREATE TABLE _c47426250800c92cff81a427efb64c83 (CodecPreset1 INTEGER,Profile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_Task_JobTask","table","CREATE TABLE Job_Task_JobTask (Job1 INTEGER,Task2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_JobLog_JobJobLog","table","CREATE TABLE Job_JobLog_JobJobLog (Job1 INTEGER,JobLog2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_MediaFile_JobInFile","table","CREATE TABLE Job_MediaFile_JobInFile (Job1 INTEGER,MediaFile2 INTEGER)"));
@@ -7833,12 +7766,11 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Job_JobDetail_JobJobDetail","table","CREATE TABLE Job_JobDetail_JobJobDetail (Job1 INTEGER,JobDetail2 INTEGER)"));
     res.push_back(Database::SchemaItem("JobDetail_Stream_JobOutStream","table","CREATE TABLE JobDetail_Stream_JobOutStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
     res.push_back(Database::SchemaItem("JobDetail_Stream_JobInStream","table","CREATE TABLE JobDetail_Stream_JobInStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
-    res.push_back(Database::SchemaItem("_a14a3ba7f7d547ae0085ce998d728839","table","CREATE TABLE _a14a3ba7f7d547ae0085ce998d728839 (Preset1 INTEGER,Watchfolder2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_ProcessUnit_ProcessUnitJob","table","CREATE TABLE Job_ProcessUnit_ProcessUnitJob (Job1 INTEGER,ProcessUnit2 INTEGER)"));
     res.push_back(Database::SchemaItem("User_UserGroup_User2UserGroup","table","CREATE TABLE User_UserGroup_User2UserGroup (User1 INTEGER,UserGroup2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_Partition_Job2Partition","table","CREATE TABLE Job_Partition_Job2Partition (Job1 INTEGER,Partition2 INTEGER)"));
-    res.push_back(Database::SchemaItem("_42e5aa1ce8d296542c27e045071698bf","index","CREATE INDEX _42e5aa1ce8d296542c27e045071698bf ON Filter_FilterParameter_ (Filter1)"));
-    res.push_back(Database::SchemaItem("_e4e023ddaf1f08da7183528d4811ce05","index","CREATE INDEX _e4e023ddaf1f08da7183528d4811ce05 ON Filter_FilterParameter_ (FilterParameter2)"));
+    res.push_back(Database::SchemaItem("_864f17f6c9c6e1560a3b610198ace17e","index","CREATE INDEX _864f17f6c9c6e1560a3b610198ace17e ON Filter_FilterParameter_ (Filter1)"));
+    res.push_back(Database::SchemaItem("_ebb60e0eabfba5df99ab088688ea3579","index","CREATE INDEX _ebb60e0eabfba5df99ab088688ea3579 ON Filter_FilterParameter_ (FilterParameter2)"));
     res.push_back(Database::SchemaItem("Filter_FilterParameter__all_idx","index","CREATE INDEX Filter_FilterParameter__all_idx ON Filter_FilterParameter_ (Filter1,FilterParameter2)"));
     res.push_back(Database::SchemaItem("Filter_MediaFile_Filter1idx","index","CREATE INDEX Filter_MediaFile_Filter1idx ON Filter_MediaFile_ (Filter1)"));
     res.push_back(Database::SchemaItem("Filter_MediaFile_MediaFile2idx","index","CREATE INDEX Filter_MediaFile_MediaFile2idx ON Filter_MediaFile_ (MediaFile2)"));
@@ -7858,20 +7790,20 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Filter_Profile_Filter1idx","index","CREATE INDEX Filter_Profile_Filter1idx ON Filter_Profile_ (Filter1)"));
     res.push_back(Database::SchemaItem("Filter_Profile_Profile2idx","index","CREATE INDEX Filter_Profile_Profile2idx ON Filter_Profile_ (Profile2)"));
     res.push_back(Database::SchemaItem("Filter_Profile__all_idx","index","CREATE INDEX Filter_Profile__all_idx ON Filter_Profile_ (Filter1,Profile2)"));
-    res.push_back(Database::SchemaItem("_cda68482b82d89345ba8f9e1c6c4315b","index","CREATE INDEX _cda68482b82d89345ba8f9e1c6c4315b ON _267d55f4e69650bd0564c68c2fa8408c (Profile1)"));
-    res.push_back(Database::SchemaItem("_74963898ab9223838ba36a2d8068e440","index","CREATE INDEX _74963898ab9223838ba36a2d8068e440 ON _267d55f4e69650bd0564c68c2fa8408c (ProfileGroup2)"));
-    res.push_back(Database::SchemaItem("_07bf5236dd642873383e172517e99ede","index","CREATE INDEX _07bf5236dd642873383e172517e99ede ON _267d55f4e69650bd0564c68c2fa8408c (Profile1,ProfileGroup2)"));
-    res.push_back(Database::SchemaItem("_4cbabf7d1dee2aa8616321034de1aa7c","index","CREATE INDEX _4cbabf7d1dee2aa8616321034de1aa7c ON _64009c1d97bb5b4cf1b03d26f16638b8 (ProfileGroup1)"));
-    res.push_back(Database::SchemaItem("_94e6415dcc18b15cbba73146d536aac1","index","CREATE INDEX _94e6415dcc18b15cbba73146d536aac1 ON _64009c1d97bb5b4cf1b03d26f16638b8 (ProfileGroup2)"));
-    res.push_back(Database::SchemaItem("_9f3f2f9afb0b417927bc7227515feb9e","index","CREATE INDEX _9f3f2f9afb0b417927bc7227515feb9e ON _64009c1d97bb5b4cf1b03d26f16638b8 (ProfileGroup1,ProfileGroup2)"));
-    res.push_back(Database::SchemaItem("_42d0926efb9d40e5d15f468feeedfd06","index","CREATE INDEX _42d0926efb9d40e5d15f468feeedfd06 ON Profile_ProfileParameter_ (Profile1)"));
-    res.push_back(Database::SchemaItem("_e2b4159ab5f747f22c0240b5a9d0ff30","index","CREATE INDEX _e2b4159ab5f747f22c0240b5a9d0ff30 ON Profile_ProfileParameter_ (ProfileParameter2)"));
-    res.push_back(Database::SchemaItem("_2a8f868862bd58533f8262a8649eef25","index","CREATE INDEX _2a8f868862bd58533f8262a8649eef25 ON Profile_ProfileParameter_ (Profile1,ProfileParameter2)"));
+    res.push_back(Database::SchemaItem("_45a47288d87922bc777077268af27020","index","CREATE INDEX _45a47288d87922bc777077268af27020 ON _60a643d384d1f6c6ddeba5bb8ac0fc3e (Profile1)"));
+    res.push_back(Database::SchemaItem("_6a97b2aa9540e958c966e2f87f06e44e","index","CREATE INDEX _6a97b2aa9540e958c966e2f87f06e44e ON _60a643d384d1f6c6ddeba5bb8ac0fc3e (ProfileGroup2)"));
+    res.push_back(Database::SchemaItem("_8908dcab0ecb35cd3b5541aedac93a26","index","CREATE INDEX _8908dcab0ecb35cd3b5541aedac93a26 ON _60a643d384d1f6c6ddeba5bb8ac0fc3e (Profile1,ProfileGroup2)"));
+    res.push_back(Database::SchemaItem("_d033fe244fc6121cb707149536449c0a","index","CREATE INDEX _d033fe244fc6121cb707149536449c0a ON _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup1)"));
+    res.push_back(Database::SchemaItem("_5a70b3265b33aac73fe8210afa3ad2d5","index","CREATE INDEX _5a70b3265b33aac73fe8210afa3ad2d5 ON _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup2)"));
+    res.push_back(Database::SchemaItem("_9bf4a7c83dd76c8ecc83bccd327d7d17","index","CREATE INDEX _9bf4a7c83dd76c8ecc83bccd327d7d17 ON _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup1,ProfileGroup2)"));
+    res.push_back(Database::SchemaItem("_5b0f6997cb61137fb1d90143364b343c","index","CREATE INDEX _5b0f6997cb61137fb1d90143364b343c ON Profile_ProfileParameter_ (Profile1)"));
+    res.push_back(Database::SchemaItem("_6ca171948a9b22f1822facae47f47f6c","index","CREATE INDEX _6ca171948a9b22f1822facae47f47f6c ON Profile_ProfileParameter_ (ProfileParameter2)"));
+    res.push_back(Database::SchemaItem("_511e5af2def498717dc8291922087d47","index","CREATE INDEX _511e5af2def498717dc8291922087d47 ON Profile_ProfileParameter_ (Profile1,ProfileParameter2)"));
     res.push_back(Database::SchemaItem("Profile_Project_Profile1idx","index","CREATE INDEX Profile_Project_Profile1idx ON Profile_Project_ (Profile1)"));
     res.push_back(Database::SchemaItem("Profile_Project_Project2idx","index","CREATE INDEX Profile_Project_Project2idx ON Profile_Project_ (Project2)"));
     res.push_back(Database::SchemaItem("Profile_Project__all_idx","index","CREATE INDEX Profile_Project__all_idx ON Profile_Project_ (Profile1,Project2)"));
-    res.push_back(Database::SchemaItem("_5258d2d5f1d1a2faeeec1ba4fc781fb4","index","CREATE INDEX _5258d2d5f1d1a2faeeec1ba4fc781fb4 ON Stream_StreamParameter_ (Stream1)"));
-    res.push_back(Database::SchemaItem("_8b4b48c0bf1cd02720c224d5b86c9050","index","CREATE INDEX _8b4b48c0bf1cd02720c224d5b86c9050 ON Stream_StreamParameter_ (StreamParameter2)"));
+    res.push_back(Database::SchemaItem("_eb5384d2471a9430428b71b05ad67df2","index","CREATE INDEX _eb5384d2471a9430428b71b05ad67df2 ON Stream_StreamParameter_ (Stream1)"));
+    res.push_back(Database::SchemaItem("_fa13711a6fd2c1b03d436f1959beb886","index","CREATE INDEX _fa13711a6fd2c1b03d436f1959beb886 ON Stream_StreamParameter_ (StreamParameter2)"));
     res.push_back(Database::SchemaItem("Stream_StreamParameter__all_idx","index","CREATE INDEX Stream_StreamParameter__all_idx ON Stream_StreamParameter_ (Stream1,StreamParameter2)"));
     res.push_back(Database::SchemaItem("Filter_Stream_Filter1idx","index","CREATE INDEX Filter_Stream_Filter1idx ON Filter_Stream_ (Filter1)"));
     res.push_back(Database::SchemaItem("Filter_Stream_Stream2idx","index","CREATE INDEX Filter_Stream_Stream2idx ON Filter_Stream_ (Stream2)"));
@@ -7879,15 +7811,15 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("MediaFile_Stream_MediaFile1idx","index","CREATE INDEX MediaFile_Stream_MediaFile1idx ON MediaFile_Stream_ (MediaFile1)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream_Stream2idx","index","CREATE INDEX MediaFile_Stream_Stream2idx ON MediaFile_Stream_ (Stream2)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream__all_idx","index","CREATE INDEX MediaFile_Stream__all_idx ON MediaFile_Stream_ (MediaFile1,Stream2)"));
-    res.push_back(Database::SchemaItem("_64eb6cea85264e3efa9bde914b89570f","index","CREATE INDEX _64eb6cea85264e3efa9bde914b89570f ON _ff51b9e09851ae43e0331cedda32947c (CodecPreset1)"));
-    res.push_back(Database::SchemaItem("_80bace259854388904b380a273d48ac2","index","CREATE INDEX _80bace259854388904b380a273d48ac2 ON _ff51b9e09851ae43e0331cedda32947c (CodecPresetParameter2)"));
-    res.push_back(Database::SchemaItem("_486dfa60841266bf12796e6d518c2769","index","CREATE INDEX _486dfa60841266bf12796e6d518c2769 ON _ff51b9e09851ae43e0331cedda32947c (CodecPreset1,CodecPresetParameter2)"));
-    res.push_back(Database::SchemaItem("_81ae9594f891352d93136929f7bb823d","index","CREATE INDEX _81ae9594f891352d93136929f7bb823d ON _a8e88dbe1e3684df9d977cb3a518f566 (CodecPreset1)"));
-    res.push_back(Database::SchemaItem("_f294c17877c9aaf90307efe366969e1b","index","CREATE INDEX _f294c17877c9aaf90307efe366969e1b ON _a8e88dbe1e3684df9d977cb3a518f566 (Profile2)"));
-    res.push_back(Database::SchemaItem("_5e4d24c36974111c625f255145fae4ca","index","CREATE INDEX _5e4d24c36974111c625f255145fae4ca ON _a8e88dbe1e3684df9d977cb3a518f566 (CodecPreset1,Profile2)"));
-    res.push_back(Database::SchemaItem("_03f37fa1adbcd42e9cb9d11a7a9aec36","index","CREATE INDEX _03f37fa1adbcd42e9cb9d11a7a9aec36 ON _a8b2620caf1164c9487f807d57a216b5 (CodecPreset1)"));
-    res.push_back(Database::SchemaItem("_ab95fdfa1ee069fe9eedeba83fc46a22","index","CREATE INDEX _ab95fdfa1ee069fe9eedeba83fc46a22 ON _a8b2620caf1164c9487f807d57a216b5 (Profile2)"));
-    res.push_back(Database::SchemaItem("_6f77ffbca289830e63e7bbc394a6e79b","index","CREATE INDEX _6f77ffbca289830e63e7bbc394a6e79b ON _a8b2620caf1164c9487f807d57a216b5 (CodecPreset1,Profile2)"));
+    res.push_back(Database::SchemaItem("_5697497d506d6edf93e83e3fbf0a0ee9","index","CREATE INDEX _5697497d506d6edf93e83e3fbf0a0ee9 ON _165bce89be0b4f99d8ddeba7a26a23a7 (CodecPreset1)"));
+    res.push_back(Database::SchemaItem("_d4cde276820154e4e61105dcbcfbe40e","index","CREATE INDEX _d4cde276820154e4e61105dcbcfbe40e ON _165bce89be0b4f99d8ddeba7a26a23a7 (CodecPresetParameter2)"));
+    res.push_back(Database::SchemaItem("_42ff4e66c92a6178a970678924797e73","index","CREATE INDEX _42ff4e66c92a6178a970678924797e73 ON _165bce89be0b4f99d8ddeba7a26a23a7 (CodecPreset1,CodecPresetParameter2)"));
+    res.push_back(Database::SchemaItem("_e948e228c256df8f173e4c449809f8cb","index","CREATE INDEX _e948e228c256df8f173e4c449809f8cb ON _b477e426317c3764439827c70cd95621 (CodecPreset1)"));
+    res.push_back(Database::SchemaItem("_6a8fa36e548d1af747073ed110e7cea4","index","CREATE INDEX _6a8fa36e548d1af747073ed110e7cea4 ON _b477e426317c3764439827c70cd95621 (Profile2)"));
+    res.push_back(Database::SchemaItem("_9f5803a6308e06a00ee8c60d76e40ca5","index","CREATE INDEX _9f5803a6308e06a00ee8c60d76e40ca5 ON _b477e426317c3764439827c70cd95621 (CodecPreset1,Profile2)"));
+    res.push_back(Database::SchemaItem("_efe8a74240af68bddaa5a9c3ba3b73ed","index","CREATE INDEX _efe8a74240af68bddaa5a9c3ba3b73ed ON _c47426250800c92cff81a427efb64c83 (CodecPreset1)"));
+    res.push_back(Database::SchemaItem("_09971e97639d319f4ec1431219d6bd95","index","CREATE INDEX _09971e97639d319f4ec1431219d6bd95 ON _c47426250800c92cff81a427efb64c83 (Profile2)"));
+    res.push_back(Database::SchemaItem("_28d7cd21f284513124537c322d33330b","index","CREATE INDEX _28d7cd21f284513124537c322d33330b ON _c47426250800c92cff81a427efb64c83 (CodecPreset1,Profile2)"));
     res.push_back(Database::SchemaItem("Job_Task_JobTaskJob1idx","index","CREATE INDEX Job_Task_JobTaskJob1idx ON Job_Task_JobTask (Job1)"));
     res.push_back(Database::SchemaItem("Job_Task_JobTaskTask2idx","index","CREATE INDEX Job_Task_JobTaskTask2idx ON Job_Task_JobTask (Task2)"));
     res.push_back(Database::SchemaItem("Job_Task_JobTask_all_idx","index","CREATE INDEX Job_Task_JobTask_all_idx ON Job_Task_JobTask (Job1,Task2)"));
@@ -7895,35 +7827,32 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Job_JobLog_JobJobLogJobLog2idx","index","CREATE INDEX Job_JobLog_JobJobLogJobLog2idx ON Job_JobLog_JobJobLog (JobLog2)"));
     res.push_back(Database::SchemaItem("Job_JobLog_JobJobLog_all_idx","index","CREATE INDEX Job_JobLog_JobJobLog_all_idx ON Job_JobLog_JobJobLog (Job1,JobLog2)"));
     res.push_back(Database::SchemaItem("Job_MediaFile_JobInFileJob1idx","index","CREATE INDEX Job_MediaFile_JobInFileJob1idx ON Job_MediaFile_JobInFile (Job1)"));
-    res.push_back(Database::SchemaItem("_862e79f9ce5519a49f412691831cbe89","index","CREATE INDEX _862e79f9ce5519a49f412691831cbe89 ON Job_MediaFile_JobInFile (MediaFile2)"));
+    res.push_back(Database::SchemaItem("_75bd42a54265ee2791a61f8bfd916820","index","CREATE INDEX _75bd42a54265ee2791a61f8bfd916820 ON Job_MediaFile_JobInFile (MediaFile2)"));
     res.push_back(Database::SchemaItem("Job_MediaFile_JobInFile_all_idx","index","CREATE INDEX Job_MediaFile_JobInFile_all_idx ON Job_MediaFile_JobInFile (Job1,MediaFile2)"));
     res.push_back(Database::SchemaItem("Job_MediaFile_JobOutFileJob1idx","index","CREATE INDEX Job_MediaFile_JobOutFileJob1idx ON Job_MediaFile_JobOutFile (Job1)"));
-    res.push_back(Database::SchemaItem("_4cae754c91e03ad3651ac87c5ac860f5","index","CREATE INDEX _4cae754c91e03ad3651ac87c5ac860f5 ON Job_MediaFile_JobOutFile (MediaFile2)"));
-    res.push_back(Database::SchemaItem("_4067e80670b49dc99d1ea7925081a50b","index","CREATE INDEX _4067e80670b49dc99d1ea7925081a50b ON Job_MediaFile_JobOutFile (Job1,MediaFile2)"));
+    res.push_back(Database::SchemaItem("_25cc5418e8e8e4440a05457be79c6e6c","index","CREATE INDEX _25cc5418e8e8e4440a05457be79c6e6c ON Job_MediaFile_JobOutFile (MediaFile2)"));
+    res.push_back(Database::SchemaItem("_d9d2d6c9fa1fb063c88ce1c8efda4f10","index","CREATE INDEX _d9d2d6c9fa1fb063c88ce1c8efda4f10 ON Job_MediaFile_JobOutFile (Job1,MediaFile2)"));
     res.push_back(Database::SchemaItem("Job_Preset_Job1idx","index","CREATE INDEX Job_Preset_Job1idx ON Job_Preset_ (Job1)"));
     res.push_back(Database::SchemaItem("Job_Preset_Preset2idx","index","CREATE INDEX Job_Preset_Preset2idx ON Job_Preset_ (Preset2)"));
     res.push_back(Database::SchemaItem("Job_Preset__all_idx","index","CREATE INDEX Job_Preset__all_idx ON Job_Preset_ (Job1,Preset2)"));
-    res.push_back(Database::SchemaItem("_6265124d7e3bdb53dcb0ec46c7b566c2","index","CREATE INDEX _6265124d7e3bdb53dcb0ec46c7b566c2 ON Job_JobDetail_JobJobDetail (Job1)"));
-    res.push_back(Database::SchemaItem("_d4034909e1d4e5b763d790e565f211af","index","CREATE INDEX _d4034909e1d4e5b763d790e565f211af ON Job_JobDetail_JobJobDetail (JobDetail2)"));
-    res.push_back(Database::SchemaItem("_46d895a5ff4af7d2fcbc0280347a7e45","index","CREATE INDEX _46d895a5ff4af7d2fcbc0280347a7e45 ON Job_JobDetail_JobJobDetail (Job1,JobDetail2)"));
-    res.push_back(Database::SchemaItem("_faa24d1bccf3504fe0ed7cfc38d3f4a3","index","CREATE INDEX _faa24d1bccf3504fe0ed7cfc38d3f4a3 ON JobDetail_Stream_JobOutStream (JobDetail1)"));
-    res.push_back(Database::SchemaItem("_cd5c8a2ea5743ec2437f2fd3865277af","index","CREATE INDEX _cd5c8a2ea5743ec2437f2fd3865277af ON JobDetail_Stream_JobOutStream (Stream2)"));
-    res.push_back(Database::SchemaItem("_e4f46e04a5154b3eaf2e89eb8f1412ad","index","CREATE INDEX _e4f46e04a5154b3eaf2e89eb8f1412ad ON JobDetail_Stream_JobOutStream (JobDetail1,Stream2)"));
-    res.push_back(Database::SchemaItem("_d5a186625d6f2a1e84949b08d7b2130b","index","CREATE INDEX _d5a186625d6f2a1e84949b08d7b2130b ON JobDetail_Stream_JobInStream (JobDetail1)"));
-    res.push_back(Database::SchemaItem("_545c55c136fdba37ba56aa10ba682288","index","CREATE INDEX _545c55c136fdba37ba56aa10ba682288 ON JobDetail_Stream_JobInStream (Stream2)"));
-    res.push_back(Database::SchemaItem("_208e12289a6bfd810eb0ed2c58af67a8","index","CREATE INDEX _208e12289a6bfd810eb0ed2c58af67a8 ON JobDetail_Stream_JobInStream (JobDetail1,Stream2)"));
-    res.push_back(Database::SchemaItem("_294a96a725afa6f643abad2cf06a69ac","index","CREATE INDEX _294a96a725afa6f643abad2cf06a69ac ON _a14a3ba7f7d547ae0085ce998d728839 (Preset1)"));
-    res.push_back(Database::SchemaItem("_94ad8cfa5e9e771ad369f9cb7ab879a3","index","CREATE INDEX _94ad8cfa5e9e771ad369f9cb7ab879a3 ON _a14a3ba7f7d547ae0085ce998d728839 (Watchfolder2)"));
-    res.push_back(Database::SchemaItem("_5c42daa03e157fb2e547cb77126b47b1","index","CREATE INDEX _5c42daa03e157fb2e547cb77126b47b1 ON _a14a3ba7f7d547ae0085ce998d728839 (Preset1,Watchfolder2)"));
-    res.push_back(Database::SchemaItem("_274dbd8202d9bc25dd62007fd1f29dfa","index","CREATE INDEX _274dbd8202d9bc25dd62007fd1f29dfa ON Job_ProcessUnit_ProcessUnitJob (Job1)"));
-    res.push_back(Database::SchemaItem("_2b990e5392a8bf555c19bb80b93233fb","index","CREATE INDEX _2b990e5392a8bf555c19bb80b93233fb ON Job_ProcessUnit_ProcessUnitJob (ProcessUnit2)"));
-    res.push_back(Database::SchemaItem("_592640175ad5925a83a481938552f9bc","index","CREATE INDEX _592640175ad5925a83a481938552f9bc ON Job_ProcessUnit_ProcessUnitJob (Job1,ProcessUnit2)"));
-    res.push_back(Database::SchemaItem("_4e03de79e846544d26f5c17e5813c31a","index","CREATE INDEX _4e03de79e846544d26f5c17e5813c31a ON User_UserGroup_User2UserGroup (User1)"));
-    res.push_back(Database::SchemaItem("_c63ea45a0424c327ad92bf587c6b4701","index","CREATE INDEX _c63ea45a0424c327ad92bf587c6b4701 ON User_UserGroup_User2UserGroup (UserGroup2)"));
-    res.push_back(Database::SchemaItem("_550628f022985acfcb4f9382e3b1eb10","index","CREATE INDEX _550628f022985acfcb4f9382e3b1eb10 ON User_UserGroup_User2UserGroup (User1,UserGroup2)"));
-    res.push_back(Database::SchemaItem("_741186b4f666cb928726fb455bd072bd","index","CREATE INDEX _741186b4f666cb928726fb455bd072bd ON Job_Partition_Job2Partition (Job1)"));
-    res.push_back(Database::SchemaItem("_f198c896d4bfaaf2ba3ebacbace1b4cf","index","CREATE INDEX _f198c896d4bfaaf2ba3ebacbace1b4cf ON Job_Partition_Job2Partition (Partition2)"));
-    res.push_back(Database::SchemaItem("_d9151c7bba973fc77cb33e7864a40820","index","CREATE INDEX _d9151c7bba973fc77cb33e7864a40820 ON Job_Partition_Job2Partition (Job1,Partition2)"));
+    res.push_back(Database::SchemaItem("_d42e07c973df5c1aa22424f96e07d102","index","CREATE INDEX _d42e07c973df5c1aa22424f96e07d102 ON Job_JobDetail_JobJobDetail (Job1)"));
+    res.push_back(Database::SchemaItem("_f7ff1861fc4c003b6fc460836dea52b3","index","CREATE INDEX _f7ff1861fc4c003b6fc460836dea52b3 ON Job_JobDetail_JobJobDetail (JobDetail2)"));
+    res.push_back(Database::SchemaItem("_cce4f09c9234ab0eb75047f7dd450a33","index","CREATE INDEX _cce4f09c9234ab0eb75047f7dd450a33 ON Job_JobDetail_JobJobDetail (Job1,JobDetail2)"));
+    res.push_back(Database::SchemaItem("_9a6828d784e55ba8bb73831d4bf76738","index","CREATE INDEX _9a6828d784e55ba8bb73831d4bf76738 ON JobDetail_Stream_JobOutStream (JobDetail1)"));
+    res.push_back(Database::SchemaItem("_47ba6e36c3117f932ca6ec94c3ba96fa","index","CREATE INDEX _47ba6e36c3117f932ca6ec94c3ba96fa ON JobDetail_Stream_JobOutStream (Stream2)"));
+    res.push_back(Database::SchemaItem("_379b3c10ff7858af2b7df3132c35bae0","index","CREATE INDEX _379b3c10ff7858af2b7df3132c35bae0 ON JobDetail_Stream_JobOutStream (JobDetail1,Stream2)"));
+    res.push_back(Database::SchemaItem("_b5fcb088a1d00510d53f08a2da9d354c","index","CREATE INDEX _b5fcb088a1d00510d53f08a2da9d354c ON JobDetail_Stream_JobInStream (JobDetail1)"));
+    res.push_back(Database::SchemaItem("_3020cd32e6cb495b9b457666f03f8a53","index","CREATE INDEX _3020cd32e6cb495b9b457666f03f8a53 ON JobDetail_Stream_JobInStream (Stream2)"));
+    res.push_back(Database::SchemaItem("_55609d0353fe020d7d52815110be116e","index","CREATE INDEX _55609d0353fe020d7d52815110be116e ON JobDetail_Stream_JobInStream (JobDetail1,Stream2)"));
+    res.push_back(Database::SchemaItem("_9f8888b43cecb8b250e2fd4abb15139c","index","CREATE INDEX _9f8888b43cecb8b250e2fd4abb15139c ON Job_ProcessUnit_ProcessUnitJob (Job1)"));
+    res.push_back(Database::SchemaItem("_8b431085e85ff3115326e1168a6f12b0","index","CREATE INDEX _8b431085e85ff3115326e1168a6f12b0 ON Job_ProcessUnit_ProcessUnitJob (ProcessUnit2)"));
+    res.push_back(Database::SchemaItem("_0a3fce10cdd119bf165601c22bf632b5","index","CREATE INDEX _0a3fce10cdd119bf165601c22bf632b5 ON Job_ProcessUnit_ProcessUnitJob (Job1,ProcessUnit2)"));
+    res.push_back(Database::SchemaItem("_7d9412c26ff790b82599d91e1132a1dc","index","CREATE INDEX _7d9412c26ff790b82599d91e1132a1dc ON User_UserGroup_User2UserGroup (User1)"));
+    res.push_back(Database::SchemaItem("_40cd0fdddf07c1c128bb446a7faa6e3e","index","CREATE INDEX _40cd0fdddf07c1c128bb446a7faa6e3e ON User_UserGroup_User2UserGroup (UserGroup2)"));
+    res.push_back(Database::SchemaItem("_5db0c50747293a6fc42d73635c3adb01","index","CREATE INDEX _5db0c50747293a6fc42d73635c3adb01 ON User_UserGroup_User2UserGroup (User1,UserGroup2)"));
+    res.push_back(Database::SchemaItem("_8b87518093ef8ca0378aa75ac2742ba7","index","CREATE INDEX _8b87518093ef8ca0378aa75ac2742ba7 ON Job_Partition_Job2Partition (Job1)"));
+    res.push_back(Database::SchemaItem("_08b820cafd62f4965f0ebbc29665606b","index","CREATE INDEX _08b820cafd62f4965f0ebbc29665606b ON Job_Partition_Job2Partition (Partition2)"));
+    res.push_back(Database::SchemaItem("_4347eaf0398ab15250636ca7669f7d16","index","CREATE INDEX _4347eaf0398ab15250636ca7669f7d16 ON Job_Partition_Job2Partition (Job1,Partition2)"));
     return res;
 }
 void HiveDb::initialize() {

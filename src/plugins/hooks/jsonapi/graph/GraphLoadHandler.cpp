@@ -12,12 +12,10 @@ public:
 
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
     LOGDEBUG("Loading graph");
-    res.setChunkedTransferEncoding(true);
-    res.setContentType("text/plain");
+    //res.setChunkedTransferEncoding(true);
     std::string user_path = req.get("hive.graph_path");
 
-    std::ostream& ostr = res.send();
-    JSONResult result(req.get("requestUUID"));
+    JSONResult result(req);
 
     std::string uuid = req.get("uuid");
     org::esb::io::File f(user_path + "/" + uuid + ".graph");
@@ -36,12 +34,14 @@ public:
         } 
         result.setData(inode);
       }else{
-        result.setStatus("error", "graph is invalid");        
+        result.setStatus(res.HTTP_INTERNAL_SERVER_ERROR, "graph is invalid");
       }
     } else {
-      result.setStatus("error", "graph not found");
+      result.setStatus(res.HTTP_NOT_FOUND, "flow not found");
     }
+    std::ostream& ostr = res.send();
+    res.setContentType("text/plain");
     ostr << result.write_formatted();
   }
 };
-REGISTER_WEB_HOOK("/api/v1/graph/{uuid}", GET, GraphLoadHandler);
+REGISTER_WEB_HOOK("/api/v1/flow/{uuid}", GET, GraphLoadHandler);

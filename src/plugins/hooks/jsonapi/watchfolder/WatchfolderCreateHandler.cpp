@@ -12,7 +12,7 @@
 
 #include "../exports.h"
 
-class JSONAPI_EXPORT GraphCreateHandler : public org::esb::core::WebHookPlugin {
+class JSONAPI_EXPORT WatchfolderCreateHandler : public org::esb::core::WebHookPlugin {
 public:
 
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
@@ -24,16 +24,13 @@ public:
       Poco::StreamCopier::copyToString(req.stream(), data);
       if (libjson::is_valid(data)) {
         JSONNode inode = libjson::parse(data);
-        if (inode.contains("uuid")) {
-          JSONNode tmp=JSONNode("uuid", uuid);
-          inode["uuid"].swap(tmp);
-        } else {
-          inode.push_back(JSONNode("uuid", uuid));
+        if(!inode.contains("folder")){
+          
+          result.setStatus("error", "no folder given, folder element could not be empty");
+          res.setStatusAndReason(res.HTTP_BAD_REQUEST, "no valid json format given");
+          
         }
-        /*save method should here*/
-        save(inode, uuid, req.get("hive.graph_path"));
         result.push_back(JSONNode("uuid", uuid));
-        //result = inode;
       } else {
         res.setChunkedTransferEncoding(false);
         result.setStatus("error", "no valid json format given");
@@ -48,13 +45,5 @@ public:
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();
   }
-
-  void save(JSONNode& node, std::string & uuid, std::string path) {
-    org::esb::io::File f(path + "/" + uuid + ".graph");
-    org::esb::io::FileOutputStream fos(&f);
-    fos.write(node.write_formatted());
-  }
 };
-REGISTER_WEB_HOOK("/api/v1/flow/?$", POST, GraphCreateHandler);
-
-
+REGISTER_WEB_HOOK("/api/v1/watchfolder/?$", POST, WatchfolderCreateHandler);

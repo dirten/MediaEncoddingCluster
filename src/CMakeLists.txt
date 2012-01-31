@@ -408,10 +408,10 @@ ENDIF(NOT WIN32)
 
 IF(WIN32)
   INSTALL(FILES
-      ${FFMPEG_DIR}/lib/avcodec-53.dll
+      ${FFMPEG_DIR}/lib/avcodec-54.dll
 #      ${FFMPEG_DIR}/lib/avcore.dll
       ${FFMPEG_DIR}/lib/avdevice-53.dll
-      ${FFMPEG_DIR}/lib/avformat-53.dll
+      ${FFMPEG_DIR}/lib/avformat-54.dll
       ${FFMPEG_DIR}/lib/avutil-51.dll
       ${FFMPEG_DIR}/lib/swscale-2.dll
     DESTINATION ${LIB_INSTALL_DIR}
@@ -457,9 +457,9 @@ ELSEIF(APPLE)
 
 ELSE(APPLE)
   INSTALL(FILES
-      ${FFMPEG_DIR}/lib/libavcodec.so.53
+      ${FFMPEG_DIR}/lib/libavcodec.so.54
       ${FFMPEG_DIR}/lib/libavdevice.so.53
-      ${FFMPEG_DIR}/lib/libavformat.so.53
+      ${FFMPEG_DIR}/lib/libavformat.so.54
       ${FFMPEG_DIR}/lib/libavutil.so.51
 #      ${FFMPEG_DIR}/lib/libavcore.so
       ${FFMPEG_DIR}/lib/libswscale.so.2

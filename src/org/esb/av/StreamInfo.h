@@ -33,7 +33,7 @@ namespace org {
         int getSampleFormat();
         int64_t getDuration();
 		int getFrameBytes();
-        float getQuality();
+        //float getQuality();
         long long int getFirstPts();
         long long int getFirstDts();
 		int getNBIndexEntries();

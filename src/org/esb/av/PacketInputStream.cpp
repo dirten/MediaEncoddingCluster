@@ -148,7 +148,7 @@ int PacketInputStream::read(vector<unsigned char>&buffer) {
 }
 
 long long int PacketInputStream::available(bool isBlocking) {
-  return _formatCtx->file_size;
+  return 0;//_formatCtx->file_size;
 }
 
 uint64_t PacketInputStream::getDuration() {

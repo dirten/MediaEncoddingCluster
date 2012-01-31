@@ -95,10 +95,10 @@ namespace org {
       int64_t StreamInfo::getDuration() {
         return _s->duration;
       }
-
+      /*
       float StreamInfo::getQuality() {
         return _s->quality;
-      }
+      }*/
 
       long long int StreamInfo::getFirstPts() {
         return _s->start_time;

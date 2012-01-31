@@ -15,7 +15,7 @@ public:
     res.setChunkedTransferEncoding(true);
     res.setContentType("text/plain");
 
-    JSONResult result(req.get("requestUUID"));
+    JSONResult result(req);
     std::string user_path = org::esb::config::Config::get("hive.graph_path");
 
     org::esb::io::File f(user_path + "/");
@@ -52,4 +52,4 @@ public:
     ostr << result.write_formatted();
   }
 };
-REGISTER_WEB_HOOK("/api/v1/graph/?$", GET, GraphListHandler);
+REGISTER_WEB_HOOK("/api/v1/flow/?$", GET, GraphListHandler);

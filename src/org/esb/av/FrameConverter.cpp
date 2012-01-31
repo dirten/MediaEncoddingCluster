@@ -289,7 +289,7 @@ namespace org {
           inchannels = in_frame.channels;
           if (_audioCtx)audio_resample_close(_audioCtx);
           if (_dec->getCodecType() == AVMEDIA_TYPE_AUDIO && _enc->getCodecType() == AVMEDIA_TYPE_AUDIO) {
-            if (_dec->getSampleFormat() != SAMPLE_FMT_S16){
+            if (_dec->getSampleFormat() != AV_SAMPLE_FMT_S16){
               LOGWARN("Warning, using s16 intermediate sample format for resampling\n");
             }
             _audioCtx = av_audio_resample_init(_enc->getChannels(), _dec->getChannels(), _enc->getSampleRate(), _dec->getSampleRate(), _enc->getSampleFormat(), _dec->getSampleFormat(), 16, 10, 0, 0.8 );

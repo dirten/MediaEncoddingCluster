@@ -34,7 +34,7 @@ namespace org {
         int height;
         int channels;
         int samplerate;
-        SampleFormat sampleformat;
+        AVSampleFormat sampleformat;
         protected:
         std::map<std::string, std::string> _options;
         CodecID _codec_id;

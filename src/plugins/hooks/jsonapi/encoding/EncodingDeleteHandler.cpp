@@ -13,7 +13,7 @@
 class JSONAPI_EXPORT EncodingDeleteHandler : public org::esb::core::WebHookPlugin {
 public:
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
-    JSONResult result(req.get("requestUUID"));
+    JSONResult result(req);
     db::HiveDb db("sqlite3", req.get("db.url"));
     JSONNode c(JSON_ARRAY);
     c.set_name("data");
@@ -23,20 +23,20 @@ public:
     if (s.count() == 1) {
       db::Job job = s.one();
       if (job.status == db::Job::Status::Processing) {
-        result.setStatus("error", "encoding to delete is currently running, please stop the encoding job before delete it!");
-        res.setStatusAndReason(res.HTTP_METHOD_NOT_ALLOWED, "encoding to delete is currently running, please stop the encoding job before delete it");
+        //result.setStatus("error", "encoding to delete is currently running, please stop the encoding job before delete it!");
+        result.setStatus(res.HTTP_METHOD_NOT_ALLOWED, "encoding to delete is currently running, please stop the encoding job before delete it");
       } else {
-        result.setStatus("ok", "encoding succesful deleted.");
+        //result.setStatus("ok", "encoding succesful deleted.");
         job.status = db::Job::Status::Deleted;
         job.update();
       }
     } else {
-      result.setStatus("error", "encoding not found");
-      res.setStatusAndReason(res.HTTP_NOT_FOUND, "encoding not found");
+      //result.setStatus("error", "encoding not found");
+      result.setStatus(res.HTTP_NOT_FOUND, "encoding not found");
     }
     res.setContentType("text/plain");
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();
   }
 };
-REGISTER_WEB_HOOK("/api/v1/encoding/{encodingid}/delete", PUT, EncodingDeleteHandler);
+REGISTER_WEB_HOOK("/api/v1/encoding/{encodingid}", DELETE, EncodingDeleteHandler);

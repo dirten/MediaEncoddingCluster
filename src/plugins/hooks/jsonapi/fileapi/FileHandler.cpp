@@ -17,7 +17,7 @@ class JSONAPI_EXPORT FileHandler : public org::esb::core::WebHookPlugin {
 public:
 
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
-    JSONResult result(req.get("requestUUID"));
+    JSONResult result(req);
     if (req.has("path")) {
       std::string path = req.get("path");
       result.push_back(JSONNode("path", req.get("path")));

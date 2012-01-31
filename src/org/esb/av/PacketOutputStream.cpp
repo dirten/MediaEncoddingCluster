@@ -18,10 +18,10 @@ PacketOutputStream::PacketOutputStream(OutputStream * os, std::string statsfile)
     _target = os; //new BufferedOutputStream(os,32000);
   }
   _fmtCtx->packet_size = 0;
-  _fmtCtx->mux_rate = 0;
-  _fmtCtx->preload = (int) (0.5 * AV_TIME_BASE);
+  //_fmtCtx->mux_rate = 0;
+  //_fmtCtx->preload = (int) (0.5 * AV_TIME_BASE);
   _fmtCtx->max_delay = (int) (0.7 * AV_TIME_BASE);
-  _fmtCtx->loop_output = AVFMT_NOOUTPUTLOOP;
+  //_fmtCtx->loop_output = AVFMT_NOOUTPUTLOOP;
   _isInitialized = false;
   _stats_fos=NULL;
   if(statsfile.length()>0){
@@ -179,7 +179,7 @@ std::list<AVStream*> PacketOutputStream::getStreamList() {
 
 void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
   //    AVStream * st=av_new_stream(_fmtCtx,_fmtCtx->nb_streams);
-  AVStream * st = av_new_stream(_fmtCtx, stream_id);
+  AVStream * st = avformat_new_stream(_fmtCtx, encoder._codec);
   if (!st) {
     LOGERROR("Could not alloc stream");
   }
@@ -262,7 +262,7 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
 
 bool PacketOutputStream::init() {
   //  cout << _fmtCtx->oformat->write_header<<endl;
-  if (av_write_header(_fmtCtx) < 0) {
+  if (avformat_write_header(_fmtCtx, NULL) < 0) {
     LOGERROR("av_write_header(_fmtCtx) failed");
     return false;
     //    exit(1);

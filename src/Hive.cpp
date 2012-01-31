@@ -111,7 +111,6 @@ int _port = 0;
 bool quiet = false;
 
 int main(int argc, char * argv[]) {
-  org::esb::av::FormatBaseStream::initialize();
   //org::esb::core::Application(argc, argv);
   //isatty(0);
   /*setting default path to Program*/
@@ -200,6 +199,7 @@ int main(int argc, char * argv[]) {
     props.setProperty(LOG4CPLUS_TEXT("appender.MAIN.File"), LOG4CPLUS_TEXT(config::Config::get("log.path") + "/mhive-debug.log"));
     props.setProperty(LOG4CPLUS_TEXT("appender.ERROR.File"), LOG4CPLUS_TEXT(config::Config::get("log.path") + "/mhive-error.log"));
     config.configure();
+    org::esb::av::FormatBaseStream::initialize();
 
     //std::cout << "logpath"<<getenv("log.path")<<std::endl;
     string base_path = org::esb::config::Config::getProperty("hive.base_path");
@@ -311,9 +311,9 @@ int main(int argc, char * argv[]) {
     //new StackDumper(config::Config::get("hive.dump_path"));
 
 
-    av_register_all();
-    avcodec_init();
-    avcodec_register_all();
+    //av_register_all();
+    //avcodec_init();
+    //avcodec_register_all();
 
     if (vm.count("console")) {
       console();

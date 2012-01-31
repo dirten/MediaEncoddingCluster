@@ -42,7 +42,7 @@ void my_init() {
   //	cout << "test initialised"<<endl;
   //	logdebug("init av package");
   av_register_all();
-  avcodec_init();
+  //avcodec_init();
   avcodec_register_all();
 }
 
@@ -85,7 +85,7 @@ namespace org {
         _bytes_discard = 0;
 
         const AVOption * option = NULL;
-        while (option = av_next_option(s->codec, option)) {
+        while (option = av_opt_next(s->codec, option)) {
           if (option->offset > 0) {
             /*jump over depricated options*/
             if (strcmp(option->name, "lpc_coeff_precision") == 0 ||
@@ -234,7 +234,7 @@ namespace org {
         ctx->time_base.den = 0;
         ctx->gop_size = 0;
         ctx->sample_rate = 0;
-        ctx->sample_fmt = (SampleFormat) 0;
+        ctx->sample_fmt = AV_SAMPLE_FMT_NONE;
         ctx->channels = 0;
         //        ctx->idct_algo = FF_IDCT_AUTO;
         //        ctx->skip_idct = AVDISCARD_DEFAULT;
@@ -619,7 +619,7 @@ namespace org {
         ctx->sample_rate = rate;
       }
 
-      void Codec::setSampleFormat(SampleFormat f) {
+      void Codec::setSampleFormat(AVSampleFormat f) {
         ctx->sample_fmt = f;
       }
 
@@ -643,7 +643,7 @@ namespace org {
         return ctx->bit_rate;
       }
 
-      SampleFormat Codec::getSampleFormat() {
+      AVSampleFormat Codec::getSampleFormat() {
         return ctx->sample_fmt;
       }
 
@@ -752,7 +752,7 @@ namespace org {
           data.append("MaxBFrames:").append(StringUtil::toString(!!ctx->max_b_frames)).append("\r\n");
           data.append("HasBFrames:").append(StringUtil::toString(ctx->has_b_frames)).append("\r\n");
           data.append("Delay:").append(StringUtil::toString(ctx->delay)).append("\r\n");
-          data.append("CRF:").append(StringUtil::toString(ctx->crf)).append("\r\n");
+          //data.append("CRF:").append(StringUtil::toString(ctx->crf)).append("\r\n");
           char buf[256];
           avcodec_string(buf, sizeof (buf), ctx, _mode);
           data.append("InternalData:").append(std::string(buf)).append("\r\n");

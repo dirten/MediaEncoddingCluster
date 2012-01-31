@@ -248,7 +248,7 @@ int main(int argc, char ** argv) {
   }
 
   av_register_all();
-  avcodec_init();
+  //avcodec_init();
   avcodec_register_all();
 
   char * infile = NULL;

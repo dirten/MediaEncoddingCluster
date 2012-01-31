@@ -17,7 +17,7 @@ public:
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
 
 
-    JSONResult result(req.get("requestUUID"));
+    JSONResult result(req);
     db::HiveDb db("sqlite3", req.get("db.url"));
     JSONNode c(JSON_ARRAY);
     c.set_name("data");

@@ -17,7 +17,7 @@ namespace bla {
   classlogger("info")
   int main(int argc, char ** argv) {
     Log::open("");
-    avcodec_init();
+    //avcodec_init();
     avcodec_register_all();
     av_register_all();
 
@@ -67,11 +67,11 @@ namespace bla {
     cout << endl;
     cout << "<File Information><TIME_BASE>" << AV_TIME_BASE << endl;
     //      cout <<"-----------------"<<endl;
-    cout << "#streams\tformatname\ttimestamp\tstart\tduration\tfilename\tidxsize" << endl;
+    cout << "#streams\tformatname\tstart\tduration\tfilename\tidxsize" << endl;
     cout << "---------------------------------------------------------------------------------" << endl;
     cout << f->nb_streams << "\t\t";
     cout << f->iformat->name << "\t\t";
-    cout << f->timestamp << "\t\t";
+    //cout << f->timestamp << "\t\t";
     cout << f->start_time << "\t";
     cout << f->duration << "\t";
     cout << f->filename << "\t";
@@ -82,7 +82,7 @@ namespace bla {
     std::vector<long long int> start_pts;
     cout << endl;
     cout << "<Stream Information>" << endl;
-    cout << "#\tindex\tcodec\ttimebase\tframerate\tquality\tstart\tfirst_dts\tduration\tnb_index_entries" << endl;
+    cout << "#\tindex\tcodec\ttimebase\tframerate\tstart\tfirst_dts\tduration\tnb_index_entries" << endl;
     cout << "-------------------------------------------------------------------------" << endl;
     for (int a = 0; a < streams; a++) {
       StreamInfo * s = fis.getStreamInfo(a);
@@ -92,7 +92,7 @@ namespace bla {
       cout << s->getTimeBase().num << "/" << s->getTimeBase().den << "\t";
       cout << s->getFrameRate().num << "/" << s->getFrameRate().den << "\t";
       //    cout << s->getTimeBase().den << "\t";
-      cout << s->getQuality() << "\t";
+      //cout << s->getQuality() << "\t";
       cout << s->getFirstPts() << "\t";
       cout << s->getFirstDts() << "\t";
       cout << s->getDuration() << "\t";
@@ -181,13 +181,13 @@ namespace bla {
       //	if(f->streams[p.packet->stream_index]->parser){
       if (fis.getFormatContext()->streams[p.getStreamIndex()]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
         switch (p._pict_type) {
-          case FF_I_TYPE: type = "I";
+          case AV_PICTURE_TYPE_I: type = "I";
             break;
-          case FF_B_TYPE: type = "B";
+          case AV_PICTURE_TYPE_B: type = "B";
             break;
-          case FF_BI_TYPE: type = "BI";
+          case AV_PICTURE_TYPE_BI: type = "BI";
             break;
-          case FF_P_TYPE: type = "P";
+          case AV_PICTURE_TYPE_P: type = "P";
             break;
           default:type = "U";
             break;

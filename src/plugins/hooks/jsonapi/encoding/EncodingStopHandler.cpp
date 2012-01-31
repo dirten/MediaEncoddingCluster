@@ -16,7 +16,7 @@ public:
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
 
 
-    JSONResult result(req.get("requestUUID"));
+    JSONResult result(req);
     db::HiveDb db("sqlite3", req.get("db.url"));
     JSONNode c(JSON_ARRAY);
     c.set_name("data");
@@ -42,7 +42,7 @@ public:
   }
 
 };
-REGISTER_WEB_HOOK("/api/v1/encoding/{encodingid}/stop", PUT, EncodingStopHandler);
+REGISTER_WEB_HOOK("/api/v1/encoding/{encodingid}/stop", POST, EncodingStopHandler);
 
 
 

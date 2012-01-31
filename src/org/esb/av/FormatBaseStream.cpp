@@ -7,7 +7,7 @@
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/util/Foreach.h"
-extern URLProtocol test_protocol;
+//extern URLProtocol test_protocol;
 namespace org {
   namespace esb {
     namespace av {
@@ -193,7 +193,7 @@ namespace org {
           //av_log_set_callback(mhive_log_default_callback);
           av_log_set_callback(FormatBaseStream::mhive_log_default_callback);
           av_log_set_level(AV_LOG_VERBOSE);
-          av_register_protocol2(&test_protocol, sizeof (URLProtocol));
+          //av_register_protocol2(&test_protocol, sizeof (URLProtocol));
           av_lockmgr_register(lockmgr);
           isInitialized = true;
         }

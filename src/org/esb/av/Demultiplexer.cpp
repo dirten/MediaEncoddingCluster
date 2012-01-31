@@ -21,10 +21,10 @@ namespace org {
       Duration Demultiplexer::getDuration() {
         return Duration(_source.formatCtx->duration);
       }
-
+      /*
       TimeStamp Demultiplexer::getMediaTime() {
         return TimeStamp(_source.formatCtx->timestamp);
-      }
+      }*/
 
       std::list<Ptr<Track> > Demultiplexer::getTracks() {
         return _track_list;

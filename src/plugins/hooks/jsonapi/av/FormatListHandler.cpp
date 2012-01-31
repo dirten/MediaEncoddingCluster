@@ -45,7 +45,7 @@ public:
     valid_formats.insert("webm");
 
 
-    JSONResult result(req.get("requestUUID"));
+    JSONResult result(req);
     JSONNode c(JSON_ARRAY);
     AVOutputFormat *ofmt = NULL;
     int a = 0;

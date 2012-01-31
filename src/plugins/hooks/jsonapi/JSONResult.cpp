@@ -7,15 +7,16 @@
 
 #include "JSONResult.h"
 #include "org/esb/lang/Exception.h"
-JSONResult::JSONResult(std::string uuid):JSONNode(JSON_NODE) {
+JSONResult::JSONResult(org::esb::core::http::HTTPServerRequest&req):_req(req){
   _statusAllreadySetted=false;
-  _uuid=uuid;
+  _uuid=_req.get("requestUUID");
   JSONNode s(JSON_NODE);
   s.set_name("response");
   s.push_back(JSONNode("status","ok"));
   s.push_back(JSONNode("message",""));
-  s.push_back(JSONNode("requestID",uuid));
+  s.push_back(JSONNode("requestID",_uuid));
   push_back(s);
+    
 }
 
 void JSONResult::setData(JSONNode & data){
@@ -23,8 +24,12 @@ void JSONResult::setData(JSONNode & data){
   this->push_back(data);
 }
 
-void JSONResult::setRequestId(std::string id){
-  push_back(JSONNode("requestID",id));
+void JSONResult::setStatus(Poco::Net::HTTPResponse::HTTPStatus s, std::string msg){
+  _req.response().setStatusAndReason(s,msg);
+  if(_req.response().HTTP_OK!=s){
+    setStatus("error", msg);    
+  }else
+    setStatus("ok", msg);
 }
 
 void JSONResult::setStatus(std::string status, std::string msg){

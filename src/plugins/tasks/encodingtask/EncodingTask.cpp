@@ -135,7 +135,7 @@ namespace encodingtask {
       /*create a stream data element for each stream from the input file*/
       StreamData & sdata = stream_map[is->index];
       sdata.last_start_dts = 0;
-      sdata.min_packet_count = 0;
+      sdata.min_packet_count = atoi(_codecs["video"]["g"].c_str());
       sdata.outstream = a;
       sdata.instream = is->index;
       /*create the decoder objects*/

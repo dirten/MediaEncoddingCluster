@@ -163,7 +163,7 @@ namespace org {
           /**
            * case handling for mpeg2 video packets(formaly streams with b frames)
            * */
-          if (_streams[stream_idx].state == STATE_END_I_FRAME && (_streams[stream_idx].decoder->getCodecId() == CODEC_ID_MPEG2VIDEO && ptr->_pict_type == FF_P_TYPE)) {
+          if (_streams[stream_idx].state == STATE_END_I_FRAME && (_streams[stream_idx].decoder->getCodecId() == CODEC_ID_MPEG2VIDEO && ptr->_pict_type == AV_PICTURE_TYPE_P)) {
             /*in the first roundtrip the stream packets look like this, the first B Frames are not removed*/
             /*_streams[stream_idx].packets =IBBPBBPBBPBB*/
             /*in the following roundtrip the stream packets look like this*/

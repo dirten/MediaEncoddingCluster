@@ -15,7 +15,7 @@ class JSONAPI_EXPORT GraphDeleteHandler : public org::esb::core::WebHookPlugin {
 public:
 
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
-    JSONResult result(req.get("requestUUID"));
+    JSONResult result(req);
     std::string uuid = req.get("uuid");
     org::esb::io::File f(req.get("user_path") + "/" + uuid + ".graph");
     if (f.exists()) {
@@ -30,6 +30,6 @@ public:
     ostr << result.write_formatted();
   }
 };
-REGISTER_WEB_HOOK("/api/v1/graph/{uuid}", DELETE, GraphDeleteHandler);
+REGISTER_WEB_HOOK("/api/v1/flow/{uuid}", DELETE, GraphDeleteHandler);
 
 

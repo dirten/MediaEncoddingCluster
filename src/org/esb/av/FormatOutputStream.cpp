@@ -9,8 +9,8 @@ namespace org {
       FormatOutputStream::FormatOutputStream(File * target_file, const char * fmt) {
         _status = CLOSED;
 
-        AVFormatParameters params, *ap = &params;
-        memset(ap, 0, sizeof (*ap));
+        //AVFormatParameters params, *ap = &params;
+        //memset(ap, 0, sizeof (*ap));
 
 
         _file = target_file;
@@ -24,13 +24,13 @@ namespace org {
             //            exit(1);
           }
         }
-
+        /*
         if (av_set_parameters(_fmtCtx, ap) < 0) {
           fprintf(stderr, "Invalid output format parameters\n");
           exit(1);
-        }
-        _fmtCtx->preload = static_cast<int> (0.5 * AV_TIME_BASE);
-        _fmtCtx->loop_output = AVFMT_NOOUTPUTLOOP;
+        }*/
+        //_fmtCtx->preload = static_cast<int> (0.5 * AV_TIME_BASE);
+        //_fmtCtx->loop_output = AVFMT_NOOUTPUTLOOP;
         _fmtCtx->flags |= AVFMT_FLAG_NONBLOCK;
         //  logdebug("PRELOAD:"<<0.5*AV_TIME_BASE);
         _status = OPENED;

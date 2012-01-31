@@ -24,7 +24,7 @@ namespace org {
         Demultiplexer(DataSource& );
         virtual ~Demultiplexer();
         Duration getDuration();
-        TimeStamp getMediaTime();
+        //TimeStamp getMediaTime();
         std::list<Ptr<Track> > getTracks();
         bool isPositionable();
         bool isRandomAccess();

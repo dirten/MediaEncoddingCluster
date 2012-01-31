@@ -18,6 +18,7 @@ add_library (jsonapi SHARED
   ConfigHandler.cpp
   JobHandler.cpp
   GraphHandler.cpp
+#API Handling of all Graph/Flow Requests
   graph/GraphListHandler.cpp
   graph/GraphLoadHandler.cpp
   graph/GraphUpdateHandler.cpp
@@ -49,6 +50,9 @@ add_library (jsonapi SHARED
   encoding/EncodingStopHandler.cpp
   encoding/EncodingDeleteHandler.cpp
   encoding/EncodingRestartHandler.cpp
+
+#API Handling the Watchfolder Requests
+  watchfolder/WatchfolderCreateHandler.cpp
 
 )
 

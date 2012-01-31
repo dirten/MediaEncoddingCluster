@@ -10,7 +10,7 @@
 class JSONAPI_EXPORT EncodingListHandler : public org::esb::core::WebHookPlugin {
 public:
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
-    JSONResult result(req.get("requestUUID"));
+    JSONResult result(req);
     db::HiveDb db("sqlite3", req.get("db.url"));
     JSONNode c(JSON_ARRAY);
     c.set_name("data");
@@ -25,7 +25,7 @@ public:
       entry.push_back(JSONNode("infile", job.infile.value()));
       entry.push_back(JSONNode("status", job.getStatusText()));
       entry.push_back(JSONNode("statuscode", job.status.value()));
-      entry.push_back(JSONNode("graphname", job.graphname.value()));
+      entry.push_back(JSONNode("flowname", job.graphname.value()));
       c.push_back(entry);
     }
     result.setData(c);

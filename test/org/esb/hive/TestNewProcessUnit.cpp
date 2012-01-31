@@ -248,7 +248,7 @@ void write_file(int argc, char** argv) {
   audio_codec->setBitRate(128000);
   audio_codec->setSampleRate(44100);
   audio_codec->setChannels(2);
-  audio_codec->setSampleFormat(SAMPLE_FMT_S16);
+  audio_codec->setSampleFormat(AV_SAMPLE_FMT_S16);
   if (fos._fmt->flags & AVFMT_GLOBALHEADER) {
     video_codec->setFlag(CODEC_FLAG_GLOBAL_HEADER);
     audio_codec->setFlag(CODEC_FLAG_GLOBAL_HEADER);

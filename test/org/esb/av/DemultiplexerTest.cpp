@@ -48,9 +48,9 @@ int main(int argc, char** argv) {
   source.connect();
   Demultiplexer plex(source);
   cout << "Duration:"<<plex.getDuration().toString()<<endl;
-  cout << "Duration:"<<plex.getMediaTime().toString()<<endl;
+//  cout << "Duration:"<<plex.getMediaTime().toString()<<endl;
   assert(plex.getDuration().getTime()>0);
-  assert(plex.getMediaTime().getTime()==0);
+//  assert(plex.getMediaTime().getTime()==0);
   list<Ptr<Track> > track_list=plex.getTracks();
   assert(track_list.size()>=1);
   list<Ptr<Track> >::iterator it=track_list.begin();

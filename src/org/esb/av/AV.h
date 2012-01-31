@@ -10,7 +10,7 @@ extern "C" {
 #define FF_API_FLAC_GLOBAL_OPTS 0
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
-#include <libavcodec/opt.h>
+#include <libavutil/opt.h>
 #include <libavutil/avutil.h>
 #include <libswscale/swscale.h>
 #include <libavutil/fifo.h>

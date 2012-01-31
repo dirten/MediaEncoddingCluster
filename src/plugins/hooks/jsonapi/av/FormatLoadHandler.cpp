@@ -3,7 +3,7 @@
 #include "org/esb/io/File.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/util/Foreach.h"
-
+#include "../JSONResult.h"
 #include "../exports.h"
 
 class JSONAPI_EXPORT FormatLoadHandler : public org::esb::core::WebHookPlugin {
@@ -44,7 +44,7 @@ public:
     valid_formats.insert("webm");
 
 
-    JSONNode result(JSON_NODE);
+    JSONResult result(req);
     result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
     //result.push_back(JSONNode("format", req.get("formatid")));
     JSONNode c(JSON_NODE);

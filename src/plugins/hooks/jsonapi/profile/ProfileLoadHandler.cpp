@@ -13,7 +13,7 @@ public:
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
 
 
-    JSONResult result(req.get("requestUUID"));
+    JSONResult result(req);
     db::HiveDb db("sqlite3", req.get("db.url"));
     std::string id=req.get("profileid");
     litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == id);

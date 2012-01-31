@@ -13,7 +13,7 @@ public:
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
 
 
-    JSONResult result(req.get("requestUUID"));
+    JSONResult result(req);
 
 
 

@@ -67,7 +67,7 @@ Encoder::~Encoder() {
 
 bool Encoder::open() {
   bool result = Codec::open();
-  if (false && result && getCodecType() == AVMEDIA_TYPE_VIDEO && (ctx->flags & CODEC_FLAG_PSNR || ctx->flags2 & CODEC_FLAG2_SSIM)) {
+  if (false && result && getCodecType() == AVMEDIA_TYPE_VIDEO && (ctx->flags & CODEC_FLAG_PSNR)) {
     /*initialize the refDecoder*/
     std::map<std::string, std::string>opt = getCodecOptions();
     _refDecoder = new Decoder(getCodecId());

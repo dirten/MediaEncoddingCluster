@@ -501,25 +501,6 @@ public:
 ;
 ;
 };
-class PresetWatchfolderRelationWatchfolderProfile {
-public:
-    class Row {
-    public:
-        litesql::Field<int> watchfolder;
-        litesql::Field<int> preset;
-        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
-    };
-    static const std::string table__;
-    static const litesql::FieldType Preset;
-    static const litesql::FieldType Watchfolder;
-    static void link(const litesql::Database& db, const db::Preset& o0, const db::Watchfolder& o1);
-    static void unlink(const litesql::Database& db, const db::Preset& o0, const db::Watchfolder& o1);
-    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
-    static litesql::DataSource<PresetWatchfolderRelationWatchfolderProfile::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
-    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
-;
-;
-};
 class JobProcessUnitRelationProcessUnitJob {
 public:
     class Row {
@@ -1172,15 +1153,6 @@ public:
         litesql::DataSource<Job> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
         litesql::DataSource<JobPresetRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
-    class WatchfolderHandle : public litesql::RelationHandle<Preset> {
-    public:
-        WatchfolderHandle(const Preset& owner);
-        void link(const Watchfolder& o0);
-        void unlink(const Watchfolder& o0);
-        void del(const litesql::Expr& expr=litesql::Expr());
-        litesql::DataSource<Watchfolder> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
-        litesql::DataSource<PresetWatchfolderRelationWatchfolderProfile::Row> getRows(const litesql::Expr& expr=litesql::Expr());
-    };
     static const std::string type__;
     static const std::string table__;
     static const std::string sequence__;
@@ -1206,7 +1178,6 @@ public:
     Preset::ProjectHandle project();
     Preset::UserHandle user();
     Preset::JobHandle job();
-    Preset::WatchfolderHandle watchfolder();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
     void create();
@@ -2049,15 +2020,6 @@ public:
     public:
         static const litesql::FieldType Id;
     };
-    class PresetHandle : public litesql::RelationHandle<Watchfolder> {
-    public:
-        PresetHandle(const Watchfolder& owner);
-        void link(const Preset& o0);
-        void unlink(const Preset& o0);
-        void del(const litesql::Expr& expr=litesql::Expr());
-        litesql::DataSource<Preset> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
-        litesql::DataSource<PresetWatchfolderRelationWatchfolderProfile::Row> getRows(const litesql::Expr& expr=litesql::Expr());
-    };
     static const std::string type__;
     static const std::string table__;
     static const std::string sequence__;
@@ -2065,16 +2027,20 @@ public:
     litesql::Field<int> id;
     static const litesql::FieldType Type;
     litesql::Field<std::string> type;
-    static const litesql::FieldType Infolder;
-    litesql::Field<std::string> infolder;
-    static const litesql::FieldType Outfolder;
-    litesql::Field<std::string> outfolder;
-    static const litesql::FieldType Outfiletemplate;
-    litesql::Field<std::string> outfiletemplate;
-    static const litesql::FieldType Extensionfilter;
-    litesql::Field<std::string> extensionfilter;
+    static const litesql::FieldType Folder;
+    litesql::Field<std::string> folder;
+    static const litesql::FieldType Filefilter;
+    litesql::Field<std::string> filefilter;
+    static const litesql::FieldType Subdirs;
+    litesql::Field<int> subdirs;
+    static const litesql::FieldType Flowuuid;
+    litesql::Field<std::string> flowuuid;
     static const litesql::FieldType Interval;
-    litesql::Field<std::string> interval;
+    litesql::Field<int> interval;
+    static const litesql::FieldType Start;
+    litesql::Field<litesql::DateTime> start;
+    static const litesql::FieldType End;
+    litesql::Field<litesql::DateTime> end;
 protected:
     void defaults();
 public:
@@ -2082,7 +2048,6 @@ public:
     Watchfolder(const litesql::Database& db, const litesql::Record& rec);
     Watchfolder(const Watchfolder& obj);
     const Watchfolder& operator=(const Watchfolder& obj);
-    Watchfolder::PresetHandle preset();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
     void create();

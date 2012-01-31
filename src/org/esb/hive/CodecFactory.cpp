@@ -34,7 +34,7 @@ boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int stre
     decoder->setGopSize(stream.gopsize);
     decoder->setChannels(stream.channels);
     decoder->setSampleRate(stream.samplerate);
-    decoder->setSampleFormat((SampleFormat) (int) stream.samplefmt);
+    decoder->setSampleFormat((AVSampleFormat) (int) stream.samplefmt);
     decoder->setFlag(stream.flags);
     decoder->setBitsPerCodedSample(stream.bitspercodedsample);
     decoder->ctx->ticks_per_frame = stream.ticksperframe;

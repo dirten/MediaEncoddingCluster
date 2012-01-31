@@ -40,7 +40,7 @@ add_library (av SHARED
   ResizeFilter.cpp
   DeinterlaceFilter.cpp
   FrameRateFilter.cpp
-  TestFFMpegUrl.cpp
+#  TestFFMpegUrl.cpp
   )
 TARGET_LINK_LIBRARIES(av
   ${FFMPEG_AVFORMAT_LIBRARY}

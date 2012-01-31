@@ -41,7 +41,7 @@
 					"partb8x8" : "0",
 					"subq" : "8",
 					"me_range" : "16",
-					"g" : "250",
+					"g" : "50",
 					"cqp" : "0",
 					"keyint_min" : 150,
 					"sc_threshold" : "40",
@@ -144,7 +144,7 @@
 					"partb8x8" : "0",
 					"subq" : "8",
 					"me_range" : "16",
-					"g" : "250",
+					"g" : "150",
 					"cqp" : "0",
 					"keyint_min" : 150,
 					"sc_threshold" : "40",
@@ -217,20 +217,12 @@
 			"linksTo" : 5
 		},
 		{
-			"uid" : 2,
-			"linksTo" : 3
-		},
-		{
-			"uid" : 3,
+			"uid" : 5,
 			"linksTo" : 4
 		},
 		{
-			"uid" : 3,
-			"linksTo" : 6
-		},
-		{
-			"uid" : 5,
-			"linksTo" : 3
+			"uid" : 2,
+			"linksTo" : 4
 		}
 	],
 	"positions" : [

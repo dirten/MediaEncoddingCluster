@@ -414,25 +414,25 @@ std::string Frame::toString() {
   std::ostringstream oss;
   oss << "F->S:" << _size << ":Pts:" << framePtr->pts << ":Dts:" << _dts << ":SmplSz:" << _size << ":W:" << _width << ":H:" << _height << ":PF:" << _pixFormat << ":Ch:" << channels << ":SmplRt:" << sample_rate << ":Dur:" << duration << ":FrameCount" << _frames << ":TBase:" << _time_base.num << "/" << _time_base.den << ":q" << framePtr->quality;
   switch (getAVFrame()->pict_type) {
-    case FF_B_TYPE:
+    case AV_PICTURE_TYPE_B:
       oss << ("B");
       break;
-    case FF_I_TYPE:
+    case AV_PICTURE_TYPE_I:
       oss << ("I");
       break;
-    case FF_P_TYPE:
+    case AV_PICTURE_TYPE_P:
       oss << ("P");
       break;
-    case FF_S_TYPE:
+    case AV_PICTURE_TYPE_S:
       oss << ("S");
       break;
-    case FF_SI_TYPE:
+    case AV_PICTURE_TYPE_SI:
       oss << ("SI");
       break;
-    case FF_SP_TYPE:
+    case AV_PICTURE_TYPE_SP:
       oss << ("SP");
       break;
-    case FF_BI_TYPE:
+    case AV_PICTURE_TYPE_BI:
       oss << ("BI");
       break;
     default:
