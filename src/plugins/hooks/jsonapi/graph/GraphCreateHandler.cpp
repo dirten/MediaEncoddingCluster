@@ -32,6 +32,7 @@ public:
         }
         /*save method should here*/
         save(inode, uuid, req.get("hive.graph_path"));
+        result.setStatus(res.HTTP_OK,"Flow Successful created.");
         result.push_back(JSONNode("uuid", uuid));
         //result = inode;
       } else {
@@ -55,6 +56,6 @@ public:
     fos.write(node.write_formatted());
   }
 };
-REGISTER_WEB_HOOK("/api/v1/flow/?$", POST, GraphCreateHandler);
+REGISTER_WEB_HOOK("/api/v1/flow", POST, GraphCreateHandler);
 
 

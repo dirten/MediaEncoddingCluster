@@ -31,8 +31,10 @@ class JSONAPI_EXPORT GraphUpdateHandler : public org::esb::core::WebHookPlugin {
 public:
 
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
+    LOGDEBUG("GraphUpdateHandler");
     JSONResult result(req);
-    if (req.getContentLength() == 0) {
+    LOGDEBUG(req.getContentLength());
+    if (req.getContentLength() <= 0) {
       res.setChunkedTransferEncoding(false);
       result.setStatus("error", "Request could not be empty!");
       res.setStatusAndReason(res.HTTP_BAD_REQUEST, "Request could not be empty!");

@@ -13,7 +13,6 @@ public:
 
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
     res.setChunkedTransferEncoding(true);
-    res.setContentType("text/plain");
 
     JSONResult result(req);
     std::string user_path = org::esb::config::Config::get("hive.graph_path");
@@ -52,4 +51,4 @@ public:
     ostr << result.write_formatted();
   }
 };
-REGISTER_WEB_HOOK("/api/v1/flow/?$", GET, GraphListHandler);
+REGISTER_WEB_HOOK("/api/v1/flow", GET, GraphListHandler);

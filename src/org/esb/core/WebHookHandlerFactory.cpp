@@ -22,42 +22,44 @@ namespace org {
 
       org::esb::core::http::RequestHandler * WebHookHandlerFactory::createHandler(org::esb::core::http::HTTPServerRequest&req) {
         //LOGDEBUG("WebHookHandlerFactory::createHandler");
-        LOGDEBUG("WebHookFactory.size()"<<_webhook_factory_list.size());
-        foreach(WebHookFactory * factory,_webhook_factory_list){
-          LOGDEBUG(factory->getUrl()<<" / "<<req.getURI());
-          if(factory->getMethod()==req.getMethod()){
+        LOGDEBUG("WebHookFactory.size()" << _webhook_factory_list.size());
+
+        foreach(WebHookFactory * factory, _webhook_factory_list) {
+          LOGDEBUG(factory->getUrl() << " / " << req.getURI());
+          if (factory->getMethod() == req.getMethod()) {
             /*matching url paceholder*/
-            std::string url=factory->getUrl();
-            Poco::RegularExpression reholder(".*\\{(.*)\\}.*");
+            std::string url = factory->getUrl();
+            Poco::RegularExpression reholder("\\{(.*?)\\}");
             Poco::RegularExpression::MatchVec posVec;
             //std::string var;
-            std::map<int,std::string> varVec;
-            if(reholder.match(url,0,posVec)){
-              LOGDEBUG("posVec:"<<posVec.size());
-              for(int a=1;a<posVec.size();a++){
-                varVec[a]=url.substr(posVec[a].offset,posVec[a].length);
-                LOGDEBUG("substr:"<<varVec[a]);
-                std::string needle=std::string("{")+url.substr(posVec[a].offset,posVec[a].length)+"}";
-                url=Poco::replace(url,needle,std::string("(.+)"));
-                LOGDEBUG("new Url:"<<url);
+            std::map<int, std::string> varVec;
+            int round = 1;
+            //int maxround = 0;
+
+              while (int r=reholder.match(url, 0, posVec)) {
+                LOGDEBUG("posVec:" << posVec.size());
+                LOGDEBUG("r="<<r);
+                for (int a = 1; a < posVec.size(); a++) {
+                  varVec[round] = url.substr(posVec[a].offset, posVec[a].length);                  
+                  std::string needle = std::string("{") + varVec[round] + "}";
+                  LOGDEBUG("substr:" << needle);
+                  if (round == 1)
+                    url = Poco::replace(url, needle, std::string("([\\w-]*)"));
+                  else
+                    url = Poco::replace(url, needle, std::string("(/?.+)"));
+                  LOGDEBUG("new Url:" << url);
+                  ++round;
+                }
               }
-              /*
-              if(posVec.size()==2){
-                var=url.substr(posVec[1].offset,posVec[1].length);
-                LOGDEBUG("substr:"<<url.substr(posVec[1].offset,posVec[1].length));
-                std::string needle=std::string("{")+url.substr(posVec[1].offset,posVec[1].length)+"}";
-                url=Poco::replace(url,needle,std::string("(.+)"));
-                LOGDEBUG("new Url:"<<url);
-              }*/
-            }
+             url +="/?$";
             Poco::RegularExpression re(url);
             //LOGDEBUG(factory->getUrl()<<" / "<<req.getURI());
             Poco::RegularExpression::MatchVec posVec2;
-            if(re.match(req.getURI(),0,posVec2)){
-              LOGDEBUG("found:"<<posVec2.size());
-              for(int a=1;a<posVec2.size();a++){
-                LOGDEBUG("setting parameter "<<varVec[a]<<"="<<req.getURI().substr(posVec2[a].offset,posVec2[a].length));
-                req.add(varVec[a],req.getURI().substr(posVec2[a].offset,posVec2[a].length));
+            if (re.match(req.getURI(), 0, posVec2)) {
+              LOGDEBUG("found:" << posVec2.size());
+              for (int a = 1; a < posVec2.size(); a++) {
+                LOGDEBUG("setting parameter a="<<a<<" : " << varVec[a] << "=" << req.getURI().substr(posVec2[a].offset, posVec2[a].length));
+                req.add(varVec[a], req.getURI().substr(posVec2[a].offset, posVec2[a].length));
               }
               /*
               if(var.length()){
@@ -66,12 +68,12 @@ namespace org {
                   req.add(var,req.getURI().substr(posVec2[1].offset,posVec2[1].length));
                 }
               }*/
-              req.add("requestUUID",org::esb::util::PUUID());
-              req.add("hive.graph_path",_user_path);
-              req.add("db.url",org::esb::config::Config::get("db.url"));
-              req.add("hive.tmp_path",org::esb::config::Config::get("hive.tmp_path"));
-              WebHookPlugin * ptr=factory->create();
-              return static_cast<org::esb::core::http::RequestHandler *>(ptr);
+              req.add("requestUUID", org::esb::util::PUUID());
+              req.add("hive.graph_path", _user_path);
+              req.add("db.url", org::esb::config::Config::get("db.url"));
+              req.add("hive.tmp_path", org::esb::config::Config::get("hive.tmp_path"));
+              WebHookPlugin * ptr = factory->create();
+              return static_cast<org::esb::core::http::RequestHandler *> (ptr);
             }
           }
         }

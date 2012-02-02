@@ -73,7 +73,11 @@ public:
 
       /**parsing json file*/
       try {
-        org::esb::core::GraphParser graphparser(ndata, "");
+        std::string filename;
+        if(req.has("inputname")){
+          filename=req.get("inputname");
+        }
+        org::esb::core::GraphParser graphparser(ndata, filename);
         //if(inputfile.length()>0)
         //  graphparser.setInfile(inputfile);
         org::esb::io::File infile(graphparser.getInfile());
@@ -124,7 +128,6 @@ public:
       result.push_back(JSONNode("message", "graph for submission not found!"));
       res.setStatusAndReason(res.HTTP_NOT_FOUND, "graph for submission not found!");
     }
-    res.setContentType("text/plain");
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();
   }
@@ -141,7 +144,7 @@ public:
     return job.uuid;
   }
 };
-REGISTER_WEB_HOOK("/api/v1/flow/{uuid}/submit", POST, GraphSubmitHandler);
+REGISTER_WEB_HOOK("/api/v1/flow/{uuid}/{inputname}", POST, GraphSubmitHandler);
 
 
 
