@@ -54,6 +54,7 @@ public:
           }
           /*save method should here*/
           save(inode, uuid, req.get("hive.graph_path"));
+          result.setStatus(res.HTTP_OK,"Flow Successful updated.");
         } else {
           result.setStatus("error", "no valid json format given!");
           res.setStatusAndReason(res.HTTP_BAD_REQUEST, "no valid json format given!");

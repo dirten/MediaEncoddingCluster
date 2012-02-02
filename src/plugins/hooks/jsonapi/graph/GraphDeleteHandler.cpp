@@ -17,7 +17,7 @@ public:
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
     JSONResult result(req);
     std::string uuid = req.get("uuid");
-    org::esb::io::File f(req.get("user_path") + "/" + uuid + ".graph");
+    org::esb::io::File f(req.get("hive.graph_path") + "/" + uuid + ".graph");
     if (f.exists()) {
       f.deleteFile();
       result.push_back(JSONNode("uuid", uuid));

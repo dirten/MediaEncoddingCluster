@@ -26,12 +26,12 @@ public:
       entry.push_back(JSONNode("begintime", job.begintime));
       entry.push_back(JSONNode("endtime", job.endtime));
       entry.push_back(JSONNode("progress", job.progress.value()));
-      entry.push_back(JSONNode("fps", job.fps.value()));
+      //entry.push_back(JSONNode("fps", job.fps.value()));
       entry.push_back(JSONNode("infile", job.infile.value()));
       entry.push_back(JSONNode("outfile", job.outfile.value()));
-      entry.push_back(JSONNode("status", job.getStatusText()));
+      entry.push_back(JSONNode("statustext", job.getStatusText()));
       entry.push_back(JSONNode("statuscode", job.status.value()));
-      entry.push_back(JSONNode("flowname", job.graphname.value()));
+      //entry.push_back(JSONNode("flowname", job.graphname.value()));
       if (job.graph.value().length() > 0 && job.graph.value() != "NULL") {
         JSONNode g = libjson::parse(job.graph.value());
         g.set_name("flow");

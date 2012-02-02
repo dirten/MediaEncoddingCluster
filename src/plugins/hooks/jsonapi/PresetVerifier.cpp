@@ -94,7 +94,7 @@ namespace org {
         }
         if (!venc->open()) {
           result = "Could not open video encoder:";
-          std::list<std::string> messages = org::esb::av::FormatBaseStream::getLastAvMessage(aenc->ctx);
+          std::list<std::string> messages = org::esb::av::FormatBaseStream::getLastAvMessage(venc->ctx);
           std::list<std::string>::iterator it = messages.begin();
           for (; it != messages.end(); it++) {
             result+=(*it);

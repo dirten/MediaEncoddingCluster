@@ -18,7 +18,7 @@ public:
   void setData(JSONNode & data);
   void setRequestId(std::string id);
   void setStatus(std::string status, std::string msg="");
-  void setStatus(Poco::Net::HTTPResponse::HTTPStatus, std::string msg);
+  void setStatus(Poco::Net::HTTPResponse::HTTPStatus, std::string msg, std::string desc="");
   std::string toString();
 private:
   bool _statusAllreadySetted;

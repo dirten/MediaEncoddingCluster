@@ -23,8 +23,9 @@ public:
         JSONNode data = libjson::parse(preset.data);
         data.set_name("data");
         if (data.contains("id")) {
-          data["id"].clear();
-        } else if(data.contains("uuid")){
+          data.pop_back("id");
+        }
+        if(data.contains("uuid")){
           data["uuid"] = JSONNode("uuid", id);
         }else{
           data.push_back(JSONNode("uuid", id));
@@ -37,7 +38,7 @@ public:
         LOGDEBUG(ex.what());
       }
     } else {
-      res.setStatusAndReason(res.HTTP_NOT_FOUND, "Profile not found with id : ");
+      //res.setStatusAndReason(res.HTTP_NOT_FOUND, "Profile not found with id : ");
       result.setStatus("error","profile not found");
     }
     //req.response().setContentType("text/plain");

@@ -41,7 +41,7 @@ add_library (jsonapi SHARED
   profile/ProfileListHandler.cpp
   profile/ProfileLoadHandler.cpp
   profile/ProfileCreateHandler.cpp
-  profile/ProfileUpdateHandler.cpp
+  profile/ProfileDeleteHandler.cpp
 
 #API Handling of all Encoding Requests
   encoding/EncodingListHandler.cpp
@@ -50,6 +50,7 @@ add_library (jsonapi SHARED
   encoding/EncodingStopHandler.cpp
   encoding/EncodingDeleteHandler.cpp
   encoding/EncodingRestartHandler.cpp
+  encoding/EncodingStatusHandler.cpp
 
 #API Handling the Watchfolder Requests
   watchfolder/WatchfolderCreateHandler.cpp

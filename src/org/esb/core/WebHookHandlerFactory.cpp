@@ -44,7 +44,7 @@ namespace org {
                   std::string needle = std::string("{") + varVec[round] + "}";
                   LOGDEBUG("substr:" << needle);
                   if (round == 1)
-                    url = Poco::replace(url, needle, std::string("([\\w-]*)"));
+                    url = Poco::replace(url, needle, std::string("([\\w-]+)"));
                   else
                     url = Poco::replace(url, needle, std::string("(/?.+)"));
                   LOGDEBUG("new Url:" << url);

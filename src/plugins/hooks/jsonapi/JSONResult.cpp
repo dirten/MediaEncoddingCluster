@@ -24,12 +24,14 @@ void JSONResult::setData(JSONNode & data){
   this->push_back(data);
 }
 
-void JSONResult::setStatus(Poco::Net::HTTPResponse::HTTPStatus s, std::string msg){
+void JSONResult::setStatus(Poco::Net::HTTPResponse::HTTPStatus s, std::string msg, std::string desc){
   _req.response().setStatusAndReason(s,msg);
+  if(desc.length()==0)
+    desc=msg;
   if(_req.response().HTTP_OK!=s){
-    setStatus("error", msg);    
+    setStatus("error", desc);    
   }else
-    setStatus("ok", msg);
+    setStatus("ok", desc);
 }
 
 void JSONResult::setStatus(std::string status, std::string msg){

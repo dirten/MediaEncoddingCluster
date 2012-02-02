@@ -19,7 +19,7 @@ public:
     c.set_name("data");
     std::string id = req.get("encodingid");
     LOGDEBUG("loading encoding data for id " << id);
-    litesql::DataSource<db::Job>s = litesql::select<db::Job > (db, db::Job::Uuid == id);
+    litesql::DataSource<db::Job>s = litesql::select<db::Job > (db, db::Job::Uuid == id && db::Job::Status != db::Job::Status::Deleted);
     if (s.count() == 1) {
       db::Job job = s.one();
       if (job.status == db::Job::Status::Processing) {
@@ -29,6 +29,7 @@ public:
         //result.setStatus("ok", "encoding succesful deleted.");
         job.status = db::Job::Status::Deleted;
         job.update();
+        result.setStatus(res.HTTP_OK,"encoding successful deleted");
       }
     } else {
       //result.setStatus("error", "encoding not found");
