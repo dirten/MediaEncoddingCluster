@@ -9,6 +9,7 @@ SET(core_http_source
   Server.cpp
   HTTPServerRequest.cpp
   HTTPServerResponse.cpp
+  RootRequestHandler.cpp
 )
 
 add_library (core_http SHARED

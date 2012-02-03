@@ -19,8 +19,22 @@ public:
     litesql::DataSource<db::Job>s = litesql::select<db::Job > (db, db::Job::Uuid == id && db::Job::Status != db::Job::Status::Deleted);
     if (s.count() > 0) {
       db::Job job = s.one();
-      JSONNode data(JSON_ARRAY);
+      JSONNode data(JSON_NODE);
       data.set_name("flowstatus");
+      data.push_back(JSONNode("uuid", job.uuid.value()));
+      data.push_back(JSONNode("submitted", job.created));
+      data.push_back(JSONNode("begintime", job.begintime));
+      data.push_back(JSONNode("endtime", job.endtime));
+      data.push_back(JSONNode("progress", job.progress.value()));
+      //entry.push_back(JSONNode("fps", job.fps.value()));
+      data.push_back(JSONNode("infile", job.infile.value()));
+      data.push_back(JSONNode("outfile", job.outfile.value()));
+      data.push_back(JSONNode("statustext", job.getStatusText()));
+      data.push_back(JSONNode("statuscode", job.status.value()));
+
+      JSONNode taskdata(JSON_ARRAY);
+      taskdata.set_name("taskstatus");
+      
       try {
         if (job.graphstatus.value().length() > 0) {
           JSONNode gstatus = libjson::parse(job.graphstatus.value());
@@ -28,13 +42,14 @@ public:
           for(int a=0;a<size;a++){
             JSONNode entry=gstatus.pop_back(0);
             entry.push_back(JSONNode("uid",entry.name()));
-            data.push_back(entry);
+            taskdata.push_back(entry);
           }
         }
       } catch (std::exception & ex) {
         LOGERROR("ERROR:" << ex.what());
       }
       result.push_back(data);
+      result.push_back(taskdata);
     } else {
       //res.setStatusAndReason(res.HTTP_NOT_FOUND, "Encoding not found with id : ");
       result.setStatus(res.HTTP_NOT_FOUND, "encoding not found");

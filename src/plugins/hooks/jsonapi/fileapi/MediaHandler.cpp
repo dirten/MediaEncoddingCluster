@@ -13,28 +13,16 @@ public:
     JSONResult result(req);
     if (req.has("path")) {
       std::string path = req.get("path");
-      result.push_back(JSONNode("file", req.get("path")));
+      //result.push_back(JSONNode("file", req.get("path")));
       org::esb::io::File infile(path);
       if (!infile.exists()) {
-        JSONNode error(JSON_NODE);
-        error.set_name("error");
-        error.push_back(JSONNode("code", "file_not_found"));
-        error.push_back(JSONNode("description", std::string("file not found:") + infile.getPath()));
-        result.push_back(error);
+        result.setStatus(res.HTTP_NOT_FOUND,"file_not_found",std::string("file not found:") + infile.getPath());
       } else if (!infile.canRead()) {
-        JSONNode error(JSON_NODE);
-        error.set_name("error");
-        error.push_back(JSONNode("code", "file_not_readable"));
-        error.push_back(JSONNode("description", std::string("file could not be read:") + infile.getPath()));
-        result.push_back(error);
+        result.setStatus(res.HTTP_NOT_FOUND,"file_not_found",std::string("file could not be read:") + infile.getPath());
       } else {
         org::esb::av::FormatInputStream fis(&infile);
         if (!fis.isValid()) {
-          JSONNode error(JSON_NODE);
-          error.set_name("error");
-          error.push_back(JSONNode("code", "file_not_mediafile"));
-          error.push_back(JSONNode("description", std::string("file is not a media file:") + infile.getPath()));
-          result.push_back(error);
+        result.setStatus(res.HTTP_BAD_REQUEST,"file_not_found",std::string("file is not a media file:") + infile.getPath());
         } else {
           JSONNode data(JSON_NODE);
           data.set_name("data");
@@ -47,6 +35,8 @@ public:
             data.push_back(JSONNode("duration", fis.getFormatContext()->duration));
             data.push_back(JSONNode("bitrate", fis.getFormatContext()->bit_rate));
             int streamcount = fis.getStreamCount();
+            JSONNode streams(JSON_ARRAY);
+            streams.set_name("streams");
             for (int a = 0; a < streamcount; a++) {
               org::esb::av::StreamInfo *info = fis.getStreamInfo(a);
               if (info->getCodecType() == AVMEDIA_TYPE_VIDEO || info->getCodecType() == AVMEDIA_TYPE_AUDIO) {
@@ -54,6 +44,7 @@ public:
                 stream.set_name("stream");
                 stream.push_back(JSONNode("codecid", org::esb::av::Decoder::getStaticCodecName(info->getCodec()->codec_id)));
                 stream.push_back(JSONNode("type", info->getCodecType() == AVMEDIA_TYPE_AUDIO ? "audio" : "video"));
+                stream.push_back(JSONNode("stream_index", info->getIndex()));
                 stream.push_back(JSONNode("bitrate", info->getCodecBitrate()));
                 if (info->getCodecType() == AVMEDIA_TYPE_VIDEO) {
                   stream.push_back(JSONNode("timebase", org::esb::av::Rational(info->getCodecTimeBase()).toString()));
@@ -63,10 +54,10 @@ public:
                   stream.push_back(JSONNode("samplerate", info->getCodecSampleRate()));
                   stream.push_back(JSONNode("channels", info->getChannels()));
                 }
-                data.push_back(stream);
+                streams.push_back(stream);
               }
             }
-
+            data.push_back(streams);
           }
           result.push_back(data);
         }

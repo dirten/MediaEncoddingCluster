@@ -43,7 +43,7 @@ public:
     valid_formats.insert("3gp");
     valid_formats.insert("webm");
 
-
+    
     JSONResult result(req);
     result.push_back(JSONNode("requestUUID", req.get("requestUUID")));
     //result.push_back(JSONNode("format", req.get("formatid")));

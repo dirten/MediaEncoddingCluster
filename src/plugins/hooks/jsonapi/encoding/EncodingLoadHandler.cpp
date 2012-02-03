@@ -14,15 +14,15 @@ public:
 
 
     JSONResult result(req);
-    db::HiveDb db("sqlite3", req.get("db.url"));
     std::string id = req.get("encodingid");
+    db::HiveDb db("sqlite3", req.get("db.url"));
     litesql::DataSource<db::Job>s = litesql::select<db::Job > (db, db::Job::Uuid == id && db::Job::Status != db::Job::Status::Deleted);
     if (s.count() > 0) {
       db::Job job = s.one();
       JSONNode entry(JSON_NODE);
       entry.set_name("data");
-      entry.push_back(JSONNode("id", job.uuid.value()));
-      entry.push_back(JSONNode("created", job.created));
+      entry.push_back(JSONNode("uuid", job.uuid.value()));
+      entry.push_back(JSONNode("submitted", job.created));
       entry.push_back(JSONNode("begintime", job.begintime));
       entry.push_back(JSONNode("endtime", job.endtime));
       entry.push_back(JSONNode("progress", job.progress.value()));
@@ -44,11 +44,11 @@ public:
       try {
         if (job.graphstatus.value().length() > 0) {
           JSONNode gstatus = libjson::parse(job.graphstatus.value());
-          gstatus.set_name("flowstatus");
+          gstatus.set_name("taskstatus");
           entry.push_back(gstatus);
         }else{
           JSONNode g(JSON_NODE);
-          g.set_name("flowstatus");
+          g.set_name("taskstatus");
           entry.push_back(g);
         }
       } catch (std::exception & ex) {

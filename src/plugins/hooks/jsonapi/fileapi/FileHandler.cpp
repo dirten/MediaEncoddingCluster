@@ -30,17 +30,19 @@ public:
           buildFile(*file.get(), array);
         }
         result.push_back(array);
+        result.setStatus(res.HTTP_OK, "");
       } else
         if (f.isFile()) {
         JSONNode array(JSON_ARRAY);
         array.set_name("data");
         buildFile(f, array);
         result.push_back(array);
+        result.setStatus(res.HTTP_OK, "");
       } else {
-        result.push_back(JSONNode("error", "file not found"));
+        result.setStatus(res.HTTP_NOT_FOUND, "file not found");
       }
     }
-    res.setContentType("text/plain");
+    //res.setContentType("text/plain");
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();
   }
@@ -54,7 +56,7 @@ public:
   }
 
 };
-REGISTER_WEB_HOOK("/api/v1/file/?{path}?", GET, FileHandler);
+REGISTER_WEB_HOOK("/api/v1/file/{path}", GET, FileHandler);
 
 
 

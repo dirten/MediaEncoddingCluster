@@ -47,6 +47,7 @@ public:
 
     JSONResult result(req);
     JSONNode c(JSON_ARRAY);
+    c.set_name("data");
     AVOutputFormat *ofmt = NULL;
     int a = 0;
     while ((ofmt = av_oformat_next(ofmt))) {

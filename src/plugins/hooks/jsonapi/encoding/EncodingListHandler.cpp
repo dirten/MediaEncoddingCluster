@@ -20,7 +20,7 @@ public:
       db::Job job=(*jobit);
       JSONNode entry(JSON_NODE);
       entry.push_back(JSONNode("id",job.uuid.value()));
-      entry.push_back(JSONNode("created", job.created));
+      entry.push_back(JSONNode("submitted", job.created));
       entry.push_back(JSONNode("progress", job.progress.value()));
       entry.push_back(JSONNode("infile", job.infile.value()));
       entry.push_back(JSONNode("status", job.getStatusText()));
