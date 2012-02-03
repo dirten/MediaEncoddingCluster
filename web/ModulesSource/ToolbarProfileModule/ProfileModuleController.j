@@ -173,7 +173,7 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
   if(jsonData.data[[[aNotification object] selectedRow]]){
     //CPLog.debug("hello profile 1212:"+jsonData.data[[[aNotification object] selectedRow]].id);
     selectedid=jsonData.data[[[aNotification object] selectedRow]].id;
-    var path="/api/v1/profile?id="+selectedid;
+    var path="/api/v1/profile/"+selectedid;
     var response=[CPHTTPURLResponse alloc];
     var error;
     var raw_data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:response];
