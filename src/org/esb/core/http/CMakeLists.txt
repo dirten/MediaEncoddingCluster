@@ -22,6 +22,8 @@ TARGET_LINK_LIBRARIES(core_http
   ${POCO_LIB_FOUNDATION}
   ${POCO_LIB_XML}
   util
+  io
+  hive
 )
 SET_TARGET_PROPERTIES( core_http PROPERTIES PREFIX "libmhive-")
 

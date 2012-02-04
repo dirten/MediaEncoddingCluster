@@ -8,12 +8,13 @@
 #ifndef ROOTREQUESTHANDLER_H
 #define	ROOTREQUESTHANDLER_H
 #include "./RequestHandler.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace core {
       namespace http {
 
-        class RootRequestHandler : public RequestHandler{
+        class CORE_HTTP_EXPORT RootRequestHandler : public RequestHandler{
         public:
           RootRequestHandler();
           virtual ~RootRequestHandler();
