@@ -128,61 +128,62 @@ testfunc();
   CPLog.debug("_load");
   CPLog.debug("loadNodeEditorView:"+[notification userInfo]);
   //var data={"tasks":[{"name":"Input","uid":1},{"name":"Encoding","uid":2},{"name":"Encoding","uid":3},{"name":"Output","uid":4}],"links":[{"uid":1,"linksTo":2},{"uid":1,"linksTo":3},{"uid":2,"linksTo":4},{"uid":3,"linksTo":4}],"positions":[{"uid":1,"x":581,"y":47},{"uid":2,"x":858,"y":42},{"uid":3,"x":1070,"y":361},{"uid":4,"x":1130,"y":90}]};
-  var path="/api/v1/job?id="+[notification userInfo];
+  var path="/api/v1/encoding/"+[notification userInfo];
   var response=[CPHTTPURLResponse alloc];
   var error;
   var raw_data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:response];
-  CPLog.debug("raw_data:"+[raw_data rawString]);
+  //CPLog.debug("raw_data:"+[raw_data rawString]);
   //CPLog.debug("json_data:"+[raw_data JSONObject]);
   
-  alldata=[raw_data JSONObject].data[0];
-  var data=alldata.graph;
-  if(data==undefined){
+  data=[raw_data JSONObject].data;
+  //var data=alldata.flow;
+  if(data==undefined||data.flow==undefined){
     [growl pushNotificationWithTitle:@"Failed to load the Flow?" message:"The Server returns an unknown Flow Format!"];
      return;
   }
-  if(alldata.graphstatus)
-  CPLog.debug("graphstatus_data:"+alldata.graphstatus[data.uuid]);
-  
+  var flow=data.flow
   if(loadedJobID!=[notification userInfo]){
     loadedJobID=[notification userInfo];
-    loadedUUID=data.uuid;
-    loadedName=data.name;
+    loadedUUID=flow.uuid;
+    loadedName=flow.name;
     [view clearElements];
     elements=[CPDictionary dictionary];
-    for(a=0;a<data.tasks.length;a++){
-      var task=data.tasks[a];
+    for(a=0;a<flow.tasks.length;a++){
+      var task=flow.tasks[a];
       var taskdata=undefined;
-      if(data.tasks[a].data)
-        taskdata={data:data.tasks[a].data};
+      if(task.data)
+        taskdata={data:task.data};
 
-      //CPLog.debug("TaskData:"+JSON.stringify(taskdata));
+      CPLog.debug("TaskData:"+JSON.stringify(taskdata));
       var obj=[[[elementClass objectForKey:task.name] alloc] init];
-      [obj setUid:task.uid];
-      [obj setBoundsOrigin:CPPointMake(data.positions[a].x,data.positions[a].y)];
-      if(alldata.graphstatus!=undefined&&alldata.graphstatus[task.uid]!=undefined){
-        CPLog.debug("task.uid"+task.uid);
-        [obj setProgress:alldata.graphstatus[task.uid].progress];
-        if(alldata.graphstatus[task.uid].message!=undefined&&
-            alldata.graphstatus[task.uid].message.length)
-          [obj setMessage:alldata.graphstatus[task.uid].message];
-        if(alldata.graphstatus[task.uid].exception!=undefined&&
-           alldata.graphstatus[task.uid].exception.length)
-          [obj setMessage:alldata.graphstatus[task.uid].exception];
-        [obj setStatus:alldata.graphstatus[task.uid].status];
+      if(obj){
+        [obj setUid:task.uid];
+        [obj setBoundsOrigin:CPPointMake(flow.positions[a].x,flow.positions[a].y)];
+        if(false&&alldata.graphstatus!=undefined&&alldata.graphstatus[task.uid]!=undefined){
+          CPLog.debug("task.uid"+task.uid);
+          [obj setProgress:alldata.graphstatus[task.uid].progress];
+          if(alldata.graphstatus[task.uid].message!=undefined&&
+              alldata.graphstatus[task.uid].message.length)
+            [obj setMessage:alldata.graphstatus[task.uid].message];
+          if(alldata.graphstatus[task.uid].exception!=undefined&&
+             alldata.graphstatus[task.uid].exception.length)
+            [obj setMessage:alldata.graphstatus[task.uid].exception];
+          [obj setStatus:alldata.graphstatus[task.uid].status];
+        }else{
+          [obj setProgress:@" "];      
+        }
+        if(taskdata!=undefined)
+          [obj setData:[CPDictionary dictionaryWithJSObject:taskdata recursively:YES]];
+        [[view elements] addObject:obj];
+        [elements setObject:obj forKey:task.uid];
       }else{
-        [obj setProgress:@" "];      
+        CPLog.error("Element "+task.name+" not found!");
       }
-      if(taskdata!=undefined)
-        [obj setData:[CPDictionary dictionaryWithJSObject:taskdata recursively:YES]];
-      [[view elements] addObject:obj];
-      [elements setObject:obj forKey:task.uid];
-
       //[view setNeedsDisplay:YES];
       //CPLog.debug("Data:"+obj);
     }
-    for(a=0;a<data.links.length;a++){
-      var link=data.links[a];
+    for(a=0;a<flow.links.length;a++){
+      var link=flow.links[a];
       var src=[elements objectForKey:link.uid];
       var trg=[elements objectForKey:link.linksTo];
       //CPLog.debug("SourceHandle:"+CPStringFromPoint([src outHandlePoint]));
@@ -195,7 +196,7 @@ testfunc();
     //[[[elements objectEnumerator] allObjects] makeObjectsPerformSelector:@selector(setProgress:) withObject:@" "];
     //[[[elements objectEnumerator] allObjects] makeObjectsPerformSelector:@selector(setMessage:) withObject:@" "];
     //[[[elements objectEnumerator] allObjects] makeObjectsPerformSelector:@selector(setStatus:) withObject:-1];
-    for(a=0;a<data.tasks.length;a++){
+    for(a=0;false&&a<data.tasks.length;a++){
       var task=data.tasks[a];
       var taskdata=undefined;
       if(data.tasks[a].data)

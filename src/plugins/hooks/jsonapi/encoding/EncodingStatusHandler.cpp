@@ -20,7 +20,7 @@ public:
     if (s.count() > 0) {
       db::Job job = s.one();
       JSONNode data(JSON_NODE);
-      data.set_name("flowstatus");
+      data.set_name("status");
       data.push_back(JSONNode("uuid", job.uuid.value()));
       data.push_back(JSONNode("submitted", job.created));
       data.push_back(JSONNode("begintime", job.begintime));
@@ -33,7 +33,7 @@ public:
       data.push_back(JSONNode("statuscode", job.status.value()));
 
       JSONNode taskdata(JSON_ARRAY);
-      taskdata.set_name("taskstatus");
+      taskdata.set_name("tasks");
       
       try {
         if (job.graphstatus.value().length() > 0) {
@@ -48,8 +48,8 @@ public:
       } catch (std::exception & ex) {
         LOGERROR("ERROR:" << ex.what());
       }
+      data.push_back(taskdata);
       result.push_back(data);
-      result.push_back(taskdata);
     } else {
       //res.setStatusAndReason(res.HTTP_NOT_FOUND, "Encoding not found with id : ");
       result.setStatus(res.HTTP_NOT_FOUND, "encoding not found");

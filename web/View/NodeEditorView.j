@@ -263,8 +263,8 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
     //CPLog.debug("Drop Source Element:"+currentSelectedElement);
     if(isDrawingLink&&[targetDropElement class]!=CPNull&&[currentSelectedElement class]!=CPNull&&currentSelectedElement!=targetDropElement){
       //CPLog.debug("Drop Target Drop Handle Here:"+targetDropElement);
-      [currentSelectedElement addTarget:targetDropElement];
-      [targetDropElement addSource:currentSelectedElement];
+      [currentSelectedElement addTarget:[targetDropElement uid]];
+      //[targetDropElement addSource:[currentSelectedElement uid]];
     }
 
   currentSelectedElement=[CPNull null];
@@ -305,6 +305,21 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
   return selected;
 }
 
+-(id)graphicFromUid:(int)uid{
+  CPLog.debug("search for element with uid="+uid);
+  var graphicCount = [elements count];
+  var selected=[CPNull null];
+  for (var index = graphicCount - 1; index>=0; index--) 
+	{
+    var element = [elements objectAtIndex:index];
+    if([element uid]==uid){
+      selected=element;
+      break;
+    }
+  }
+  return selected;
+}
+
 -(CPPoint)handleUnderPoint:(CPRect)aPoint{
 
   var graphicCount = [elements count];
@@ -326,8 +341,12 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
 
 -(void)drawLinkFrom:(CPPoint)startPoint to:(CPPoint)endPoint withColor:(CPColor)inlineColor
 {
-  CPLog.debug("Start  Point : "+CPStringFromPoint(startPoint));
-  CPLog.debug("End  Point : "+CPStringFromPoint(endPoint));
+  //CPLog.debug("Start  Point : "+CPStringFromPoint(startPoint));
+  //CPLog.debug("End  Point : "+CPStringFromPoint(endPoint));
+  if(!startPoint||!endPoint){
+    CPLog.error("-(void)drawLinkFrom:(CPPoint)startPoint to:(CPPoint)endPoint -> start and endpoint must be given");
+    return;
+  }
 
   var p0=CPMakePoint(startPoint.x,startPoint.y);
   var p3=CPMakePoint(endPoint.x,endPoint.y);
@@ -384,6 +403,10 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
 -(BOOL)checkPathAtPoint:(CPPoint)point from:(CPPoint)from to:(CPPoint)to
 {
 //return NO;
+  if(!from||!to){
+    CPLog.error("-(BOOL)checkPathAtPoint:(CPPoint)point from:(CPPoint)from to:(CPPoint)to -> start and endpoint must be given");
+    return;
+  }
     var isContentsUnderPoint = NO;
   var startPoint=CPPointMake(from.x>to.x?to.x:from.x, from.y>to.y?to.y:from.y);
   var bounds=CPMakeRect(startPoint.x,startPoint.y,Math.abs(to.x-from.x),  Math.abs(to.y-from.y)+10);
@@ -453,7 +476,7 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
         var target = [targets objectAtIndex:index2];
         if(target==selectedPathTarget){
           [[element outputElements] removeObject:target];            
-          [[target inputElements] removeObject:element];            
+          //[[target inputElements] removeObject:element];            
         }
       }
       //alert("remove");
@@ -535,8 +558,13 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
       
       for (var index2 = targetCount - 1; index2>=0; index2--) 
       {
-        var target = [targets objectAtIndex:index2];
+        var target = [self graphicFromUid:[targets objectAtIndex:index2]];
+        if(target==[CPNull null]){
+          CPLog.error("Traget is null");
+          continue;
+        }
         CPLog.debug("Source UID:"+[element uid]);
+        CPLog.debug("Target:"+target);
         CPLog.debug("Target UID:"+[target uid]);
         var startPoint=[element outHandlePoint];  
         var endPoint=[target inHandlePoint];

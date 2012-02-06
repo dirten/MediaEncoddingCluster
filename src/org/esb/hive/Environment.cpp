@@ -23,7 +23,7 @@ namespace org {
       void Environment::build(int argc, char ** argv) {
         org::esb::io::File f(argv[0]);
         std::string bpath = org::esb::io::File(f.getParent()).getParent();
-
+        
 #ifdef __WIN32__
         std::string upath = config::Config::get("APPDATA") + "/mhive";
 #elif defined __APPLE__

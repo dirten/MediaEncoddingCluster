@@ -80,8 +80,7 @@ testfunc();
   
   var data={}
   data.tasks=new Array();
-  data.links=new Array();
-  data.positions=new Array();
+  //data.positions=new Array();
 
   var elements=[view elements];
   var elementCount = [elements count];
@@ -89,34 +88,29 @@ testfunc();
   for (var index = 0; index<elementCount ; index++)
 	{
     var element = [elements objectAtIndex:index];
+    var links=new Array();
     CPLog.debug("ElementsData:"+JSON.stringify([[element data] toJSON]));
-    var task={
-      name:[element taskName],
-      uid:[element uid],
-      data:[[element data] toJSON].data
-    };
+
     {/*this scope is for handle drawing*/
       var targets=[element outputElements];
       var targetCount = [targets count];
       for (var index2 = targetCount - 1; index2>=0; index2--) 
       {
         var target = [targets objectAtIndex:index2];
-        var link={
-          uid:[element uid],
-          linksTo:[target uid]
-        };
-        data.links.push(link);
+        links.push(target);
       }
     }
-
-    var bounds=[element bounds];
-    var pos={
+    var task={
+      name:[element taskName],
       uid:[element uid],
-      x:bounds.origin.x,
-      y:bounds.origin.y
+      data:[[element data] toJSON].data,
+      position:{
+        x:[element bounds].origin.x,
+        y:[element bounds].origin.y
+      },
+      linksTo:links
     };
     data.tasks.push(task);
-    data.positions.push(pos);
   }
   CPLog.debug("Data:"+JSON.stringify(data));
   if(loadedUUID)
@@ -124,7 +118,10 @@ testfunc();
   if(loadedName)
     data.name=loadedName;
   if(elementCount>0){
-    var request = [CPURLRequest requestWithURL:@"/api/v1/flow"];
+    var url="/api/v1/flow";
+    if(loadedUUID)
+      url+="/"+loadedUUID;
+    var request = [CPURLRequest requestWithURL:url];
     [request setHTTPMethod:"POST"];
     [request setHTTPBody:JSON.stringify(data)];
     var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
@@ -165,7 +162,7 @@ testfunc();
   var response=[CPHTTPURLResponse alloc];
   var error;
   var raw_data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:response];
-  //CPLog.debug("raw_data:"+[raw_data rawString]);
+  CPLog.debug("raw_data:"+[raw_data rawString]);
   var data=[raw_data JSONObject].data;
   loadedUUID=data.uuid;
   loadedName=data.name;
@@ -180,26 +177,33 @@ testfunc();
     
     //CPLog.debug("TaskData:"+JSON.stringify(taskdata));
     var obj=[[[elementClass objectForKey:task.name] alloc] init];
-    [obj setUid:task.uid];
-    [obj setBoundsOrigin:CPPointMake(data.positions[a].x,data.positions[a].y)];
-    [obj setProgress:@" "];
-    if(taskdata!=undefined)
-      [obj setData:[CPDictionary dictionaryWithJSObject:taskdata recursively:YES]];
-    [[view elements] addObject:obj];
-    [elements setObject:obj forKey:task.uid];
-    
+    if(obj){
+      [obj setUid:task.uid];
+      if(task.position)
+        [obj setBoundsOrigin:CPPointMake(task.position.x,task.position.y)];
+      if(task.linksTo){
+        for(b=0;b<task.linksTo.length;b++){
+          [obj addTarget:task.linksTo[b]];
+        }
+      }
+      [obj setProgress:@" "];
+      if(taskdata!=undefined)
+        [obj setData:[CPDictionary dictionaryWithJSObject:taskdata recursively:YES]];
+      [[view elements] addObject:obj];
+      [elements setObject:obj forKey:task.uid];
+    }else{
+      CPLog.error("Element "+task.name+" not found!");
+    }
     //[view setNeedsDisplay:YES];
     //CPLog.debug("Data:"+obj);
   }
-  for(a=0;a<data.links.length;a++){
+  /*for(a=0;a<data.links.length;a++){
     var link=data.links[a];
     var src=[elements objectForKey:link.uid];
     var trg=[elements objectForKey:link.linksTo];
-    //CPLog.debug("SourceHandle:"+CPStringFromPoint([src outHandlePoint]));
-    //CPLog.debug("SourceHandle:"+CPStringFromPoint([trg inHandlePoint]));
     [src addTarget:trg];
     [trg addSource:src];
-  }
+  }*/
   [view setName:loadedName];
   [view setNeedsDisplay:YES];
 }
@@ -248,7 +252,7 @@ testfunc();
   var oldName=data.name;
   data.name=[notification object];
 
-  var request = [CPURLRequest requestWithURL:@"/api/v1/flow"];
+  var request = [CPURLRequest requestWithURL:@"/api/v1/flow/"+data.uuid];
   [request setHTTPMethod:"POST"];
   [request setHTTPBody:JSON.stringify(data)];
   var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
@@ -289,8 +293,8 @@ testfunc();
 
 -(void)_submitNodeEditorView:(CPNotification)notification
 {
-  var request = [CPURLRequest requestWithURL:@"/api/v1/flow/"+[notification userInfo]]+"/submit";
-  //[request setHTTPMethod:"POST"];
+  var request = [CPURLRequest requestWithURL:@"/api/v1/flow/"+[notification userInfo]+"/submit"];
+  [request setHTTPMethod:"POST"];
   var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
   CPLog.debug("Graph submit Result"+[result rawString]);
   var mdata=[result JSONObject];

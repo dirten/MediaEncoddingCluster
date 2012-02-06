@@ -122,7 +122,7 @@
 -(void)loadProfile:(id)sender
 {
   var profileId=[sender representedObject];
-  var request = [CPURLRequest requestWithURL:@"/api/v1/profile?id="+profileId];
+  var request = [CPURLRequest requestWithURL:@"/api/v1/profile/"+profileId];
   var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
   CPLog.debug("NodeEncoding Load Profile Result"+[result rawString]);
   var json=[[result rawString] objectFromJSON];

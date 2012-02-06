@@ -115,18 +115,20 @@ public:
         //org::esb::core::Graph::createJob(list, getContext()->database);
         //result.push_back(JSONNode("status", "ok"));
       } catch (org::esb::core::GraphException & ex) {
-        result.push_back(JSONNode("status", "error"));
-        result.push_back(JSONNode("message", ex.what()));
-        result.push_back(JSONNode("element", ex.getElementId()));
+        result.setStatus(res.HTTP_BAD_REQUEST,ex.what());
+        //result.push_back(JSONNode("status", "error"));
+        //result.push_back(JSONNode("message", ex.what()));
+        //result.push_back(JSONNode("element", ex.getElementId()));
       }
 
 
 
       //result.push_back(JSONNode("status", "ok"));
     } else {
-      result.push_back(JSONNode("status", "error"));
-      result.push_back(JSONNode("message", "graph for submission not found!"));
-      res.setStatusAndReason(res.HTTP_NOT_FOUND, "graph for submission not found!");
+        result.setStatus(res.HTTP_NOT_FOUND, "graph for submission not found!");
+      //result.push_back(JSONNode("status", "error"));
+      //result.push_back(JSONNode("message", "graph for submission not found!"));
+      //res.setStatusAndReason(res.HTTP_NOT_FOUND, "graph for submission not found!");
     }
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();

@@ -46,6 +46,7 @@ namespace org {
           }
 
           /*parsing links from graph*/
+          /*
           if (_baseNode.contains("links")) {
             int s = _baseNode["links"].size();
             for (int a = 0; a < s; a++) {
@@ -54,7 +55,7 @@ namespace org {
             }
           } else {
             throw GraphException("no links are defined in the graph");
-          }
+          }*/
           return;
           verifyLinks();
           verifyCycle();

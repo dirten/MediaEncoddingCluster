@@ -21,16 +21,6 @@ public:
       db::Job job = s.one();
       JSONNode entry(JSON_NODE);
       entry.set_name("data");
-      entry.push_back(JSONNode("uuid", job.uuid.value()));
-      entry.push_back(JSONNode("submitted", job.created));
-      entry.push_back(JSONNode("begintime", job.begintime));
-      entry.push_back(JSONNode("endtime", job.endtime));
-      entry.push_back(JSONNode("progress", job.progress.value()));
-      //entry.push_back(JSONNode("fps", job.fps.value()));
-      entry.push_back(JSONNode("infile", job.infile.value()));
-      entry.push_back(JSONNode("outfile", job.outfile.value()));
-      entry.push_back(JSONNode("statustext", job.getStatusText()));
-      entry.push_back(JSONNode("statuscode", job.status.value()));
       //entry.push_back(JSONNode("flowname", job.graphname.value()));
       if (job.graph.value().length() > 0 && job.graph.value() != "NULL") {
         JSONNode g = libjson::parse(job.graph.value());
@@ -41,19 +31,42 @@ public:
         g.set_name("flow");
         entry.push_back(g);
       }
+      JSONNode fstatus(JSON_NODE);
+      fstatus.set_name("status");
+      
+      fstatus.push_back(JSONNode("uuid", job.uuid.value()));
+      fstatus.push_back(JSONNode("submitted", job.created));
+      fstatus.push_back(JSONNode("begintime", job.begintime));
+      fstatus.push_back(JSONNode("endtime", job.endtime));
+      fstatus.push_back(JSONNode("progress", job.progress.value()));
+      //entry.push_back(JSONNode("fps", job.fps.value()));
+      fstatus.push_back(JSONNode("infile", job.infile.value()));
+      fstatus.push_back(JSONNode("outfile", job.outfile.value()));
+      fstatus.push_back(JSONNode("statustext", job.getStatusText()));
+      fstatus.push_back(JSONNode("statuscode", job.status.value()));
       try {
         if (job.graphstatus.value().length() > 0) {
           JSONNode gstatus = libjson::parse(job.graphstatus.value());
-          gstatus.set_name("taskstatus");
-          entry.push_back(gstatus);
+          
+          int size=gstatus.size();
+          JSONNode g(JSON_ARRAY);
+          g.set_name("tasks");
+          for(int a=0;a<size;a++){
+            JSONNode ientry=gstatus.pop_back(0);
+            ientry.push_back(JSONNode("uid",ientry.name()));
+            g.push_back(ientry);
+          }
+          fstatus.push_back(g);
         }else{
-          JSONNode g(JSON_NODE);
-          g.set_name("taskstatus");
-          entry.push_back(g);
+          JSONNode g(JSON_ARRAY);
+          g.set_name("tasks");
+          fstatus.push_back(g);
         }
       } catch (std::exception & ex) {
         LOGERROR("ERROR:" << ex.what());
       }
+      entry.push_back(fstatus);
+
       result.push_back(entry);
     } else {
       //res.setStatusAndReason(res.HTTP_NOT_FOUND, "Encoding not found with id : ");
