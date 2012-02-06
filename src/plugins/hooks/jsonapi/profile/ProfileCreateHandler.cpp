@@ -29,7 +29,7 @@ public:
           JSONNode inode = libjson::parse(data);
           std::string msg = checkJsonProfile(inode);
           if (msg.length() > 0) {
-            result.setStatus(res.HTTP_BAD_REQUEST, "error while profile check");
+            result.setStatus(res.HTTP_BAD_REQUEST, "error while profile check", msg);
           } else {
             if (req.has("profileid")) {
               std::string iddata = req.get("profileid");
@@ -41,7 +41,7 @@ public:
                 preset.data = data;
                 preset.name = inode["name"].as_string();
                 preset.update();
-                result.push_back(JSONNode("id", iddata));
+                result.push_back(JSONNode("uuid", iddata));
                 result.setStatus("ok", "Profile successful updated");
               } else {
                 result.setStatus(res.HTTP_NOT_FOUND, "profile with the given id not found");

@@ -113,7 +113,7 @@ SelectGraphByUUID = @"SelectGraphByUUID";
 }
 
 - (void)refresh{
-  var request = [CPURLRequest requestWithURL:"/api/v1/graph"];
+  var request = [CPURLRequest requestWithURL:"/api/v1/flow"];
   [request setHTTPMethod:"GET"];
   //CPLog.debug(request.HTTPMethod);
   // see important note about CPJSONPConnection above

@@ -37,7 +37,7 @@
     var items=[{"key":"please select a file format","value":"0"}];
     for(var a=0;a<formats.data.length;a++){
       //if(codecs.data[a].name.length>0)
-        items.push({"key":formats.data[a].longname,"value":formats.data[a].name});
+        items.push({"key":formats.data[a].longname,"value":formats.data[a].id});
     }
     option.control.items=items;
     [self loadFormatUI:undefined];
@@ -46,7 +46,7 @@
   }
   -(void)formatSelectionChanged:(id)sender
   {
-    CPLog.debug("selection changed");
+    CPLog.debug("selection changed"+[sender title]);
     [self loadFormatUI:[sender title]];
     [_form itemSelectionChanged:sender];
     [_form setData:_json];
@@ -60,8 +60,8 @@
     for(var i=0;i<formats.data.length;i++){
       //CPLog.debug(codecs.data[i].longname)
       if(formats.data[i].longname==codecid){
-        codec=formats.data[i].name;
-        CPLog.debug("codec selected "+formats.data[i].name);
+        codec=formats.data[i].id;
+        CPLog.debug("codec selected "+formats.data[i].id);
       }
     }
     var path = [[CPBundle mainBundle] pathForResource:@"UI/format."+codec+".gui"];

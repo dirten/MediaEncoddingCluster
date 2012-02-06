@@ -11,7 +11,7 @@
   -(id)init
   {
     var data={"gui":{"options":[
-      {"id":"id", "type":"string","title":"Profile Id","group":"picture_settings","unit":"",
+      {"id":"uuid", "type":"string","title":"Profile Id","group":"picture_settings","unit":"",
         "control":{
           "type":"InfoBox",
           "defaults":"                                                                                                   "

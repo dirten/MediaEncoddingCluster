@@ -275,7 +275,7 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
 
 -(void)_delete:(id)data
 {
-  var request = [CPURLRequest requestWithURL:@"/api/v1/profile?id="+data];
+  var request = [CPURLRequest requestWithURL:@"/api/v1/profile/"+data];
   [request setHTTPMethod:"DELETE"];
   var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
   CPLog.debug("DeleteResult:"+[result rawString]);
@@ -292,7 +292,7 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
     CPLog.debug("SAVING Encoding Profile:"+ JSON.stringify([pdata toJSON].data));
     var url="/api/v1/profile";
     if(selectedid)
-      url+="?id="+selectedid;
+      url+="/"+selectedid;
     CPLog.debug("Saving Profile URL="+url);
     var request = [CPURLRequest requestWithURL:url];
     [request setHTTPMethod:"POST"];
@@ -300,16 +300,16 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
     var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
     CPLog.debug("SAVING Encoding Profile Result:"+ [result rawString]);
     var mdata=[result JSONObject];
-    if(mdata.error!=undefined){
+    if(mdata.response.status==undefined||mdata.response.status=="error"){
        var stopWarn = [[CPAlert alloc] init];
        [stopWarn setTitle:"Failed to save the Profile?"];
-       [stopWarn setMessageText:mdata.error.description];
+       [stopWarn setMessageText:mdata.response.message];
        [stopWarn setAlertStyle:CPWarningAlertStyle];
        [stopWarn addButtonWithTitle:"Close"];
        [stopWarn runModal];
     }else{
       [[TNGrowlCenter defaultCenter] pushNotificationWithTitle:@"Profile Saved" message:"Profile successful saved"];
-      selectedid=mdata.id;
+      selectedid=mdata.uuid;
     }
     var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
     [request setHTTPMethod:"GET"];

@@ -124,7 +124,7 @@ testfunc();
   if(loadedName)
     data.name=loadedName;
   if(elementCount>0){
-    var request = [CPURLRequest requestWithURL:@"/api/v1/graph"];
+    var request = [CPURLRequest requestWithURL:@"/api/v1/flow"];
     [request setHTTPMethod:"POST"];
     [request setHTTPBody:JSON.stringify(data)];
     var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
@@ -161,7 +161,7 @@ testfunc();
   CPLog.debug("_load");
   CPLog.debug("loadNodeEditorView:"+[notification userInfo]);
   //var data={"tasks":[{"name":"Input","uid":1},{"name":"Encoding","uid":2},{"name":"Encoding","uid":3},{"name":"Output","uid":4}],"links":[{"uid":1,"linksTo":2},{"uid":1,"linksTo":3},{"uid":2,"linksTo":4},{"uid":3,"linksTo":4}],"positions":[{"uid":1,"x":581,"y":47},{"uid":2,"x":858,"y":42},{"uid":3,"x":1070,"y":361},{"uid":4,"x":1130,"y":90}]};
-  var path="/api/v1/graph?uuid="+[notification userInfo];
+  var path="/api/v1/flow/"+[notification userInfo];
   var response=[CPHTTPURLResponse alloc];
   var error;
   var raw_data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:response];
@@ -221,7 +221,7 @@ testfunc();
   //  data.uuid=loadedUUID;
   if(loadedName)
     data.name=loadedName;
-  var request = [CPURLRequest requestWithURL:@"/api/v1/graph"];
+  var request = [CPURLRequest requestWithURL:@"/api/v1/flow"];
   [request setHTTPMethod:"POST"];
   [request setHTTPBody:JSON.stringify(data)];
   var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
@@ -239,7 +239,7 @@ testfunc();
 
 -(void)renameNodeEditorView:(CPNotification)notification
 {
-  var path="/api/v1/graph?uuid="+[notification userInfo];
+  var path="/api/v1/flow/"+[notification userInfo];
   var response=[CPHTTPURLResponse alloc];
   var error;
   var raw_data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:response];
@@ -248,7 +248,7 @@ testfunc();
   var oldName=data.name;
   data.name=[notification object];
 
-  var request = [CPURLRequest requestWithURL:@"/api/v1/graph"];
+  var request = [CPURLRequest requestWithURL:@"/api/v1/flow"];
   [request setHTTPMethod:"POST"];
   [request setHTTPBody:JSON.stringify(data)];
   var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
@@ -260,8 +260,8 @@ testfunc();
 
 -(void)deleteNodeEditorView:(CPNotification)notification
 {
-  var request = [CPURLRequest requestWithURL:@"/api/v1/graph?delete&uuid="+[notification userInfo]];
-  //[request setHTTPMethod:"POST"];
+  var request = [CPURLRequest requestWithURL:@"/api/v1/flow/"+[notification userInfo]];
+  [request setHTTPMethod:"DELETE"];
   var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
   CPLog.debug("Graph delete Result"+[result rawString]);
   [view clearElements];
@@ -289,7 +289,7 @@ testfunc();
 
 -(void)_submitNodeEditorView:(CPNotification)notification
 {
-  var request = [CPURLRequest requestWithURL:@"/api/v1/graph?submit&uuid="+[notification userInfo]];
+  var request = [CPURLRequest requestWithURL:@"/api/v1/flow/"+[notification userInfo]]+"/submit";
   //[request setHTTPMethod:"POST"];
   var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
   CPLog.debug("Graph submit Result"+[result rawString]);
