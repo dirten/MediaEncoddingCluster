@@ -75,12 +75,13 @@ public:
       try {
         std::string filename;
         if(req.has("inputname")){
-          filename=req.get("inputname");
+          //filename=req.get("inputname");
         }
         org::esb::core::GraphParser graphparser(ndata, filename);
         //if(inputfile.length()>0)
         //  graphparser.setInfile(inputfile);
         org::esb::io::File infile(graphparser.getInfile());
+        LOGDEBUG("InputFile:"<<infile.getPath());
         JSONNode data(JSON_ARRAY);
         data.set_name("data");
         if (infile.exists() && infile.isDirectory()) {

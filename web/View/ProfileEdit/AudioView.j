@@ -26,8 +26,8 @@
         "defaults":"0"
       }
     };
-    codecstxt = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/codec"] returningResponse:nil];
-    codecs=[[codecstxt rawString] objectFromJSON];
+    //codecstxt = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/codec"] returningResponse:nil];
+    codecs=[[MHiveApiController sharedController] codecs];
 
     var items=[{"key":"please select an audio codec","value":"0"}];
     for(var a=0;a<codecs.data.length;a++){

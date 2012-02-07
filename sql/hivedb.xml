@@ -277,6 +277,11 @@
         <relate object="Job" handle="tasks"/>
     </relation>
 
+    <relation id="GraphTask">
+        <relate object="Task" handle="job"/>
+        <relate object="Graph" handle="tasks"/>
+    </relation>
+
     <object name="JobLog">
         <field name="created" type="datetime" default="0"/>
         <field name="message" type="string"/>

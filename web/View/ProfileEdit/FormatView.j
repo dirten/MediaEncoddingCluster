@@ -31,12 +31,11 @@
                     "defaults":"0"
                 }
             };
-    var codecstxt = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/format"] returningResponse:nil];
-    formats=[[codecstxt rawString] objectFromJSON];
+    //var codecstxt = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/format"] returningResponse:nil];
+    formats=[[MHiveApiController sharedController] formats];;
     
     var items=[{"key":"please select a file format","value":"0"}];
     for(var a=0;a<formats.data.length;a++){
-      //if(codecs.data[a].name.length>0)
         items.push({"key":formats.data[a].longname,"value":formats.data[a].id});
     }
     option.control.items=items;

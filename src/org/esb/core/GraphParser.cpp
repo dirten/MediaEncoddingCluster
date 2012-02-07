@@ -26,12 +26,12 @@ namespace org {
         //        try {
         if (libjson::is_valid(graphdata)) {
           _baseNode = libjson::parse(graphdata);
-          
+
           if (_baseNode.contains("name")) {
             name = _baseNode["name"].as_string();
           }
           /*setting alternative input file name*/
-          if(infile.length()>0){
+          if (infile.length() > 0) {
             setInfile(infile);
           }
           /*parsing tasks from graph*/
@@ -46,16 +46,16 @@ namespace org {
           }
 
           /*parsing links from graph*/
-          /*
-          if (_baseNode.contains("links")) {
-            int s = _baseNode["links"].size();
+
+          if (_baseNode.contains("tasks")) {
+            int s = _baseNode["tasks"].size();
             for (int a = 0; a < s; a++) {
-              JSONNode & link = _baseNode["links"].at(a);
+              JSONNode & link = _baseNode["tasks"].at(a);
               parseLink(link);
             }
           } else {
             throw GraphException("no links are defined in the graph");
-          }*/
+          }
           return;
           verifyLinks();
           verifyCycle();
@@ -86,17 +86,17 @@ namespace org {
           int s = _baseNode["tasks"].size();
           for (int a = 0; a < s; a++) {
             JSONNode & task = _baseNode["tasks"].at(a);
-            if(task.contains("name")){
-            LOGDEBUG("TaskName="<<task["name"].as_string());
-            }else{
+            if (task.contains("name")) {
+              LOGDEBUG("TaskName=" << task["name"].as_string());
+            } else {
               LOGERROR("Task have no name");
             }
             if (task.contains("name") && task["name"].as_string() == "InputTask") {
-              if (task.contains("data") && task["data"].contains("infile")){
-                LOGDEBUG("setting infile for graph to:"<<infile);
-                JSONNode tmp=JSONNode("infile", infile);
+              if (task.contains("data") && task["data"].contains("infile")) {
+                LOGDEBUG("setting infile for graph to:" << infile);
+                JSONNode tmp = JSONNode("infile", infile);
                 task["data"]["infile"].swap(tmp);
-                
+
                 LOGDEBUG(task["data"].write_formatted());
               }
             }
@@ -106,7 +106,7 @@ namespace org {
         }
 
       }
-      
+
       std::string GraphParser::getGraphString() {
         return _baseNode.write_formatted();
       }
@@ -203,21 +203,31 @@ namespace org {
       void GraphParser::parseLink(JSONNode&node) {
         if (node.contains("uid")) {
           if (elements.count(node["uid"].as_string())) {
-            if (node.contains("linksTo")) {
-              if (elements.count(node["linksTo"].as_string())) {
-                Ptr<Graph::Element> src_element = elements[node["uid"].as_string()];
-                Ptr<Graph::Element> sink_element = elements[node["linksTo"].as_string()];
-                LOGDEBUG("link " << src_element << ":" << src_element->id << " to " << sink_element << ":" << sink_element->id);
-                //elements[node["uid"].as_string()].linksTo.push_back(elements[node["linksTo"].as_string()]);
-                //elements[node["linksTo"].as_string()].dependsOn.push_back(elements[node["uid"].as_string()]);
-                src_element->addChild(sink_element);
-                sink_element->addParent(src_element);
+            Ptr<Graph::Element> src_element = elements[node["uid"].as_string()];
+            if (src_element->task->getPadTypes() & org::esb::core::Task::SINK) {
+              if (node.contains("linksTo")) {
+                LOGDEBUG("NodeTyp="<<(node["linksTo"].type()==JSON_ARRAY));
+                if(node["linksTo"].type()==JSON_ARRAY){
+                for (int a = 0; a < node["linksTo"].size(); a++) {
+                  if (elements.count(node["linksTo"].at(a).as_string())) {
+                    Ptr<Graph::Element> sink_element = elements[node["linksTo"].at(a).as_string()];
+                    LOGDEBUG("link " << src_element << ":" << src_element->id << " to " << sink_element << ":" << sink_element->id);
+                    //elements[node["uid"].as_string()].linksTo.push_back(elements[node["linksTo"].as_string()]);
+                    //elements[node["linksTo"].as_string()].dependsOn.push_back(elements[node["uid"].as_string()]);
+                    src_element->addChild(sink_element);
+                    sink_element->addParent(src_element);
+                  } else {
+                    throw GraphException(std::string("target node does not exist in node list:").append(" source->").append(node["uid"].as_string()).append(" target->").append(node["linksTo"].at(a).as_string()));
+                  }
+                }
+                }else{
+                  throw GraphException(std::string("node does not have an array in 'linksTo' Attribute:").append(src_element->id));
+                }
               } else {
-                throw GraphException("target node does not exist in node list");
+                throw GraphException(std::string("node does not link to a target node:").append(src_element->id));
               }
-            } else {
-              throw GraphException("node does not link to a target node");
             }
+
           } else {
             throw GraphException("node could not be found in the list");
           }

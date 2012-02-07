@@ -210,7 +210,7 @@ testfunc();
 
 -(void)newNodeEditorView:(CPNotification)notification
 {
-  CPLog.debug("Self"+self);
+  //CPLog.debug("Self"+self);
   [view clearElements];
   //loadedUUID=nil;
   loadedName=[notification object];
@@ -225,12 +225,14 @@ testfunc();
   //  data.uuid=loadedUUID;
   if(loadedName)
     data.name=loadedName;
-  var request = [CPURLRequest requestWithURL:@"/api/v1/flow"];
-  [request setHTTPMethod:"POST"];
-  [request setHTTPBody:JSON.stringify(data)];
-  var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
-  CPLog.debug("Graph Save Result"+[result rawString]);
-  loadedUUID=[result JSONObject].uuid;
+  //var request = [CPURLRequest requestWithURL:@"/api/v1/flow"];
+  //[request setHTTPMethod:"POST"];
+  //[request setHTTPBody:JSON.stringify(data)];
+  //var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+  //CPLog.debug("Graph Save Result"+[result rawString]);
+  var response=[[MHiveApiController sharedController] createFlow:data];
+
+  loadedUUID=response.uuid;
   //[[notification object] refresh];
     [[CPNotificationCenter defaultCenter]
       postNotificationName:SelectGraphByUUID
@@ -243,31 +245,34 @@ testfunc();
 
 -(void)renameNodeEditorView:(CPNotification)notification
 {
-  var path="/api/v1/flow/"+[notification userInfo];
-  var response=[CPHTTPURLResponse alloc];
-  var error;
-  var raw_data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:response];
+  //var path="/api/v1/flow/"+[notification userInfo];
+  //var response=[CPHTTPURLResponse alloc];
+  //var error;
+  //var raw_data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:response];
   //CPLog.debug("raw_data:"+[raw_data rawString]);
-  var data=[raw_data JSONObject].data;
-  var oldName=data.name;
-  data.name=[notification object];
+  //var data=[raw_data JSONObject].data;
 
-  var request = [CPURLRequest requestWithURL:@"/api/v1/flow/"+data.uuid];
-  [request setHTTPMethod:"POST"];
-  [request setHTTPBody:JSON.stringify(data)];
-  var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
-  CPLog.debug("Graph Save Result"+[result rawString]);
+  var result=[[MHiveApiController sharedController] viewFlow:[notification userInfo]];
+
+  var oldName=result.data.name;
+  result.data.name=[notification object];
+
+  //var request = [CPURLRequest requestWithURL:@"/api/v1/flow/"+data.uuid];
+  //[request setHTTPMethod:"POST"];
+  //[request setHTTPBody:JSON.stringify(data)];
+  //var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+  var response=[[MHiveApiController sharedController] updateFlow:result.data uuid:[notification userInfo]];
+  //CPLog.debug("Graph Save Result"+);
   //loadedUUID=[result JSONObject].uuid;
-  [growl pushNotificationWithTitle:@"Graph renamed" message:"Graph "+oldName+" successful renamed to "+data.name];
-
+  [growl pushNotificationWithTitle:@"Graph renamed" message:"Graph "+oldName+" successful renamed to "+result.data.name];
 }
 
 -(void)deleteNodeEditorView:(CPNotification)notification
 {
-  var request = [CPURLRequest requestWithURL:@"/api/v1/flow/"+[notification userInfo]];
-  [request setHTTPMethod:"DELETE"];
-  var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
-  CPLog.debug("Graph delete Result"+[result rawString]);
+  //var request = [CPURLRequest requestWithURL:@"/api/v1/flow/"+[notification userInfo]];
+  //[request setHTTPMethod:"DELETE"];
+  //var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+  //CPLog.debug("Graph delete Result"+[result rawString]);
   [view clearElements];
   loadedUUID=nil;
   loadedName=nil;
@@ -293,29 +298,16 @@ testfunc();
 
 -(void)_submitNodeEditorView:(CPNotification)notification
 {
-  var request = [CPURLRequest requestWithURL:@"/api/v1/flow/"+[notification userInfo]+"/submit"];
-  [request setHTTPMethod:"POST"];
-  var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
-  CPLog.debug("Graph submit Result"+[result rawString]);
-  var mdata=[result JSONObject];
-  CPLog.debug("Graph submit Result JSON:"+mdata);
-
-  if(mdata.status=="ok"){
+  var result=[[MHiveApiController sharedController] submitFlow:[notification userInfo]];
+  if(result.response.status=="ok"){
     [growl pushNotificationWithTitle:@"Graph submitted" message:"Graph "+loadedName+" successful submitted for execution!"];
   }else{
      var stopWarn = [[CPAlert alloc] init];
      [stopWarn setTitle:"Failed to submit the Graph?"];
-     [stopWarn setMessageText:mdata.message];
+     [stopWarn setMessageText:result.response.message];
      [stopWarn setAlertStyle:CPWarningAlertStyle];
      [stopWarn addButtonWithTitle:"Close"];
      [stopWarn runModal];
-
   }
-  //[view clearElements];
-  //loadedUUID=nil;
-  //loadedName=nil;
-  //[view setNeedsDisplay:YES];
-
-
 }
 @end

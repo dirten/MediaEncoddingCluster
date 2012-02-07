@@ -20,8 +20,10 @@ namespace org {
         GraphException(std::string, std::string el="");
         virtual ~GraphException() throw();
         std::string getElementId();
+        const char * what()throw();
       private:
         std::string _element;
+        std::string _msg;
       };
     }
   }

@@ -1,4 +1,6 @@
-@implementation MHiveAPIController : CPObject
+var SharedController;
+
+@implementation MHiveApiController : CPObject
 {
 }
 
@@ -11,6 +13,113 @@
     }
 
     return SharedController;
+}
+
+-(id)makerequest:(CPString)url method:(CPString)method
+{
+  return [self makerequest:url method:method json:undefined];
+}
+
+-(id)makerequest:(CPString)url method:(CPString)method json:(id)json
+{   var request = [CPURLRequest requestWithURL:url];
+    [request setHTTPMethod:method];
+    CPLog.debug("request payload:"+JSON.stringify(json));
+    if(json!=undefined){
+      [request setHTTPBody:JSON.stringify(json)];
+    }
+    var txt = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+    CPLog.debug("response payload:"+[txt rawString]);
+    var data=[[txt rawString] objectFromJSON];
+    return data
+}
+
+-(id)codecs
+{
+  var data = [self makerequest:@"/api/v1/codec" method:@"GET"];
+  return data;
+}
+
+-(id)formats
+{
+  var data = [self makerequest:@"/api/v1/format" method:@"GET"];
+  return data;
+}
+
+-(id)profiles
+{
+  var data = [self makerequest:@"/api/v1/profile" method:@"GET"];
+  return data;
+}
+
+-(id)createProfile:(id)profile
+{
+  var data = [self makerequest:@"/api/v1/profile" method:@"POST" json:profile];
+  return data;
+}
+
+-(id)updateProfile:(id)json uuid:(id)uuid
+{
+  var data = [self makerequest:@"/api/v1/profile/"+uuid method:@"POST" json:json];
+  return data;
+}
+
+-(id)viewProfile:(id)profile
+{
+  var data = [self makerequest:@"/api/v1/profile/"+profile method:@"GET"];
+  return data;
+}
+
+-(id)deleteProfile:(id)profile
+{
+  var data = [self makerequest:@"/api/v1/profile/"+profile method:@"DELETE"];
+  return data;
+}
+
+-(id)flows
+{
+  var data = [self makerequest:@"/api/v1/flow" method:@"GET"];
+  return data;
+}
+
+-(id)viewFlow:(id)flowid
+{
+  var data = [self makerequest:@"/api/v1/flow/"+flowid method:@"GET"];
+  return data;
+}
+
+-(id)createFlow:(id)flow
+{
+  var data = [self makerequest:@"/api/v1/flow" method:@"POST" json:flow];
+  return data;
+}
+
+-(id)submitFlow:(id)uuid
+{
+  var data = [self makerequest:@"/api/v1/flow/"+uuid+"/submit" method:@"POST"];
+  return data;
+}
+
+-(id)updateFlow:(id)flow uuid:(id)uuid
+{
+  var data = [self makerequest:@"/api/v1/flow/"+uuid method:@"POST" json:flow];
+  return data;
+}
+
+-(id)deleteFlow:(id)flowid
+{
+  var data = [self makerequest:@"/api/v1/flow/"+flowid method:@"DELETE"];
+  return data;
+}
+
+-(id)viewEncoding:(id)flowid
+{
+  var data = [self makerequest:@"/api/v1/encoding/"+flowid method:@"GET"];
+  return data;
+}
+-(id)viewEncodingStatus:(id)flowid
+{
+  var data = [self makerequest:@"/api/v1/encoding/"+flowid+"/status" method:@"GET"];
+  return data;
 }
 
 @end

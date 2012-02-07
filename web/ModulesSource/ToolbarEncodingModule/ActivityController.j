@@ -64,7 +64,7 @@
     // return a CPString instance that will be displayed in a regular column (CPTextField)
     //CPLog.debug([tableColumn identifier]);
     if([tableColumn identifier]==1){
-      return [CPString stringWithFormat:@"%s (%s)", jsonData.data[row].graphname, jsonData.data[row].infile];
+      return [CPString stringWithFormat:@"%s (%s)", jsonData.data[row].flowname, jsonData.data[row].infile];
     }else if([tableColumn identifier]==2){
       if(jsonData.data[row].created>1){
         //return [CPDate date:jsonData.data[row].created withFormat:@"isoDateTime"];

@@ -408,6 +408,8 @@ int main(int argc, char * argv[]) {
       //org::esb::api::JsonServer server(vm["webport"].as<int> ());
       config::Config::setProperty("mode", "server");
       org::esb::core::PluginRegistry::getInstance()->startServerServices();
+      org::esb::core::PluginRegistry::getInstance()->startClientServices();
+
       std::string port = config::Config::get("web.port");
       if (!quiet) {
         //std::cout << "mhive server is running, open the url http://localhost:" << port << std::endl;

@@ -1,5 +1,6 @@
 @import <AppKit/CPMenuItem.j>
 @import "../FormBuilder.j"
+@import "../../Controller/MHiveApiController.j"
 @implementation VideoView :CPScrollView
   {
     id _json;
@@ -32,8 +33,8 @@
         "defaults":"0"
       }
     };
-    var codecstxt = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/codec"] returningResponse:nil];
-    codecs=[[codecstxt rawString] objectFromJSON];
+    //var codecstxt = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/codec"] returningResponse:nil];
+    codecs=[[MHiveApiController sharedController] codecs];//[[codecstxt rawString] objectFromJSON];
 
     var items=[{"key":"please select a video codec","value":"0"}];
     for(var a=0;a<codecs.data.length;a++){

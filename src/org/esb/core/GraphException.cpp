@@ -10,13 +10,15 @@ namespace org {
   namespace esb {
     namespace core {
 
-      GraphException::GraphException(std::string msg,std::string el):org::esb::lang::Exception(msg) {
+      GraphException::GraphException(std::string msg,std::string el):org::esb::lang::Exception(msg),_msg(msg) {
         _element=el;
       }
 
       GraphException::~GraphException() throw() {
       }
-      
+      const char * GraphException::what()throw(){
+        return (_msg+":"+_element).c_str();
+      }
       std::string GraphException::getElementId(){
         return _element;
       }

@@ -1,46 +1,9 @@
-/*
- * TNSampleTabModule.j
- *
- * Copyright (C) 2010 Antoine Mercadal <antoine.mercadal@inframonde.eu>
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-
 @import <Foundation/Foundation.j>
 @import "../../Categories/CPButtonBar+themeGray.j"
 @import "../../View/ProfileEditView.j"
 @import "../../View/LongOperationView.j"
 
 
-// import only AppKit part you need here.
-@import <AppKit/CPTextField.j>
-
-
-// if you don't need this variables outside of this file,
-// *always* use the 'var' keyword to make them filescoped
-// otherwise, it will be application scoped
-var TNArchipelTypeDummyNamespace = @"archipel:dummy",
-TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
-
-/*! @defgroup  sampletabmodule Module SampleTabModule
- @desc Development starting point to create a Tab module
- */
-
-/*! @ingroup sampletabmodule
- Sample tabbed module implementation
- Please respect the pragma marks as much as possible.
- */
 @implementation ProfileModuleController : CPViewController
 {
   @outlet CPTableView     profileTableView;
@@ -90,9 +53,10 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
   [buttonBar setButtons:buttons];
 
   CPLog.debug("awakeFromCib and reload table view new bla"+self);
-  var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
-  [request setHTTPMethod:"GET"];
-  var connection = [CPURLConnection connectionWithRequest:request delegate:self];
+  [self loadTableView];
+  //var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
+  //[request setHTTPMethod:"GET"];
+  //var connection = [CPURLConnection connectionWithRequest:request delegate:self];
   //[buttonBar setValue:CPThemeStateDisabled forThemeAttribute:@"button-bezel-color"]
   json={
     "data":{
@@ -173,10 +137,11 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
   if(jsonData.data[[[aNotification object] selectedRow]]){
     //CPLog.debug("hello profile 1212:"+jsonData.data[[[aNotification object] selectedRow]].id);
     selectedid=jsonData.data[[[aNotification object] selectedRow]].id;
-    var path="/api/v1/profile/"+selectedid;
-    var response=[CPHTTPURLResponse alloc];
-    var error;
-    var raw_data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:response];
+    //var path="/api/v1/profile/"+selectedid;
+    //var response=[CPHTTPURLResponse alloc];
+    //var error;
+    //var raw_data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:response];
+    var profile=[[MHiveApiController sharedController] viewProfile:selectedid];
     //CPLog.debug("raw_data:"+[raw_data rawString]);
     //var data=[raw_data JSONObject];
     //if(data!=undefined){
@@ -187,10 +152,10 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
     //[[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode]; 
   //CPLog.debug("awakeFromCib profileEdirtView"+CPStringFromRect([profileView bounds]));
   //CPLog.debug("awakeFromCib profileEdirtView"+CPStringFromRect([profileView bounds]));
-    pdata=[CPDictionary dictionaryWithJSObject:[raw_data JSONObject] recursively:YES];
+    pdata=[CPDictionary dictionaryWithJSObject:profile recursively:YES];
   var name="";  
-  if([raw_data JSONObject].data)
-      name=[raw_data JSONObject].data.name
+  if(profile.data)
+      name=profile.data.name
   [[TNGrowlCenter defaultCenter] pushNotificationWithTitle:@"Please wait" message:@"Please whait while loading profile "+name];
   [CPTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(open:) userInfo:pdata repeats:NO];
 
@@ -216,6 +181,13 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
 {
   jsonData=[data objectFromJSON];
   CPLog.debug("json="+jsonData.requestId);
+  [profileTableView reloadData];
+}
+
+- (void)loadTableView
+{
+  jsonData=[[MHiveApiController sharedController] profiles];
+  CPLog.debug("jsondata="+jsonData);
   [profileTableView reloadData];
 }
 
@@ -275,14 +247,16 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
 
 -(void)_delete:(id)data
 {
-  var request = [CPURLRequest requestWithURL:@"/api/v1/profile/"+data];
-  [request setHTTPMethod:"DELETE"];
-  var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
-  CPLog.debug("DeleteResult:"+[result rawString]);
+  //var request = [CPURLRequest requestWithURL:@"/api/v1/profile/"+data];
+  //[request setHTTPMethod:"DELETE"];
+  //var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+  var result=[[MHiveApiController sharedController] deleteProfile:data];
+  CPLog.debug("DeleteResult:"+result);
   [[profileView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-  var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
-  [request setHTTPMethod:"GET"];
-  var connection = [CPURLConnection connectionWithRequest:request delegate:self];
+  [self loadTableView];
+  //var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
+  //[request setHTTPMethod:"GET"];
+  //var connection = [CPURLConnection connectionWithRequest:request delegate:self];
   selectedid=0;
   [profileTableView selectRowIndexes:[CPIndexSet indexSet] byExtendingSelection:NO];
 }
@@ -290,30 +264,36 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
 - (void)save:(id)sender
 {
     CPLog.debug("SAVING Encoding Profile:"+ JSON.stringify([pdata toJSON].data));
-    var url="/api/v1/profile";
-    if(selectedid)
-      url+="/"+selectedid;
-    CPLog.debug("Saving Profile URL="+url);
-    var request = [CPURLRequest requestWithURL:url];
-    [request setHTTPMethod:"POST"];
-    [request setHTTPBody:JSON.stringify([pdata toJSON].data)];
-    var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
-    CPLog.debug("SAVING Encoding Profile Result:"+ [result rawString]);
-    var mdata=[result JSONObject];
-    if(mdata.response.status==undefined||mdata.response.status=="error"){
+    //var url="/api/v1/profile";
+    var result;
+    if(selectedid){
+      result=[[MHiveApiController sharedController] updateProfile:[pdata toJSON].data uuid:selectedid];
+    }else{
+      result=[[MHiveApiController sharedController] createProfile:[pdata toJSON].data];
+    }
+      
+    //CPLog.debug("Saving Profile URL="+url);
+    //var request = [CPURLRequest requestWithURL:url];
+    //[request setHTTPMethod:"POST"];
+    //[request setHTTPBody:JSON.stringify([pdata toJSON].data)];
+    //var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+    CPLog.debug("SAVING Encoding Profile Result:"+ JSON.stringify(result));
+    //var mdata=[result JSONObject];
+    if(result.response.status==undefined||result.response.status=="error"){
        var stopWarn = [[CPAlert alloc] init];
        [stopWarn setTitle:"Failed to save the Profile?"];
-       [stopWarn setMessageText:mdata.response.message];
+       [stopWarn setMessageText:result.response.message];
        [stopWarn setAlertStyle:CPWarningAlertStyle];
        [stopWarn addButtonWithTitle:"Close"];
        [stopWarn runModal];
     }else{
       [[TNGrowlCenter defaultCenter] pushNotificationWithTitle:@"Profile Saved" message:"Profile successful saved"];
-      selectedid=mdata.uuid;
+      selectedid=result.uuid;
     }
-    var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
-    [request setHTTPMethod:"GET"];
-    var connection = [CPURLConnection connectionWithRequest:request delegate:self];
+    [self loadTableView];
+    //var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
+    //[request setHTTPMethod:"GET"];
+    //var connection = [CPURLConnection connectionWithRequest:request delegate:self];
 }
 
 - (void)new:(id)sender

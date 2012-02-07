@@ -51,18 +51,14 @@ SelectGraphByUUID = @"SelectGraphByUUID";
 {
   var result=0;
   if(jsonData){
-    //jsonData.data.unshift({"id":"double click to create a new Encoding","created":"","begintime":"","endtime":"","progress":"","status":""});
     result=jsonData.data.length;
   }
-  CPLog.debug("graphlist RowCount="+result);
   return result;
 }
 
 - (id)tableView:(CPTableView)tabView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row
 {
-  //CPLog.debug("load table data");
   if([tableColumn identifier]==1){
-    CPLog.debug("item found for row"+row+"="+JSON.stringify(jsonData.data[row]));
     var str="";
     if(jsonData.data[row].name!=undefined&&jsonData.data[row].name.length>0){
       str=jsonData.data[row].name;
@@ -73,25 +69,10 @@ SelectGraphByUUID = @"SelectGraphByUUID";
       [self selectGraphAtIndex:row];
       selectUUID="";
     }
-    //var str=jsonData.data[row].name.length>0?jsonData.data[row].name:jsonData.data[row].uuid;
     return [CPString stringWithFormat:@"%s", str];
   }
 }
 
-- (void)connection:(CPURLConnection)aConnection didReceiveData:(CPString)data
-{
-  CPLog.debug("status==200 : "+[_response statusCode]);
-  if([_response statusCode]==200){
-    jsonData=[data objectFromJSON];
-    [tableView reloadData];
-  }else{
-    alert(data);
-  }
-}
-- (void)connection:(CPURLConnection)aConnection didReceiveResponse:(CPHTTPURLResponse)response
-{
-  _response=response;
-}
 
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification{
   if([self selectedId]){
@@ -113,11 +94,8 @@ SelectGraphByUUID = @"SelectGraphByUUID";
 }
 
 - (void)refresh{
-  var request = [CPURLRequest requestWithURL:"/api/v1/flow"];
-  [request setHTTPMethod:"GET"];
-  //CPLog.debug(request.HTTPMethod);
-  // see important note about CPJSONPConnection above
-  var connection = [CPURLConnection connectionWithRequest:request delegate:self];
+  jsonData=[[MHiveApiController sharedController] flows];
+  [tableView reloadData];
 }
 
 -(CPString)selectedId
@@ -128,6 +106,7 @@ SelectGraphByUUID = @"SelectGraphByUUID";
     return nil;
   }
 }
+
 -(CPString)selectedName
 {
   if([tableView selectedRow]!=-1){
@@ -226,6 +205,7 @@ SelectGraphByUUID = @"SelectGraphByUUID";
 - (void)delete:(id)sender
 {
   /*asking for a name*/
+  /*
   delgraph=[[CPAlert alloc] init];// initWithTitle:@"Delete Graph" andText:@"are you sure to delete the graph:"+[self selectedId]];
   [delgraph setTitle:"Are You Sure?"];
   [delgraph setMessageText:"Are you sure you want to delete the Graph with ID :" + [self selectedName] + "?"];
@@ -233,7 +213,17 @@ SelectGraphByUUID = @"SelectGraphByUUID";
   [delgraph addButtonWithTitle:"Cancel"];
   [delgraph setDelegate:self];
   [delgraph addButtonWithTitle:"Delete Graph"];
-  [delgraph runModal];
+  [delgraph runModal];*/
+    var alert=[[YesNoAlert alloc] 
+                initWithLabel:@"Delete current selected Profile!" 
+                question:@"Do you really want to delete the Flow:"+[self selectedName]
+                yesLabel:@"Delete" 
+                noLabel:@"Cancel" 
+                target:self 
+                yesAction:@selector(_delete:)
+                yesObject:[self selectedId]
+                noAction:nil
+                noObject:nil]; 
 
 }
 - (void)rename:(id)sender
@@ -254,7 +244,9 @@ SelectGraphByUUID = @"SelectGraphByUUID";
 }
 - (void)_delete:(CPString)uuid
 {
-  CPLog.debug("Rename Encoding Graph:");
+  var result=[[MHiveApiController sharedController] deleteFlow:uuid];
+  CPLog.debug("DeleteResult:"+result);
+  [self refresh];
   [[CPNotificationCenter defaultCenter]
     postNotificationName:DeleteNodeEditorView
     object:uuid
