@@ -27,7 +27,6 @@ add_library (io ${IO_LINK_TYPE}
 TARGET_LINK_LIBRARIES(io
 #    ${Boost_LIBRARIES}
     lang
-    safmq
     util
 )
 SET_TARGET_PROPERTIES( io PROPERTIES PREFIX "libmhive-")
