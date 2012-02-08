@@ -59,6 +59,7 @@ namespace udpnoderesolver {
   }
 
   void Service::startService() {
+    LOGDEBUG("Start UDP Node Resolver Service");
     org::esb::plugin::Node node;
     node.setData("type", org::esb::config::Config::getProperty("mode", "server"));
     node.setData("version", "0.0.5.0");
@@ -71,6 +72,7 @@ namespace udpnoderesolver {
   }
 
   void Service::stopService() {
+    LOGDEBUG("Stop UDP Node Resolver Service");
     _resolver->stop();
   }
 

@@ -5,7 +5,7 @@
  * Created on 25. Oktober 2010, 15:49
  */
 
-#include "org/esb/hive/CodecPropertyTransformer.h"
+#include "org/esb/av/CodecPropertyTransformer.h"
 #include <cstdlib>
 #include "org/esb/av/Encoder.h"
 #include "org/esb/av/FormatBaseStream.h"
@@ -20,7 +20,7 @@ using namespace std;
 int main(int argc, char** argv) {
   Log::open("");
   org::esb::av::FormatBaseStream::initialize();
-  std::multimap<std::string, std::string> data;
+  std::map<std::string, std::string> data;
   data.insert(std::pair<std::string, std::string>("parti8x8","1"));
   data.insert(std::pair<std::string, std::string>("partb8x8","1"));
   data.insert(std::pair<std::string, std::string>("parti4x4","1"));
@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
   data.insert(std::pair<std::string, std::string>("mixed_refs", "1"));
   data.insert(std::pair<std::string, std::string>("dct8x8", "1"));
   
-  org::esb::hive::CodecPropertyTransformer * trans = new org::esb::hive::CodecPropertyTransformer(data);
+  org::esb::av::CodecPropertyTransformer * trans = new org::esb::av::CodecPropertyTransformer(data);
 
 
   Ptr<org::esb::av::Encoder> e = new org::esb::av::Encoder(CODEC_ID_MP2);

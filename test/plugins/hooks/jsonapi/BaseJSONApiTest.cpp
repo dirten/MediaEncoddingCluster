@@ -96,7 +96,7 @@ void test_mediafile() {
   std::string file = MEC_SOURCE_DIR;
   file += "/test.dvd";
   HTTPClientSession s(HOST, PORT);
-  HTTPRequest request(HTTPRequest::HTTP_GET, std::string("/api/v1/media//").append(file));
+  HTTPRequest request(HTTPRequest::HTTP_GET, std::string("/api/v1/media/").append(file));
   s.sendRequest(request);
 
   HTTPResponse response;

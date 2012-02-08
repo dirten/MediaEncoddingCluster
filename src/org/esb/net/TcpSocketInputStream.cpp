@@ -132,15 +132,20 @@ namespace org {
           }catch(boost::system::system_error & ex){
             if(ex.code()==boost::asio::error::eof){
               LOGERROR("socket closed by foreign host: "<<ex.code());
+              //throw SocketException(std::string("socket closed by foreign host"));
             }else{
               LOGERROR("Error reading length from socket:"<<ex.what()<<" code="<<ex.code());
             }
             _socket->close();
             return 0;
+          }catch(std::exception & ex){
+              LOGERROR("Error reading length from socket:"<<ex.what());
           }
 
-          if (error)
+          if (error){
+            LOGERROR("Throwing Exception");
             throw boost::system::system_error(error);
+          }
           else if (read != 10)
             throw SocketException("reading size is not equal 10");
           return atoi(tmp);

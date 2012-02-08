@@ -38,7 +38,7 @@ TARGET_LINK_LIBRARIES(core
   db
   util
   #${POCO_LIB_NET}
-  ${POCO_LIB_FOUNDATION}
+  #${POCO_LIB_FOUNDATION}
   core_http
 )
 SET_TARGET_PROPERTIES( core PROPERTIES PREFIX "libmhive-")

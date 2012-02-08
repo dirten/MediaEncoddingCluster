@@ -299,13 +299,13 @@ add_library (hive SHARED
 #	hive/CommandInputStream.cpp 
 #	hive/CommandOutputStream.cpp 
 #	hive/PacketCollector.cpp
-	hive/CodecFactory.cpp 
+#	hive/CodecFactory.cpp 
 #	hive/job/Job.cpp
 #	hive/job/JobDetail.cpp
 #	hive/job/JobHandler.cpp 
 #	hive/job/JobWatcher.cpp 
 #	hive/job/ProcessUnitWatcher.cpp
-	hive/job/PartitionManager.cpp 
+#	hive/job/PartitionManager.cpp 
 	hive/job/ProcessUnit.cpp 
 #	hive/DirectoryScanner.cpp 
 #	hive/DatabaseUtil.cpp
@@ -313,23 +313,23 @@ add_library (hive SHARED
 #	hive/FileImporter.cpp 
 #	hive/JobUtil.cpp 
 	hive/HiveClient.cpp
-	hive/HiveClientAudio.cpp
+#	hive/HiveClientAudio.cpp
 #	hive/Setup.cpp
 #	hive/FileExporter.cpp
 #	hive/ExportScanner.cpp
 #	hive/FormatStreamFactory.cpp
 #        hive/protocol/PartitionHandler.cpp
-  hive/job/Packetizer.cpp
+#  hive/job/Packetizer.cpp
 #  hive/JobScanner.cpp
 #  hive/NodeSender.cpp
 #	hive/NodeReceiver.cpp
-  hive/NodeResolver.cpp
+#  hive/NodeResolver.cpp
 #  hive/job/ProcessUnitBuilder.cpp
 #  hive/job/ProcessUnitController.cpp
 #  hive/job/JobController.cpp
 #  hive/ProcessManager.cpp
   hive/HiveException.cpp
-  hive/CodecPropertyTransformer.cpp
+#  hive/CodecPropertyTransformer.cpp
 #  hive/PresetReader.cpp
   hive/PresetReaderJson.cpp
 #  hive/PresetFileWriter.cpp
