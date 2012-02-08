@@ -22,7 +22,7 @@
 //#include "protocol/Status.cpp"
 //#include "protocol/CreateHive.cpp"
 //#include "protocol/Unknown.cpp"
-#include "proto/PartitionHandler.h"
+//#include "proto/PartitionHandler.h"
 
 
 using namespace std;
@@ -61,7 +61,7 @@ namespace org {
         //l.push_back(new Help(socket->getInputStream(), socket->getOutputStream()));
         l.push_back(new AudioDataHandler(socket->getInputStream(), socket->getOutputStream(), socket->getRemoteEndpoint()));
         l.push_back(new VideoDataHandler(socket->getInputStream(), socket->getOutputStream(), socket->getRemoteEndpoint()));
-        l.push_back(new PartitionHandler(socket->getInputStream(), socket->getOutputStream(), socket->getRemoteEndpoint()));
+        //l.push_back(new PartitionHandler(socket->getInputStream(), socket->getOutputStream(), socket->getRemoteEndpoint()));
         //l.push_back(new Disconnect(socket->getInputStream(), socket->getOutputStream()));
         //l.push_back(new Kill(socket->getInputStream(), socket->getOutputStream()));
         //l.push_back(new ShowConfig(socket->getInputStream(), socket->getOutputStream()));

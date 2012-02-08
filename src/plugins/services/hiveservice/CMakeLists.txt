@@ -11,7 +11,7 @@ include_directories (${LOG4CPLUS_DIR}/include/litesql)
 add_library (hiveservice SHARED
   HiveListener.cpp
   ProtocolServer.cpp
-  proto/PartitionHandler.cpp
+  #proto/PartitionHandler.cpp
  )
 
 TARGET_LINK_LIBRARIES(hiveservice
