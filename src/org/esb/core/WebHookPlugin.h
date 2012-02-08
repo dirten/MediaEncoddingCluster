@@ -33,6 +33,9 @@ namespace org {
 #define GET "GET"
 #define POST "POST"
 #define PUT "PUT"
+#ifdef DELETE
+  #undef DELETE
+#endif
 #define DELETE "DELETE"
 #define HEAD "HEAD"
 #define OPTIONS "OPTIONS"
