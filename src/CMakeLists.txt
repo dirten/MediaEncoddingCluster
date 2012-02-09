@@ -267,7 +267,7 @@ target_link_libraries (mhive
   signal 
   io 
   net
-  rpc
+#  rpc
   core
 
   ${Boost_LIBRARIES}

@@ -123,7 +123,7 @@ add_subdirectory (av)
 add_subdirectory (lang)
 #add_subdirectory (mq)
 #add_subdirectory (grid)
-add_subdirectory (rpc)
+#add_subdirectory (rpc)
 #add_subdirectory (api)
 #TARGET_LINK_LIBRARIES(lang
 #  ${BOOST_THREAD_LIB_MT}
