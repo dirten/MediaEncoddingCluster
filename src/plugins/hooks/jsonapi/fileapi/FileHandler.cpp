@@ -64,7 +64,7 @@ public:
           boost::filesystem::file_status fs = boost::filesystem::status(*d);
 
           if (boost::filesystem::status_known(fs) && boost::filesystem::exists(*d)) {
-            buildFile(*d, array);
+			  buildFile(org::esb::io::File(*d), array);
           }
         } catch (boost::filesystem::filesystem_error & er) {
           LOGINFO(er.what());
