@@ -20,13 +20,13 @@ namespace org {
   namespace esb {
     namespace core {
 
-      class CORE_EXPORT HookNotificationCenter {
+      class HookNotificationCenter {
       public:
-        HookNotificationCenter();
-        virtual ~HookNotificationCenter();
-        static  HookNotificationCenter * getInstance();
-        void  postHook(std::string name,Request  * object1=NULL,Response * object2=NULL);
-        void  addObserver(std::string name, boost::function<void (Request*, Response*)> func, int prio);
+        CORE_EXPORT HookNotificationCenter();
+        virtual CORE_EXPORT ~HookNotificationCenter();
+        static CORE_EXPORT HookNotificationCenter * getInstance();
+        void CORE_EXPORT postHook(std::string name,Request  * object1=NULL,Response * object2=NULL);
+        void CORE_EXPORT addObserver(std::string name, boost::function<void (Request*, Response*)> func, int prio);
       private:
         typedef std::list<boost::function<void (Request*req, Response*res)> > FuncList;
         typedef std::map<int, FuncList > FuncMap;
