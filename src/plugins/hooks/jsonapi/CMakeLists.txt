@@ -1,6 +1,6 @@
 
 SET( JSONAPI_SOVERSION 0.1.0 )
-MESSAGE("Core API Version" ${COREAPI_VERSION})
+
 include_directories (${MEC_SOURCE_DIR})
 include_directories (${MEC_SOURCE_DIR}/src)
 include_directories (${BOOST_INCLUDE_DIRS})
