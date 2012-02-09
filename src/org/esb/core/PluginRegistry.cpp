@@ -73,6 +73,9 @@ namespace org {
 
       void CORE_EXPORT PluginRegistry::startServerServices() {
         typedef std::map<std::string, Plugin*> PluginMap;
+        server=new org::esb::core::http::Server(4000);
+        server->setRequestHandlerFactory(_webhook_handler_factory);
+        server->start();
 
         foreach(PluginMap::value_type s, _service_map) {
           //LOGDEBUG("ServiceName="<<s.first<<" type="<<((ServicePlugin*) s.second)->getServiceType());
@@ -152,9 +155,8 @@ namespace org {
       PluginRegistry::PluginRegistry() {
         Poco::Net::HTTPStreamFactory::registerFactory();
         Poco::Net::FTPStreamFactory::registerFactory();
-        server=new org::esb::core::http::Server(4000);
-        server->setRequestHandlerFactory(_webhook_handler_factory=new WebHookHandlerFactory());
-        server->start();
+        server=NULL;
+        _webhook_handler_factory=new WebHookHandlerFactory();
       }
 
       Ptr<Task>PluginRegistry::createTask(std::string name, std::map<std::string, std::string> cfg) {
@@ -298,7 +300,8 @@ namespace org {
         foreach(SharedObjectMap::value_type row, _shared_objects) {
           delete row.second;
         }
-        server->stop();
+        if(server)
+          server->stop();
         delete server;
         server=NULL;
       }
