@@ -12,6 +12,8 @@
 #include "../JSONResult.h"
 
 #include "../exports.h"
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/exception.hpp>
 
 class JSONAPI_EXPORT FileHandler : public org::esb::core::WebHookPlugin {
 public:
