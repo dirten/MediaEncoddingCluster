@@ -408,6 +408,7 @@ int main(int argc, char * argv[]) {
       //org::esb::api::JsonServer server(vm["webport"].as<int> ());
       config::Config::setProperty("mode", "server");
       org::esb::core::PluginRegistry::getInstance()->startServerServices();
+      config::Config::setProperty("mode", "client");
       org::esb::core::PluginRegistry::getInstance()->startClientServices();
 
       std::string port = config::Config::get("web.port");
