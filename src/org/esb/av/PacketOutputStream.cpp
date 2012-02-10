@@ -41,6 +41,7 @@ bool PacketOutputStream::close() {
 }
 
 PacketOutputStream::~PacketOutputStream() {
+  LOGDEBUG("PacketOutputStream::~PacketOutputStream()");
   list<AVStream*>::iterator it=streams.begin();
 
   for(;it!=streams.end();it++){

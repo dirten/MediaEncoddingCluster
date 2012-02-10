@@ -99,9 +99,10 @@ namespace org {
         if (print_prefix && avc) {
           snprintf(line, sizeof (line), "[%s @ %p]", avc->item_name(ptr), ptr);
           snprintf(ptrString, sizeof (ptrString), "%p", ptr);
-        } else
+        } else {
           line[0] = 0;
-        ptrLine[0] = 0;
+          ptrString[0] = 0;
+        }
 
         vsnprintf(line + strlen(line), sizeof (line) - strlen(line), fmt, vl);
         vsnprintf(ptrLine, sizeof (ptrLine), fmt, vl);
@@ -118,7 +119,7 @@ namespace org {
         std::string msg = org::esb::util::StringUtil::trim(line, "\n");
         std::string msgPtr = org::esb::util::StringUtil::trim(ptrLine, "\n");
         if (logMap.count(ptrString)) {
-          if(logMap[ptrString].size()>MAX_HISTORY){
+          if (logMap[ptrString].size() > MAX_HISTORY) {
             logMap[ptrString].erase(--logMap[ptrString].end());
           }
         }

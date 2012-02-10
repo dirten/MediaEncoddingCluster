@@ -161,7 +161,9 @@ int main(int argc, char** argv) {
 
   test_profile_delete();
   test_profile_delete_fail();
-
+  org::esb::core::PluginRegistry::getInstance()->stopServices();
+  org::esb::core::PluginRegistry::close();
+  org::esb::config::Config::close();
   return 0;
 }
 

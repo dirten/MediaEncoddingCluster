@@ -102,6 +102,11 @@ namespace org {
         foreach(PluginMap::value_type s, _service_map) {
           ((ServicePlugin*) s.second)->stopService();
         }
+        if(server)
+          server->stop();
+        delete server;
+        server=NULL;
+
       }
 
       void PluginRegistry::registerHookPlugin(std::string name, HookPlugin*plugin) {
@@ -300,10 +305,6 @@ namespace org {
         foreach(SharedObjectMap::value_type row, _shared_objects) {
           delete row.second;
         }
-        if(server)
-          server->stop();
-        delete server;
-        server=NULL;
       }
     }
     namespace api {
