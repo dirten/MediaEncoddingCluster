@@ -155,8 +155,8 @@ namespace org {
         if (_stream_info_map.size() > 0) {
           map<int, StreamInfo*>::iterator it = _stream_info_map.begin();
           for (; it != _stream_info_map.end(); it++) {
-//            if((*it).second)
-//              delete (*it).second;
+            if((*it).second)
+              delete (*it).second;
 //            (*it).second=NULL;
           }
           _stream_info_map.clear();

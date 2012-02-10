@@ -23,7 +23,7 @@ SET(core_source
 add_library (core SHARED
   ${core_source}
 )
-
+MESSAGE("PocoLinkLibarayUtil"  ${POCO_LIB_NET_UTIL})
 TARGET_LINK_LIBRARIES(core 
   lang
   io
@@ -31,6 +31,8 @@ TARGET_LINK_LIBRARIES(core
   db
   util
   #${POCO_LIB_NET}
+  #${POCO_LIB_XML}
+  #${POCO_LIB_NET_UTIL}
   #${POCO_LIB_FOUNDATION}
   core_http
 )

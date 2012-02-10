@@ -23,47 +23,46 @@ PacketOutputStream::PacketOutputStream(OutputStream * os, std::string statsfile)
   _fmtCtx->max_delay = (int) (0.7 * AV_TIME_BASE);
   //_fmtCtx->loop_output = AVFMT_NOOUTPUTLOOP;
   _isInitialized = false;
-  _stats_fos=NULL;
-  if(statsfile.length()>0){
+  _stats_fos = NULL;
+  if (statsfile.length() > 0) {
     File sfile(statsfile);
-    _stats_fos=new org::esb::io::FileOutputStream(&sfile);
+    _stats_fos = new org::esb::io::FileOutputStream(&sfile);
   }
 }
 
 bool PacketOutputStream::close() {
-  bool result=false;
-  if (_isInitialized){
+  bool result = false;
+  if (_isInitialized) {
+
+    list<AVStream*>::iterator it = streams.begin();
+
+    for (; it != streams.end(); it++) {
+      if ((*it)->codec == NULL) {
+        LOGERROR("Codecs are closed, this can result in an unknown behavior!");
+      }
+    }
+
     LOGINFO("writing trailer");
-    result=av_write_trailer(_fmtCtx)==0;
+    result = av_write_trailer(_fmtCtx) == 0;
+
+    it = streams.begin();
+
+    for (; it != streams.end(); it++) {
+      av_free((*it));
+    }
+    if (_stats_fos) {
+      delete _stats_fos;
+      _stats_fos = NULL;
+    }
   }
+
   _isInitialized = false;
   return result;
 }
 
 PacketOutputStream::~PacketOutputStream() {
   LOGDEBUG("PacketOutputStream::~PacketOutputStream()");
-  list<AVStream*>::iterator it=streams.begin();
-
-  for(;it!=streams.end();it++){
-    if((*it)->codec==NULL){
-      LOGERROR("Codecs are closed, this can result in an unknown behavior!");
-    }
-  }
-
   close();
-  
-  it=streams.begin();
-  
-  for(;it!=streams.end();it++){
-    av_free((*it));
-  }
-  if(_stats_fos){
-    delete _stats_fos;
-    _stats_fos=NULL;
-  }
-
-  //    av_write_trailer(_fmtCtx);
-  //	delete _target;
 }
 bool first_packet = true;
 
@@ -137,7 +136,7 @@ int PacketOutputStream::writePacket(Packet & packet) {
   //packet.setDts(0);
   //  packet.setPts(streamDts[packet.getStreamIndex()]);
 
-   //LOGDEBUG(packet.toString());
+  //LOGDEBUG(packet.toString());
   //  compute_pkt_fields2(_fmtCtx->streams[packet.getStreamIndex()], packet.packet);
   //  logdebug(packet.toString());
   //uint8_t dur = static_cast<uint8_t>((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den))/frame.getTimeBase().num;
@@ -157,8 +156,8 @@ int PacketOutputStream::writePacket(Packet & packet) {
   //int result =_fmtCtx->oformat->write_packet(_fmtCtx,packet.packet);
   //LOGTRACE(packet.toString());
   int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
-  if(_fmtCtx->streams[packet.getStreamIndex()]->codec->codec_type==AVMEDIA_TYPE_VIDEO && _stats_fos){
-    _stats_fos->write(StringUtil::toString(packet._quality)+":"+StringUtil::toString(packet.packet->size)+",");
+  if (_fmtCtx->streams[packet.getStreamIndex()]->codec->codec_type == AVMEDIA_TYPE_VIDEO && _stats_fos) {
+    _stats_fos->write(StringUtil::toString(packet._quality) + ":" + StringUtil::toString(packet.packet->size) + ",");
   }
   //  int result = av_write_frame(_fmtCtx, packet.packet);
   if (result != 0) {
@@ -184,7 +183,7 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
   if (!st) {
     LOGERROR("Could not alloc stream");
   }
-  
+
   //  logdebug( "Setting Codec_Id:" << encoder.ctx->codec_id);
   streams.push_back(st);
   /*freeing allocated codec from av_new_stream
@@ -280,8 +279,8 @@ bool PacketOutputStream::init() {
 
     LOGDEBUG("TimeBase #" << a << "\tnum:" << stream->codec->time_base.num << "\tden" << stream->codec->time_base.den);
     LOGDEBUG("TimeBase Stream#" << a << "\tnum:" << stream->time_base.num << "\tden" << stream->time_base.den);
-    if(stream->parser)
-      LOGDEBUG("Stream repeast_pict:"<<stream->parser->repeat_pict);
+    if (stream->parser)
+      LOGDEBUG("Stream repeast_pict:" << stream->parser->repeat_pict);
   }
   return true;
 }

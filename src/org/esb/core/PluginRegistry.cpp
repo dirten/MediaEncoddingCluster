@@ -21,6 +21,7 @@
 #include "Poco/Net/HTTPStreamFactory.h"
 #include "Poco/Net/FTPStreamFactory.h"
 #include "WebHookHandlerFactory.h"
+
 //#include "org/esb/api/ApiWebServer.h"
 namespace org {
   namespace esb {
@@ -162,6 +163,9 @@ namespace org {
         Poco::Net::FTPStreamFactory::registerFactory();
         server=NULL;
         _webhook_handler_factory=new WebHookHandlerFactory();
+        //istringstream iss (std::string("<test/>"),istringstream::in);
+        //Poco::AutoPtr<Poco::Util::XMLConfiguration> conf = new Poco::Util::XMLConfiguration(iss);
+
       }
 
       Ptr<Task>PluginRegistry::createTask(std::string name, std::map<std::string, std::string> cfg) {

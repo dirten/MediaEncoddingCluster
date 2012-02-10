@@ -115,8 +115,8 @@ namespace org {
         /*openning the OutputStreams*/
         org::esb::io::File fout(org::esb::config::Config::get("hive.tmp_path") + "/test");
 
-        Ptr<org::esb::av::FormatOutputStream> fos = new org::esb::av::FormatOutputStream(&fout, ofmt->name);
-        Ptr<org::esb::av::PacketOutputStream> pos = new org::esb::av::PacketOutputStream(fos.get());
+        org::esb::av::FormatOutputStream * fos = new org::esb::av::FormatOutputStream(&fout, ofmt->name);
+        org::esb::av::PacketOutputStream * pos = new org::esb::av::PacketOutputStream(fos);
         pos->setEncoder(*venc.get(), 0);
         pos->setEncoder(*aenc.get(), 1);
         if (!pos->init()) {
@@ -148,6 +148,9 @@ namespace org {
         pos->close();
         fos->close();
         fout.deleteFile();
+        
+        delete pos;
+        delete fos;
         return result;
       }
 

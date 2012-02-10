@@ -75,7 +75,7 @@ namespace org {
           result=avio_close(_fmtCtx->pb)==0;
           int nb_streams = _fmtCtx->nb_streams;
           for (int a = 0; a < nb_streams; a++) {
-//            av_free(_fmtCtx->streams[a]);
+            //av_free(_fmtCtx->streams[a]);
           }
           av_free(_fmtCtx);
           _status = CLOSED;
