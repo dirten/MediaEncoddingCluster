@@ -85,6 +85,7 @@ namespace org {
       ApiWebServer::~ApiWebServer() {
         LOGDEBUG("ApiWebServer::~ApiWebServer()");
         delete p;
+        p=NULL;
       }
 
       void * ApiWebServer::event_handler(enum mg_event event,
