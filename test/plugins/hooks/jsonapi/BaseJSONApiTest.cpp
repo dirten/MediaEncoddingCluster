@@ -148,6 +148,7 @@ int main(int argc, char** argv) {
   org::esb::core::PluginRegistry::getInstance()->load(UPLOADTASK_PLUGIN);
   org::esb::core::PluginRegistry::getInstance()->load(JSONAPI_PLUGIN);
   org::esb::core::PluginRegistry::getInstance()->initPlugins();
+  org::esb::core::PluginRegistry::getInstance()->startServerServices();
   test_format_list();
   test_codec_list();
   test_file_list();

@@ -59,7 +59,7 @@ namespace org {
       }
 
       org::esb::core::ServicePlugin::ServiceType WEBSERVICE_EXPORT ApiWebServer::getServiceType() {
-        return (org::esb::core::ServicePlugin::ServiceType)getContext()->getEnvironment<int>("webservice.servicetype");
+        return org::esb::core::ServicePlugin::SERVICE_TYPE_SERVER;
       }
 
       void ApiWebServer::stopService() {
