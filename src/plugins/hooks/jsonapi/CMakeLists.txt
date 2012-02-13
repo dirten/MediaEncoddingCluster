@@ -14,12 +14,12 @@ include_directories (${FFMPEG_INCLUDE_DIR})
 add_library (jsonapi SHARED
 #  ProcessHandler.cpp
   JSONResult.cpp
-  JSONHandler.cpp
-  FileHandler.cpp
+#  JSONHandler.cpp
+#  FileHandler.cpp
   PresetVerifier.cpp
-  ConfigHandler.cpp
-  JobHandler.cpp
-  GraphHandler.cpp
+#  ConfigHandler.cpp
+#  JobHandler.cpp
+#  GraphHandler.cpp
 #API Handling of all Graph/Flow Requests
   graph/GraphListHandler.cpp
   graph/GraphLoadHandler.cpp
@@ -62,7 +62,6 @@ add_library (jsonapi SHARED
 TARGET_LINK_LIBRARIES(jsonapi
   core
   json
-  webservice
   av
 )
 SET_TARGET_PROPERTIES( jsonapi PROPERTIES PREFIX "")

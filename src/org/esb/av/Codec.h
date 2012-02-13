@@ -237,6 +237,7 @@ class SampleFormat;*/
         bool _pre_allocated;
         static boost::mutex open_close_mutex;
         std::map<std::string, std::string> _options;
+        AVDictionary * _dict;
       };
     }
   }

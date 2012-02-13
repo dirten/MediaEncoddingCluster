@@ -288,6 +288,7 @@ namespace org {
           org::esb::lang::SharedObjectLoader * loader = new org::esb::lang::SharedObjectLoader(file);
           _shared_objects[file] = loader;
         } catch (org::esb::lang::NotFoundException & ex) {
+          LOGERROR("failed loading plugin:"<<file);
           LOGERROR(ex.what());
         }
       }

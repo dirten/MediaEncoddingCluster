@@ -69,6 +69,7 @@ namespace org {
        * @param mode
        */
       Codec::Codec(AVStream * s, int mode) {
+        _dict=NULL;
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         LOGWARN("!!!PLEASE DONT USE THIS CONSTRUCTOR!!!");
         ctx = s->codec;
@@ -89,17 +90,17 @@ namespace org {
           if (option->offset > 0) {
             /*jump over depricated options*/
             if (strcmp(option->name, "lpc_coeff_precision") == 0 ||
-                    strcmp(option->name, "prediction_order_method") == 0||
-                    strcmp(option->name, "min_partition_order") == 0||
-                    strcmp(option->name, "max_partition_order") == 0||
-                    strcmp(option->name, "lpc_type") == 0||
-                    strcmp(option->name, "drc_scale") == 0||
+                    strcmp(option->name, "prediction_order_method") == 0 ||
+                    strcmp(option->name, "min_partition_order") == 0 ||
+                    strcmp(option->name, "max_partition_order") == 0 ||
+                    strcmp(option->name, "lpc_type") == 0 ||
+                    strcmp(option->name, "drc_scale") == 0 ||
                     strcmp(option->name, "lpc_passes") == 0
                     )continue;
             int len = 1000;
             char data[1000];
             av_get_string(s->codec, option->name, NULL, data, len);
-            if (strlen(data) > 0) {
+            if (strlen(data) > 0&&atoi(data)>=0) {
               //LOGDEBUG("Setting Context Option "<<option->name<<"="<<data);
               _options[option->name] = std::string(data);
             } else {
@@ -117,6 +118,7 @@ namespace org {
       }
 
       Codec::Codec(int mode) : _mode(mode) {
+        _dict=NULL;
         //        logdebug("Codec::Codec()");
         ctx = avcodec_alloc_context();
         setContextDefaults();
@@ -130,6 +132,7 @@ namespace org {
       }
 
       Codec::Codec(std::string codec_name, int mode) {
+        _dict=NULL;
         _codec_resolved = false;
         _opened = false;
         _mode = mode;
@@ -150,6 +153,7 @@ namespace org {
       }
 
       Codec::Codec(const CodecID codecId, int mode) {
+        _dict=NULL;
         //        logdebug("Codec::Codec(const CodecID codecId=" << codecId << ", int mode=" << mode << ")");
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         _codec_resolved = false;
@@ -190,6 +194,7 @@ namespace org {
       int Codec::setCodecOption(std::string opt, std::string arg) {
         LOGTRACE("setCodecOption(" << opt << "," << arg << ")");
         _options[opt] = arg;
+        //av_dict_set(&_dict,opt.c_str(),arg.c_str(),0);
         return 0;
       }
 
@@ -224,6 +229,7 @@ namespace org {
       }
 
       void Codec::setContextDefaults() {
+        
         return;
         //        ctx->global_quality = 1000000;
         ctx->pix_fmt = (PixelFormat) 0;
@@ -372,7 +378,7 @@ namespace org {
       }
 
       bool Codec::open() {
-
+         //av_dict_set(&_dict,"test","bla",0);
         //        boost::mutex::scoped_lock scoped_lock(open_close_mutex);
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         ctx->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
@@ -390,28 +396,28 @@ namespace org {
           return false;
 
         }
-  if (getCodecType() == AVMEDIA_TYPE_VIDEO) {
-    if (_options.count("width"))
-      setWidth(atoi((*_options.find("width")).second.c_str()));
-    if (_options.count("height"))
-      setHeight(atoi((*_options.find("height")).second.c_str()));
-      setPixelFormat((PixelFormat) 0);
-    if (_codec->pix_fmts) {
-      setPixelFormat(_codec->pix_fmts[0]);
-    }
-  }
-  if (getCodecType() == AVMEDIA_TYPE_AUDIO) {
-    if (_codec->sample_fmts) {
-      setSampleFormat(_codec->sample_fmts[0]);
-    }
-  }
-        
+        if (getCodecType() == AVMEDIA_TYPE_VIDEO) {
+          if (_options.count("width"))
+            setWidth(atoi((*_options.find("width")).second.c_str()));
+          if (_options.count("height"))
+            setHeight(atoi((*_options.find("height")).second.c_str()));
+          setPixelFormat((PixelFormat) 0);
+          if (_codec->pix_fmts) {
+            setPixelFormat(_codec->pix_fmts[0]);
+          }
+        }
+        if (getCodecType() == AVMEDIA_TYPE_AUDIO) {
+          if (_codec->sample_fmts) {
+            setSampleFormat(_codec->sample_fmts[0]);
+          }
+        }
+
         /*setting special passlogfile for x264 encoder, 
          * because in mutlithreaded environment it overwrites 
          * the statistics file when this is not set to a value like thread id*/
-        
+        /*
         std::string passlogfile = getCodecOption("passlogfile");
-        LOGDEBUG("try setting passlogfile to:"<<passlogfile);
+        LOGDEBUG("try setting passlogfile to:" << passlogfile);
         if (getCodecId() == CODEC_ID_H264 && passlogfile.length() > 0) {
           if (_codec && _codec->priv_data_size) {
             if (!ctx->priv_data) {
@@ -420,7 +426,7 @@ namespace org {
               if (!ctx->priv_data) {
                 return false; //AVERROR(ENOMEM);
               }
-            }else{
+            } else {
               LOGDEBUG("private data allocated");
             }
             if (_codec->priv_class) {
@@ -431,24 +437,24 @@ namespace org {
 
           const AVOption *o = NULL;
           while ((o = av_next_option(ctx->priv_data, o))) {
-            LOGDEBUG("Option="<<o->name);
+            LOGDEBUG("Option=" << o->name);
             if (strcmp(o->name, "passlogfile") == 0) {
-              LOGDEBUG(o->name<<"="<<passlogfile.c_str());
+              LOGDEBUG(o->name << "=" << passlogfile.c_str());
               int ret = av_opt_set(ctx->priv_data, "passlogfile", passlogfile.c_str(), 0);
             }
           }
-        }
+        }*/
 
         //        if (findCodec(_mode)) {
         //          ctx = avcodec_alloc_context();
         //          setParams();
-        
+
         if (false && _codec->capabilities & CODEC_CAP_TRUNCATED) {
           ctx->flags = 0; // |= CODEC_FLAG_TRUNCATED;
           cout << "CodecCapTruncated" << endl;
         }
         std::map<std::string, std::string>::iterator opit = _options.begin();
-        for (; opit != _options.end(); opit++) {
+        for (; false&&opit != _options.end(); opit++) {
           std::string opt = (*opit).first;
           std::string arg = (*opit).second;
           //LOGTRACE("av_set_string3(" << opt << "," << arg << ")");
@@ -476,22 +482,22 @@ namespace org {
             optflags |= AV_OPT_FLAG_DECODING_PARAM;
           }
           int opt_types[] = {optflags, 0};
-          if(!_pre_allocated){
-          for (type = 0; type < 2 && ret >= 0; type++) {
-            //const AVOption *o2 = av_find_opt(ctx, opt.c_str(), NULL, opt_types[type], opt_types[type]);
-            const AVOption *o2 = av_find_opt(ctx, opt.c_str(), NULL, 0, 0);
-            if (o2 && (o2->flags & _mode || o2->flags == 0)) {
-              ret = av_set_string3(ctx, opt.c_str(), arg.c_str(), 1, &o);
-              LOGDEBUG("Set Codec param '" << arg << "' for option '" << opt << "' in " << (_mode == ENCODER ? "Encoder" : "Decoder"));
-              if (ret)
-                LOGDEBUG("Invalid value '" << arg << "' for option '" << opt << "' in " << (_mode == ENCODER ? "Encoder" : "Decoder"));
-            } else if (o2) {
-              //LOGDEBUG("Option found but something is wrong: " << opt.c_str())
-            } else {
-              //if(type==2)
-              LOGDEBUG("Option not found: " << opt.c_str())
+          if (!_pre_allocated) {
+            for (type = 0; type < 2 && ret >= 0; type++) {
+              //const AVOption *o2 = av_find_opt(ctx, opt.c_str(), NULL, opt_types[type], opt_types[type]);
+              const AVOption *o2 = av_find_opt(ctx, opt.c_str(), NULL, 0, 0);
+              if (o2 && (o2->flags & _mode || o2->flags == 0)) {
+                ret = av_set_string3(ctx, opt.c_str(), arg.c_str(), 1, &o);
+                LOGDEBUG("Set Codec param '" << arg << "' for option '" << opt << "' in " << (_mode == ENCODER ? "Encoder" : "Decoder"));
+                if (ret)
+                  LOGDEBUG("Invalid value '" << arg << "' for option '" << opt << "' in " << (_mode == ENCODER ? "Encoder" : "Decoder"));
+              } else if (o2) {
+                //LOGDEBUG("Option found but something is wrong: " << opt.c_str())
+              } else {
+                //if(type==2)
+                LOGDEBUG("Option not found: " << opt.c_str())
+              }
             }
-          }
           }
           if (o && ret != 0) {
             LOGDEBUG("Invalid value '" << arg << "' for option '" << opt << "' in " << (_mode == ENCODER ? "Encoder" : "Decoder"));
@@ -512,15 +518,28 @@ namespace org {
         }
 
         try {
-          ctx->thread_count=1;
-          if (avcodec_open(ctx, _codec) < 0) {
+          ctx->thread_count = 1;
+          std::map<std::string, std::string>::iterator opit = _options.begin();
+          for (;opit != _options.end(); opit++) {
+                av_dict_set(&_dict,(*opit).first.c_str(),(*opit).second.c_str(),0);
+          }
+          {
+           AVDictionaryEntry *t = NULL;
+           while ((t = av_dict_get(_dict, "", t, AV_DICT_IGNORE_SUFFIX)))
+             LOGDEBUG("Setting CodecDictionary Key:"<<t->key<<" val:"<<t->value);
+          }
+          if (avcodec_open2(ctx, _codec,&_dict) < 0) {
             LOGERROR("error in openning Codec (" << ctx->codec_id << ")");
           } else {
-            std::string codec_mode=(_mode == ENCODER)?"Encoder":"Decoder";
-            LOGDEBUG(codec_mode<<" opened:" << ctx->codec_id);
+            std::string codec_mode = (_mode == ENCODER) ? "Encoder" : "Decoder";
+            LOGDEBUG(codec_mode << " opened:" << ctx->codec_id);
             fifo = av_fifo_alloc(1024);
             _opened = true;
           }
+           AVDictionaryEntry *t = NULL;
+           while ((t = av_dict_get(_dict, "", t, AV_DICT_IGNORE_SUFFIX)))
+             LOGDEBUG("Invalid CodecDictionary Key:"<<t->key<<" val:"<<t->value);
+         //av_dict_set(dst, t->key, t->value, flags);
         } catch (...) {
           LOGERROR("Exception while openning Codec (" << ctx->codec_id << ")");
         }
@@ -539,7 +558,7 @@ namespace org {
 
       void Codec::close() {
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
-        
+
         if (_opened) {
           LOGTRACE("void Codec::close(" << this << ")");
           //LOGINFO("Closing codec ("<<ctx->codec_id<<")");
@@ -588,6 +607,7 @@ namespace org {
       void Codec::setTimeBase(int num, int den) {
         ctx->time_base.num = num;
         ctx->time_base.den = den;
+        setCodecOption("time_base",org::esb::util::StringUtil::toString(num)+"/"+org::esb::util::StringUtil::toString(den));
       }
 
       AVRational Codec::getTimeBase() {
@@ -709,13 +729,13 @@ namespace org {
         const AVOption *opt = NULL;
         while ((opt = av_next_option(ctx, opt)) != NULL) {
           if (strcmp(opt->name, "lpc_coeff_precision") == 0 ||
-                    strcmp(opt->name, "prediction_order_method") == 0||
-                    strcmp(opt->name, "min_partition_order") == 0||
-                    strcmp(opt->name, "max_partition_order") == 0||
-                    strcmp(opt->name, "lpc_type") == 0||
-                    strcmp(opt->name, "drc_scale") == 0||
-                    strcmp(opt->name, "lpc_passes") == 0
-                    )continue;
+                  strcmp(opt->name, "prediction_order_method") == 0 ||
+                  strcmp(opt->name, "min_partition_order") == 0 ||
+                  strcmp(opt->name, "max_partition_order") == 0 ||
+                  strcmp(opt->name, "lpc_type") == 0 ||
+                  strcmp(opt->name, "drc_scale") == 0 ||
+                  strcmp(opt->name, "lpc_passes") == 0
+                  )continue;
           int len = 1000;
           char data[1000];
           av_get_string(ctx, opt->name, NULL, data, len);

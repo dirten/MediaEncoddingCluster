@@ -269,6 +269,7 @@ target_link_libraries (mhive
   net
 #  rpc
   core
+  core_http
   ${Boost_LIBRARIES}
 #  log4cplus
 #  PocoNet

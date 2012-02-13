@@ -16,7 +16,7 @@
 #include "org/esb/config/config.h"
 namespace plugin {
 
-  DownloadTask::DownloadTask():Task() {
+  DownloadTask::DownloadTask() : Task() {
   }
 
   DownloadTask::~DownloadTask() {
@@ -26,11 +26,11 @@ namespace plugin {
     Task::prepare();
     _srcuristr = getContext()->getEnvironment<std::string > ("downloadtask.src");
     _trguristr = getContext()->getEnvironment<std::string > ("downloadtask.trg");
-    
+
     if (_trguristr.length() == 0) {
       _trguristr = getSink();
     }
-    
+
     std::string data = getContext()->getEnvironment<std::string > ("data");
     if (libjson::is_valid(data)) {
       JSONNode node = libjson::parse(data);
@@ -38,12 +38,12 @@ namespace plugin {
         _srcuristr = node["infile"].as_string();
       }
     }
-    if(_srcuristr.length()==0){
+    if (_srcuristr.length() == 0) {
       throw org::esb::core::TaskException("No Source File given!");
     }
     org::esb::io::File f(_srcuristr);
-    getContext()->set<std::string>("input.name", org::esb::util::StringUtil::replace(f.getFileName(), f.getExtension(),""));
-    getContext()->set<std::string>("input.ext", f.getExtension());
+    getContext()->set<std::string > ("input.name", org::esb::util::StringUtil::replace(f.getFileName(), f.getExtension(), ""));
+    getContext()->set<std::string > ("input.ext", f.getExtension());
 
     /*
     if(_trguristr.length()==0){
@@ -69,12 +69,12 @@ namespace plugin {
     setProgressLength(1);
     std::string base = org::esb::config::Config::get("hive.tmp_path");
     org::esb::io::File sfile(_srcuristr);
-    
-    if (sfile.exists()&&sfile.isFile()) {
-      org::esb::io::File tfile(base+"/jobs/"+getUUID()+"/"+_trguristr);
-      org::esb::io::File tdir(base+"/jobs/"+getUUID());
+
+    if (sfile.exists() && sfile.isFile()) {
+      org::esb::io::File tfile(base + "/jobs/" + getUUID() + "/" + _trguristr);
+      org::esb::io::File tdir(base + "/jobs/" + getUUID());
       tdir.mkdirs();
-      LOGDEBUG("copy srcfile "<<_srcuristr<<" to "<<base<<"/jobs/"<<getUUID()<<"/"<<_trguristr);
+      LOGDEBUG("copy srcfile " << _srcuristr << " to " << base << "/jobs/" << getUUID() << "/" << _trguristr);
       sfile.copyTo(tfile);
       setStatus(Task::DONE);
       setStatusMessage("File successful copied into the workspace");

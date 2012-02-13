@@ -18,7 +18,12 @@ SET(core_source
   GraphParser.cpp
   GraphException.cpp
   WebHookHandlerFactory.cpp
+  #http/Server.cpp
+  #http/HTTPServerRequest.cpp
+  #http/HTTPServerResponse.cpp
+  #http/RootRequestHandler.cpp
 )
+
 
 add_library (core SHARED
   ${core_source}
@@ -30,11 +35,11 @@ TARGET_LINK_LIBRARIES(core
   hive
   db
   util
+  core_http
   #${POCO_LIB_NET}
   #${POCO_LIB_XML}
   #${POCO_LIB_NET_UTIL}
   #${POCO_LIB_FOUNDATION}
-  core_http
 )
 
 SET_TARGET_PROPERTIES( core PROPERTIES PREFIX "libmhive-")

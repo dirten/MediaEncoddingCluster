@@ -60,21 +60,22 @@ int main(int argc, char** argv) {
   //org::esb::av::Encoder enc("libxvid");
 
   //enc.setCodecId(CODEC_ID_H264);
-  enc.setWidth(160);
-  enc.setHeight(120);
+  enc.setWidth(1600);
+  enc.setHeight(1200);
   enc.setGopSize(200);
 //  enc.setTimeBase(1000,23976);
   enc.setTimeBase(1,1);
   enc.setCodecOption("b","1024000");
+  //enc.setCodecOption("passlogfile","test.passlog");
   enc.setCodecOption("minrate","512000");
   enc.setCodecOption("coder","1");
-  enc.setCodecOption("flags","+loop");
+  enc.setCodecOption("flags","+loop+mv4+psnr");
   enc.setCodecOption("cmp","+chroma");
-  enc.setCodecOption("partitions","+parti8x8+parti4x4+partp8x8+partb8x8");
+  enc.setCodecOption("partitions","all");
   enc.setCodecOption("me_method","umh");
   enc.setCodecOption("subq","8");
   enc.setCodecOption("me_range","16");
-  enc.setCodecOption("g","250");
+  enc.setCodecOption("g","5");
   enc.setCodecOption("keyint_min","25");
   enc.setCodecOption("sc_threshold","40");
   enc.setCodecOption("i_qfactor","0.71");
@@ -84,11 +85,23 @@ int main(int argc, char** argv) {
   enc.setCodecOption("qmax","51");
   enc.setCodecOption("qdiff","4");
   enc.setCodecOption("bf","3");
-  enc.setCodecOption("refs","4");
+  enc.setCodecOption("refs","5");
   enc.setCodecOption("directpred","3");
   enc.setCodecOption("trellis","1");
-  enc.setCodecOption("flags2","+wpred+mixed_refs+dct8x8+fastpskip+mbtree");
+  enc.setCodecOption("mixed_refs","1");
+  enc.setCodecOption("wpred","1");
+  enc.setCodecOption("b-pyramid","1");
+  enc.setCodecOption("8x8dct","1");
+  enc.setCodecOption("coder","1");
+  //enc.setCodecOption("psnr","1");
+  
+  //enc.setCodecOption("flags2","+bpyramid+wpred+mixed_refs+dct8x8");
   enc.setCodecOption("wpredp","2");
+  enc.setCodecOption("level","5.1");
+  enc.setCodecOption("profile","high444");
+  enc.setCodecOption("tune","psnr");
+  //enc.setCodecOption("x264opts","verbose=1");
+  enc.setCodecOption("preset","veryslow");
   enc.setCodecOption("passlogfile","test.log");
   enc.setFlag(CODEC_FLAG_PASS1);
 

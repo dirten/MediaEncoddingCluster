@@ -47,6 +47,51 @@
 	    {"id":"minrate", "type":"int", "title":"Min. Bitrate","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"786","min":1,"max":10240}},
 	    {"id":"bt", "type":"int", "title":"Bitrate Tolerance","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"150","min":1,"max":2048}},
 	    {"id":"bufsize", "type":"int", "title":"Buffer Size","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"500","min":1,"max":4096}},
+	    {"id":"profile", "type":"string","title":"Profile","group":"picture_settings","unit":"pixel","persist":true,
+		"control":{
+		    "type":"ComboBox",
+		    "defaults":"main",
+		    "items":[
+			{"key":"Baseline","value":"baseline","data":[{"option":"bpyramid", "value":"0"},{"option":"bf", "value":"0"},{"option":"coder", "value":"0"}]},
+			{"key":"Main","value":"main","data":[{"option":"bpyramid", "value":"0"},{"option":"bf", "value":"0"},{"option":"coder", "value":"0"}]},
+			{"key":"High","value":"high","data":[{"option":"bpyramid", "value":"1"}],"enable":["bpyramid"]}
+		    ]
+		}
+	    },
+	    {"id":"preset", "type":"string","title":"Preset","group":"picture_settings","unit":"pixel","persist":true,
+		"control":{
+		    "type":"ComboBox",
+		    "defaults":"",
+		    "items":[
+			{"key":"No Preset","value":""},
+			{"key":"Ultrafast","value":"ultrafast"},
+			{"key":"Veryfast","value":"veryfast"},
+			{"key":"Faster","value":"faster"},
+			{"key":"Fast","value":"fast"},
+			{"key":"Medium","value":"medium"},
+			{"key":"Slow","value":"slow"},
+			{"key":"Slower","value":"slower"},
+			{"key":"Veryslow","value":"veryslow"},
+			{"key":"Placebo","value":"placebo"}
+		    ]
+		}
+	    },
+	    {"id":"tune", "type":"string","title":"Tune","group":"picture_settings","unit":"pixel","persist":true,
+		"control":{
+		    "type":"ComboBox",
+		    "defaults":"",
+		    "items":[
+			{"key":"No Tunning","value":""},
+			{"key":"Film","value":"film"},
+			{"key":"Grain","value":"grain"},
+			{"key":"Psnr","value":"psnr"},
+			{"key":"Ssim","value":"ssim"},
+			{"key":"Fastdecode","value":"fastdecode"},
+			{"key":"Zerolatency","value":"zerolatency"},
+			{"key":"TouHou","value":"touhou"}
+		    ]
+		}
+	    },
 	    {"id":"cqp", "type":"int", "title":"CQP (Constant Quantizer)","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"6","min":0,"max":51}},
 	    {"id":"crf", "type":"int", "title":"CRF (Constant Quality)","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"23","min":0,"max":51}},
 	    {"id":"qmin", "type":"int", "title":"Min. Quantizer","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"10","min":0,"max":51}},
