@@ -43,6 +43,13 @@
         <include>**/*.lib</include>
       </includes>
     </fileSet>
+    <fileSet>
+      <directory>source/build/ffmpeg/bin</directory>
+      <outputDirectory>bin</outputDirectory>
+      <includes>
+        <include>**/ffmpeg*</include>
+      </includes>
+    </fileSet>
 <!--    <fileSet>
       <directory>source/build/ffmpeg/bin</directory>
       <outputDirectory>bin</outputDirectory>
