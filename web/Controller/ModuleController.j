@@ -144,7 +144,7 @@ ModuleTypeTab = @"tab";
         currentModuleController  = [self _loadLocalizedModuleController:bundleLocale forBundle:aBundle];
         CPLog.debug("currentModuleController  "+currentModuleController  );
         //[currentModuleController setToolbarItemOnly:NO];
-        [[currentModuleController view] setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        //[[currentModuleController view] setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         //[[currentModuleController view] setBackgroundColor:_toolbarModuleBackgroundColor];
         [moduleToolbarItem setTarget:self];
         [moduleToolbarItem setAction:@selector(didToolbarModuleClicked:)];
@@ -291,7 +291,7 @@ ModuleTypeTab = @"tab";
 
     if (module != oldModule)
     {
-        CPLog.debug("click module 123"+module);
+        CPLog.debug("click module "+module);
         /*
         var bounds          = [_mainModuleView bounds],
             moduleBundle    = [module bundle],
@@ -300,14 +300,18 @@ ModuleTypeTab = @"tab";
         [sender setImage:[[CPImage alloc] initWithContentsOfFile:iconPath size:CPSizeMake(32,32)]];
         */
         [[module view] setFrame:[_mainModuleView bounds]];
+        CPLog.debug("click module 1"+module);
         //[module willShow];
 
         [_mainModuleView addSubview:[module view]];
+        CPLog.debug("click module 2"+module);
 
         _currentToolbarModule   = module;
         _currentToolbarItem     = sender;
+        CPLog.debug("click module 3"+module);
 
         [_mainToolbar selectToolbarItem:sender];
+        CPLog.debug("click module ready");
     }
 }
 @end

@@ -508,8 +508,13 @@ namespace org {
         }
         //setFlag(CODEC_FLAG_PSNR);
         if (_codec && _codec->type & AVMEDIA_TYPE_AUDIO) {
-          setTimeBase(1, ctx->sample_rate);
-        }
+           AVDictionaryEntry *t = NULL;
+           t = av_dict_get(_dict, "ar", t, AV_DICT_IGNORE_SUFFIX);
+           if(t){
+          setTimeBase(1, atoi(t->value));
+           }else{
+             LOGERROR("no sample_rate found for audio codec");
+           }        }
         if (_codec && _codec->type == AVMEDIA_TYPE_VIDEO) {
           if (_frame_rate.num == 0 && _frame_rate.den == 0) {
             _frame_rate.num = ctx->time_base.den;

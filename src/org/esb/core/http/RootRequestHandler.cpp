@@ -32,8 +32,15 @@ namespace org {
             if(file.exists()){
               org::esb::io::FileInputStream fis(&file);
               fis.read(data);
-              if(file.getPath().find("js")!= string::npos){
-                response.setContentType("text/plain");
+              LOGDEBUG("Jspos:"<<file.getExtension());
+              if(file.getExtension().find("js")!= string::npos){
+                response.setContentType("application/javascript");
+              }else if(file.getExtension().find("png")!= string::npos){
+                response.setContentType("image/png");
+              }else if(file.getExtension().find("html")!= string::npos){
+                response.setContentType("text/html");
+              }else{
+                response.setContentType("text/plain");      
               }
             }else{
               response.setStatusAndReason(response.HTTP_NOT_FOUND,"Resource not found");
@@ -41,7 +48,6 @@ namespace org {
           }else{
             LOGDEBUG("Path is not in the Docroot");
           }
-          response.setContentType("text/html");
           //response.setContentType("application/json");
           std::ostream& ostr = response.send();
           ostr << data;
