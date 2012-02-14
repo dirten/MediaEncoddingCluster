@@ -79,6 +79,7 @@ namespace org {
         LOGTRACEMETHOD("Convert Frame");
 
         LOGDEBUG(in_frame.toString());
+        LOGDEBUG(out_frame.toString());
         if (_dec->getCodecType() == AVMEDIA_TYPE_VIDEO) {
           
           if (doDeinterlaceFrame(in_frame, in_frame)) {
@@ -102,6 +103,9 @@ namespace org {
       }
 
       void FrameConverter::rescaleTimestamp(Frame & in_frame, Frame & out_frame) {
+        LOGDEBUG("Rescale timestamp");
+        LOGDEBUG("Decoder:"<<_dec->toString());
+        //LOGDEBUG("Encoder:"<<_enc->getTimeBase());
 #ifdef USE_TIME_BASE_Q
         out_frame.setTimeBase(in_frame.getTimeBase());
         out_frame.setPts(in_frame.getPts());
@@ -118,6 +122,7 @@ namespace org {
         //if(_enc->getCodecType()==CODEC_TYPE_AUDIO)
         //out_frame.setDuration(_enc->getTimeBase().num);
 #endif
+        LOGDEBUG("Rescale timestamp ready");
       }
 
       void FrameConverter::setDeinterlace(bool deinterlace) {

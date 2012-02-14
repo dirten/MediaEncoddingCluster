@@ -506,12 +506,18 @@ namespace org {
             //LOGWARN("Option not found:" << opt);
           }
         }
+        {
+          std::map<std::string, std::string>::iterator opit = _options.begin();
+          for (;opit != _options.end(); opit++) {
+                av_dict_set(&_dict,(*opit).first.c_str(),(*opit).second.c_str(),0);
+          }
+        }
         //setFlag(CODEC_FLAG_PSNR);
         if (_codec && _codec->type & AVMEDIA_TYPE_AUDIO) {
            AVDictionaryEntry *t = NULL;
            t = av_dict_get(_dict, "ar", t, AV_DICT_IGNORE_SUFFIX);
            if(t){
-          setTimeBase(1, atoi(t->value));
+             setTimeBase(1, atoi(t->value));
            }else{
              LOGERROR("no sample_rate found for audio codec");
            }        }
@@ -524,14 +530,10 @@ namespace org {
 
         try {
           ctx->thread_count = 1;
-          std::map<std::string, std::string>::iterator opit = _options.begin();
-          for (;opit != _options.end(); opit++) {
-                av_dict_set(&_dict,(*opit).first.c_str(),(*opit).second.c_str(),0);
-          }
           {
            AVDictionaryEntry *t = NULL;
            while ((t = av_dict_get(_dict, "", t, AV_DICT_IGNORE_SUFFIX)))
-             LOGDEBUG("Setting CodecDictionary Key:"<<t->key<<" val:"<<t->value);
+             LOGDEBUG((_mode == ENCODER ? "Encoder" : "Decoder")<<"Setting CodecDictionary Key:"<<t->key<<" val:"<<t->value);
           }
           if (avcodec_open2(ctx, _codec,&_dict) < 0) {
             LOGERROR("error in openning Codec (" << ctx->codec_id << ")");
@@ -543,7 +545,7 @@ namespace org {
           }
            AVDictionaryEntry *t = NULL;
            while ((t = av_dict_get(_dict, "", t, AV_DICT_IGNORE_SUFFIX)))
-             LOGDEBUG("Invalid CodecDictionary Key:"<<t->key<<" val:"<<t->value);
+             LOGDEBUG((_mode == ENCODER ? "Encoder" : "Decoder")<<"Invalid CodecDictionary Key:"<<t->key<<" val:"<<t->value);
          //av_dict_set(dst, t->key, t->value, flags);
         } catch (...) {
           LOGERROR("Exception while openning Codec (" << ctx->codec_id << ")");
@@ -642,6 +644,7 @@ namespace org {
 
       void Codec::setSampleRate(int rate) {
         ctx->sample_rate = rate;
+        setCodecOption("ar", org::esb::util::StringUtil::toString(rate));
       }
 
       void Codec::setSampleFormat(AVSampleFormat f) {
