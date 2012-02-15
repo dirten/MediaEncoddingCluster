@@ -133,6 +133,7 @@ ENDIF(WIN32)
 add_executable (info info.cpp)
 add_executable (pu pu.cpp)
 add_executable (pc PacketCount.cpp)
+#add_executable (testclass TestNewClass.cpp)
 
 add_executable (mytest test.cpp)
 

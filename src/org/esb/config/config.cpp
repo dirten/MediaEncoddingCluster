@@ -62,7 +62,7 @@ void Config::close() {
 bool Config::init() {
   if(!_isInitialized){
   properties = new Properties();
-  loadDefaults(properties);
+  //loadDefaults(properties);
   }
   _isInitialized=true;
   //loadFromDb();

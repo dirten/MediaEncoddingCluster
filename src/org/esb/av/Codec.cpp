@@ -530,6 +530,9 @@ namespace org {
 
         try {
           ctx->thread_count = 1;
+          setCodecOption("threads","1");
+          av_dict_set(&_dict,"threads","1",0);
+          av_dict_set(&_dict,"thread_type","0",0);
           {
            AVDictionaryEntry *t = NULL;
            while ((t = av_dict_get(_dict, "", t, AV_DICT_IGNORE_SUFFIX)))
@@ -539,7 +542,8 @@ namespace org {
             LOGERROR("error in openning Codec (" << ctx->codec_id << ")");
           } else {
             std::string codec_mode = (_mode == ENCODER) ? "Encoder" : "Decoder";
-            LOGDEBUG(codec_mode << " opened:" << ctx->codec_id);
+            LOGDEBUG(codec_mode << " opened:" << ctx->codec_id<<"("<<this<<")");
+            LOGDEBUG("CodecThreadCount="<<ctx->thread_count);
             fifo = av_fifo_alloc(1024);
             _opened = true;
           }
@@ -550,6 +554,8 @@ namespace org {
         } catch (...) {
           LOGERROR("Exception while openning Codec (" << ctx->codec_id << ")");
         }
+
+
         return _opened;
         //        }
         //        return -1;
@@ -567,12 +573,13 @@ namespace org {
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
 
         if (_opened) {
-          LOGTRACE("void Codec::close(" << this << ")");
+          LOGTRACE(((_mode == ENCODER) ? "Encoder" : "Decoder")<<" Codec::close(" << this << ")");
           //LOGINFO("Closing codec ("<<ctx->codec_id<<")");
           if (ctx) {
             if (ctx->extradata_size > 0 && !_pre_allocated) {
               av_freep(&ctx->extradata);
             }
+            //ctx->thread_count = 1;
             avcodec_close(ctx);
           }
           //          LOGDEBUG( "recently fifo size:" << av_fifo_size(fifo));

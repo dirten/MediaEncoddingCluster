@@ -299,6 +299,8 @@ ModuleTypeTab = @"tab";
 
         [sender setImage:[[CPImage alloc] initWithContentsOfFile:iconPath size:CPSizeMake(32,32)]];
         */
+        var myview=[module view];
+        CPLog.debug("click module 1/2"+module);
         [[module view] setFrame:[_mainModuleView bounds]];
         CPLog.debug("click module 1"+module);
         //[module willShow];

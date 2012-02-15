@@ -77,7 +77,7 @@ namespace org {
         while (socket->isConnected()) {
           //		logdebug("ProtocolServer::run()::while(!socket->isClosed())")
           //#ifndef DEBUG
-          //try {
+          try {
             //#endif
             string cmd;
             int dataLength = socket->getInputStream()->read(cmd);
@@ -111,13 +111,13 @@ namespace org {
               LOGERROR("unknown command" << command);
             }
             //#ifndef DEBUG
-            /*
+
           } catch (exception & ex) {
             LOGERROR("ERROR in ProtocolServer:" << ex.what());
             break;
             //      socket->close();
             //			cout << "ERROR in ProtocolServer:" << ex.what () << endl;
-          }*/
+          }
           //#endif
         }
         LOGINFO("client leave the cluster");

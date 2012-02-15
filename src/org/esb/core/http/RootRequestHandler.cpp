@@ -46,7 +46,8 @@ namespace org {
               response.setStatusAndReason(response.HTTP_NOT_FOUND,"Resource not found");
             }
           }else{
-            LOGDEBUG("Path is not in the Docroot");
+            response.setStatusAndReason(response.HTTP_NOT_FOUND,"Resource not found");
+            LOGDEBUG("Path "<<file.getPath()<<"is not in the Docroot"<<doc_root);
           }
           //response.setContentType("application/json");
           std::ostream& ostr = response.send();

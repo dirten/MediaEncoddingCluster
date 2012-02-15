@@ -19,8 +19,8 @@ namespace org {
           _params=new Poco::Net::HTTPServerParams();
           _params->setMaxQueued(100);
           _params->setMaxThreads(16);
-          std::istringstream iss (std::string("<test/>"),std::istringstream::in);
-          Poco::AutoPtr<Poco::Util::XMLConfiguration> conf = new Poco::Util::XMLConfiguration(iss);
+          //std::istringstream iss (std::string("<test/>"),std::istringstream::in);
+          //Poco::AutoPtr<Poco::Util::XMLConfiguration> conf = new Poco::Util::XMLConfiguration(iss);
 
         }
         

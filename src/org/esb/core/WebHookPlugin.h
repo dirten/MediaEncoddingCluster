@@ -34,7 +34,7 @@ namespace org {
 #define POST "POST"
 #define PUT "PUT"
 #ifdef DELETE
-  #undef DELETE
+#undef DELETE
 #endif
 #define DELETE "DELETE"
 #define HEAD "HEAD"
@@ -45,22 +45,22 @@ namespace org {
 //#define UNIQUE(x) UNIQUE1(x,__COUNTER__)
 //#define CLAZZ UNIQUE(Register##clazz) 
 #define REGISTER_WEB_HOOK(url,method,clazz) \
-	class Register##clazz : public org::esb::core::WebHookFactory \
-	        { \
-	                public: \
-                                Register##clazz(){ \
-                                        std::string tmpname=#clazz; \
-                                        org::esb::core::PluginRegistry::getInstance()->registerWebHookFactory(tmpname, this); \
-                                } \
-                                org::esb::core::WebHookPlugin* create() { \
-                                        return static_cast<org::esb::core::WebHookPlugin*>(new clazz()); \
-                                } \
-                                org::esb::core::OptionsDescription getOptionsDescription() { \
-                                        return Ptr<org::esb::core::WebHookPlugin>(new clazz())->getOptionsDescription(); \
-                                } \
-                                std::string getUrl(){return url;} \
-                                std::string getMethod(){return method;} \
-	        } Register##clazz##Instance;
+  class Register##clazz : public org::esb::core::WebHookFactory \
+{ \
+  public: \
+  Register##clazz(){ \
+    std::string tmpname=#clazz; \
+    org::esb::core::PluginRegistry::getInstance()->registerWebHookFactory(tmpname, this); \
+  } \
+  org::esb::core::WebHookPlugin* create() { \
+    return static_cast<org::esb::core::WebHookPlugin*>(new clazz()); \
+  } \
+  org::esb::core::OptionsDescription getOptionsDescription() { \
+    return Ptr<org::esb::core::WebHookPlugin>(new clazz())->getOptionsDescription(); \
+  } \
+  std::string getUrl(){return url;} \
+  std::string getMethod(){return method;} \
+  } Register##clazz##Instance;
 
 
 #endif	/* HOOKPLUGIN_H */

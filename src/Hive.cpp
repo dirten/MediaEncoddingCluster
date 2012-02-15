@@ -124,8 +124,14 @@ int main(int argc, char * argv[]) {
   std::istream& t = session.receiveResponse(res);
   std::cout << res.getStatus();
    */
-  org::esb::io::File f(argv[0]);
-  std::string base_path = org::esb::io::File(f.getParent()).getParent();
+  std::string base_path;
+  if(config::Config::get("hive.base_path").length()){
+    base_path=config::Config::get("hive.base_path");
+  }else{
+    org::esb::io::File f(argv[0]);
+    base_path = org::esb::io::File(f.getParent()).getParent();
+  }
+  std::cout << "BasePath="<<base_path<<std::endl;
   //log4cplus::BasicConfigurator::doConfigure();
 
   config::Config::setProperty("hive.base_path", base_path);
@@ -135,8 +141,8 @@ int main(int argc, char * argv[]) {
     po::options_description gen("General options");
     unsigned int cpu_count = Process::getCpuCount();
     gen.add_options()
-            ("help", "produce this message")
-            ("version", "Prints the Version");
+        ("help", "produce this message")
+        ("version", "Prints the Version");
     /*
             ("debug", "switch of the StackDumper and logging goes to the console instead of file")
             ("loglevel", po::value<std::string > ()->default_value("fatal"), "setting the loglevel for this process");**/
@@ -149,8 +155,8 @@ int main(int argc, char * argv[]) {
      */
     po::options_description ser("Server options");
     ser.add_options()
-            //("daemon,d", "start the Hive as Daemon Process")
-            ("run,r", "start the Hive as Console Process");
+        //("daemon,d", "start the Hive as Daemon Process")
+        ("run,r", "start the Hive as Console Process");
     /*
             ("auto,a", "start the Hive as Console Process with automatic Client/Server resolving")
             ("base,b", po::value<std::string > ()->default_value(base_path), "defining a base path")
@@ -160,7 +166,7 @@ int main(int argc, char * argv[]) {
     po::options_description cli("Client options");
 
     cli.add_options()
-            ("client,i", "start the Hive Client");
+        ("client,i", "start the Hive Client");
     /*
             ("host,h", po::value<std::string > ()->default_value("auto"), "Host to connect")
             ("partition", po::value<std::string > ()->default_value("global"), "assigned partition")
@@ -182,19 +188,19 @@ int main(int argc, char * argv[]) {
                 ("test", "test function")
                 ;
      */
-        po::options_description priv("");
-        priv.add_options()
-                ("erlang", "")
-                ("console,c", "")
-                ("quiet", "")
-                ;
+    po::options_description priv("");
+    priv.add_options()
+        ("erlang", "")
+        ("console,c", "")
+        ("quiet", "")
+        ;
     po::options_description all("all");
     setupDefaults();
     setupConfig();
     checkDirs();
     //log4cplus::spi::AppenderFactoryRegistry& reg = log4cplus::spi::getAppenderFactoryRegistry();
     //REG_APPENDER (reg, ConsoleAppender);
-    log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT(config::Config::get("hive.base_path") + "/res/logging.properties"));
+    log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT(config::Config::get("hive.config_path") + "/logging.properties"));
     log4cplus::helpers::Properties & props = const_cast<log4cplus::helpers::Properties&> (config.getProperties());
     props.setProperty(LOG4CPLUS_TEXT("appender.MAIN.File"), LOG4CPLUS_TEXT(config::Config::get("log.path") + "/mhive-debug.log"));
     props.setProperty(LOG4CPLUS_TEXT("appender.ERROR.File"), LOG4CPLUS_TEXT(config::Config::get("log.path") + "/mhive-error.log"));
@@ -207,7 +213,7 @@ int main(int argc, char * argv[]) {
     //LOGDEBUG("UserDataPath=" << config::Config::get("hive.user_path"))
     //org::esb::util::LogConfigurator * lconfig=new org::esb::util::LogConfigurator();
     //lconfig->configure();
-    //LoggerConfig();  
+    //LoggerConfig();
     //log4cplus::BasicConfigurator::doConfigure();
     //Log::open(base_path+"/res");
     //LOGDEBUG("configure Log opened");
@@ -483,9 +489,9 @@ int main(int argc, char * argv[]) {
   //CodecFactory::free();
   Messenger::free();
   LOGINFO("MHive is not running anymore!!!")
-          //Log::close();
+      //Log::close();
 
-  return 0;
+      return 0;
 }
 
 
@@ -575,7 +581,7 @@ void checkDirs() {
   org::esb::io::File logdir(config::Config::get("log.path"));
   if (!logdir.exists())
     logdir.mkdir();
-  
+
   org::esb::io::File graphdir(config::Config::get("hive.graph_path"));
   if (!graphdir.exists())
     graphdir.mkdir();

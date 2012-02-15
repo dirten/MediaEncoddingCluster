@@ -38,7 +38,7 @@ namespace jobexecutor {
     };
     STATUS _status;
     db::Job * _job;
-    Ptr<org::esb::core::Task> _current_task;
+    //Ptr<org::esb::core::Task> _current_task;
     void actualizeProgress(org::esb::core::Graph *);
     //org::esb::core::Graph _current_graph;
   };

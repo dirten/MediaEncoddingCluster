@@ -1,7 +1,7 @@
 /* 
  * File:   Graph.cpp
  * Author: jhoelscher
- * 
+ *
  * Created on 11. Dezember 2011, 15:14
  */
 #include "Graph.h"
@@ -18,8 +18,8 @@ namespace org {
   namespace esb {
     namespace core {
 
-     // Graph::Graph() {
-     // }
+      // Graph::Graph() {
+      // }
 
       Graph::Graph(std::string graph) {
         throw GraphException("Constructor not supported", "-1");
@@ -61,18 +61,18 @@ namespace org {
         _state = EXECUTE;
 
         foreach(Ptr<Graph::Element> el, elements) {
-          if (_isCanceled)return;
-          if (el->getParents().size() == 0) {
-            execute(el);
+            if (_isCanceled)return;
+            if (el->getParents().size() == 0) {
+                execute(el);
+              }
           }
-        }
         if (haserror) {
-          _state = DONE_WITH_ERROR;
-        } else if (_isCanceled) {
-          _state = CANCELED;
-        } else {
-          _state = DONE;
-        }
+            _state = DONE_WITH_ERROR;
+          } else if (_isCanceled) {
+            _state = CANCELED;
+          } else {
+            _state = DONE;
+          }
       }
 
       void Graph::execute(Ptr<Element> e) {
@@ -88,45 +88,45 @@ namespace org {
         status_list.back()->message = "";
         try {
           Ptr<org::esb::core::Task>task = e->task;
-            _current_task = task;
-            task->setUUID(_uuid);
+          _current_task = task;
+          task->setUUID(_uuid);
 
-            task->addProgressObserver(boost::bind(&Graph::setProgress, this, _1));
-            task->addStatusObserver(boost::bind(&Graph::setStatus, this, _1));
+          task->addProgressObserver(boost::bind(&Graph::setProgress, this, _1));
+          task->addStatusObserver(boost::bind(&Graph::setStatus, this, _1));
 
-            task->setSink(org::esb::util::PUUID());
-            task->prepare();
-            //exec.push_back(JSONNode("status", "prepared"));
+          task->setSink(org::esb::util::PUUID());
+          task->prepare();
+          //exec.push_back(JSONNode("status", "prepared"));
 
 
-            //status.push_back(exec);
+          //status.push_back(exec);
 
-            //exec.push_back(JSONNode("status", "running"));
-            //go(Graph::setProgress,this,task,s);
-            //boost::thread(boost::bind(&Graph::setProgress,this,task,s));
-            task->execute();
-            //s->progress="100";
-            //exec.push_back(JSONNode("status", "cleanup"));
+          //exec.push_back(JSONNode("status", "running"));
+          //go(Graph::setProgress,this,task,s);
+          //boost::thread(boost::bind(&Graph::setProgress,this,task,s));
+          task->execute();
+          //s->progress="100";
+          //exec.push_back(JSONNode("status", "cleanup"));
 
-            task->cleanup();
-            status_list.back()->message = "Completed";
-            //setStatus(e->task.get());
-            //exec.push_back(JSONNode("status", "finished"));
+          task->cleanup();
+          status_list.back()->message = "Completed";
+          //setStatus(e->task.get());
+          //exec.push_back(JSONNode("status", "finished"));
 
-            //status_list.remove(s);
-            //s["status"] = "finished";
-            //status_list.push_back(s);
-            //setProgress(task,s);
+          //status_list.remove(s);
+          //s["status"] = "finished";
+          //status_list.push_back(s);
+          //setProgress(task,s);
           processedStepCount++;
           setStatus(e->task.get());
 
           if (e->task->getStatus() != org::esb::core::Task::ERROR) {
-            foreach(Ptr<Graph::Element> el, e->getChilds()) {
-              el->task->setSource(e->task->getSink());
-              el->task->getContext()->merge(e->task->getContext());
-              execute(el);
+              foreach(Ptr<Graph::Element> el, e->getChilds()) {
+                  el->task->setSource(e->task->getSink());
+                  el->task->getContext()->merge(e->task->getContext());
+                  execute(el);
+                }
             }
-          }
         } catch (org::esb::core::TaskException & ex) {
           status_list.back()->message = "";
           status_list.back()->exception = ex.displayText();
@@ -159,21 +159,21 @@ namespace org {
           statusObserver(this);
         //status_list.remove(s);
         //s[key] = val;
-        //status_list.push_back(s);       
+        //status_list.push_back(s);
       }
 
       std::string Graph::getStatus() {
         JSONNode node(JSON_NODE);
 
         foreach(Ptr<Status> s, status_list) {
-          JSONNode n(JSON_NODE);
-          n.set_name(s->uid);
-          n.push_back(JSONNode("status", s->status));
-          n.push_back(JSONNode("progress", s->progress));
-          n.push_back(JSONNode("message", s->message));
-          n.push_back(JSONNode("exception", s->exception));
-          node.push_back(n);
-        }
+            JSONNode n(JSON_NODE);
+            n.set_name(s->uid);
+            n.push_back(JSONNode("status", s->status));
+            n.push_back(JSONNode("progress", s->progress));
+            n.push_back(JSONNode("message", s->message));
+            n.push_back(JSONNode("exception", s->exception));
+            node.push_back(n);
+          }
         //status.preparse();
         return node.write_formatted();
       }
@@ -185,11 +185,11 @@ namespace org {
         job.update();
 
         foreach(Ptr<Graph::Element> el, els) {
-          //LOGDEBUG("childsize:"<<el.linksTo.size());
-          if (el->getParents().size() == 0) {
-            processElement(el, job);
+            //LOGDEBUG("childsize:"<<el.linksTo.size());
+            if (el->getParents().size() == 0) {
+                processElement(el, job);
+              }
           }
-        }
         db->commit();
       }
 
@@ -205,8 +205,8 @@ namespace org {
         job.tasks().link(task);
 
         foreach(Ptr<Graph::Element> e, el->getChilds()) {
-          processElement(e, job);
-        }
+            processElement(e, job);
+          }
       }
 
       void Graph::addElement(Ptr<Task> element) {
