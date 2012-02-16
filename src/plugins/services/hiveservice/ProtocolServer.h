@@ -1,9 +1,9 @@
 #ifndef ORG_ESB_HIVE_PROTOCOLLSERVER_H
 #define ORG_ESB_HIVE_PROTOCOLLSERVER_H
 #include <iostream>
-#include "org/esb/lang/Runnable.h"
-#include "org/esb/net/TcpSocket.h"
-#include "org/esb/util/StringUtil.h"
+//#include "org/esb/lang/Runnable.h"
+//#include "org/esb/net/TcpSocket.h"
+//#include "org/esb/util/StringUtil.h"
 #include "ProtocolCommand.h"
 //#include "Command.h"
 //#include "CommandInputStream.h"
@@ -12,22 +12,23 @@
 #include <list>
 
 using namespace std;
-using namespace org::esb::net;
+using namespace org::esb;
 using namespace org::esb::lang;
 namespace org {
   namespace esb {
+    namespace net{
+      class TcpSocket;
+    }
     namespace plugin {
 
-      classlogger("org.esb.plugin.ProtocolServer")
-      class ProtocolServer : public Runnable {
+      classlogger("org.esb.plugin.ProtocolServer");
+      class ProtocolServer {
       private:
-        TcpSocket * socket;
+        net::TcpSocket * socket;
         list<ProtocolCommand*> l;
-        //CommandInputStream * _cis;
-        //		    pthread_mutex_t * mutex;
       public:
         ~ProtocolServer();
-        ProtocolServer(TcpSocket * socket);
+        ProtocolServer(net::TcpSocket * socket);
         void run();
         void close();
       };

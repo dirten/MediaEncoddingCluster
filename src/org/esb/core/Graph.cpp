@@ -18,8 +18,8 @@ namespace org {
   namespace esb {
     namespace core {
 
-      // Graph::Graph() {
-      // }
+      Graph::Graph() {
+      }
 
       Graph::Graph(std::string graph) {
         throw GraphException("Constructor not supported", "-1");
@@ -52,8 +52,13 @@ namespace org {
       }
 
       void Graph::cancel() {
-        if (_current_task)
-          _current_task->cancel();
+        LOGDEBUG("Graph will be canceled");
+        if (_current_task){
+            LOGDEBUG("Task signaled to cancel");
+            _current_task->cancel();
+          }else{
+            LOGDEBUG("no current task to cancel");
+          }
         _isCanceled = true;
       }
 
@@ -61,7 +66,7 @@ namespace org {
         _state = EXECUTE;
 
         foreach(Ptr<Graph::Element> el, elements) {
-            if (_isCanceled)return;
+            //if (_isCanceled)return;
             if (el->getParents().size() == 0) {
                 execute(el);
               }
@@ -77,7 +82,7 @@ namespace org {
 
       void Graph::execute(Ptr<Element> e) {
         LOGDEBUG("Context:" << e->task->getContext()->toString());
-
+        if(_isCanceled)return;
         //KeyValue s;//=new KeyValue();
         Ptr<Status> s(new Status());
         //s->progress="0";
@@ -87,15 +92,15 @@ namespace org {
         s->uid = e->id;
         status_list.back()->message = "";
         try {
-          Ptr<org::esb::core::Task>task = e->task;
-          _current_task = task;
-          task->setUUID(_uuid);
+          _current_task = e->task;
+          //_current_task = task;
+          _current_task->setUUID(_uuid);
 
-          task->addProgressObserver(boost::bind(&Graph::setProgress, this, _1));
-          task->addStatusObserver(boost::bind(&Graph::setStatus, this, _1));
+          _current_task->addProgressObserver(boost::bind(&Graph::setProgress, this, _1));
+          _current_task->addStatusObserver(boost::bind(&Graph::setStatus, this, _1));
 
-          task->setSink(org::esb::util::PUUID());
-          task->prepare();
+          _current_task->setSink(org::esb::util::PUUID());
+          _current_task->prepare();
           //exec.push_back(JSONNode("status", "prepared"));
 
 
@@ -104,11 +109,11 @@ namespace org {
           //exec.push_back(JSONNode("status", "running"));
           //go(Graph::setProgress,this,task,s);
           //boost::thread(boost::bind(&Graph::setProgress,this,task,s));
-          task->execute();
+          _current_task->execute();
           //s->progress="100";
           //exec.push_back(JSONNode("status", "cleanup"));
 
-          task->cleanup();
+          _current_task->cleanup();
           status_list.back()->message = "Completed";
           //setStatus(e->task.get());
           //exec.push_back(JSONNode("status", "finished"));
@@ -118,9 +123,9 @@ namespace org {
           //status_list.push_back(s);
           //setProgress(task,s);
           processedStepCount++;
-          setStatus(e->task.get());
+          setStatus(_current_task.get());
 
-          if (e->task->getStatus() != org::esb::core::Task::ERROR) {
+          if (_current_task->getStatus() != org::esb::core::Task::ERROR) {
               foreach(Ptr<Graph::Element> el, e->getChilds()) {
                   el->task->setSource(e->task->getSink());
                   el->task->getContext()->merge(e->task->getContext());

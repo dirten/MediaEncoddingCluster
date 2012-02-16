@@ -33,8 +33,8 @@ namespace jobexecutor {
 
   void Service::onMessage(org::esb::signal::Message &msg) {
     if (msg.getProperty<std::string > ("jobexecutor") == "STOP_JOB") {
-      LOGDEBUG("STOP_JOB request");
-      //_current_graph.cancel();
+      LOGDEBUG("STOP_JOB request try cancel graph");
+      _current_graph.cancel();
     }
   }
 
@@ -101,9 +101,9 @@ namespace jobexecutor {
             list.push_back(element.second);
           }
           _job = &job;
-          org::esb::core::Graph graph(list, job.uuid);
+          _current_graph=org::esb::core::Graph(list, job.uuid);
           //_current_graph=graph;
-          graph.addStatusObserver(boost::bind(&Service::actualizeProgress, this, _1));
+          _current_graph.addStatusObserver(boost::bind(&Service::actualizeProgress, this, _1));
           //go(Service::actualizeProgress, this, &graph,job);
 
           job.status = job.Status.Processing;
@@ -112,11 +112,11 @@ namespace jobexecutor {
            * need to simply walk/execute the graph here and not int the graph class,
            * this should be needed to keep the graph class clean from any database access
            */
-          graph.run();
+          _current_graph.run();
           //actualizeProgress(&graph, job);
-          if (graph.getState() == org::esb::core::Graph::DONE)
+          if (_current_graph.getState() == org::esb::core::Graph::DONE)
             job.status = job.Status.Completed;
-          if (graph.getState() == org::esb::core::Graph::DONE_WITH_ERROR)
+          if (_current_graph.getState() == org::esb::core::Graph::DONE_WITH_ERROR)
             job.status = job.Status.CompletedWithError;
           job.update();
         } catch (org::esb::core::GraphException & ex) {

@@ -1,7 +1,7 @@
 /* 
  * File:   Partition.cpp
  * Author: HoelscJ
- * 
+ *
  * Created on 28. Oktober 2011, 10:04
  */
 
@@ -17,6 +17,13 @@ namespace partitionservice {
   }
 
   Partition::~Partition() {
+  }
+
+  void Partition::clear() {
+    foreach(Stream s, _streams) {
+      s.clear();
+    }
+    _streams.clear();
   }
 
   void Partition::addStream(Stream s) {
@@ -37,7 +44,7 @@ namespace partitionservice {
   /**
    * @TODO: ugly code, returning temporary object :-(
    * @param id
-   * @return 
+   * @return
    */
   Stream & Partition::getStream(std::string id) {
     Stream result;

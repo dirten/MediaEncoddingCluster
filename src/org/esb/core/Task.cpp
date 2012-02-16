@@ -112,7 +112,7 @@ namespace org {
       }
 
       void Task::cancel(){
-        _status=CANCEL;
+        setStatus(CANCEL);
       }
       
       bool Task::isCanceled(){

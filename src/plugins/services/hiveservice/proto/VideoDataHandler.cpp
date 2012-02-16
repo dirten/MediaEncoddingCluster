@@ -113,32 +113,32 @@ public:
 
   int isResponsible(char * command) {
     if (
-            strcmp(command, GET_UNIT) == 0 ||
-            strcmp(command, PUT_UNIT) == 0
-            ) {
-      return CMD_PROCESS;
-    } else
+        strcmp(command, GET_UNIT) == 0 ||
+        strcmp(command, PUT_UNIT) == 0
+        ) {
+        return CMD_PROCESS;
+      } else
       if (strcmp(command, "help") == 0) {
-      return CMD_HELP;
-    }
+          return CMD_HELP;
+        }
     return CMD_NA;
   }
 
   void process(char * command) {
     if (_oos == NULL || _ois == NULL)return;
     if (strcmp(command, GET_UNIT) == 0) {
-      partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
-      un = man->getProcessUnit(_ep);
-      _oos->writeObject(un);
-    } else
+        partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
+        un = man->getProcessUnit(_ep);
+        _oos->writeObject(un);
+      } else
       if (strcmp(command, PUT_UNIT) == 0) {
-      //un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-      _ois->readObject(un);
-      partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
-      man->collectProcessUnit(un, _ep);
-    } else {
-      LOGERROR("unknown command received:" << command);
-    }
+          //un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
+          _ois->readObject(un);
+          partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
+          man->collectProcessUnit(un, _ep);
+        } else {
+          LOGERROR("unknown command received:" << command);
+        }
   }
 
   void printHelp() {

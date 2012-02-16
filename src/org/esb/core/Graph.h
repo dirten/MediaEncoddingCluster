@@ -55,7 +55,7 @@ namespace org {
           CANCELED
         };
 
-        //Graph();
+        Graph();
         Graph(std::string);
         Graph(std::list<Ptr<Graph::Element> >, std::string uuid="");
         static void createJob(std::list<Ptr<Graph::Element> >,boost::shared_ptr<db::HiveDb>);
@@ -71,6 +71,8 @@ namespace org {
         virtual ~Graph();
         void cancel();
       private:
+        //friend class jobexecutor::Service;
+
         boost::function<void (Graph*)> statusObserver;
         static void processElement(Ptr<Element> ,db::Job & );
         std::list<Ptr<Graph::Element> > elements;

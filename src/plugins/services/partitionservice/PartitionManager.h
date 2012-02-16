@@ -43,6 +43,7 @@ namespace partitionservice {
         Result leavePartition(std::string name, boost::asio::ip::tcp::endpoint ep);
         Result createPartition(std::string name, int size=-1);
         Result deletePartition(std::string name);
+        Result clearPartition(std::string name);
 
         void putProcessUnit(std::string partition, boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, Type=TYPE_UNKNOWN);
         void collectProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit,boost::asio::ip::tcp::endpoint ep);

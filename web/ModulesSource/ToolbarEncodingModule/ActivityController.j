@@ -199,16 +199,18 @@
 
 - (void)restart:(id)sender
 {
-  var request = [CPURLRequest requestWithURL:"/api/v1/encoding?restart&id="+selectedid];
-  var raw_data = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
-  CPLog.debug("restart raw_data:"+[raw_data rawString]);
-  var d=[raw_data JSONObject].data;
-  if(d.status=="ok"){
+  var result=[[MHiveApiController sharedController] restartEncoding:selectedid];
+  //var request = [CPURLRequest requestWithURL:"/api/v1/encoding/"+selectedid+"/restart"];
+  //[request setHTTPMethod:@"POST"];
+  //var raw_data = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+  //CPLog.debug("restart raw_data:"+[raw_data rawString]);
+  //var d=[raw_data JSONObject].data;
+  if(result.response.status=="ok"){
     growl=[TNGrowlCenter defaultCenter];
     //CPLog.debug("GrowlCenter"+growl);
     [growl pushNotificationWithTitle:@"Sucess" message:@"Graph sucessful restarted"];
   }else{
-    var alert=[CPAlert alertWithError:d.description];
+    var alert=[CPAlert alertWithError:result.response.message];
     [alert runModal];
   }
 }
@@ -227,16 +229,17 @@
 
 -(void)_stop:(id)sender
 {
-  var request = [CPURLRequest requestWithURL:"/api/v1/encoding?stop&id="+selectedid];
-  var raw_data = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
-  CPLog.debug("stop raw_data:"+[raw_data rawString]);
-  var d=[raw_data JSONObject].data;
-  if(d.status=="ok"){
+  var result=[[MHiveApiController sharedController] stopEncoding:selectedid];
+  //var request = [CPURLRequest requestWithURL:"/api/v1/encoding/"+selectedid+"/stop"];
+  //[request setHTTPMethod:@"POST"];
+  //var raw_data = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+  //CPLog.debug("stop raw_data:"+[raw_data rawString]);
+  //var d=[raw_data JSONObject].data;
+  if(result.response.status=="ok"){
     growl=[TNGrowlCenter defaultCenter];
-    //CPLog.debug("GrowlCenter"+growl);
     [growl pushNotificationWithTitle:@"Sucess" message:@"Graph sucessful stopped"];
   }else{
-    var alert=[CPAlert alertWithError:d.description];
+    var alert=[CPAlert alertWithError:result.response.message];
     [alert runModal];
   }
 }

@@ -30,10 +30,10 @@ public:
       std::string job_id = org::esb::util::StringUtil::toString(job.id);
       org::esb::signal::Messenger::getInstance().sendMessage(org::esb::signal::Message().setProperty("jobexecutor", "STOP_JOB").setProperty("job_id", job_id));
 
-      result.setStatus("ok","stop encoding succesful signaled");
+      result.setStatus(res.HTTP_OK,"stop encoding succesful signaled");
     } else {
-      result.setStatus("error","encoding not found");
-      res.setStatusAndReason(res.HTTP_NOT_FOUND, "encoding not found");
+      result.setStatus(res.HTTP_NOT_FOUND,"encoding not found");
+      //res.setStatusAndReason(res.HTTP_NOT_FOUND, "encoding not found");
     }
 
     res.setContentType("text/plain");

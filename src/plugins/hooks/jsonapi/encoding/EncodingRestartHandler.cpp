@@ -36,10 +36,10 @@ public:
       job.status = job.status = db::Job::Status::Waiting;
       job.update();
 
-      result.setStatus("description", "restart encoding succesful signaled");
+      result.setStatus("ok", "restart encoding succesful signaled");
     } else {
-      result.setStatus("error", "encoding not found");
-      res.setStatusAndReason(res.HTTP_NOT_FOUND, "encoding not found");
+      result.setStatus(res.HTTP_NOT_FOUND, "encoding not found");
+      //res.setStatusAndReason(res.HTTP_NOT_FOUND, "encoding not found");
     }
 
     res.setContentType("text/plain");
@@ -48,7 +48,7 @@ public:
   }
 
 };
-REGISTER_WEB_HOOK("/api/v1/encoding/{encodingid}/restart", PUT, EncodingRestartHandler);
+REGISTER_WEB_HOOK("/api/v1/encoding/{encodingid}/restart", POST, EncodingRestartHandler);
 
 
 

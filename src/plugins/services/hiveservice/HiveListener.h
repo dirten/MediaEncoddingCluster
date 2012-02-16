@@ -15,7 +15,7 @@ namespace org {
   namespace esb {
     namespace plugin {
 
-      class HIVESERVICE_EXPORT HiveListener : public org::esb::core::ServicePlugin, org::esb::signal::MessageListener {
+      class HIVESERVICE_EXPORT HiveListener : public org::esb::core::ServicePlugin{
         classlogger("org.esb.hive.HiveListener")
       public:
         HiveListener();

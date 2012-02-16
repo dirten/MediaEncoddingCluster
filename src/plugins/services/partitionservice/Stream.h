@@ -30,6 +30,7 @@ namespace partitionservice {
     virtual ~Stream();
     void enqueue(boost::shared_ptr<ProcessUnit>);
     boost::shared_ptr<ProcessUnit> dequeue();
+    void clear();
     void setType(TYPE);
     TYPE getType();
     std::string getId();

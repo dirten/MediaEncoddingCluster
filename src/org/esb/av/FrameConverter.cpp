@@ -104,7 +104,7 @@ namespace org {
 
       void FrameConverter::rescaleTimestamp(Frame & in_frame, Frame & out_frame) {
         LOGDEBUG("Rescale timestamp");
-        LOGDEBUG("Decoder:"<<_dec->toString());
+        //LOGDEBUG("Decoder:"<<_dec->toString());
         //LOGDEBUG("Encoder:"<<_enc->getTimeBase());
 #ifdef USE_TIME_BASE_Q
         out_frame.setTimeBase(in_frame.getTimeBase());
@@ -274,7 +274,6 @@ namespace org {
         }
         LOGDEBUG("CONVERT VIDEO");
         LOGDEBUG(in_frame.toString());
-        LOGDEBUG(out_frame.toString());
         sws_scale(_swsContext, in_frame.getAVFrame()->data, in_frame.getAVFrame()->linesize, 0, in_frame.getHeight(), out_frame.getAVFrame()->data, out_frame.getAVFrame()->linesize);
         out_frame.setTimeBase(in_frame.getTimeBase());
         out_frame.pos = in_frame.pos;
@@ -282,6 +281,7 @@ namespace org {
         out_frame.setDts(in_frame.getDts());
         out_frame.stream_index = in_frame.stream_index;
         out_frame.duration = in_frame.duration;
+        LOGDEBUG(out_frame.toString());
         LOGDEBUG("CONVERT video READY");
       }
 

@@ -1,7 +1,7 @@
 /* 
  * File:   DownloadTask.cpp
  * Author: HoelscJ
- * 
+ *
  * Created on 19. Oktober 2011, 11:41
  */
 #include "org/esb/db/hivedb.hpp"
@@ -96,11 +96,11 @@ namespace encodingtask {
   org::esb::core::OptionsDescription EncodingTask::getOptionsDescription() {
     org::esb::core::OptionsDescription result("encodingtask");
     result.add_options()
-            ("encodingtask.src", boost::program_options::value<std::string > ()->default_value(""), "Encoding task source file")
-            ("encodingtask.partition", boost::program_options::value<std::string > ()->default_value("global"), "Encoding task partition")
-            //("encodingtask.profile", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile");
-            ("encodingtask.profiledata", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data")
-            ("data", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data");
+    ("encodingtask.src", boost::program_options::value<std::string > ()->default_value(""), "Encoding task source file")
+    ("encodingtask.partition", boost::program_options::value<std::string > ()->default_value("global"), "Encoding task partition")
+    //("encodingtask.profile", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile");
+    ("encodingtask.profiledata", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data")
+    ("data", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data");
     return result;
   }
 
@@ -198,20 +198,20 @@ namespace encodingtask {
         if (_codecs["video"].count("codec_id") != 0) {
           sdata.encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["video"]["codec_id"]));
           sdata.pass2encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["video"]["codec_id"]));
-            if (_codecs["video"].count("width") == 0 ||
-                    atoi(_codecs["video"]["width"].c_str()) == 0 ||
-                    _codecs["video"].count("height") == 0 ||
-                    atoi(_codecs["video"]["height"].c_str()) == 0) {
-              _codecs["video"]["width"]=org::esb::util::StringUtil::toString(sdata.decoder->getWidth());
-              _codecs["video"]["height"]=org::esb::util::StringUtil::toString(sdata.decoder->getHeight());
-              LOGDEBUG("setting video size from input to : "<<_codecs["video"]["width"]<<"*"<<_codecs["video"]["height"]);
-            }
-            if (_codecs["video"].count("time_base") == 0 || _codecs["video"]["time_base"].length() == 0) {
-              std::ostringstream oss;
-              oss << sdata.decoder->getFrameRate().den << "/" << sdata.decoder->getFrameRate().num;
-              _codecs["video"]["time_base"]= oss.str();
-              LOGDEBUG("setting framerate from input to : "<<oss.str());
-            }
+          if (_codecs["video"].count("width") == 0 ||
+          atoi(_codecs["video"]["width"].c_str()) == 0 ||
+          _codecs["video"].count("height") == 0 ||
+          atoi(_codecs["video"]["height"].c_str()) == 0) {
+            _codecs["video"]["width"]=org::esb::util::StringUtil::toString(sdata.decoder->getWidth());
+            _codecs["video"]["height"]=org::esb::util::StringUtil::toString(sdata.decoder->getHeight());
+            LOGDEBUG("setting video size from input to : "<<_codecs["video"]["width"]<<"*"<<_codecs["video"]["height"]);
+          }
+          if (_codecs["video"].count("time_base") == 0 || _codecs["video"]["time_base"].length() == 0) {
+            std::ostringstream oss;
+            oss << sdata.decoder->getFrameRate().den << "/" << sdata.decoder->getFrameRate().num;
+            _codecs["video"]["time_base"]= oss.str();
+            LOGDEBUG("setting framerate from input to : "<<oss.str());
+          }
 
           org::esb::av::CodecPropertyTransformer transformer(_codecs["video"]);
           std::map<std::string, std::string> params = transformer.getCodecProperties();
@@ -300,6 +300,11 @@ namespace encodingtask {
     int prev_fps = 0;
     while (!isCanceled()&&partitionservice::PartitionManager::getInstance()->getSize(_partition) > 0) {
       setProgress(getProgressLength() - partitionservice::PartitionManager::getInstance()->getSize(_partition));
+      if(isCanceled()){
+        LOGDEBUG("Encoding Task is Canceled");
+      }else{
+        LOGDEBUG("Encoding Task is not Canceled");
+      }
       org::esb::lang::Thread::sleep2(1 * 1000);
       if (prev_fps != partitionservice::PartitionManager::getInstance()->getFps()) {
         prev_fps = partitionservice::PartitionManager::getInstance()->getFps();
@@ -311,6 +316,7 @@ namespace encodingtask {
     if(isCanceled()){
       setStatus(CANCELED);
       setStatusMessage("Encoding Task Canceled");
+      partitionservice::PartitionManager::getInstance()->clearPartition(_partition);
       return;
     }
     setProgress(getProgressLength());

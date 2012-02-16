@@ -20,6 +20,7 @@ namespace partitionservice {
     Partition(std::string id);
     virtual ~Partition();
     void addStream(Stream );
+    void clear();
     bool containStream(std::string id);
     Stream & getStream(std::string id);
     StreamList getStreams();

@@ -1,7 +1,7 @@
 /* 
  * File:   PartitionManager.cpp
  * Author: HoelscJ
- * 
+ *
  * Created on 13. Juli 2011, 09:56
  */
 
@@ -47,6 +47,24 @@ namespace partitionservice {
   PartitionManager::~PartitionManager() {
   }
 
+  PartitionManager::Result PartitionManager::clearPartition(std::string partition) {
+    PartitionManager::Result result = PartitionManager::OK;
+    if (_partitions.count(partition) > 0) {
+      foreach(Stream s, _partitions[partition].getStreams()) {
+        LOGDEBUG("look into stream:" << s.getId());
+        //Stream & str = _partitions[partition].getStream(s.getId());
+        foreach(Endpoint endin, s.getEndpoints()) {
+          _ep_stream.erase(endin);
+          _ep_pu.erase(endin);
+        }
+      }
+      _partitions[partition].clear();
+    }else{
+      result=PartitionManager::NOT_EXIST;
+    }
+    return result;
+  }
+
   PartitionManager::Result PartitionManager::joinPartition(std::string name, Endpoint ep, Type type) {
     PartitionManager::Result result = PartitionManager::OK;
     if (!_partitions.count(name) > 0) {
@@ -73,7 +91,7 @@ namespace partitionservice {
 
   /**
    * @param partition
-   * @return 
+   * @return
    */
   int PartitionManager::getSize(std::string partition) {
     int result = _ep_pu.size();
@@ -246,7 +264,7 @@ namespace partitionservice {
         }
       }
     }
-    /*when the last ProcessUnit will be picked up then delete the association between 
+    /*when the last ProcessUnit will be picked up then delete the association between
      Endpoint and Stream and finaly delete the stream out of the partition*/
     if (result && result->_last_process_unit) {
       LOGDEBUG("last process unit==true unit=" << result->_process_unit << " endpoint = " << ep);
@@ -294,7 +312,7 @@ namespace partitionservice {
   }
 
   void PartitionManager::collectProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit,boost::asio::ip::tcp::endpoint ep) {
-
+    if(_ep_pu.count(ep)){
     std::string name = org::esb::config::Config::get("hive.tmp_path") +"/jobs/"+unit->getJobId()+"/collect";
     name += "/";
 
@@ -311,7 +329,6 @@ namespace partitionservice {
     ous.writeObject(unit);
     ous.close();
     
-    if(_ep_pu.count(ep)){
       if(unit->getFps()>0){
         
         std::cerr <<"hallo unit.fps="<<unit->getFps()<<std::endl;
@@ -391,7 +408,7 @@ namespace partitionservice {
     }
     return false;
   }
-      
+
   bool PartitionManager::containsEndpoint(boost::asio::ip::tcp::endpoint ep) {
 
     foreach(Endpoint & value, _endpoints) {

@@ -28,8 +28,16 @@ var SharedController;
       [request setHTTPBody:JSON.stringify(json)];
     }
     var txt = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
-    CPLog.debug("response payload:"+[txt rawString]);
-    var data=[[txt rawString] objectFromJSON];
+    var data={
+      "response":{
+        "status":"error",
+        "message":"Connection to server Lost!"
+      }
+    }
+    if([txt rawString].length>0){
+      data=[[txt rawString] objectFromJSON];
+    }
+    CPLog.debug("response payload:"+JSON.stringify(data));
     return data
 }
 
@@ -116,9 +124,22 @@ var SharedController;
   var data = [self makerequest:@"/api/v1/encoding/"+flowid method:@"GET"];
   return data;
 }
+
 -(id)viewEncodingStatus:(id)flowid
 {
   var data = [self makerequest:@"/api/v1/encoding/"+flowid+"/status" method:@"GET"];
+  return data;
+}
+
+-(id)restartEncoding:(id)flowid
+{
+  var data = [self makerequest:@"/api/v1/encoding/"+flowid+"/restart" method:@"POST"];
+  return data;
+}
+
+-(id)stopEncoding:(id)flowid
+{
+  var data = [self makerequest:@"/api/v1/encoding/"+flowid+"/stop" method:@"POST"];
   return data;
 }
 

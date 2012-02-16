@@ -26,18 +26,18 @@
  */
 #include "HiveListener.h"
 #include "ProtocolServer.h"
-#include "org/esb/config/config.h"
+//#include "org/esb/config/config.h"
 #include "org/esb/net/TcpSocket.h"
 //#include "org/esb/net/TcpServerSocket.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/util/Log.h"
-#include "org/esb/signal/Messenger.h"
+//#include "org/esb/signal/Messenger.h"
 #include "org/esb/core/PluginContext.h"
-#include <boost/thread.hpp>
-#include <boost/bind.hpp>
+//#include <boost/thread.hpp>
+//#include <boost/bind.hpp>
 //#include "org/esb/lang/Runnable.h"
 #include <list>
-using namespace org::esb::config;
+
 using namespace org::esb::lang;
 using namespace org::esb::net;
 
@@ -57,33 +57,10 @@ namespace org {
         server = NULL;
       }
 
-      void HiveListener::onMessage(org::esb::signal::Message & msg) {
-        if (msg.getProperty<std::string>("hivelistener") == org::esb::hive::START) {
-          //    cout << "Start Message Arrived:"<<endl;
-          boost::thread tt(boost::bind(&HiveListener::startListener, this));
-          LOGDEBUG("Hive Listener running on port:" << getContext()->getEnvironment<int>("hiveserver.port"));
-          //    cout << "Hive Listener running:"<<endl;
-          is_running = true;
-        } else
-          if (msg.getProperty<std::string>("hivelistener") == org::esb::hive::STOP) {
-          LOGDEBUG("Hive Listener stopp signal:");
-          main_nextloop = false;
-          if (server) {
-
-            server->close();
-          }
-          delete server;
-          server = NULL;
-          LOGDEBUG("Hive Listener stopped:");
-          //    cout << "Stop Message Arrived:"<<endl;
-        }
-      }
-
       org::esb::core::OptionsDescription HiveListener::getOptionsDescription() {
         org::esb::core::OptionsDescription result("hiveserver");
         result.add_options()
-                ("hiveserver.port", boost::program_options::value<int >()->default_value(20200), "hiveserver port listen on")
-                ;
+            ("hiveserver.port", boost::program_options::value<int >()->default_value(20200), "hiveserver port listen on");
         return result;
       }
 
@@ -102,8 +79,8 @@ namespace org {
         LOGDEBUG("Hive Listener stopp signal:");
         main_nextloop = false;
         if (server) {
-          server->close();
-        }
+            server->close();
+          }
         delete server;
         server = NULL;
         LOGDEBUG("Hive Listener stopped:");
@@ -112,30 +89,24 @@ namespace org {
 
       void HiveListener::startListener() {
         int port = getContext()->getEnvironment<int>("hiveserver.port");
-        LOGDEBUG(" Start Listening on port " << port);
         server = new TcpServerSocket(port);
         server->bind();
-        for (; main_nextloop;) {
-          //          try {
-          TcpSocket * clientSocket = server->accept();
-          if (clientSocket && clientSocket->isConnected() && (main_nextloop)) {
-            /*need some client auth and handshake here*/
-            ProtocolServer *protoServer = new ProtocolServer(clientSocket);
-            go(ProtocolServer::run, protoServer);
-
-            //boost::thread tt(boost::bind(&ProtocolServer::run, protoServer));
-            //              Thread *thread = new Thread(protoServer);
-            //              thread->start();
-          } else {
-            LOGERROR("Client was not accepted");
-            break;
+        for (;main_nextloop;){
+            try {
+              TcpSocket * clientSocket = server->accept();
+              if (clientSocket && clientSocket->isConnected() && (main_nextloop)) {
+                  /*need some client auth and handshake here*/
+                  ProtocolServer *protoServer = new ProtocolServer(clientSocket);
+                  go(ProtocolServer::run, protoServer);
+                } else {
+                  LOGERROR("Client was not accepted, maybe server was closed!");
+                  break;
+                }
+            } catch (exception & ex) {
+              LOGERROR("Exception in Main:" <<ex.what());
+            }
           }
-          //          } catch (exception & ex) {
-          //            logerror("Exception in Main:" <<ex.what());
-          //          }
-        }
       }
-
     }
   }
 }

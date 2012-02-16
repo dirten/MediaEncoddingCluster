@@ -11,7 +11,7 @@ namespace org {
     namespace util {
 
       class UTIL_EXPORT IllegalFormatException : public std::runtime_error {
-        classlogger("org.esb.util.IllegalFormatException")
+        classlogger("org.esb.util.IllegalFormatException");
       public:
         explicit IllegalFormatException(std::string & msg);
         explicit IllegalFormatException(const char * msg);

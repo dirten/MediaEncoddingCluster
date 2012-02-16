@@ -20,7 +20,7 @@ namespace org {
 
 
       template<typename T, int MAXSIZE = 10 >
-              class Queue {
+      class Queue {
         classlogger("org.esb.util.Queue");
       private:
         std::deque<T> _q;
@@ -62,11 +62,11 @@ namespace org {
 
         virtual ~Queue() {
           if (_is_waiting) {
-            //LOGDEBUG("is wating")
-            org::esb::lang::Thread::sleep2(5150);
-            //boost::mutex::scoped_lock enqueue_lock(queue_mutex);
-            //stop_condition.wait(enqueue_lock);
-          }
+              //LOGDEBUG("is wating")
+              org::esb::lang::Thread::sleep2(5150);
+              //boost::mutex::scoped_lock enqueue_lock(queue_mutex);
+              //stop_condition.wait(enqueue_lock);
+            }
           //LOGDEBUG("~Queue()")
           _q.clear();
           //queue_condition.notify_all();
@@ -80,10 +80,10 @@ namespace org {
           bool result = false;
           //bool first_item=_q.empty();
           while (MAXSIZE!=0 && _q.size() >= MAXSIZE) {
-            //LOGDEBUG("Waiting in enqueuelock:"<<_q.size());
-            enqueue_condition.wait(enqueue_lock);
-            //LOGDEBUG("condition enqueuelock");
-          }
+              //LOGDEBUG("Waiting in enqueuelock:"<<_q.size());
+              enqueue_condition.wait(enqueue_lock);
+              //LOGDEBUG("condition enqueuelock");
+            }
           if (_closed)return false;
 
           {
@@ -102,13 +102,13 @@ namespace org {
           boost::mutex::scoped_lock dequeue_lock(dequeue_mutex);
           //LOGTRACE("after mutex");
           while (_q.size() == 0) {
-            dequeue_condition.wait(dequeue_lock);
-            //LOGTRACE("condition dequeuelock");
-            if (_closed) {
-              //LOGTRACE("channel closed, returning");
-              return T();
+              dequeue_condition.wait(dequeue_lock);
+              //LOGTRACE("condition dequeuelock");
+              if (_closed) {
+                  //LOGTRACE("channel closed, returning");
+                  return T();
+                }
             }
-          }
           T object;
           {
             boost::mutex::scoped_lock queue_lock(queue_mutex);
@@ -143,14 +143,14 @@ namespace org {
           if (_closed)return false;
           bool result = false;
           while (_q.size() == 0) {
-            //LOGTRACE("Waiting in dequeuelock:"<<_q.size());
-            dequeue_condition.wait(dequeue_lock);
-            if (_closed) {
-              //LOGTRACE("channel closed, returning");
-              return false;
+              //LOGTRACE("Waiting in dequeuelock:"<<_q.size());
+              dequeue_condition.wait(dequeue_lock);
+              if (_closed) {
+                  //LOGTRACE("channel closed, returning");
+                  return false;
+                }
+              //LOGTRACE("condition dequeuelock");
             }
-            //LOGTRACE("condition dequeuelock");
-          }
           if (_closed)return false;
           {
             boost::mutex::scoped_lock queue_lock(queue_mutex);
@@ -195,18 +195,18 @@ namespace org {
       };
 
       template<typename T >
-              class FileQueue {
+      class FileQueue {
         boost::mutex dequeue_mutex;
         boost::mutex enqueue_mutex;
         std::string _directory;
         Queue<std::string,0> _uuid_q;
-        public:
+      public:
         FileQueue(std::string dirname){
           _directory=dirname;
           org::esb::io::File dir(_directory.c_str());
           if (!dir.exists()) {
-            dir.mkdirs();
-          }
+              dir.mkdirs();
+            }
         }
         
         std::string enqueue(T obj) {
@@ -235,15 +235,22 @@ namespace org {
           std::string uuid=_uuid_q.dequeue();
           name+=uuid;
           org::esb::io::File infile(name.c_str());
-		  org::esb::io::FileInputStream fis(&infile);
+          org::esb::io::FileInputStream fis(&infile);
           org::esb::io::ObjectInputStream ois(&fis);
           ois.readObject(object);
-		  fis.close();
+          fis.close();
           infile.deleteFile();
           return object;
         }
         int size() {
           return _uuid_q.size();
+        }
+
+        void clear(){
+
+          while(size()>0){
+              dequeue();
+            }
         }
       };
 

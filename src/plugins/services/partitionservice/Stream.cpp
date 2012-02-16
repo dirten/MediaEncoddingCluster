@@ -30,6 +30,10 @@ namespace partitionservice {
     return _queue->dequeue();
   }
 
+  void Stream::clear() {
+    _queue->clear();
+  }
+
   void Stream::setType(TYPE t) {
     _type = t;
   }
