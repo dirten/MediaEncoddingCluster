@@ -17,7 +17,7 @@ public:
     AVCodec *p = NULL;
     int a = 0;
     while ((p = av_codec_next(p))) {
-      if (p->encode && p->long_name != NULL) {
+      if (p->encode ) {
         JSONNode cnode(JSON_NODE);
         cnode.push_back(JSONNode("longname", p->long_name));
         cnode.push_back(JSONNode("id", p->name));
