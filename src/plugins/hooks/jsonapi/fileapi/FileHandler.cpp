@@ -22,7 +22,8 @@ public:
     JSONResult result(req);
     if (req.has("1")) {
       std::string path = req.get("1");
-      if(path.find("/")!=1){
+	  LOGDEBUG("Path find /:"<<path.find("/"));
+      if(path.find("/")!=0){
         path="/"+path;
       }
 
@@ -33,7 +34,9 @@ public:
       
       
 #ifdef WIN32
+	  LOGDEBUG("Windows Path:"<<path);
     if (path == "/") {
+		LOGDEBUG("building drives for windows");
       std::set<std::string> drives;
       drives.insert("A:\\");
       drives.insert("B:\\");

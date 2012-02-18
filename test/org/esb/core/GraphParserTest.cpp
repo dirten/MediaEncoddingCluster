@@ -4,6 +4,7 @@
  *
  * Created on 17. Januar 2012, 14:48
  */
+#include "org/esb/db/hivedb.hpp"
 
 #include <cstdlib>
 #include "org/esb/util/Log.h"

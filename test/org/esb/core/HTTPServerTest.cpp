@@ -78,7 +78,7 @@ int main2(int argc, char ** argv) {
   // Stop the HTTPServer 
   srv.stop();
 
-
+return 0;
 }
 
 class RootHandler2 : public org::esb::core::http::RequestHandler {

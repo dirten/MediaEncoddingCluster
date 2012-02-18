@@ -19,9 +19,9 @@ namespace org {
         return;
         static int print_prefix = 1;
         static int count;
-        static char line[1024], prev[1024];
+        static char line[4096], prev[4096];
         char ptrString[10];
-        char ptrLine[1024];
+        char ptrLine[4096];
         AVClass* avc = ptr ? *(AVClass**) ptr : NULL;
         //if (level > av_log_level)
         //  return;
@@ -86,9 +86,9 @@ namespace org {
       void FormatBaseStream::mhive_log_default_callback(void* ptr, int level, const char* fmt, va_list vl) {
         static int print_prefix = 1;
         static int count;
-        static char line[1024], prev[1024];
+        static char line[4096], prev[4096];
         char ptrString[10];
-        char ptrLine[1024];
+        char ptrLine[4096];
         AVClass* avc = ptr ? *(AVClass**) ptr : NULL;
         //if (level > av_log_level)
         //  return;
@@ -104,7 +104,7 @@ namespace org {
           ptrString[0] = 0;
         }
 
-        vsnprintf(line + strlen(line), sizeof (line) - strlen(line), fmt, vl);
+        //vsnprintf(line + strlen(line), sizeof (line) - strlen(line), fmt, vl);
         vsnprintf(ptrLine, sizeof (ptrLine), fmt, vl);
         /*
                 print_prefix = line[strlen(line) - 1] == '\n';
@@ -192,7 +192,7 @@ namespace org {
           avcodec_register_all();
           av_register_all();
           //av_log_set_callback(mhive_log_default_callback);
-          av_log_set_callback(FormatBaseStream::mhive_log_default_callback);
+          //av_log_set_callback(FormatBaseStream::mhive_log_default_callback);
           av_log_set_level(AV_LOG_VERBOSE);
           //av_register_protocol2(&test_protocol, sizeof (URLProtocol));
           av_lockmgr_register(lockmgr);

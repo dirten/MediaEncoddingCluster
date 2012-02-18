@@ -58,6 +58,7 @@ int main(int argc, char** argv) {
   Log::open();
   if (argc < 3) {
     std::cout << "usage: " << argv[0] << " <graph_path> <input_file>" << std::endl;
+	return 1;
   }
 
   org::esb::hive::Environment::build(argc, argv);
@@ -69,11 +70,18 @@ int main(int argc, char** argv) {
   org::esb::core::PluginRegistry::getInstance()->load(OUTPUTTASK_PLUGIN);
   LOGDEBUG("using database in:" << org::esb::config::Config::get("db.url"));
   boost::shared_ptr<db::HiveDb> database = boost::shared_ptr<db::HiveDb > (new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url")));
-
   /*Loading flow from disk*/
-  org::esb::io::FileInputStream fis(argv[1]);
+  std::string flow(argv[1]);
+  LOGDEBUG("loading flow:" << flow);
+  org::esb::io::File flowfile(flow);
+  if(!flowfile.exists()){
+	  LOGERROR("flow file not found:"<<flowfile.getPath());
+	  return 1;
+  }
+  org::esb::io::FileInputStream fis(flow);
   std::string graph_data;
   fis.read(graph_data);
+
   GraphParser graphparser(graph_data,argv[2]);
   
   
