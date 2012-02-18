@@ -13,6 +13,20 @@
       </includes>
     </fileSet>
     <fileSet>
+      <directory>web/Build/${btype}/MediaEncodingAdmin/Browser.environment</directory>
+      <outputDirectory>webui/Browser.environment</outputDirectory>
+      <includes>
+        <include>*.*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>web/Build/${btype}/MediaEncodingAdmin/CommonJS.environment</directory>
+      <outputDirectory>webui/CommonJS.environment</outputDirectory>
+      <includes>
+        <include>*.*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <directory>web/Build/${btype}/MediaEncodingAdmin/Modules</directory>
       <outputDirectory>webui/Modules</outputDirectory>
       <includes>
