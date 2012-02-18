@@ -386,6 +386,13 @@
       <classifier>${my.family}-${build_type}</classifier>
     </dependency>
     <dependency>
+      <groupId>org.esb.webui</groupId>
+      <artifactId>webui</artifactId>
+      <version>0.2.0</version>
+      <type>zip</type>
+      <classifier>${build_type}</classifier>
+    </dependency>
+    <dependency>
       <groupId>org.esb.breakpad</groupId>
       <artifactId>breakpad</artifactId>
       <version>1.5</version>

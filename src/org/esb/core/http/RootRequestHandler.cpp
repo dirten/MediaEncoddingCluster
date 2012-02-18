@@ -23,8 +23,11 @@ namespace org {
         void RootRequestHandler::handle(HTTPServerRequest& request, HTTPServerResponse& response){
           std::string doc_root=org::esb::config::Config::get("web.docroot");
           LOGDEBUG("DocRoot:"<<doc_root);
-          LOGDEBUG("URI"<<request.getURI());
-          org::esb::io::File file(doc_root+request.getURI());
+          std::string uri=request.getURI();
+          LOGDEBUG("URI"<<uri);
+          if(uri=="/")
+            uri+="index.html";
+          org::esb::io::File file(doc_root+uri);
           LOGDEBUG("RequestFile:"<<file.getPath());
           std::string data;
           if(file.getPath().find(doc_root)!= string::npos){

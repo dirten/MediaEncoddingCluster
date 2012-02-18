@@ -622,6 +622,13 @@ void setupConfig() {
 #else
   //#error "plattform not supported"
 #endif
+  org::esb::io::File src_logfile(bpath+"/res/logging.properties");
+  org::esb::io::File trg_logfile(upath + "/conf/logging.properties");
+  if(src_logfile.exists()){
+    if(!trg_logfile.exists()){
+      src_logfile.copyTo(trg_logfile);
+    }
+  }
   //LOGDEBUG("LIBRARY_PATH="<<config::Config::get("DYLD_LIBRARY_PATH"));
   /*
     std::string logpath=std::string("log.path=").append(bpath).append("/logs");
