@@ -329,12 +329,12 @@ namespace partitionservice {
     ous.writeObject(unit);
     ous.close();
     
-      if(unit->getFps()>0){
+	if(unit->getFps()>0&&unit->_output_packets.size()>0){
         
         std::cerr <<"hallo unit.fps="<<unit->getFps()<<std::endl;
         //_pus++;
         //_fps+=unit->getFps();
-      }
+      
       if(_timingList.count(ep)){
         _timingList[ep].back().recv=Poco::Timestamp();
 
@@ -358,6 +358,7 @@ namespace partitionservice {
 
         if(frames>0&&diff>0&&havedata)
           _fps=frames/(diff/1000/1000);
+	  }
       }
       _ep_pu.erase(ep);
     }else{
