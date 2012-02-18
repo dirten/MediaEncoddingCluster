@@ -1,0 +1,110 @@
+{
+	"tasks" : [
+		{
+			"name" : "InputTask",
+			"uid" : 1,
+			"linksTo":[2],
+			"data" : {
+				"infile" : "/Users/jhoelscher/Movies/ChocolateFactory.ts"
+			}
+		},
+		{
+			"name" : "EncodingTask",
+			"uid" : 2,
+			"linksTo":[4],
+			"data" : {
+				"name" : "Mp4 x264(320x240 hq) mp3(128kb 44.1kHz stereo)",
+				"format" : {
+					"id" : "mp4",
+					"fileExtension" : "mp4",
+					"author" : "MediaEncodingCluster",
+					"title" : "",
+					"copyright" : "",
+					"comment" : "",
+					"album" : "",
+					"year" : "",
+					"track" : "",
+					"genre" : "",
+					"rtphint" : "0"
+				},
+				"video" : {
+					"id" : "libx264",
+					"qscale" : "4",
+					"b" : 250,
+					"coder" : "0",
+					"psnr" : "0",
+					"loop" : "0",
+					"cmp" : "chroma",
+					"me_method" : "esa",
+					"parti8x8" : "0",
+					"parti4x4" : "0",
+					"partp4x4" : "0",
+					"partp8x8" : "0",
+					"partb8x8" : "0",
+					"subq" : "8",
+					"me_range" : "16",
+					"g" : "50",
+					"cqp" : "0",
+					"keyint_min" : 150,
+					"sc_threshold" : "40",
+					"i_qfactor" : "0.71",
+					"b_strategy" : "1",
+					"qcomp" : "0.6",
+					"qmin" : "4",
+					"qmax" : "51",
+					"qdiff" : "4",
+					"bf" : "3",
+					"refs" : "16",
+					"directpred" : "3",
+					"trellis" : "0",
+					"wpred" : "1",
+					"mixed_refs" : "1",
+					"dct8x8" : "1",
+					"fastpskip" : "1",
+					"wpredp" : "2",
+					"picture_frame_size" : "720p",
+					"time_base" : "1/25",
+					"global_header" : "1",
+					"width" : "320",
+					"height" : "240",
+					"time_base_sel" : "1/25",
+					"frame_size" : "240x120",
+					"multipass" : 0,
+					"maxrate" : 300,
+					"minrate" : 200,
+					"bt" : 50,
+					"bufsize" : "500",
+					"crf" : "0",
+					"bframebias" : "0",
+					"bpyramid" : false,
+					"deblockalpha" : "0",
+					"deblockbeta" : "0",
+					"b_qfactor" : "0.0",
+					"chromaoffset" : "0.0",
+					"complexityblur" : "20",
+					"qblur" : "0.5",
+					"aq_mode" : "1",
+					"intra_refresh" : "0",
+					"mbtree" : "0",
+					"rc_lookahead" : "0"
+				},
+				"audio" : {
+					"id" : "libmp3lame",
+					"ab" : "128000",
+					"ac" : "2",
+					"ar" : "44100",
+					"global_header" : "1"
+				},
+				"id" : "c5ea2e50-dce7-4f16-9823-eee3db883a41"
+			}
+		},
+		{
+			"name" : "OutputTask",
+			"uid" : 4,
+			"data" : {
+				"outfile" : "test.mp4"
+			}
+		}
+	],
+	"name" : "new shiny encoding flow 2"
+}
