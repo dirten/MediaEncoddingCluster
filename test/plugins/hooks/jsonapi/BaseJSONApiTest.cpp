@@ -81,6 +81,8 @@ void test_file_list() {
   std::istream& rs = s.receiveResponse(response);
   std::string data;
   StreamCopier::copyToString(rs, data);
+    LOGDEBUG("response:"<<data);
+
   JSONNode node = getJson(data);
   
   assert_response(node);
@@ -103,6 +105,8 @@ void test_mediafile() {
   std::istream& rs = s.receiveResponse(response);
   std::string data;
   StreamCopier::copyToString(rs, data);
+  LOGDEBUG("response:"<<data);
+
   JSONNode node = getJson(data);
   assert_response(node);
 

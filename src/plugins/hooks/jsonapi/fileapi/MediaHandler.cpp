@@ -68,7 +68,7 @@ public:
     ostr << result.write_formatted();
   }
 };
-REGISTER_WEB_HOOK("/api/v1/media{path}?", GET, MediaHandler);
+REGISTER_WEB_HOOK("/api/v1/media/?{path}", GET, MediaHandler);
 
 
 
