@@ -74,7 +74,7 @@ void test_format_list() {
 
 void test_file_list() {
   HTTPClientSession s(HOST, PORT);
-  HTTPRequest request(HTTPRequest::HTTP_GET, "/api/v1/file//");
+  HTTPRequest request(HTTPRequest::HTTP_GET, "/api/v1/file/");
   s.sendRequest(request);
 
   HTTPResponse response;
