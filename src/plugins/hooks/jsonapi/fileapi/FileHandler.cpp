@@ -20,9 +20,13 @@ public:
 
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
     JSONResult result(req);
-    if (req.has("path")) {
-      std::string path = req.get("path");
-      result.push_back(JSONNode("path", req.get("path")));
+    if (req.has("1")) {
+      std::string path = req.get("1");
+      if(path.find("/")!=1){
+        path="/"+path;
+      }
+
+      result.push_back(JSONNode("path", path));
       org::esb::io::File f(path);
       
       
@@ -108,7 +112,7 @@ public:
   }
 
 };
-REGISTER_WEB_HOOK("/api/v1/file{path}", GET, FileHandler);
+REGISTER_WEB_HOOK("/api/v1/file/?([\\w-/:]+)", GET, FileHandler);
 
 
 

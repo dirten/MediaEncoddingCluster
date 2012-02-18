@@ -12,6 +12,7 @@
 #include "Poco/RegularExpression.h"
 #include "org/esb/util/UUID.h"
 #include "org/esb/config/config.h"
+#include "org/esb/util/StringUtil.h"
 namespace org {
   namespace esb {
     namespace core {
@@ -53,9 +54,10 @@ namespace org {
                   ++round;
                 }
               }
-              if (round == 2)
+              if (round == 3)
                 url = Poco::replace(url, "([\\w-]+)", "(/?.+)");
-              url += "/?$";
+              //url += "/?$";
+              LOGDEBUG("match url:"<<url);
               Poco::RegularExpression re(url);
               //LOGDEBUG(factory->getUrl()<<" / "<<req.getURI());
               Poco::RegularExpression::MatchVec posVec2;
@@ -64,6 +66,7 @@ namespace org {
                 for (int a = 1; a < posVec2.size(); a++) {
                   LOGDEBUG("setting parameter a=" << a << " : " << varVec[a] << "=" << req.getURI().substr(posVec2[a].offset, posVec2[a].length));
                   req.add(varVec[a], req.getURI().substr(posVec2[a].offset, posVec2[a].length));
+                  req.add(org::esb::util::StringUtil::toString(a), req.getURI().substr(posVec2[a].offset, posVec2[a].length));
                 }
                 /*
                 if(var.length()){

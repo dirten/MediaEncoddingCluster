@@ -56,6 +56,6 @@ public:
     fos.write(node.write_formatted());
   }
 };
-REGISTER_WEB_HOOK("/api/v1/flow", POST, GraphCreateHandler);
+REGISTER_WEB_HOOK("/api/v1/flow$", POST, GraphCreateHandler);
 
 

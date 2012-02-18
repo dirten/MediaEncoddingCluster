@@ -8,11 +8,13 @@ add_executable (PresetVerifierTest PresetVerifierTest.cpp)
 add_executable (GraphVerifierTest GraphVerifierTest.cpp)
 add_executable (GraphTaskCreatorTest GraphTaskCreatorTest.cpp)
 add_executable (BaseJSONApiTest BaseJSONApiTest.cpp)
+add_executable (PocoRegExpTest PocoRegExpTest.cpp)
 
 target_link_libraries (PresetVerifierTest jsonapi)
 target_link_libraries (GraphVerifierTest jsonapi)
 target_link_libraries (GraphTaskCreatorTest jsonapi)
 target_link_libraries (BaseJSONApiTest core hive)
+target_link_libraries (PocoRegExpTest core )
 
 ADD_TEST(jsonapi ${EXECUTABLE_OUTPUT_PATH}/BaseJSONApiTest)
 

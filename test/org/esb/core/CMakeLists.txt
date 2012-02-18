@@ -26,6 +26,8 @@ ADD_TEST(core.PluginRegistryTest ${EXECUTABLE_OUTPUT_PATH}/PluginRegistryTest)
 ADD_TEST(core.PluginLoaderTest ${EXECUTABLE_OUTPUT_PATH}/PluginLoaderTest)
 ADD_TEST(core.HookNotificationCenterTest ${EXECUTABLE_OUTPUT_PATH}/HookNotificationCenterTest)
 ADD_TEST(core.GraphParserTest ${EXECUTABLE_OUTPUT_PATH}/GraphParserTest ${MEC_SOURCE_DIR}/test-data/test.graph)
+ADD_TEST(core.GraphTest.x264 ${EXECUTABLE_OUTPUT_PATH}/GraphTest ${MEC_SOURCE_DIR}/test-data/test.x264.graph ${PROJECT_SOURCE_DIR}/test.dvd)
+ADD_TEST(core.GraphTest.vpx ${EXECUTABLE_OUTPUT_PATH}/GraphTest ${MEC_SOURCE_DIR}/test-data/test.vpx.graph ${PROJECT_SOURCE_DIR}/test.dvd)
 #ADD_TEST(core.HTTPServerTest ${EXECUTABLE_OUTPUT_PATH}/HTTPServerTest)
 
 
