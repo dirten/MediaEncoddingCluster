@@ -7,6 +7,8 @@
 
 #include <cstdlib>
 #include <list>
+#include <boost/asio.hpp>
+#include <boost/thread.hpp>
 #include "org/esb/core/Graph.h"
 #include "org/esb/core/GraphParser.h"
 #include "org/esb/util/Log.h"
@@ -18,7 +20,6 @@
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/config/config.h"
 
-#include <boost/asio.hpp>
 #include "plugins/services/partitionservice/PartitionManager.h"
 #include "plugins/services/partitionservice/ProcessUnitCollector.h"
 
