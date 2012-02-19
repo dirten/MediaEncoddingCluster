@@ -357,7 +357,7 @@ namespace partitionservice {
         LOGDEBUG("TimeDiff="<<diff);
 
         if(frames>0&&diff>0&&havedata)
-          _fps=frames/(diff/1000/1000);
+          _fps=frames/(diff/1000/1000)>0?(diff/1000/1000):1;
 	  }
       }
       _ep_pu.erase(ep);
