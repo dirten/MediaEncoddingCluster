@@ -388,7 +388,7 @@
     <dependency>
       <groupId>org.esb.webui</groupId>
       <artifactId>webui</artifactId>
-      <version>0.3.1</version>
+      <version>0.3.2</version>
       <type>zip</type>
       <classifier>${build_type}</classifier>
     </dependency>
