@@ -47,7 +47,7 @@ namespace org {
         }
         if (ec) {
           LOGERROR("Error while accepting Socket(" << ec.message() << ")");
-          //          return NULL;
+          return NULL;
         }
 
         boost::asio::socket_base::keep_alive option(true);
@@ -71,13 +71,14 @@ namespace org {
       }
 
       void TcpServerSocket::close() {
+		_inShutdown = true;
+
         if (acceptor_.is_open()) {
           acceptor_.cancel();
           acceptor_.close();
           LOGDEBUG("TcpServerSocket closed");
         }
         _io_service.stop();
-        _inShutdown = true;
 
       }
     }
