@@ -38,7 +38,6 @@ namespace org {
               std::map<int, std::string> varVec;
               int round = 1;
               //int maxround = 0;
-
               while (int r = reholder.match(url, 0, posVec)) {
                 LOGDEBUG("posVec:" << posVec.size());
                 LOGDEBUG("r=" << r);

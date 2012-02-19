@@ -7,6 +7,7 @@
 #include "../JSONResult.h"
 #include "../exports.h"
 
+
 class JSONAPI_EXPORT EncodingListHandler : public org::esb::core::WebHookPlugin {
 public:
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
