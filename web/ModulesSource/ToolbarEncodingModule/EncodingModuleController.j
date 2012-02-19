@@ -56,8 +56,8 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
   
   jsonData={"data":[]};
   [jobTableView reloadData];
-  [self refresh];
-  [CPTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(refresh) userInfo:nil repeats:true];
+  //[self refresh];
+  //[CPTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(refresh) userInfo:nil repeats:true];
   
   
   //[fieldJID setSelectable:YES];
@@ -223,7 +223,7 @@ TNArchipelTypeDummyNamespaceSayHello = @"sayhello";
   //}
 }
 - (void)refresh{
-  var request = [CPURLRequest requestWithURL:"/api/v1/encoding?full"];
+  var request = [CPURLRequest requestWithURL:"/api/v1/encoding"];
   [request setHTTPMethod:"GET"];
   //CPLog.debug(request.HTTPMethod);
   // see important note about CPJSONPConnection above
