@@ -152,10 +152,12 @@ NodeElementDragType = "NodeElementDragType";
   CPLog.debug("ElementViewBounds"+CGStringFromRect([self bounds]));
   CPLog.debug("ElementViewBounds"+CGStringFromRect([anObject bounds]));
   //[self setBounds:[anObject bounds]];
-  [self setCornerRadius:3.0];
+  //[self setCornerRadius:3.0];
+  //[self setBackgroundColor:[CPColor whiteColor]];
   //[self setBorderWidth:3.0];
   //return;
   //[self setBorderType:CPGrooveBorder];
+  //[self setBoxType:CPBoxPrimary];
   //[self setPostsFrameChangedNotifications:YES];
 
   //[self addSubview:anObject];
@@ -186,7 +188,7 @@ NodeElementDragType = "NodeElementDragType";
 
 - (void)setSelected:(BOOL)isSelected
 {
-    [self setBackgroundColor:isSelected ? [CPColor grayColor] : nil];
+    [self setFillColor:isSelected ? [CPColor grayColor] : [CPColor whiteColor]];
     [textField setTextColor:isSelected ? [CPColor whiteColor] : [CPColor blackColor]];
 }
 

@@ -50,7 +50,7 @@ OutputHandle = 2;
     [self setCornerRadius:5.0];
     //[self setBorderWidth:3.0];
     [self setBorderType:CPGrooveBorder];
-    [[self contentView] setBackgroundColor:[CPColor whiteColor]];
+    [self setFillColor:[CPColor whiteColor]];
     //[self setBorderColor:[CPColor redColor]];
     [self setPostsFrameChangedNotifications:YES];
     

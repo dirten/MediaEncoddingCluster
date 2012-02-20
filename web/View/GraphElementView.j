@@ -18,6 +18,9 @@ CPArray elements;
       elementView = [[NodeItemView alloc] initWithFrame:CGRectMakeZero()];
   [elementPrototype setView:elementView];
   [elementsView setItemPrototype:elementPrototype];
+  //[elementView setBorderColor:[CPColor blackColor]];
+  [elementView setFillColor:[CPColor whiteColor]];
+//  [[elementView contentView] setBackgroundColor:[CPColor whiteColor]];
 
   [self setDocumentView:elementsView];
   [self setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
