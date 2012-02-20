@@ -22,15 +22,16 @@ namespace org {
         }
         void RootRequestHandler::handle(HTTPServerRequest& request, HTTPServerResponse& response){
           std::string doc_root=org::esb::config::Config::get("web.docroot");
-          LOGDEBUG("DocRoot:"<<doc_root);
+          org::esb::io::File dr_file(doc_root);
+          LOGDEBUG("DocRoot:"<<dr_file.getPath());
           std::string uri=request.getURI();
           LOGDEBUG("URI"<<uri);
           if(uri=="/")
             uri+="index.html";
-          org::esb::io::File file(doc_root+uri);
+          org::esb::io::File file(dr_file.getPath()+uri);
           LOGDEBUG("RequestFile:"<<file.getPath());
           std::string data;
-          if(file.getPath().find(doc_root)!= string::npos){
+          if(file.getPath().find(dr_file.getPath())!= string::npos){
             LOGDEBUG("Path is in the Docroot");
             if(file.exists()){
               org::esb::io::FileInputStream fis(&file);
