@@ -193,6 +193,7 @@ int main(int argc, char * argv[]) {
         ("erlang", "")
         ("console,c", "")
         ("quiet", "")
+        ("docroot,d", "webserver document root")
         ;
     po::options_description all("all");
     setupDefaults();
@@ -405,6 +406,10 @@ int main(int argc, char * argv[]) {
        */
       //CodecFactory::free();
       Messenger::free();
+    }
+
+    if(vm.count("docroot")){
+      config::Config::setProperty("web.docroot", vm["docroot"].as<std::string>());
     }
 
     if (vm.count("run")) {
