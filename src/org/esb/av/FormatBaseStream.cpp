@@ -104,7 +104,7 @@ namespace org {
           ptrString[0] = 0;
         }
 
-        //vsnprintf(line + strlen(line), sizeof (line) - strlen(line), fmt, vl);
+        vsnprintf(line + strlen(line), sizeof (line) - strlen(line), fmt, vl);
         vsnprintf(ptrLine, sizeof (ptrLine), fmt, vl);
         /*
                 print_prefix = line[strlen(line) - 1] == '\n';
@@ -192,7 +192,7 @@ namespace org {
           avcodec_register_all();
           av_register_all();
           //av_log_set_callback(mhive_log_default_callback);
-          //av_log_set_callback(FormatBaseStream::mhive_log_default_callback);
+          av_log_set_callback(FormatBaseStream::mhive_log_default_callback);
           av_log_set_level(AV_LOG_VERBOSE);
           //av_register_protocol2(&test_protocol, sizeof (URLProtocol));
           av_lockmgr_register(lockmgr);

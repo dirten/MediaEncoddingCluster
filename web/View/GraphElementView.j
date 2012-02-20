@@ -22,6 +22,9 @@ CPArray elements;
   [elementView setFillColor:[CPColor whiteColor]];
 //  [[elementView contentView] setBackgroundColor:[CPColor whiteColor]];
 
+  //[elementView setBackgroundColor:[CPColor yellowColor]];
+
+
   [self setDocumentView:elementsView];
   [self setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
   [self setAutohidesScrollers:YES];

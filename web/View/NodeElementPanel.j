@@ -149,11 +149,12 @@ NodeElementDragType = "NodeElementDragType";
 
 - (void)setRepresentedObject:(id)anObject
 {
-  CPLog.debug("ElementViewBounds"+CGStringFromRect([self bounds]));
-  CPLog.debug("ElementViewBounds"+CGStringFromRect([anObject bounds]));
+  //CPLog.debug("ElementViewBounds"+CGStringFromRect([self bounds]));
+  //CPLog.debug("ElementViewBounds"+CGStringFromRect([anObject bounds]));
   //[self setBounds:[anObject bounds]];
   //[self setCornerRadius:3.0];
   //[self setBackgroundColor:[CPColor whiteColor]];
+  //[self setBackgroundColor:[CPColor yellowColor]];
   //[self setBorderWidth:3.0];
   //return;
   //[self setBorderType:CPGrooveBorder];

@@ -4,7 +4,7 @@
 RefreshNodeEditorView=@"RefreshNodeEditorView";
 NodeEditorViewChanged=@"NodeEditorViewChanged";
 
-@implementation NodeEditorView: CPScrollView
+@implementation NodeEditorView: CPView
 {
   CPArray elements @accessors(property=elements);
   id currentSelectedElement;
@@ -518,14 +518,14 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
   var graphicCount = [elements count];
   if(graphicCount == 0)return;
 
-  var context = [[CPGraphicsContext currentContext] graphicsPort];  
+  //var context = [[CPGraphicsContext currentContext] graphicsPort];  
   
   for (var index = graphicCount - 1; index>=0; index--) 
 	{
     var element = [elements objectAtIndex:index];
-    CGContextSaveGState(context);
+    //CGContextSaveGState(context);
 		[element drawContentsInView:self inRect:rect];
-
+    
     if(NO){/*this scope is for handle drawing*/
       var targets=[element outputElements];
       var targetCount = [targets count];
@@ -544,7 +544,7 @@ NodeEditorViewChanged=@"NodeEditorViewChanged";
         [self drawLinkFrom:startPoint to:endPoint withColor:color];
       }
     }
-		CGContextRestoreGState(context);
+		//CGContextRestoreGState(context);
   }
   for (var index = graphicCount - 1; index>=0; index--) 
 	{

@@ -72,8 +72,8 @@ StopWaitingSpinner = "StopWaitingSpinner";
     - (void)applicationDidFinishLaunching:(CPNotification)aNotification
     {
       
-      //if (typeof(LPCrashReporter) != "undefined")
-        //  [LPCrashReporter sharedErrorLogger];
+      if (typeof(LPCrashReporter) != "undefined")
+          [LPCrashReporter sharedErrorLogger];
       /*
       [[CPNotificationCenter defaultCenter]
           addObserver:self

@@ -49,7 +49,7 @@ OutputHandle = 2;
     labelText="";
     [self setCornerRadius:5.0];
     //[self setBorderWidth:3.0];
-    [self setBorderType:CPGrooveBorder];
+    [self setBorderType:CPLineBorder];
     [self setFillColor:[CPColor whiteColor]];
     //[self setBorderColor:[CPColor redColor]];
     [self setPostsFrameChangedNotifications:YES];
@@ -191,19 +191,16 @@ OutputHandle = 2;
  dragLocation = location;
  }
  */
--(void)drawContentsInView:(id)view inRect:(id)aRect
+- (void)drawRect:(CPRect)rect
 {
-  CPLog.debug("-(void)drawContentsInView:(id)view inRect:(id)aRect:"+CPStringFromRect(aRect)+" progress="+progress);
-  //[label drawRect:aRect];
+  [super drawRect:rect];
   var context = [[CPGraphicsContext currentContext] graphicsPort];
   var bounds=[self bounds];
-  
-  //[self setBackgroundColor:[CPColor whiteColor]];
-  //[[self contentView] setBackgroundColor:[CPColor whiteColor]];
-  
-  //CPLog.debug("ContentRect:"+CPStringFromRect(bounds));
+  CGContextSetStrokeColor(context, [CPColor blackColor]);
+  //CGContextSetFillColor(context, [CPColor blackColor]);
   inHandlePoint=CPPointMake(bounds.origin.x-GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
   outHandlePoint=CPPointMake(bounds.origin.x+bounds.size.width+GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
+  //CGContextStrokeLineSegments(context, [CGPointMake(inHandlePoint.x+5, inHandlePoint.y-20), CGPointMake(outHandlePoint.x-5, outHandlePoint.y-20)]);
   
 	var path = CGPathCreateMutable();
 	
@@ -214,13 +211,48 @@ OutputHandle = 2;
   CGContextBeginPath(context);
 	CGContextAddPath(context, path);
 	CGContextClosePath(context);
-  CGContextSetStrokeColor(context, [CPColor blackColor]);
 	CGContextStrokePath(context);
   
+}
+
+-(void)drawContentsInView:(id)view inRect:(id)aRect
+{
+  CPLog.debug("-(void)drawContentsInView:(id)view inRect:(id)aRect:"+CPStringFromRect(aRect)+" progress="+progress);
+  //[label drawRect:aRect];
+  //var context = [[CPGraphicsContext currentContext] graphicsPort];
+  //CGContextSetStrokeColor(context, [CPColor blackColor]);
+  //CGContextSetFillColor(context, [CPColor blackColor]);
+  var bounds=[self bounds];
+  
+  //[self setBackgroundColor:[CPColor whiteColor]];
+  //[[self contentView] setBackgroundColor:[CPColor whiteColor]];
+  
+  //CPLog.debug("ContentRect:"+CPStringFromRect(bounds));
+  inHandlePoint=CPPointMake(bounds.origin.x-GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
+  outHandlePoint=CPPointMake(bounds.origin.x+bounds.size.width+GraphicHandleHalfWidth, bounds.origin.y+(bounds.size.height/2));
+  
+  //var context = [[CPGraphicsContext currentContext] graphicsPort];
+  //CGContextSetStrokeColor(context, [CPColor blackColor]);
+  //CGContextStrokeLineSegments(context, [CGPointMake(inHandlePoint.x+5, inHandlePoint.y-20), CGPointMake(outHandlePoint.x-5, outHandlePoint.y-20)]);
+
+  /*
+	var path = CGPathCreateMutable();
+	
+	CGPathMoveToPoint(path, nil, inHandlePoint.x+5, inHandlePoint.y-20);
+  //[path setLineWidth:1];
+	CGPathAddLineToPoint(path, nil, outHandlePoint.x+15, outHandlePoint.y-20);
+	CGPathCloseSubpath(path);
+  CGContextBeginPath(context);
+	CGContextAddPath(context, path);
+	CGContextClosePath(context);
+	CGContextStrokePath(context);
+  */
   //var label=[CPTextField labelWithTitle:name];
-  var label_origin=CPPointMake(inHandlePoint.x+15,inHandlePoint.y-40);
+  var label_origin=CPPointMake(inHandlePoint.x+5,inHandlePoint.y-50);
   [_taskLabelField setFrameOrigin:label_origin];
   [_taskLabelField setTextColor:[CPColor blackColor]];
+  [_taskLabelField setFont:[CPFont boldSystemFontOfSize:12.0]];
+  [_taskLabelField sizeToFit];
   //[label setNeedsDisplay:YES];
   [view addSubview:_taskLabelField];
   
