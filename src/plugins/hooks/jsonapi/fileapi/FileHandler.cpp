@@ -113,6 +113,7 @@ public:
   }
 
   void buildFile(std::string path, std::string name, bool isDir, JSONNode & node) {
+    LOGDEBUG("FileName:"<<name);
     JSONNode data(JSON_NODE);
     data.push_back(JSONNode("path", path));
     data.push_back(JSONNode("name", name));
