@@ -109,7 +109,7 @@ public:
   }
 
   void buildFile(org::esb::io::File & file, JSONNode & node) {
-    buildFile(file.getFilePath(),file.getFileName(),file.isDirectory());
+    buildFile(file.getFilePath(),file.getFileName(),file.isDirectory(), node);
   }
 
   void buildFile(std::string path, std::string name, bool isDir, JSONNode & node) {
