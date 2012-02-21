@@ -15,6 +15,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/exception.hpp>
 
+
 class JSONAPI_EXPORT FileHandler : public org::esb::core::WebHookPlugin {
 public:
 
@@ -105,6 +106,7 @@ public:
     }
     //res.setContentType("text/plain");
     std::ostream& ostr = res.send();
+    
     ostr << result.write_formatted();
   }
 
