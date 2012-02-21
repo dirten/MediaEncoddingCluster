@@ -23,6 +23,7 @@ var SharedController;
 -(id)makerequest:(CPString)url method:(CPString)method json:(id)json
 {   var request = [CPURLRequest requestWithURL:url];
     [request setHTTPMethod:method];
+    [request setValue:@"application/x-www-form-urlencoded; charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
     CPLog.debug("request payload:"+JSON.stringify(json));
     if(json!=undefined){
       [request setHTTPBody:JSON.stringify(json)];
