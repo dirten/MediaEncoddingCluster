@@ -43,7 +43,11 @@ public:
       std::string uuid = req.get("uuid");
       org::esb::io::File f(req.get("hive.graph_path") + "/" + uuid + ".graph");
       if (f.exists()) {
+        //GraphPartHandler partHandler;
+        //Poco::Net::HTMLForm form(req, req.stream(), partHandler);
+        
         std::string data;
+        //LOGDEBUG("PART_DATA:"<<data);
         Poco::StreamCopier::copyToString(req.stream(), data);
         if (libjson::is_valid(data)) {
           JSONNode inode = libjson::parse(data);
@@ -69,7 +73,7 @@ public:
       res.setStatusAndReason(res.HTTP_BAD_REQUEST, "Request size to big!");
     }
     //throw Poco::Net::HTTPException("Tets Exception",res.HTTP_BAD_REQUEST);
-    res.setContentType("text/plain");
+    //res.setContentType("text/plain");
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();
   }

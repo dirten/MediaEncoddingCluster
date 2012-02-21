@@ -16,7 +16,8 @@ JSONResult::JSONResult(org::esb::core::http::HTTPServerRequest&req):_req(req){
   s.push_back(JSONNode("message",""));
   s.push_back(JSONNode("requestID",_uuid));
   push_back(s);
-  _req.response().setContentType("application/json");
+  
+  _req.response().setContentType("application/javascript; charset=UTF-8");
 }
 
 void JSONResult::setData(JSONNode & data){

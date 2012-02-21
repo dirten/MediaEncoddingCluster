@@ -66,7 +66,7 @@ public:
         result.setStatus(res.HTTP_BAD_REQUEST, ex.what());
       }
     }
-    res.setContentType("text/plain");
+    //res.setContentType("text/plain");
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();
   }

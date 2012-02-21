@@ -38,13 +38,15 @@ namespace org {
               fis.read(data);
               LOGDEBUG("Jspos:"<<file.getExtension());
               if(file.getExtension().find("js")!= string::npos){
-                response.setContentType("application/javascript");
+                response.setContentType("application/javascript; charset=UTF-8");
               }else if(file.getExtension().find("png")!= string::npos){
                 response.setContentType("image/png");
               }else if(file.getExtension().find("html")!= string::npos){
-                response.setContentType("text/html");
+                response.setContentType("text/html; charset=UTF-8");
+              }else if(file.getExtension().find("sj")!= string::npos){
+                response.setContentType("application/javascript; charset=UTF-8");
               }else{
-                response.setContentType("text/plain");      
+                response.setContentType("text/plain; charset=UTF-8");      
               }
             }else{
               response.setStatusAndReason(response.HTTP_NOT_FOUND,"Resource not found");

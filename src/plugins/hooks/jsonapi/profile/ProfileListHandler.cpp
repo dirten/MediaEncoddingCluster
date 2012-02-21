@@ -27,7 +27,7 @@ public:
     }
     result.setData(c);
 
-    res.setContentType("text/plain");
+    //res.setContentType("text/plain");
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();
   }

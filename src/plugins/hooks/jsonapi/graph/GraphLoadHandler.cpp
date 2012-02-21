@@ -40,7 +40,7 @@ public:
       result.setStatus(res.HTTP_NOT_FOUND, "flow not found");
     }
     std::ostream& ostr = res.send();
-    res.setContentType("text/plain");
+    //res.setContentType("text/plain");
     ostr << result.write_formatted();
   }
 };
