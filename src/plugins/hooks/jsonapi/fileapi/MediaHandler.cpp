@@ -13,7 +13,7 @@ public:
     JSONResult result(req);
     if (req.has("1")) {
       std::string path = req.get("1");
-#ifdef __LINUX__
+#ifndef __WIN32__
       if(path.find("/")!=0){
         path="/"+path;
       }

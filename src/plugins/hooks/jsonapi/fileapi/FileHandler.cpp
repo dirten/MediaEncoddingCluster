@@ -22,66 +22,68 @@ public:
     JSONResult result(req);
     if (req.has("1")) {
       std::string path = req.get("1");
-	  LOGDEBUG("Path find /:"<<path.find("/"));
-      if(path.find("/")!=0){
-        path="/"+path;
+      LOGDEBUG("Path find /:" << path.find("/"));
+#ifndef __WIN32__
+      if (path.find("/") != 0) {
+        path = "/" + path;
       }
+#endif
 
       result.push_back(JSONNode("path", path));
       org::esb::io::File f(path);
-      
-      
-      
-      
-#ifdef WIN32
-	  LOGDEBUG("Windows Path:"<<path);
-    if (path == "/") {
-		LOGDEBUG("building drives for windows");
-      std::set<std::string> drives;
-      drives.insert("A:\\");
-      drives.insert("B:\\");
-      drives.insert("C:\\");
-      drives.insert("D:\\");
-      drives.insert("E:\\");
-      drives.insert("F:\\");
-      drives.insert("G:\\");
-      drives.insert("H:\\");
-      drives.insert("I:\\");
-      drives.insert("J:\\");
-      drives.insert("K:\\");
-      drives.insert("L:\\");
-      drives.insert("M:\\");
-      drives.insert("N:\\");
-      drives.insert("O:\\");
-      drives.insert("P:\\");
-      drives.insert("Q:\\");
-      drives.insert("R:\\");
-      drives.insert("S:\\");
-      drives.insert("T:\\");
-      drives.insert("U:\\");
-      drives.insert("V:\\");
-      drives.insert("W:\\");
-      drives.insert("X:\\");
-      drives.insert("Y:\\");
-      drives.insert("Z:\\");
-      JSONNode array(JSON_ARRAY);
-      array.set_name("data");
-      for (std::set<std::string>::iterator d = drives.begin(); d != drives.end(); d++) {
-        try {
-          boost::filesystem::file_status fs = boost::filesystem::status(*d);
 
-          if (boost::filesystem::status_known(fs) && boost::filesystem::exists(*d)) {
-			  buildFile(org::esb::io::File(*d), array);
+
+
+
+#ifdef WIN32
+      LOGDEBUG("Windows Path:" << path);
+      if (path == "/") {
+        LOGDEBUG("building drives for windows");
+        std::set<std::string> drives;
+        drives.insert("A:\\");
+        drives.insert("B:\\");
+        drives.insert("C:\\");
+        drives.insert("D:\\");
+        drives.insert("E:\\");
+        drives.insert("F:\\");
+        drives.insert("G:\\");
+        drives.insert("H:\\");
+        drives.insert("I:\\");
+        drives.insert("J:\\");
+        drives.insert("K:\\");
+        drives.insert("L:\\");
+        drives.insert("M:\\");
+        drives.insert("N:\\");
+        drives.insert("O:\\");
+        drives.insert("P:\\");
+        drives.insert("Q:\\");
+        drives.insert("R:\\");
+        drives.insert("S:\\");
+        drives.insert("T:\\");
+        drives.insert("U:\\");
+        drives.insert("V:\\");
+        drives.insert("W:\\");
+        drives.insert("X:\\");
+        drives.insert("Y:\\");
+        drives.insert("Z:\\");
+        JSONNode array(JSON_ARRAY);
+        array.set_name("data");
+        for (std::set<std::string>::iterator d = drives.begin(); d != drives.end(); d++) {
+          try {
+            boost::filesystem::file_status fs = boost::filesystem::status(*d);
+
+            if (boost::filesystem::status_known(fs) && boost::filesystem::exists(*d)) {
+              buildFile((*d),(*d),true, array);
+            }
+          } catch (boost::filesystem::filesystem_error & er) {
+            LOGINFO(er.what());
           }
-        } catch (boost::filesystem::filesystem_error & er) {
-          LOGINFO(er.what());
         }
-      }
-      result.push_back(array);
-      result.setStatus(res.HTTP_OK, "");
-    } else
+        result.push_back(array);
+        result.setStatus(res.HTTP_OK, "");
+      } else
 #endif
-      if (f.isDirectory()) {
+        if (f.isDirectory()) {
         org::esb::io::FileList flist = f.listFiles();
         JSONNode array(JSON_ARRAY);
         array.set_name("data");
@@ -107,10 +109,14 @@ public:
   }
 
   void buildFile(org::esb::io::File & file, JSONNode & node) {
+    buildFile(file.getFilePath(),file.getFileName(),file.isDirectory());
+  }
+
+  void buildFile(std::string path, std::string name, bool isDir, JSONNode & node) {
     JSONNode data(JSON_NODE);
-    data.push_back(JSONNode("path", file.getFilePath()));
-    data.push_back(JSONNode("name", file.getFileName()));
-    data.push_back(JSONNode("directory", file.isDirectory()));
+    data.push_back(JSONNode("path", path));
+    data.push_back(JSONNode("name", name));
+    data.push_back(JSONNode("directory", isDir));
     node.push_back(data);
   }
 
