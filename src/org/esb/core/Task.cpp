@@ -6,6 +6,8 @@
  */
 
 #include "Task.h"
+using namespace org::esb::av;
+
 namespace org {
   namespace esb {
     namespace core {
@@ -84,6 +86,25 @@ namespace org {
       std::string Task::getSink(){
         return _sink;
       }
+
+      void Task::addSourceTask(Ptr<Task> t)
+      {
+        _sources.push_back(t);
+      }
+
+      void Task::addSinkTask(Ptr<Task> t)
+      {
+        _sinks.push_back(t);
+      }
+
+      void Task::pushBuffer(Ptr<Packet>)
+      {
+      }
+
+      void Task::pullBuffer(Ptr<Packet>)
+      {
+      }
+
       void Task::setSource(std::string s){
         _source=s;
       }

@@ -12,6 +12,8 @@
 #include "org/esb/lang/Ptr.h"
 #include "exports.h"
 #include "boost/function.hpp"
+#include "org/esb/util/Depricated.h"
+#include "org/esb/av/Packet.h"
 #ifdef ERROR
 #undef ERROR
 #endif
@@ -57,8 +59,12 @@ namespace org {
         /**in case of tasks, these are file-source/sink*/
         virtual std::string getSource();
         virtual std::string getSink();
-        virtual void setSource(std::string);
-        virtual void setSink(std::string);
+        DEPRECATED(virtual void setSource(std::string));
+        DEPRECATED(virtual void setSink(std::string));
+        virtual void addSourceTask(Ptr<Task>);
+        virtual void addSinkTask(Ptr<Task>);
+        virtual void pushBuffer(Ptr<org::esb::av::Packet>);
+        virtual void pullBuffer(Ptr<org::esb::av::Packet>);
         virtual int getPadTypes();
         virtual void setUUID(std::string);
         virtual std::string getUUID();
@@ -76,6 +82,9 @@ namespace org {
         std::string _uuid;
         boost::function<void (Task*)> statusObserver;
         boost::function<void (Task*)> progressObserver;
+        std::list<Ptr<Task> > _sources;
+        std::list<Ptr<Task> > _sinks;
+
         //bool _isCanceled;
       };
     }

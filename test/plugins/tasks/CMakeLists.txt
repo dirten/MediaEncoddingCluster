@@ -5,12 +5,17 @@ include_directories (${MYSQL_DIR}/include)
 
 
 add_executable (DownloadTaskTest DownloadTaskTest.cpp)
+add_executable (HTTPPullSourceTest HTTPPullSourceTest.cpp)
 add_executable (EncodingTaskTest EncodingTaskTest.cpp)
 add_executable (ExportTaskTest ExportTaskTest.cpp)
 
+target_link_libraries (HTTPPullSourceTest core)
 target_link_libraries (DownloadTaskTest downloadtask)
 target_link_libraries (EncodingTaskTest encodingtask exporttask)
 target_link_libraries (ExportTaskTest encodingtask exporttask)
+
+get_target_property(HTTPPULLSOURCE_PLUGIN httppullsource LOCATION)
+ADD_DEFINITIONS(-DHTTPPULLSOURCE_PLUGIN="${HTTPPULLSOURCE_PLUGIN}")
 
 get_target_property(DOWNLOADTASK_PLUGIN downloadtask LOCATION)
 ADD_DEFINITIONS(-DDOWNLOADTASK_PLUGIN="${DOWNLOADTASK_PLUGIN}")

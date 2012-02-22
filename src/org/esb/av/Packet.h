@@ -12,15 +12,17 @@
 #include <boost/serialization/split_member.hpp>
 #include <deque>
 #include "org/esb/util/Log.h"
+#include "org/esb/lang/Ptr.h"
 #include "TimeStamp.h"
 #include "Duration.h"
+//#include "Decoder.h"
 #include "exports.h"
 //using namespace boost;
 //    class AVPacket;
 namespace org {
   namespace esb {
     namespace av {
-
+      class Decoder;
       class AV_EXPORT Packet {
         classlogger("org.esb.av.Packet")
       public:
@@ -147,6 +149,7 @@ namespace org {
 
         AVPacket * packet;
         int _quality;
+        Ptr<Decoder>_decoder;
       };
       typedef boost::shared_ptr<org::esb::av::Packet> PacketPtr;
       typedef std::deque<PacketPtr> PacketListPtr;

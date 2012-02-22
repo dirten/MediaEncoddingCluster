@@ -34,7 +34,7 @@ public:
           data.set_name("data");
           data.push_back(JSONNode("path", infile.getFilePath()));
           data.push_back(JSONNode("name", infile.getFileName()));
-          data.push_back(JSONNode("size", fis.getFileSize()));
+          //data.push_back(JSONNode("size", fis.getFileSize()));
           if (fis.getFormatContext()) {
             if (fis.getFormatContext()->iformat)
               data.push_back(JSONNode("format", fis.getFormatContext()->iformat->name));

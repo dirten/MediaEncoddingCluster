@@ -110,7 +110,8 @@ namespace encodingtask {
       org::esb::lang::Thread::sleep2(1 * 1000);
     }
   }
-
+  void EncodingTask::pushBuffer(Ptr<Packet>p){
+  }
   void EncodingTask::execute() {
     Task::execute();
     //go(EncodingTask::observeProgress,this);

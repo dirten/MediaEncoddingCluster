@@ -191,6 +191,7 @@ namespace org {
           /* register all codecs, demux and protocols */
           avcodec_register_all();
           av_register_all();
+          avformat_network_init();
           //av_log_set_callback(mhive_log_default_callback);
           av_log_set_callback(FormatBaseStream::mhive_log_default_callback);
           av_log_set_level(AV_LOG_VERBOSE);

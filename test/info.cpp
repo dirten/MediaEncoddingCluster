@@ -28,8 +28,8 @@ namespace bla {
       sscanf(argv[2], "%llu", &packet_start);
     if (argc > 3)
       packet_count = atoi(argv[3]);
-    File file(argv[1]);
-    FormatInputStream fis(&file);
+    //File file(argv[1]);
+    FormatInputStream fis(argv[1]);
     fis.dumpFormat();
     AVFormatContext * f = fis.getFormatContext();
     /*

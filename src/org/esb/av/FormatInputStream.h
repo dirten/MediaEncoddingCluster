@@ -41,7 +41,7 @@ namespace org {
         //                DEPRICATED(AVFormatContext * getFormatContext());
         AVFormatContext * getFormatContext();
         long long int available(bool isBlocking = false);
-        long long int getFileSize();
+        //DEPRICATED long long int getFileSize();
         bool isValid();
         int read(unsigned char * buffer, int length);
         int read(vector<unsigned char>&buffer);
@@ -59,7 +59,7 @@ namespace org {
         void init(std::string filename);
       private:
         std::string _sourceFile;
-        org::esb::io::File * _file_object;
+        //org::esb::io::File * _file_object;
         bool _isValid;
         //                std::map<int, int> _streamMap;
         //                std::map<int, int> _streamReverseMap;

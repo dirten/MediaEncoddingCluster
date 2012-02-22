@@ -31,6 +31,7 @@ namespace encodingtask {
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> getProcessUnit();
     void putProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>);
     int getPadTypes();
+    void pushBuffer(Ptr<Packet> p);
   private:
     std::string _srcuristr;
     std::string _partition;

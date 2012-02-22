@@ -178,10 +178,10 @@ namespace org {
               LOGDEBUG("Parameter:" << parameter);
               task = org::esb::core::PluginRegistry::getInstance()->createTask(node["name"].as_string(), para);
               //task->getContext()->_props["job"]=job;
-              task->prepare();
-              if (task->getStatus() == org::esb::core::Task::ERROR) {
-                throw GraphException("task prepare results in an error");
-              }
+              //task->prepare();
+              //if (task->getStatus() == org::esb::core::Task::ERROR) {
+              //  throw GraphException("task prepare results in an error");
+              //}
               elements[node["uid"].as_string()] = new Graph::Element();
               elements[node["uid"].as_string()]->setTask(task);
               elements[node["uid"].as_string()]->parameter = parameter;
