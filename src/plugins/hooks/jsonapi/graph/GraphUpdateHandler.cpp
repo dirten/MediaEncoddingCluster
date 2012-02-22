@@ -47,8 +47,10 @@ public:
         //Poco::Net::HTMLForm form(req, req.stream(), partHandler);
         
         std::string data;
-        //LOGDEBUG("PART_DATA:"<<data);
-        Poco::StreamCopier::copyToString(req.stream(), data);
+        req.stream()>>data;
+        //Poco::StreamCopier::copyToString(req.stream(), data);
+        //std::wstring wdata(data.begin(), data.end());
+        std::cout<<data<<std::endl;
         if (libjson::is_valid(data)) {
           JSONNode inode = libjson::parse(data);
           if (inode.contains("uuid")) {
