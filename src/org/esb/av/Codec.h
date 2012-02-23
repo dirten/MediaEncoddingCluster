@@ -59,6 +59,7 @@ class SampleFormat;*/
         Codec(const CodecID codecId, int mode = DECODER);
         Codec(AVStream * stream, int mode = DECODER);
         Codec(int mode = DECODER);
+        Codec(std::map<std::string, std::string>,int mode = DECODER);
         virtual ~Codec();
         /**
          *

@@ -3,7 +3,9 @@
 add_library (encodingtask SHARED
   EncodingTask.cpp
   Packetizer.cpp
+  StreamPacketizer.cpp
   ProcessUnitBuilder.cpp
+  StreamProcessUnitBuilder.cpp
   ProcessUnitData.cpp
 )
 

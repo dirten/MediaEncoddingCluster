@@ -26,6 +26,7 @@ namespace org {
         enum STATUS {
           NONE,
           PREPARE,
+          PREPARED,
           EXECUTE,
           CLEANUP,
           DONE,

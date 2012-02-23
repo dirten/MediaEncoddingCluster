@@ -48,6 +48,7 @@ namespace org {
             public:
                 Encoder(CodecID id);
                 Encoder(std::string name);
+                Encoder(std::map<std::string, std::string>);
                 Encoder();
                 ~Encoder();
                 virtual bool open();

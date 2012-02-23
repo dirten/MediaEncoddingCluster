@@ -6,6 +6,7 @@
  */
 
 #include "Task.h"
+#include "org/esb/util/Foreach.h"
 using namespace org::esb::av;
 
 namespace org {
@@ -95,14 +96,21 @@ namespace org {
       void Task::addSinkTask(Ptr<Task> t)
       {
         _sinks.push_back(t);
+        //t->addSourceTask(this);
       }
 
-      void Task::pushBuffer(Ptr<Packet>)
+      void Task::pushBuffer(Ptr<Packet>p)
       {
+        foreach(Ptr<Task> t, _sinks){
+          t->pushBuffer(p);
+        }
       }
 
-      void Task::pullBuffer(Ptr<Packet>)
+      void Task::pullBuffer(Ptr<Packet>p)
       {
+        foreach(Ptr<Task> t, _sources){
+          t->pullBuffer(p);
+        }
       }
 
       void Task::setSource(std::string s){

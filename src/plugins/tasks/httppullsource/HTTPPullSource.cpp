@@ -42,6 +42,19 @@ namespace plugin {
     if (_srcuristr.length() == 0) {
       throw org::esb::core::TaskException("No Source Url given!");
     }
+    /*openning the input stream*/
+    _fis=new org::esb::av::FormatInputStream(_srcuristr);
+    if(!_fis->isValid()){
+      throw org::esb::core::TaskException("Input URI targets not a valid Media File!");
+    }
+
+    /*preprocessing the input streams*/
+    int scount = _fis->getStreamCount();
+    for (int a = 0; a < scount; a++) {
+      /*getting the input stream from the file*/
+      org::esb::av::AVInputStream* is = _fis->getAVStream(a);
+      _decs[is->stream_identifier]=new org::esb::av::Decoder(is);
+    }
   }
 
   int HTTPPullSource::getPadTypes() {
@@ -50,28 +63,14 @@ namespace plugin {
 
   void HTTPPullSource::execute() {
     Task::execute();
-    /*@TODO: implement the datasource*/
-    org::esb::av::FormatInputStream fis(_srcuristr);
 
-    if(!fis.isValid()){
-      throw org::esb::core::TaskException("Input URI targets not a valid Media File!");
-    }
 
-    /*preprocessing the input streams*/
-    int scount = fis.getStreamCount();
-    std::map<int, Ptr<org::esb::av::Decoder> >decs;
-    for (int a = 0; a < scount; a++) {
-      /*getting the input stream from the file*/
-      org::esb::av::AVInputStream* is = fis.getAVStream(a);
-      decs[is->stream_identifier]=new org::esb::av::Decoder(is);
-    }
-
-    org::esb::av::PacketInputStream pis(&fis);
+    org::esb::av::PacketInputStream pis(_fis.get());
     org::esb::av::Packet * packet;
     while((packet = pis.readPacket()) != NULL){
       Ptr<org::esb::av::Packet> pPacket(packet);
-      pPacket->_decoder=decs[pPacket->getStreamIndex()];
-      pushBuffer(pPacket);
+      pPacket->_decoder=_decs[pPacket->getStreamIndex()];
+      Task::pushBuffer(pPacket);
     }
   }
 

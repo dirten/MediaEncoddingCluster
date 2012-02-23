@@ -30,7 +30,9 @@
 #include <assert.h>
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringUtil.h"
+#include "org/esb/util/Foreach.h"
 #include "FormatBaseStream.h"
+#include "CodecPropertyTransformer.h"
 
 
 using namespace std;
@@ -129,6 +131,49 @@ namespace org {
         _frame_rate.num = 0;
         _frame_rate.den = 0;
         fifo = NULL;
+      }
+
+      Codec::Codec(std::map<std::string, std::string> data,int mode): _mode(mode)
+      {
+        _dict=NULL;
+        _codec_resolved = false;
+        _opened = false;
+        _mode = mode;
+        setCodecOption("codec_name", data["codec_id"]);
+        LOGDEBUG("Search for codec:"<<data["codec_id"]);
+        ctx = avcodec_alloc_context();
+        _codec = findCodecByName(data["codec_id"], mode);
+        if (_codec) {
+          LOGDEBUG("Code Name:" << _codec->name);
+          avcodec_get_context_defaults2(ctx, _codec->type);
+          ctx->codec_id = _codec->id;
+          setContextDefaults();
+        }else{
+          LOGERROR("Codec Not Found:"<<data["codec_id"]);
+        }
+        fifo = NULL;
+        _pre_allocated = false;
+        _frame_rate.num = 0;
+        _frame_rate.den = 0;
+
+        //ctx->codec_id = data["codec_id"];
+  /*
+          findCodec(mode);
+          if (_codec_resolved) {
+            //avcodec_get_context_defaults3(ctx, _codec);
+            avcodec_get_context_defaults2(ctx, _codec->type);
+            //LOGERROR("error in setting defaults for the codec");
+
+          }
+*/
+        org::esb::av::CodecPropertyTransformer transformer(data);
+        std::map<std::string, std::string> params = transformer.getCodecProperties();
+        typedef std::map<std::string, std::string> Parameter;
+        foreach(Parameter::value_type param, params) {
+          LOGDEBUG("Parameter key=" << param.first << " value=" << param.second);
+          setCodecOption(param.first, param.second);
+          //sdata.pass2encoder->setCodecOption(param.first, param.second);
+        }
       }
 
       Codec::Codec(std::string codec_name, int mode) {

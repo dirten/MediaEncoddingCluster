@@ -16,6 +16,7 @@
 #include "org/esb/util/Queue.h"
 #include "ProcessUnitData.h"
 #include "StreamData.h"
+#include "StreamPacketizer.h"
 #include "org/esb/core/Task.h"
 
 namespace encodingtask {
@@ -66,6 +67,12 @@ namespace encodingtask {
     InOutStreamMap _in_out_stream_map;
     std::string _target_file;
     std::string _format;
+
+    /*new pushbuffer implementation*/
+    std::map<int,StreamPacketizer> _packetizer;
+    Ptr<Encoder> _video_encoder;
+    Ptr<Encoder> _audio_encoder;
+
 
   };
   //  REGISTER_TASK("DownloadTask", DownloadTask)

@@ -7,6 +7,7 @@
 #include "org/esb/db/hivedb.hpp"
 #include <cstdlib>
 
+#include "org/esb/av/FormatBaseStream.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/config/config.h"
@@ -49,26 +50,15 @@ int main(int argc, char** argv) {
   if(argc<3){
     std::cout << "usage: "<<argv[0]<<" <inputfile_path> <profile_path> "<<std::endl;
   }
-    
+    org::esb::av::FormatBaseStream::initialize();
 
   /*Loading profile from disk*/
   org::esb::io::FileInputStream fis(argv[2]);
   std::string profile_data;
   fis.read(profile_data);
+  org::esb::core::PluginRegistry::getInstance()->load(HTTPPULLSOURCE_PLUGIN);
   org::esb::core::PluginRegistry::getInstance()->load(ENCODINGTASK_PLUGIN);
   org::esb::core::PluginRegistry::getInstance()->initPlugins();
-  std::map<std::string, std::string> cfg;
-  //cfg["encodingtask.src"]=std::string(MEC_SOURCE_DIR).append("/test.dvd");
-  cfg["encodingtask.src"]=std::string(argv[1]);
-  //cfg["encodingtask.src"] = "/media/video/ChocolateFactory.ts";
-  cfg["encodingtask.profiledata"] = profile_data;
-  cfg["task.uuid"] = "0815";
-  db::HiveDb database("sqlite3", "database=test.db");
-  database.drop();
-  database.create();
-  db::Job job(database);
-  job.uuid = (std::string)org::esb::util::PUUID();
-  job.update();
 
   partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
   boost::asio::ip::tcp::endpoint e1(boost::asio::ip::address_v4::from_string("127.0.0.1"), 6000);
@@ -92,13 +82,25 @@ int main(int argc, char** argv) {
   
   
   {
-    Ptr<org::esb::core::Task> task = org::esb::core::PluginRegistry::getInstance()->createTask("EncodingTask", cfg);
-    //task->getContext()->_props["job"] = job;
-    if (task) {
-      task->prepare();
-      task->execute();
-      task->cleanup();
+    std::map<std::string, std::string> cfg;
+
+    cfg["data"]="{\"url\":\"/media/video/big_buck_bunny_480p_surround-fix.avi\"}";
+    Ptr<org::esb::core::Task> pulltask = org::esb::core::PluginRegistry::getInstance()->createTask("HTTPPullSource", cfg);
+
+    cfg["data"] = profile_data;
+    Ptr<org::esb::core::Task> enctask = org::esb::core::PluginRegistry::getInstance()->createTask("EncodingTask", cfg);
+    pulltask->addSinkTask(enctask);
+
+    if(pulltask){
+      pulltask->prepare();
     }
+
+    if(enctask){
+      enctask->getContext()->merge(pulltask->getContext());
+      enctask->prepare();
+    }
+
+    pulltask->execute();
   }
   //return 0;
   while (man->getSize("global") > 0) {
@@ -113,23 +115,10 @@ int main(int argc, char** argv) {
   t5.join();
    
   /*encoding is ready*/
-  std::map<std::string, std::string> expcfg;
-  //cfg["encodingtask.src"]=std::string(MEC_SOURCE_DIR).append("/test.dvd");
-  expcfg["exporttask.trg"] = "/tmp/ChocolateFactory.mp4";
-  expcfg["exporttask.format"] = "mp4";
-  expcfg["task.uuid"] = "0815";
-  {
-    Ptr<org::esb::core::Task> task = org::esb::core::PluginRegistry::getInstance()->createTask("ExportTask", expcfg);
-    if (task) {
-      task->prepare();
-      task->execute();
-      task->cleanup();
-    }
-  }
   org::esb::core::PluginRegistry::close();
 
   org::esb::config::Config::close();
-  database.drop();
+  //database.drop();
   return 0;
 }
 

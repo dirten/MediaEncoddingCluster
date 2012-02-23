@@ -151,7 +151,7 @@ namespace org {
         int _quality;
         Ptr<Decoder>_decoder;
       };
-      typedef boost::shared_ptr<org::esb::av::Packet> PacketPtr;
+      typedef Ptr<org::esb::av::Packet> PacketPtr;
       typedef std::deque<PacketPtr> PacketListPtr;
 
     }

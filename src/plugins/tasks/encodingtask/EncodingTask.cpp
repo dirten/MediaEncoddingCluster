@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   DownloadTask.cpp
  * Author: HoelscJ
  *
@@ -39,46 +39,63 @@ namespace encodingtask {
     _task_uuid = getUUID(); //getContext()->getEnvironment<std::string > ("task.uuid");
     _target_file = getSink();
 
-    //std::string profile = getContext()->getEnvironment<std::string > ("encodingtask.profile");
-    std::string profiledata = getContext()->getEnvironment<std::string > ("encodingtask.profiledata");
-    if (profiledata.length() == 0)
-      profiledata = getContext()->getEnvironment<std::string > ("data");
+    std::string profiledata = getContext()->getEnvironment<std::string > ("data");
+    //try {
+    org::esb::hive::PresetReaderJson reader(profiledata);
+    _codecs = reader.getCodecList();
+    _filters = reader.getFilterList();
+    _preset = reader.getPreset();
+    _format = _preset["id"];
+
+    //Ptr<Task> itask=_sources.front();
+
     /*
-    if (getContext()->contains("job")) {
-      _job = Ptr<db::Job > (new db::Job(getContext()->get<db::Job > ("job")));
+    if (_codecs["video"].count("width") == 0 ||
+    atoi(_codecs["video"]["width"].c_str()) == 0 ||
+    _codecs["video"].count("height") == 0 ||
+    atoi(_codecs["video"]["height"].c_str()) == 0) {
+      _codecs["video"]["width"]=org::esb::util::StringUtil::toString(sdata.decoder->getWidth());
+      _codecs["video"]["height"]=org::esb::util::StringUtil::toString(sdata.decoder->getHeight());
+      LOGDEBUG("setting video size from input to : "<<_codecs["video"]["width"]<<"*"<<_codecs["video"]["height"]);
+    }
+    if (_codecs["video"].count("time_base") == 0 || _codecs["video"]["time_base"].length() == 0) {
+      std::ostringstream oss;
+      oss << sdata.decoder->getFrameRate().den << "/" << sdata.decoder->getFrameRate().num;
+      _codecs["video"]["time_base"]= oss.str();
+      LOGDEBUG("setting framerate from input to : "<<oss.str());
+    }
+  */
+    _video_encoder=new Encoder(_codecs["video"]);
+    if(!_video_encoder->open()){
+      throw org::esb::core::TaskException("could not open video encoder");
+    }
+    _audio_encoder=new Encoder(_codecs["audio"]);
+    if(!_audio_encoder->open()){
+      throw org::esb::core::TaskException("could not open audio encoder");
+    }
+
+    getContext()->set<std::string > ("profile.name", _preset["name"]);
+    getContext()->set<std::string > ("video.codec", _codecs["video"]["codec_id"]);
+    if (_codecs["video"].count("multipass") && _codecs["video"]["multipass"] == "1") {
+      getContext()->set<std::string > ("video.passes", "2");
     } else {
-      setStatus(Task::ERROR);
-      setStatusMessage("there is no associated job to this encoding task");
-      //return;
-    }*/
-    try {
-      org::esb::hive::PresetReaderJson reader(profiledata);
-      _codecs = reader.getCodecList();
-      _filters = reader.getFilterList();
-      _preset = reader.getPreset();
-      _format = _preset["id"];
+      getContext()->set<std::string > ("video.passes", "1");
+    }
+    getContext()->set<std::string > ("video.bitrate", _codecs["video"]["b"]);
+    getContext()->set<std::string > ("video.height", _codecs["video"]["height"]);
+    getContext()->set<std::string > ("video.width", _codecs["video"]["width"]);
 
-      getContext()->set<std::string > ("profile.name", _preset["name"]);
-      getContext()->set<std::string > ("video.codec", _codecs["video"]["codec_id"]);
-      if (_codecs["video"].count("multipass") && _codecs["video"]["multipass"] == "1") {
-        getContext()->set<std::string > ("video.passes", "2");
-      } else {
-        getContext()->set<std::string > ("video.passes", "1");
-      }
-      getContext()->set<std::string > ("video.bitrate", _codecs["video"]["b"]);
-      getContext()->set<std::string > ("video.height", _codecs["video"]["height"]);
-      getContext()->set<std::string > ("video.width", _codecs["video"]["width"]);
+    getContext()->set<std::string > ("audio.codec", _codecs["audio"]["codec_id"]);
+    getContext()->set<std::string > ("audio.bitrate", _codecs["audio"]["ab"]);
+    getContext()->set<std::string > ("audio.channels", _codecs["audio"]["ac"]);
+    getContext()->set<std::string > ("audio.samples", _codecs["audio"]["ar"]);
 
-      getContext()->set<std::string > ("audio.codec", _codecs["audio"]["codec_id"]);
-      getContext()->set<std::string > ("audio.bitrate", _codecs["audio"]["ab"]);
-      getContext()->set<std::string > ("audio.channels", _codecs["audio"]["ac"]);
-      getContext()->set<std::string > ("audio.samples", _codecs["audio"]["ar"]);
-
-    } catch (std::exception & ex) {
+    /*} catch (std::exception & ex) {
       setStatus(Task::ERROR);
       setStatusMessage(std::string("Error while parsing JSON Profile:").append(ex.what()));
       throw org::esb::core::TaskException(getStatusMessage());
-    }
+    }*/
+    setStatus(PREPARED);
   }
   void EncodingTask::cleanup(){
     partitionservice::PartitionManager::getInstance()->resetFps();
@@ -110,8 +127,27 @@ namespace encodingtask {
       org::esb::lang::Thread::sleep2(1 * 1000);
     }
   }
+
   void EncodingTask::pushBuffer(Ptr<Packet>p){
+    if(p->_decoder){
+      if(!getStatus()==PREPARED){
+        setStatusMessage(std::string("Task is not in CONFIGURED State"));
+        throw org::esb::core::TaskException(getStatusMessage());
+      }
+      if(!_packetizer.count(p->getStreamIndex())){
+        _packetizer[p->getStreamIndex()]=StreamPacketizer(0,p->_decoder);
+      }
+
+      StreamPacketizer & pti=_packetizer[p->getStreamIndex()];
+      if (pti.putPacket(p)) {
+        /*when the packet count per ProcessUnit reached*/
+        PacketListPtr list = pti.removePacketList();
+        LOGDEBUG("Process PU");
+      }
+    }
+    //Task::pushBuffer(p);
   }
+
   void EncodingTask::execute() {
     Task::execute();
     //go(EncodingTask::observeProgress,this);
@@ -260,7 +296,7 @@ namespace encodingtask {
       /**
        * building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
        */
-      boost::shared_ptr<Packet> pPacket(packet);
+      org::esb::av::PacketPtr pPacket(packet);
       /**
        * if the actuall stream not mapped then discard this and continue with next packet
        */

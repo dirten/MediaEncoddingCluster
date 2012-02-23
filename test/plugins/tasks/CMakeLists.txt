@@ -8,11 +8,13 @@ add_executable (DownloadTaskTest DownloadTaskTest.cpp)
 add_executable (HTTPPullSourceTest HTTPPullSourceTest.cpp)
 add_executable (EncodingTaskTest EncodingTaskTest.cpp)
 add_executable (ExportTaskTest ExportTaskTest.cpp)
+add_executable (StreamPacketizerTest StreamPacketizerTest.cpp)
 
 target_link_libraries (HTTPPullSourceTest core)
 target_link_libraries (DownloadTaskTest downloadtask)
 target_link_libraries (EncodingTaskTest encodingtask exporttask)
 target_link_libraries (ExportTaskTest encodingtask exporttask)
+target_link_libraries (StreamPacketizerTest encodingtask)
 
 get_target_property(HTTPPULLSOURCE_PLUGIN httppullsource LOCATION)
 ADD_DEFINITIONS(-DHTTPPULLSOURCE_PLUGIN="${HTTPPULLSOURCE_PLUGIN}")

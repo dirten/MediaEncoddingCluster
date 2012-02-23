@@ -53,6 +53,10 @@ Encoder::Encoder(std::string name) : Codec(name, Codec::ENCODER) {
   _frame_counter = 0;
 }
 
+Encoder::Encoder(std::map<std::string, std::string> data): Codec(data, Codec::ENCODER)
+{
+}
+
 Encoder::Encoder() : Codec(Codec::ENCODER) {
   _pos = NULL;
   _sink = NULL;
