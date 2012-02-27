@@ -16,7 +16,7 @@ namespace org {
 
         Ptr(T * elem) : boost::shared_ptr<T>(elem) {
         }
-        //Ptr(boost::shared_ptr<T>&d):boost::shared_ptr<T>(d){}
+        Ptr(boost::shared_ptr<T>d):boost::shared_ptr<T>(d){}
       };
     }
   }

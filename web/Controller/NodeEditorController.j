@@ -121,12 +121,14 @@ testfunc();
     var url="/api/v1/flow";
     if(loadedUUID)
       url+="/"+loadedUUID;
-    var request = [CPURLRequest requestWithURL:url];
-    [request setHTTPMethod:"POST"];
-    [request setHTTPBody:JSON.stringify(data)];
-    var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
-    CPLog.debug("Graph Save Result"+[result rawString]);
-    loadedUUID=[result JSONObject].uuid;
+    var result=[[MHiveApiController sharedController] updateFlow:data uuid:loadedUUID];
+
+    //var request = [CPURLRequest requestWithURL:url];
+    //[request setHTTPMethod:"POST"];
+    //[request setHTTPBody:JSON.stringify(data)];
+    //var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+    CPLog.debug("Graph Save Result"+JSON.stringify(result));
+    loadedUUID=result.uuid;
     [[notification object] refresh];
   }
   [growl pushNotificationWithTitle:@"Graph Saved" message:"Graph "+loadedName+" successful saved"];

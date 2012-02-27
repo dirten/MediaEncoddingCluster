@@ -14,6 +14,7 @@
 #include "boost/function.hpp"
 #include "org/esb/util/Depricated.h"
 #include "org/esb/av/Packet.h"
+#include "org/esb/av/Codec.h"
 #ifdef ERROR
 #undef ERROR
 #endif
@@ -66,6 +67,7 @@ namespace org {
         virtual void addSinkTask(Ptr<Task>);
         virtual void pushBuffer(Ptr<org::esb::av::Packet>);
         virtual void pullBuffer(Ptr<org::esb::av::Packet>);
+        //virtual void setBufferCodec(int, Ptr<org::esb::av::Codec>);
         virtual int getPadTypes();
         virtual void setUUID(std::string);
         virtual std::string getUUID();
@@ -85,7 +87,7 @@ namespace org {
         boost::function<void (Task*)> progressObserver;
         std::list<Ptr<Task> > _sources;
         std::list<Ptr<Task> > _sinks;
-
+        //std::map<int, Ptr<org::esb::av::Codec> > _buffer_codec;
         //bool _isCanceled;
       };
     }

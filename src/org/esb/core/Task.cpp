@@ -15,10 +15,10 @@ namespace org {
 
       Task::Task() {
         setStatus(NONE);
-        _progress_length=0;
-        _progress=0;
+        _progress_length = 0;
+        _progress = 0;
         setProgress(0);
-        
+
       }
 
       Task::~Task() {
@@ -32,7 +32,7 @@ namespace org {
         setStatus(EXECUTE);
 
       }
-      
+
       void Task::cleanup() {
         setStatus(CLEANUP);
         setStatus(DONE);
@@ -41,111 +41,116 @@ namespace org {
       void Task::interrupt() {
         setStatus(CANCEL);
       }
-      
+
       int Task::getProgress() {
-        return (_progress*100)/_progress_length;
+        return (_progress * 100) / _progress_length;
       }
-      
+
       void Task::setProgress(unsigned int p) {
-        if(p!=_progress){
-          _progress=p;//(p*100)/_progress_length;
-          if(progressObserver)
+        if (p != _progress) {
+          _progress = p; //(p*100)/_progress_length;
+          if (progressObserver)
             progressObserver(this);
         }
       }
-      
+
       void Task::setProgressLength(unsigned int l) {
-        _progress_length=l;
+        _progress_length = l;
       }
 
       unsigned int Task::getProgressLength() {
         return _progress_length;
       }
-            
-      void Task::setStatus(STATUS s){
-        _status=s;
-        if(statusObserver)
+
+      void Task::setStatus(STATUS s) {
+        _status = s;
+        if (statusObserver)
           statusObserver(this);
       }
-      Task::STATUS  Task::getStatus(){
+
+      Task::STATUS Task::getStatus() {
         return _status;
       }
-      
-      void Task::setStatusMessage(std::string s){
-        _status_message=s;
-         if(statusObserver)
+
+      void Task::setStatusMessage(std::string s) {
+        _status_message = s;
+        if (statusObserver)
           statusObserver(this);
       }
-      std::string  Task::getStatusMessage(){
+
+      std::string Task::getStatusMessage() {
         return _status_message;
       }
 
-      std::string Task::getSource(){
+      std::string Task::getSource() {
         return _source;
       }
-      
-      std::string Task::getSink(){
+
+      std::string Task::getSink() {
         return _sink;
       }
 
-      void Task::addSourceTask(Ptr<Task> t)
-      {
+      void Task::addSourceTask(Ptr<Task> t) {
         _sources.push_back(t);
       }
 
-      void Task::addSinkTask(Ptr<Task> t)
-      {
+      void Task::addSinkTask(Ptr<Task> t) {
         _sinks.push_back(t);
         //t->addSourceTask(this);
       }
 
-      void Task::pushBuffer(Ptr<Packet>p)
-      {
-        foreach(Ptr<Task> t, _sinks){
+      void Task::pushBuffer(Ptr<Packet>p) {
+
+        foreach(Ptr<Task> t, _sinks) {
           t->pushBuffer(p);
         }
       }
 
-      void Task::pullBuffer(Ptr<Packet>p)
-      {
-        foreach(Ptr<Task> t, _sources){
+      void Task::pullBuffer(Ptr<Packet>p) {
+
+        foreach(Ptr<Task> t, _sources) {
           t->pullBuffer(p);
         }
       }
+      /*
+      void Task::setBufferCodec(int stream, Ptr<Codec> codec) {
+        _buffer_codec[stream]=codec;
+      }
+       */
+      void Task::setSource(std::string s) {
+        _source = s;
+      }
 
-      void Task::setSource(std::string s){
-        _source=s;
+      void Task::setSink(std::string s) {
+        _sink = s;
       }
-      
-      void Task::setSink(std::string s){
-        _sink=s;
-      }
-      
-      int Task::getPadTypes(){
+
+      int Task::getPadTypes() {
         return Task::NOPAD;
       }
-      
-      void Task::setUUID(std::string uuid){
-        _uuid=uuid;
-      }
-      
-      std::string Task::getUUID(){
-        return _uuid;
-      }
-      void Task::addStatusObserver( boost::function<void (Task*)> func){
-        statusObserver=func;
-      }
-      
-      void Task::addProgressObserver( boost::function<void (Task*)> func){
-        progressObserver=func;      
+
+      void Task::setUUID(std::string uuid) {
+        _uuid = uuid;
       }
 
-      void Task::cancel(){
+      std::string Task::getUUID() {
+        return _uuid;
+      }
+
+      void Task::addStatusObserver(boost::function<void (Task*) > func) {
+        statusObserver = func;
+      }
+
+      void Task::addProgressObserver(boost::function<void (Task*) > func) {
+        progressObserver = func;
+      }
+
+      void Task::cancel() {
         setStatus(CANCEL);
       }
-      
-      bool Task::isCanceled(){
-        return _status==CANCEL;
+
+      bool Task::isCanceled() {
+        return _status == CANCEL;
       }
     }
   }

@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   PartitionManager.h
  * Author: HoelscJ
  *
@@ -51,7 +51,10 @@ namespace partitionservice {
         int getSize(std::string partition);
         int getFps();
         void resetFps();
+        void addCollector( boost::function<void (boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit,boost::asio::ip::tcp::endpoint ep)> func);
+
       private:
+        boost::function<void (boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit,boost::asio::ip::tcp::endpoint ep)> _func;
         /*
         class Endpoint{
         public:
@@ -121,6 +124,7 @@ namespace partitionservice {
         EndpointStreamMap _ep_stream;
         EndpointList _endpoint_pool;
         boost::mutex _partition_mutex;
+        boost::mutex _collector_mutex;
         std::map<Endpoint,boost::shared_ptr<org::esb::hive::job::ProcessUnit> > _ep_pu;
         std::map<Endpoint,Partition > _ep_part;
         int _fps;

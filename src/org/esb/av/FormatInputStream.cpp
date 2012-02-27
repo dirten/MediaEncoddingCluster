@@ -94,6 +94,7 @@ namespace org {
       }
 
       FormatInputStream::~FormatInputStream() {
+        LOGDEBUG("FormatInputStream::~FormatInputStream()")
         close();
         //delete _file_object;
       }

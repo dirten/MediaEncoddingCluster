@@ -27,7 +27,11 @@ int main(int argc, char** argv) {
   std::map<std::string, std::string> cfg;
   //http://trac.codergrid.de/repository/test.mp4
   //cfg["data"]="{\"url\":\"http://mirrorblender.top-ix.org/peach/bigbuckbunny_movies/big_buck_bunny_480p_h264.mov\"}";
-  cfg["data"]="{\"url\":\"/media/video/big_buck_bunny_480p_surround-fix.avi\"}";
+  if(argc>1){
+    cfg["data"]=std::string("{\"url\":\"")+argv[1]+"\"}";
+  }else{
+    cfg["data"]="{\"url\":\"/media/video/big_buck_bunny_480p_surround-fix.avi\"}";
+  }
   //cfg["downloadtask.trg"]="/tmp/index.html";
   try{
     Ptr<org::esb::core::Task> task = org::esb::core::PluginRegistry::getInstance()->createTask("HTTPPullSource", cfg);

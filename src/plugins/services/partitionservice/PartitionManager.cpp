@@ -50,42 +50,42 @@ namespace partitionservice {
   PartitionManager::Result PartitionManager::clearPartition(std::string partition) {
     PartitionManager::Result result = PartitionManager::OK;
     if (_partitions.count(partition) > 0) {
-      foreach(Stream s, _partitions[partition].getStreams()) {
-        LOGDEBUG("look into stream:" << s.getId());
-        //Stream & str = _partitions[partition].getStream(s.getId());
-        foreach(Endpoint endin, s.getEndpoints()) {
-          _ep_stream.erase(endin);
-          _ep_pu.erase(endin);
-        }
+        foreach(Stream s, _partitions[partition].getStreams()) {
+            LOGDEBUG("look into stream:" << s.getId());
+            //Stream & str = _partitions[partition].getStream(s.getId());
+            foreach(Endpoint endin, s.getEndpoints()) {
+                _ep_stream.erase(endin);
+                _ep_pu.erase(endin);
+              }
+          }
+        _partitions[partition].clear();
+      }else{
+        result=PartitionManager::NOT_EXIST;
       }
-      _partitions[partition].clear();
-    }else{
-      result=PartitionManager::NOT_EXIST;
-    }
     return result;
   }
 
   PartitionManager::Result PartitionManager::joinPartition(std::string name, Endpoint ep, Type type) {
     PartitionManager::Result result = PartitionManager::OK;
     if (!_partitions.count(name) > 0) {
-      return PartitionManager::NOT_EXIST;
+        return PartitionManager::NOT_EXIST;
 
-    }
+      }
 
     foreach(PartitionMap::value_type partition, _partitions) {
 
-      LOGDEBUG("Partition")
-      foreach(Endpoint end, partition.second.getEndpoints()) {
-        if (end == ep)
-          return PartitionManager::ENDPOINT_ALLREADY_JOINED;
+        LOGDEBUG("Partition")
+            foreach(Endpoint end, partition.second.getEndpoints()) {
+          if (end == ep)
+            return PartitionManager::ENDPOINT_ALLREADY_JOINED;
 
+        }
       }
-    }
     if (_partitions.count(name) > 0) {
-      _partitions[name].addEndpoint(Endpoint(ep));
-    } else {
-      result = PartitionManager::NOT_EXIST;
-    }
+        _partitions[name].addEndpoint(Endpoint(ep));
+      } else {
+        result = PartitionManager::NOT_EXIST;
+      }
     return result;
   }
 
@@ -98,10 +98,10 @@ namespace partitionservice {
     //LOGDEBUG("_ep_pu size "<<partition<<"="<<result);
     if (_partitions.count(partition) > 0) {
 
-      foreach(Stream s, _partitions[partition].getStreams()) {
-        result += s.getSize();
+        foreach(Stream s, _partitions[partition].getStreams()) {
+            result += s.getSize();
+          }
       }
-    }
     //LOGDEBUG("partition size "<<partition<<"="<<result);
     return result;
   }
@@ -116,53 +116,53 @@ namespace partitionservice {
     _ep_stream.erase(ep);
     
     if(_ep_pu.count(ep)){
-      Type t;
-      if (_ep_pu[ep]->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
-        t = partitionservice::PartitionManager::TYPE_AUDIO;
-      } else if (_ep_pu[ep]->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
-        t = partitionservice::PartitionManager::TYPE_VIDEO;
+        Type t;
+        if (_ep_pu[ep]->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+            t = partitionservice::PartitionManager::TYPE_AUDIO;
+          } else if (_ep_pu[ep]->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
+            t = partitionservice::PartitionManager::TYPE_VIDEO;
+          }
+        putProcessUnit(name.length()==0?"global":name,_ep_pu[ep],t);
+        _ep_pu.erase(ep);
       }
-      putProcessUnit(name.length()==0?"global":name,_ep_pu[ep],t);
-      _ep_pu.erase(ep);
-    }
     foreach(PartitionMap::value_type & partition, _partitions) {
 
-      foreach(Endpoint end, partition.second.getEndpoints()) {
-        if (end == ep) {
-          LOGDEBUG("partition.second.removeEndpoint(end);");
-          partition.second.removeEndpoint(end);
-          result = PartitionManager::OK;
-          return result;
+        foreach(Endpoint end, partition.second.getEndpoints()) {
+            if (end == ep) {
+                LOGDEBUG("partition.second.removeEndpoint(end);");
+                partition.second.removeEndpoint(end);
+                result = PartitionManager::OK;
+                return result;
 
-        }
-      }
-      return result;
-      foreach(Stream str, partition.second.getStreams()) {
-        Stream & s = partition.second.getStream(str.getId());
-        
-        foreach(Endpoint end, s.getEndpoints()) {
-          LOGDEBUG("Endpoint" << ep << " from stream" << str.getId());
-          if (end == ep) {
-            LOGDEBUG("Size:" << s.getEndpoints().size());
-            s.getEndpoints().remove(end);
-            LOGDEBUG("Size:" << s.getEndpoints().size());
-            partition.second.removeEndpoint(end);
-            result = PartitionManager::OK;
-
-            LOGDEBUG("Endpoint" << ep << " from stream" << str.getId() << " removed");
+              }
           }
-        }
+        return result;
+        foreach(Stream str, partition.second.getStreams()) {
+            Stream & s = partition.second.getStream(str.getId());
+
+            foreach(Endpoint end, s.getEndpoints()) {
+                LOGDEBUG("Endpoint" << ep << " from stream" << str.getId());
+                if (end == ep) {
+                    LOGDEBUG("Size:" << s.getEndpoints().size());
+                    s.getEndpoints().remove(end);
+                    LOGDEBUG("Size:" << s.getEndpoints().size());
+                    partition.second.removeEndpoint(end);
+                    result = PartitionManager::OK;
+
+                    LOGDEBUG("Endpoint" << ep << " from stream" << str.getId() << " removed");
+                  }
+              }
+          }
       }
-    }
     return result;
   }
 
   PartitionManager::Result PartitionManager::createPartition(std::string name, int size) {
     PartitionManager::Result result = PartitionManager::OK;
     if (_partitions.count(name) == 0) {
-      //Partition part(name);
-      _partitions[name] = Partition(name); //part;
-    } else
+        //Partition part(name);
+        _partitions[name] = Partition(name); //part;
+      } else
       result = PartitionManager::EXIST;
     return result;
   }
@@ -170,21 +170,21 @@ namespace partitionservice {
   PartitionManager::Result PartitionManager::deletePartition(std::string name) {
     PartitionManager::Result result = PartitionManager::OK;
     if (_partitions.count(name) > 0) {
-      bool to_delete = true;
+        bool to_delete = true;
 
-      foreach(PartitionMap::value_type partition, _partitions) {
+        foreach(PartitionMap::value_type partition, _partitions) {
 
-        foreach(Stream stream, partition.second.getStreams()) {
-          if (stream.getEndpoints().size() > 0)
-            to_delete = false;
-        }
-      }
-      if (to_delete) {
-        _partitions.erase(name);
-      } else {
-        result = PartitionManager::NOT_EMPTY;
-      }
-    } else
+            foreach(Stream stream, partition.second.getStreams()) {
+                if (stream.getEndpoints().size() > 0)
+                  to_delete = false;
+              }
+          }
+        if (to_delete) {
+            _partitions.erase(name);
+          } else {
+            result = PartitionManager::NOT_EMPTY;
+          }
+      } else
       result = PartitionManager::NOT_EXIST;
     return result;
   }
@@ -198,172 +198,178 @@ namespace partitionservice {
     std::string stream_id = org::esb::config::Config::get("hive.tmp_path") + "/jobs/" + unit->getJobId() + "/" + stream_index;
 
     if (_partitions.count(partition) > 0) {
-      Partition & part = _partitions[partition];
-      if (!part.containStream(stream_id)) {
-        Stream::TYPE stype = type == TYPE_AUDIO ? Stream::ONE_FOR_ALL : Stream::ONE_FOR_ONE;
-        part.addStream(Stream(stream_id, stype));
+        Partition & part = _partitions[partition];
+        if (!part.containStream(stream_id)) {
+            Stream::TYPE stype = type == TYPE_AUDIO ? Stream::ONE_FOR_ALL : Stream::ONE_FOR_ONE;
+            part.addStream(Stream(stream_id, stype));
+          }
+        Stream & stream = part.getStream(stream_id);
+        //Ptr<org::esb::hive::job::ProcessUnit>u(unit);
+        stream.enqueue(unit);
+        LOGDEBUG("Stream size="<<stream.getSize());
       }
-      Stream & stream = part.getStream(stream_id);
-      //Ptr<org::esb::hive::job::ProcessUnit>u(unit);
-      stream.enqueue(unit);
-      LOGDEBUG("Stream size="<<stream.getSize());
-    }
   }
 
   boost::shared_ptr<org::esb::hive::job::ProcessUnit>PartitionManager::getProcessUnit(boost::asio::ip::tcp::endpoint ep) {
     LOGDEBUG("Enter PartitionManager::getProcessUnit");
-    boost::mutex::scoped_lock partition_get_lock(_partition_mutex);
+    //boost::mutex::scoped_lock partition_get_lock(_partition_mutex);
 
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> result;
     LOGDEBUG("getProcessUnit Endpoint:" << ep);
     /*when the endpoint is associated to a stream*/
-    if (_ep_stream.count(ep)) {
-      LOGDEBUG("Endpoint:" << ep << " Stream:" << _ep_stream[ep].getId() << " Size:" << _ep_stream[ep].getSize());
-      result = _ep_stream[ep].dequeue();
-    } else {
+    if (_ep_stream.count(ep)&&_ep_stream[ep].getSize()) {
+        LOGDEBUG("Endpoint:" << ep << " Stream:" << _ep_stream[ep].getId() << " Size:" << _ep_stream[ep].getSize());
+        result = _ep_stream[ep].dequeue();
+      } else {
 
-      /*search for the next partition that have streams with no endpoints*/
-      foreach(PartitionMap::value_type & partition, _partitions) {
-        LOGDEBUG("look into partition:" << partition.first);
+        /*search for the next partition that have streams with no endpoints*/
+        foreach(PartitionMap::value_type & partition, _partitions) {
+            LOGDEBUG("look into partition:" << partition.first);
 
-        foreach(Stream s, partition.second.getStreams()) {
-          LOGDEBUG("look into stream:" << s.getId());
-          Stream & str = partition.second.getStream(s.getId());
-          if (str.getEndpoints().size() == 0) {
-            LOGDEBUG("adding endpoint" << ep << " to stream:" << str.getId());
-            str.addEndpoint(ep);
-            result = str.dequeue();
-            _ep_stream[ep] = str;
-            break;
-          } else {
-            LOGDEBUG("EndpointSize=" << str.getEndpoints().size());
+            foreach(Stream s, partition.second.getStreams()) {
+                LOGDEBUG("look into stream:" << s.getId());
+                Stream & str = partition.second.getStream(s.getId());
+                if (str.getEndpoints().size() == 0&&str.getSize()) {
+                    LOGDEBUG("adding endpoint" << ep << " to stream:" << str.getId());
+                    str.addEndpoint(ep);
+                    result = str.dequeue();
+                    _ep_stream[ep] = str;
+                    break;
+                  } else {
+                    LOGDEBUG("EndpointSize=" << str.getEndpoints().size());
+                  }
+              }
           }
-        }
       }
-    }
 
 
     /*when result will be also empty then it is a spare endpoint*/
     /*this will be associated to next free Stream which have not reached his max Endpoints*/
     if (!result) {
 
-      /*search for the next partition that have streams with no endpoints*/
-      foreach(PartitionMap::value_type & partition, _partitions) {
-        LOGDEBUG("look into partition:" << partition.first);
+        /*search for the next partition that have streams with no endpoints*/
+        foreach(PartitionMap::value_type & partition, _partitions) {
+            LOGDEBUG("look into partition:" << partition.first);
 
-        foreach(Stream s, partition.second.getStreams()) {
-          LOGDEBUG("look into stream:" << s.getId());
-          Stream & str = partition.second.getStream(s.getId());
-          if (str.getType() == Stream::ONE_FOR_ONE && str.getEndpoints().size() < str.getMaxEndpointCount()) {
-            LOGDEBUG("adding spare endpoint to stream:" << str.getId());
-            str.addEndpoint(ep);
-            result = str.dequeue();
-            _ep_stream[ep] = str;
-            break;
+            foreach(Stream s, partition.second.getStreams()) {
+                LOGDEBUG("look into stream:" << s.getId());
+                Stream & str = partition.second.getStream(s.getId());
+                if (str.getType() == Stream::ONE_FOR_ONE && str.getEndpoints().size() < str.getMaxEndpointCount()&&str.getSize()) {
+                    LOGDEBUG("adding spare endpoint to stream:" << str.getId());
+                    str.addEndpoint(ep);
+                    result = str.dequeue();
+                    _ep_stream[ep] = str;
+                    break;
+                  }
+              }
           }
-        }
       }
-    }
     /*when the last ProcessUnit will be picked up then delete the association between
      Endpoint and Stream and finaly delete the stream out of the partition*/
     if (result && result->_last_process_unit) {
-      LOGDEBUG("last process unit==true unit=" << result->_process_unit << " endpoint = " << ep);
+        LOGDEBUG("last process unit==true unit=" << result->_process_unit << " endpoint = " << ep);
 
-      foreach(PartitionMap::value_type & partition, _partitions) {
+        foreach(PartitionMap::value_type & partition, _partitions) {
 
-        foreach(Stream s, partition.second.getStreams()) {
-          Stream & str = partition.second.getStream(s.getId());
+            foreach(Stream s, partition.second.getStreams()) {
+                Stream & str = partition.second.getStream(s.getId());
 
-          foreach(Endpoint end, str.getEndpoints()) {
-            if (end == ep) {
+                foreach(Endpoint end, str.getEndpoints()) {
+                    if (end == ep) {
 
-              foreach(Endpoint endin, str.getEndpoints()) {
-                _ep_stream.erase(endin);
-                LOGDEBUG("Stream EndpointSize before:" << str.getEndpoints().size());
-                //str.getEndpoints().remove(endin);
-                LOGDEBUG("Stream EndpointSize after:" << str.getEndpoints().size());
-                LOGDEBUG("Remove endpoint:" << ep << " Stream:" << str.getId());
+                        foreach(Endpoint endin, str.getEndpoints()) {
+                            _ep_stream.erase(endin);
+                            LOGDEBUG("Stream EndpointSize before:" << str.getEndpoints().size());
+                            //str.getEndpoints().remove(endin);
+                            LOGDEBUG("Stream EndpointSize after:" << str.getEndpoints().size());
+                            LOGDEBUG("Remove endpoint:" << ep << " Stream:" << str.getId());
 
-                //LOGDEBUG("Partition EndpointSize before:"<<partition.second.getEndpoints());
+                            //LOGDEBUG("Partition EndpointSize before:"<<partition.second.getEndpoints());
+                          }
+                        str.getEndpoints().clear();
+                        partition.second.removeStream(str);
+                        //_ep_stream.erase(ep);
+                        break;
+                      }
+                  }
               }
-              str.getEndpoints().clear();
-              partition.second.removeStream(str);
-              //_ep_stream.erase(ep);
-              break;
-            }
           }
-        }
       }
-    }
     if(result){
-      if(_ep_pu.count(ep)){
-        LOGERROR("Endpoint is allready Processing a ProcessUnit");
+        if(_ep_pu.count(ep)){
+            LOGERROR("Endpoint is allready Processing a ProcessUnit");
+          }
+        if(result->_decoder->getCodecType()==AVMEDIA_TYPE_VIDEO){
+            TimingStruct d;
+            d.frames=result->_input_packets.size();
+            d.send=Poco::Timestamp();
+            _timingList[ep].push_back(d);
+          }
+        _ep_pu[ep]=result;
       }
-      if(result->_decoder->getCodecType()==AVMEDIA_TYPE_VIDEO){
-        TimingStruct d;
-        d.frames=result->_input_packets.size();
-        d.send=Poco::Timestamp();
-        _timingList[ep].push_back(d);
-      }
-      _ep_pu[ep]=result;
-    }
     LOGDEBUG("Leave PartitionManager::getProcessUnit");
     return result;
   }
 
   void PartitionManager::collectProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit,boost::asio::ip::tcp::endpoint ep) {
     if(_ep_pu.count(ep)){
-    std::string name = org::esb::config::Config::get("hive.tmp_path") +"/jobs/"+unit->getJobId()+"/collect";
-    name += "/";
+        boost::mutex::scoped_lock partition_get_lock(_collector_mutex);
+        if(_func)
+          {
+            _func(unit, ep);
+          }else{
+            std::string name = org::esb::config::Config::get("hive.tmp_path") +"/jobs/"+unit->getJobId()+"/collect";
+            name += "/";
 
-    org::esb::io::File outdir(name.c_str());
-    if(!outdir.exists())
-      outdir.mkdirs();
-    std::string uuid = org::esb::util::PUUID();
-    name += uuid;
-    org::esb::io::File out(name.c_str());
+            org::esb::io::File outdir(name.c_str());
+            if(!outdir.exists())
+              outdir.mkdirs();
+            std::string uuid = org::esb::util::PUUID();
+            name += uuid;
+            org::esb::io::File out(name.c_str());
 
-    org::esb::io::FileOutputStream fos(&out);
-    org::esb::io::ObjectOutputStream ous(&fos);
+            org::esb::io::FileOutputStream fos(&out);
+            org::esb::io::ObjectOutputStream ous(&fos);
 
-    ous.writeObject(unit);
-    ous.close();
-    
-	if(unit->getFps()>0&&unit->_output_packets.size()>0){
-        
-        std::cerr <<"hallo unit.fps="<<unit->getFps()<<std::endl;
-        //_pus++;
-        //_fps+=unit->getFps();
-      
-      if(_timingList.count(ep)){
-        _timingList[ep].back().recv=Poco::Timestamp();
+            ous.writeObject(unit);
+            ous.close();
 
-        int frames=0;
-        Poco::Timestamp start;
-        Poco::Timestamp end;
-        bool havedata=false;
-        foreach(TimingMap::value_type & timingmap, _timingList){
-          foreach(TimingList::value_type & timing, timingmap.second){
-            if(timing.send<start)
-              start=timing.send;
-            if(timing.recv>end)
-              end=timing.recv;
-            frames+=timing.frames;
-            havedata=true;
+            if(unit->getFps()>0&&unit->_output_packets.size()>0){
+
+                std::cerr <<"hallo unit.fps="<<unit->getFps()<<std::endl;
+                //_pus++;
+                //_fps+=unit->getFps();
+
+                if(_timingList.count(ep)){
+                    _timingList[ep].back().recv=Poco::Timestamp();
+
+                    int frames=0;
+                    Poco::Timestamp start;
+                    Poco::Timestamp end;
+                    bool havedata=false;
+                    foreach(TimingMap::value_type & timingmap, _timingList){
+                        foreach(TimingList::value_type & timing, timingmap.second){
+                            if(timing.send<start)
+                              start=timing.send;
+                            if(timing.recv>end)
+                              end=timing.recv;
+                            frames+=timing.frames;
+                            havedata=true;
+                          }
+                      }
+
+                    Poco::Timestamp::TimeDiff diff=end-start;
+                    LOGDEBUG("TimeDiff="<<diff);
+
+                    if(frames>0&&diff>0&&havedata)
+                      _fps=frames/((diff/1000/1000)>0?(diff/1000/1000):1);
+                  }
+              }
           }
-        }
-
-        Poco::Timestamp::TimeDiff diff=end-start;
-        LOGDEBUG("TimeDiff="<<diff);
-
-        if(frames>0&&diff>0&&havedata)
-          _fps=frames/((diff/1000/1000)>0?(diff/1000/1000):1);
-	  }
+        _ep_pu.erase(ep);
+      }else{
+        LOGERROR("Endpoint have not previously getting a ProcessUnit");
       }
-      _ep_pu.erase(ep);
-    }else{
-      LOGERROR("Endpoint have not previously getting a ProcessUnit");
-    }
   }
   
   int PartitionManager::getFps(){
@@ -375,6 +381,11 @@ namespace partitionservice {
     _fps=0;
     _pus=0;
     _timingList.clear();
+  }
+
+  void PartitionManager::addCollector(boost::function<void (boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit,boost::asio::ip::tcp::endpoint ep)> func)
+  {
+    _func=func;
   }
   /*
 

@@ -24,6 +24,7 @@ namespace plugin {
     void execute();
     org::esb::core::OptionsDescription getOptionsDescription();
     int getPadTypes();
+    void pushBuffer(Ptr<org::esb::av::Packet> p);
   private:
 
     struct StreamData {

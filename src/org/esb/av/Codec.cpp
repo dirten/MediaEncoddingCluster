@@ -57,8 +57,8 @@ namespace org {
        * @TODO: need to copy all attributes from context to our own context structure
        * because of a memleak in decoder->open()
        */
-
       /**
+
        * @WARNING: this construcotr is dangerous because ffmpeg would try to decode the first frames
        * in case to resolve stream information,
        * that may cause in an error like mpegvideo@warning: first frame is no keyframe
@@ -71,6 +71,7 @@ namespace org {
        * @param mode
        */
       Codec::Codec(AVStream * s, int mode) {
+
         _dict=NULL;
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         LOGWARN("!!!PLEASE DONT USE THIS CONSTRUCTOR!!!");
@@ -618,7 +619,7 @@ namespace org {
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
 
         if (_opened) {
-          LOGTRACE(((_mode == ENCODER) ? "Encoder" : "Decoder")<<" Codec::close(" << this << ")");
+          LOGDEBUG(((_mode == ENCODER) ? "Encoder" : "Decoder")<<" Codec::close(" << this << ")");
           //LOGINFO("Closing codec ("<<ctx->codec_id<<")");
           if (ctx) {
             if (ctx->extradata_size > 0 && !_pre_allocated) {
@@ -632,13 +633,14 @@ namespace org {
             av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);
         } else {
-          //logdebug("Codec not closed, because it was not opened:" << ctx->codec_id);
+            LOGDEBUG("Codec not closed, because it was not opened:" << ctx->codec_id<<"("<<this<<")");
         }
         if (ctx && !_pre_allocated) {
           av_free(ctx);
           ctx = NULL;
         }
         _opened = false;
+        LOGDEBUG("Codec closed:"<<this);
       }
 
       void Codec::setWidth(int w) {

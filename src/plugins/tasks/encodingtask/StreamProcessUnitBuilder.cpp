@@ -18,15 +18,15 @@ namespace encodingtask {
   StreamProcessUnitBuilder::~StreamProcessUnitBuilder() {
   }
 
-  boost::shared_ptr<org::esb::hive::job::ProcessUnit> StreamProcessUnitBuilder::build(org::esb::av::PacketListPtr list) {
+  boost::shared_ptr<org::esb::hive::job::ProcessUnit> StreamProcessUnitBuilder::build(org::esb::av::PacketListPtr list, Ptr<org::esb::av::Decoder> dec, Ptr<org::esb::av::Encoder> enc) {
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> u(new org::esb::hive::job::ProcessUnit());
     PacketPtr p = list.front();
     int idx = p->getStreamIndex();
     //u->_source_stream = _map_data[idx].instream;
     //u->_target_stream = _map_data[idx].outstream;
     u->_deinterlace = 1;//_map_data[idx].deinterlace;
-    u->_decoder = p->_decoder;
-    //u->_encoder = _map_data[idx].encoder;
+    u->_decoder = dec;
+    u->_encoder = enc;
     //u->_2passdecoder = _map_data[idx].pass2decoder;
     //u->_2passencoder = _map_data[idx].pass2encoder;
     u->_input_packets = std::list<boost::shared_ptr<Packet> >(list.begin(), list.end());

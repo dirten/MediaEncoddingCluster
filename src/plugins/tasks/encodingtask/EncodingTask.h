@@ -17,10 +17,14 @@
 #include "ProcessUnitData.h"
 #include "StreamData.h"
 #include "StreamPacketizer.h"
+#include "StreamProcessUnitBuilder.h"
 #include "org/esb/core/Task.h"
 
 namespace encodingtask {
-
+  struct classcomp {
+    bool operator() (boost::shared_ptr<org::esb::hive::job::ProcessUnit> l, boost::shared_ptr<org::esb::hive::job::ProcessUnit> r) const
+    {return l->_sequence<r->_sequence;}
+  };
   class ENCTASK_EXPORT EncodingTask : public org::esb::core::Task {
   public:
     EncodingTask();
@@ -53,6 +57,7 @@ namespace encodingtask {
     
     void exportFile();
     void observeProgress();
+    void collector(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit,boost::asio::ip::tcp::endpoint ep);
     static bool ptsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b);
     static bool dtsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b);
     std::list<ProcessUnitData> _pudata;
@@ -70,10 +75,13 @@ namespace encodingtask {
 
     /*new pushbuffer implementation*/
     std::map<int,StreamPacketizer> _packetizer;
+    std::map<int,StreamProcessUnitBuilder> _spu;
     Ptr<Encoder> _video_encoder;
     Ptr<Encoder> _audio_encoder;
-
-
+    //bool compare(boost::shared_ptr<org::esb::hive::job::ProcessUnit> l, boost::shared_ptr<org::esb::hive::job::ProcessUnit> r);
+    boost::mutex _partition_mutex;
+    std::set<boost::shared_ptr<org::esb::hive::job::ProcessUnit>, classcomp> _unit_list;
+    int lastSequence;
   };
   //  REGISTER_TASK("DownloadTask", DownloadTask)
 }

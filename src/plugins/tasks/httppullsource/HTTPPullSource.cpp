@@ -27,6 +27,12 @@ namespace plugin {
   }
 
   HTTPPullSource::~HTTPPullSource() {
+    LOGDEBUG("  HTTPPullSource::~HTTPPullSource()")
+    std::map<int, Ptr<org::esb::av::Decoder> >::iterator deit=_decs.begin();
+    for(;deit!=_decs.end();deit++){
+        (*deit).second->close();
+      }
+    //delete _fis;
   }
 
   void HTTPPullSource::prepare() {
@@ -53,8 +59,21 @@ namespace plugin {
     for (int a = 0; a < scount; a++) {
       /*getting the input stream from the file*/
       org::esb::av::AVInputStream* is = _fis->getAVStream(a);
-      _decs[is->stream_identifier]=new org::esb::av::Decoder(is);
+      _decs[is->index]=new org::esb::av::Decoder(is);
+      _decs[is->index]->open();
+
+      //setBufferCodec(is->stream_identifier,_decs[is->stream_identifier]);
     }
+    getContext()->set<std::map<int, Ptr<org::esb::av::Decoder> > >("decoder",_decs);
+    /*std::map<int, Ptr<org::esb::av::Decoder> >tmp=getContext()->get<std::map<int, Ptr<org::esb::av::Decoder> > >("decoder");
+    std::map<int, Ptr<org::esb::av::Decoder> >::iterator it1=_decs.begin();
+    for(;it1!=_decs.end();it1++){
+      LOGDEBUG("Decoder:"<<(*it1).first<<":"<<(*it1).second->toString());
+    }
+    std::map<int, Ptr<org::esb::av::Decoder> >::iterator it=tmp.begin();
+    for(;it!=tmp.end();it++){
+      LOGDEBUG("Decoder:"<<(*it).first<<":"<<(*it).second->toString());
+    }*/
   }
 
   int HTTPPullSource::getPadTypes() {
@@ -69,7 +88,7 @@ namespace plugin {
     org::esb::av::Packet * packet;
     while((packet = pis.readPacket()) != NULL){
       Ptr<org::esb::av::Packet> pPacket(packet);
-      pPacket->_decoder=_decs[pPacket->getStreamIndex()];
+      //pPacket->_decoder=_decs[pPacket->getStreamIndex()];
       Task::pushBuffer(pPacket);
     }
   }

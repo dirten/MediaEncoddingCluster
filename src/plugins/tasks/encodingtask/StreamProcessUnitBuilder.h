@@ -17,9 +17,9 @@ namespace encodingtask {
   public:
     StreamProcessUnitBuilder();
     virtual ~StreamProcessUnitBuilder();
-    boost::shared_ptr<org::esb::hive::job::ProcessUnit> build(org::esb::av::PacketListPtr);
+    boost::shared_ptr<org::esb::hive::job::ProcessUnit> build(org::esb::av::PacketListPtr, Ptr<org::esb::av::Decoder>, Ptr<org::esb::av::Encoder>);
   private:
-    //map<int, StreamData> & _map_data;
+    //StreamData _stream_data;
     double frameRateCompensateBase;
   };
 

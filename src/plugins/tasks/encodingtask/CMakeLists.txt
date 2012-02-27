@@ -7,6 +7,7 @@ add_library (encodingtask SHARED
   ProcessUnitBuilder.cpp
   StreamProcessUnitBuilder.cpp
   ProcessUnitData.cpp
+  ProcessUnitList.cpp
 )
 
 TARGET_LINK_LIBRARIES(encodingtask
