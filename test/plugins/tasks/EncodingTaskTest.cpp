@@ -26,18 +26,18 @@ void process(boost::asio::ip::tcp::endpoint e1, partitionservice::ProcessUnitCol
   boost::shared_ptr<org::esb::hive::job::ProcessUnit> pu;
   partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
   do {
-      pu = man->getProcessUnit(e1);
-      if (pu) {
-          //if(pu->getDecoder()->getCodecType()==AVMEDIA_TYPE_AUDIO)
-          //  org::esb::lang::Thread::sleep2(10*1000);
-          pu->process();
-          pu->_input_packets.clear();
-          man->collectProcessUnit(pu, e1);
-          //col.putProcessUnit(pu);
-        }else{
-          org::esb::lang::Thread::sleep2(1000);
-        }
-    } while (!toexit);
+    pu = man->getProcessUnit(e1);
+    if (pu) {
+      //if(pu->getDecoder()->getCodecType()==AVMEDIA_TYPE_AUDIO)
+      //  org::esb::lang::Thread::sleep2(10*1000);
+      pu->process();
+      pu->_input_packets.clear();
+      man->collectProcessUnit(pu, e1);
+      //col.putProcessUnit(pu);
+    }else{
+      org::esb::lang::Thread::sleep2(1000);
+    }
+  } while (!toexit);
 
 }
 
@@ -48,8 +48,8 @@ int main(int argc, char** argv) {
   org::esb::hive::Environment::build(argc,argv);
   Log::open();
   if(argc<3){
-      std::cout << "usage: "<<argv[0]<<" <inputfile_path> <profile_path> "<<std::endl;
-    }
+    std::cout << "usage: "<<argv[0]<<" <inputfile_path> <profile_path> "<<std::endl;
+  }
   org::esb::av::FormatBaseStream::initialize();
 
   /*Loading profile from disk*/
@@ -82,13 +82,13 @@ int main(int argc, char** argv) {
   boost::thread t5=go(process, e5, col);
   */
 
-{
+  {
     std::map<std::string, std::string> cfg;
     if(argc>1){
-        cfg["data"]=std::string("{\"url\":\"")+argv[1]+"\"}";
-      }else{
-        cfg["data"]="{\"url\":\"/media/video/big_buck_bunny_480p_surround-fix.avi\"}";
-      }
+      cfg["data"]=std::string("{\"url\":\"")+argv[1]+"\"}";
+    }else{
+      cfg["data"]="{\"url\":\"/media/video/big_buck_bunny_480p_surround-fix.avi\"}";
+    }
 
     //cfg["data"]="{\"url\":\"/media/video/big_buck_bunny_480p_surround-fix.avi\"}";
     Ptr<org::esb::core::Task> pulltask = org::esb::core::PluginRegistry::getInstance()->createTask("HTTPPullSource", cfg);
@@ -103,34 +103,34 @@ int main(int argc, char** argv) {
     enctask->addSinkTask(exporttask);
 
     if(pulltask){
-        pulltask->prepare();
-      }
+      pulltask->prepare();
+    }
 
     if(enctask){
-        enctask->getContext()->merge(pulltask->getContext());
-        enctask->prepare();
-      }
+      enctask->getContext()->merge(pulltask->getContext());
+      enctask->prepare();
+    }
 
     if(exporttask){
-        exporttask->getContext()->merge(enctask->getContext());
-        exporttask->prepare();
-      }
+      exporttask->getContext()->merge(enctask->getContext());
+      exporttask->prepare();
+    }
 
     pulltask->execute();
     //enctask.reset();
 
-  //return 0;
-  while (man->getSize("global") > 0) {
+    //return 0;
+    while (man->getSize("global") > 0) {
       org::esb::lang::Thread::sleep2(1 * 1000);
     }
-  toexit=true;
-  t1.join();
+    toexit=true;
+    t1.join();
 
-  t2.join();
-  /*t3.join();
+    t2.join();
+    /*t3.join();
   t4.join();
   t5.join();*/
-}
+  }
   /*encoding is ready*/
   org::esb::core::PluginRegistry::close();
 

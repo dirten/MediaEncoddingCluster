@@ -25,7 +25,7 @@ namespace encodingtask {
 
   EncodingTask::EncodingTask() : Task() {
     _sequence_counter = 0;
-    lastSequence=0;
+    //lastSequence=0;
   }
 
   EncodingTask::~EncodingTask() {
@@ -34,8 +34,8 @@ namespace encodingtask {
   void EncodingTask::prepare() {
     _srcuristr = getContext()->getEnvironment<std::string > ("encodingtask.src");
     if (_srcuristr.length() == 0) {
-        _srcuristr = getSource();
-      }
+      _srcuristr = getSource();
+    }
     _partition = getContext()->getEnvironment<std::string > ("encodingtask.partition");
     _task_uuid = getUUID(); //getContext()->getEnvironment<std::string > ("task.uuid");
     _target_file = getSink();
@@ -50,55 +50,59 @@ namespace encodingtask {
 
     //Ptr<Task> itask=_sources.front();
     if (getContext()->contains("decoder")) {
-        std::map<int, Ptr<org::esb::av::Decoder> >tmp = getContext()->get<std::map<int, Ptr<org::esb::av::Decoder> > >("decoder");
-        std::map<int, Ptr<org::esb::av::Decoder> >::iterator it = tmp.begin();
-        int video = -1;
-        int audio = -1;
+      std::map<int, Ptr<org::esb::av::Decoder> >tmp = getContext()->get<std::map<int, Ptr<org::esb::av::Decoder> > >("decoder");
+      std::map<int, Ptr<org::esb::av::Decoder> >::iterator it = tmp.begin();
 
-        for (; it != tmp.end(); it++) {
-            if ((*it).second->getCodecType() == AVMEDIA_TYPE_VIDEO && video < 0) {
-                video = (*it).first;
-              }
-            if ((*it).second->getCodecType() == AVMEDIA_TYPE_AUDIO && audio < 0) {
-                audio = (*it).first;
-              }
-            _packetizer[(*it).first] = StreamPacketizer(0, (*it).second);
-            _spu[(*it).first]=StreamProcessUnitBuilder();
-          }
-        if (_codecs["video"].count("width") == 0 ||
-            atoi(_codecs["video"]["width"].c_str()) == 0 ||
-            _codecs["video"].count("height") == 0 ||
-            atoi(_codecs["video"]["height"].c_str()) == 0) {
-            _codecs["video"]["width"] = org::esb::util::StringUtil::toString(tmp[video]->getWidth());
-            _codecs["video"]["height"] = org::esb::util::StringUtil::toString(tmp[video]->getHeight());
+      for (; it != tmp.end(); it++) {
+        if ((*it).second->getCodecType() == AVMEDIA_TYPE_VIDEO) {
+          /*special prepare of the encoder for using the input width/heigth*/
+          if (_codecs["video"].count("width") == 0 ||
+          atoi(_codecs["video"]["width"].c_str()) == 0 ||
+          _codecs["video"].count("height") == 0 ||
+          atoi(_codecs["video"]["height"].c_str()) == 0) {
+            _codecs["video"]["width"] = org::esb::util::StringUtil::toString(tmp[(*it).first]->getWidth());
+            _codecs["video"]["height"] = org::esb::util::StringUtil::toString(tmp[(*it).first]->getHeight());
             LOGDEBUG("setting video size from input to : " << _codecs["video"]["width"] << "*" << _codecs["video"]["height"]);
           }
 
-        if (_codecs["video"].count("time_base") == 0 || _codecs["video"]["time_base"].length() == 0) {
+          if (_codecs["video"].count("time_base") == 0 || _codecs["video"]["time_base"].length() == 0) {
             std::ostringstream oss;
-            oss << tmp[video]->getFrameRate().den << "/" << tmp[video]->getFrameRate().num;
+            oss << tmp[(*it).first]->getFrameRate().den << "/" << tmp[(*it).first]->getFrameRate().num;
             _codecs["video"]["time_base"] = oss.str();
             LOGDEBUG("setting framerate from input to : " << oss.str());
           }
-      } else {
-        throw org::esb::core::TaskException("could not find decoder in Tasks PluginContext");
+          _encs[(*it).first]=new Encoder(_codecs["video"]);
+          if(!_encs[(*it).first]->open()){
+            throw org::esb::core::TaskException("could not open Video Encoder");
+          }
+        }
+        if ((*it).second->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+          _encs[(*it).first]=new Encoder(_codecs["audio"]);
+          if(!_encs[(*it).first]->open()){
+            throw org::esb::core::TaskException("could not open Audio Encoder");
+          }
+        }
+        StreamData & sd = _in_out_stream_map[(*it).first];
+        sd.next_timestamp = 0;
+        sd.last_timestamp = 0;
+        //sd.out_stream_index = a;
+        //sd.stream_type = data.second->getCodecType();
+
+        _packetizer[(*it).first] = StreamPacketizer(20, (*it).second);
+        _spu[(*it).first]=StreamProcessUnitBuilder();
       }
-    _video_encoder = new Encoder(_codecs["video"]);
-    if (!_video_encoder->open()) {
-        throw org::esb::core::TaskException("could not open video encoder");
-      }
-    _audio_encoder = new Encoder(_codecs["audio"]);
-    if (!_audio_encoder->open()) {
-        throw org::esb::core::TaskException("could not open audio encoder");
-      }
+    } else {
+      throw org::esb::core::TaskException("could not find decoder in Tasks PluginContext");
+    }
+    getContext()->set<std::map<int, Ptr<org::esb::av::Encoder> > >("encoder",_encs);
 
     getContext()->set<std::string > ("profile.name", _preset["name"]);
     getContext()->set<std::string > ("video.codec", _codecs["video"]["codec_id"]);
     if (_codecs["video"].count("multipass") && _codecs["video"]["multipass"] == "1") {
-        getContext()->set<std::string > ("video.passes", "2");
-      } else {
-        getContext()->set<std::string > ("video.passes", "1");
-      }
+      getContext()->set<std::string > ("video.passes", "2");
+    } else {
+      getContext()->set<std::string > ("video.passes", "1");
+    }
     getContext()->set<std::string > ("video.bitrate", _codecs["video"]["b"]);
     getContext()->set<std::string > ("video.height", _codecs["video"]["height"]);
     getContext()->set<std::string > ("video.width", _codecs["video"]["width"]);
@@ -114,6 +118,8 @@ namespace encodingtask {
       throw org::esb::core::TaskException(getStatusMessage());
     }*/
     partitionservice::PartitionManager::getInstance()->addCollector(boost::bind(&EncodingTask::collector, this, _1,_2));
+    _unit_list.addCallback(boost::bind(&EncodingTask::unitListCallback, this, _1));
+
     setStatus(PREPARED);
   }
 
@@ -122,8 +128,8 @@ namespace encodingtask {
     std::string base = org::esb::config::Config::get("hive.tmp_path");
     org::esb::io::File infile(base + "/jobs/" + getUUID() + "/" + _srcuristr);
     if (infile.exists()) {
-        //infile.deleteFile();
-      }
+      //infile.deleteFile();
+    }
   }
 
   int EncodingTask::getPadTypes() {
@@ -133,18 +139,32 @@ namespace encodingtask {
   org::esb::core::OptionsDescription EncodingTask::getOptionsDescription() {
     org::esb::core::OptionsDescription result("encodingtask");
     result.add_options()
-        ("encodingtask.src", boost::program_options::value<std::string > ()->default_value(""), "Encoding task source file")
-        ("encodingtask.partition", boost::program_options::value<std::string > ()->default_value("global"), "Encoding task partition")
-        //("encodingtask.profile", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile");
-        ("encodingtask.profiledata", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data")
-        ("data", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data");
+    ("encodingtask.src", boost::program_options::value<std::string > ()->default_value(""), "Encoding task source file")
+    ("encodingtask.partition", boost::program_options::value<std::string > ()->default_value("global"), "Encoding task partition")
+    //("encodingtask.profile", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile");
+    ("encodingtask.profiledata", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data")
+    ("data", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data");
     return result;
   }
 
   void EncodingTask::observeProgress() {
     while (getStatus() == Task::EXECUTE) {
-        setProgress(getProgressLength() - partitionservice::PartitionManager::getInstance()->getSize(_partition));
-        org::esb::lang::Thread::sleep2(1 * 1000);
+      setProgress(getProgressLength() - partitionservice::PartitionManager::getInstance()->getSize(_partition));
+      org::esb::lang::Thread::sleep2(1 * 1000);
+    }
+  }
+
+  void EncodingTask::unitListCallback(boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit){
+    unit->_output_packets.sort(EncodingTask::ptsComparator);
+    foreach(PacketPtr p, unit->_output_packets) {
+      int idx = p->getStreamIndex();
+      p->setPts(_in_out_stream_map[idx].next_timestamp);
+      _in_out_stream_map[idx].last_timestamp = _in_out_stream_map[idx].next_timestamp;
+      _in_out_stream_map[idx].next_timestamp += p->getDuration();
+    }
+    unit->_output_packets.sort(EncodingTask::dtsComparator);
+    foreach(boost::shared_ptr<Packet>  p,unit->_output_packets){
+      Task::pushBuffer(Ptr<Packet>(p));
     }
   }
 
@@ -153,36 +173,52 @@ namespace encodingtask {
     //boost::mutex::scoped_lock partition_get_lock(_partition_mutex);
 
     std::cerr<<boost::this_thread::get_id()<<"collector invoked "<<unit->getDecoder()->getCodecName()<<", pu count"<<unit->_output_packets.size()<<" sequence:"<<unit->_sequence<<std::endl;
-    _unit_list.insert(unit);
+    _unit_list.pushUnit(unit);
+    /*
     while(_unit_list.size()&&(*_unit_list.begin())->_sequence==lastSequence){
-        std::cerr<<"lastSequence found:"<<lastSequence<<std::endl;
-        foreach(boost::shared_ptr<Packet>  p,(*_unit_list.begin())->_output_packets){
-            Task::pushBuffer(Ptr<Packet>(p));
-          }
-        _unit_list.erase(_unit_list.begin());
-        lastSequence++;
+      std::cerr<<"lastSequence found:"<<lastSequence<<std::endl;
+      foreach(boost::shared_ptr<Packet>  p,(*_unit_list.begin())->_output_packets){
+        Task::pushBuffer(Ptr<Packet>(p));
       }
+      _unit_list.erase(_unit_list.begin());
+      lastSequence++;
+    }*/
   }
 
   void EncodingTask::pushBuffer(Ptr<Packet>p) {
     if (!getStatus() == PREPARED) {
-        setStatusMessage(std::string("Task is not in PREPARED State"));
-        throw org::esb::core::TaskException(getStatusMessage());
-      }
+      setStatusMessage(std::string("Task is not in PREPARED State"));
+      throw org::esb::core::TaskException(getStatusMessage());
+    }
 
-    StreamPacketizer & pti = _packetizer[p->getStreamIndex()];
-    StreamProcessUnitBuilder & spub=_spu[p->getStreamIndex()];
-
-    if (pti.putPacket(p)) {
+    if(p){
+      StreamPacketizer & pti = _packetizer[p->getStreamIndex()];
+      StreamProcessUnitBuilder & spub=_spu[p->getStreamIndex()];
+      if (pti.putPacket(p)) {
         /*when the packet count per ProcessUnit reached*/
         PacketListPtr list = pti.removePacketList();
-        Ptr<org::esb::av::Encoder>enc=pti.getDecoder()->getCodecType()==AVMEDIA_TYPE_VIDEO?_video_encoder:_audio_encoder;
+        Ptr<org::esb::av::Encoder>enc=_encs[p->getStreamIndex()];
         boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit = spub.build(list, pti.getDecoder(), enc);
         putToPartition(unit);
 
         //LOGDEBUG("Process PU");
       }
-    //Task::pushBuffer(p);
+    }else{
+      /*flush buffer for all streams*/
+      std::cerr<<"flushing packets"<<std::endl;
+      std::map<int,StreamPacketizer>::iterator it=_packetizer.begin();
+      for(;it!=_packetizer.end();it++){
+        (*it).second.flushStreams();
+        PacketListPtr list = (*it).second.removePacketList();
+        if(list.size()){
+          std::cerr<<"putflushto partition"<<std::endl;
+          Ptr<org::esb::av::Encoder>enc=_encs[(*it).first];
+          StreamProcessUnitBuilder & spub=_spu[(*it).first];
+          boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit = spub.build(list, (*it).second.getDecoder(), enc);
+          putToPartition(unit);
+        }
+      }
+    }
   }
 
   void EncodingTask::execute() {
@@ -194,134 +230,134 @@ namespace encodingtask {
 
     /*check the input is valid*/
     if (!fis.isValid()) {
-        setStatus(Task::ERROR);
-        setStatusMessage(std::string("Input file ").append(_srcuristr).append(" is not a valid media file!"));
-        throw org::esb::core::TaskException(getStatusMessage());
-      }
+      setStatus(Task::ERROR);
+      setStatusMessage(std::string("Input file ").append(_srcuristr).append(" is not a valid media file!"));
+      throw org::esb::core::TaskException(getStatusMessage());
+    }
 
     /*preprocessing the input streams*/
     int scount = fis.getStreamCount();
     map<int, StreamData> stream_map;
     for (int a = 0; a < scount; a++) {
-        /*getting the input stream from the file*/
-        org::esb::av::AVInputStream* is = fis.getAVStream(a);
+      /*getting the input stream from the file*/
+      org::esb::av::AVInputStream* is = fis.getAVStream(a);
 
-        /*create a stream data element for each stream from the input file*/
-        StreamData & sdata = stream_map[is->index];
-        sdata.last_start_dts = 0;
-        sdata.min_packet_count = atoi(_codecs["video"]["g"].c_str());
-        sdata.outstream = a;
-        sdata.instream = is->index;
-        /*create the decoder objects*/
-        sdata.decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is));
-        sdata.pass2decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is));
+      /*create a stream data element for each stream from the input file*/
+      StreamData & sdata = stream_map[is->index];
+      sdata.last_start_dts = 0;
+      sdata.min_packet_count = atoi(_codecs["video"]["g"].c_str());
+      sdata.outstream = a;
+      sdata.instream = is->index;
+      /*create the decoder objects*/
+      sdata.decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is));
+      sdata.pass2decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is));
 
-        /*special need to create a fresh decoder for mpeg2*/
-        if (is->codec->codec_id == CODEC_ID_MPEG2VIDEO) {
-            LOGDEBUG("MPeg2Video Decoder Found");
-            typedef std::map<std::string, std::string> Props;
-            Props props = sdata.decoder->getCodecOptions();
+      /*special need to create a fresh decoder for mpeg2*/
+      if (is->codec->codec_id == CODEC_ID_MPEG2VIDEO) {
+        LOGDEBUG("MPeg2Video Decoder Found");
+        typedef std::map<std::string, std::string> Props;
+        Props props = sdata.decoder->getCodecOptions();
 
-            sdata.decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is->codec->codec_id));
-            sdata.pass2decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is->codec->codec_id));
+        sdata.decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is->codec->codec_id));
+        sdata.pass2decoder = boost::shared_ptr<org::esb::av::Decoder > (new org::esb::av::Decoder(is->codec->codec_id));
 
-            foreach(Props::value_type prop, props) {
-                LOGDEBUG("Key=" << prop.first << " val=" << prop.second);
-                sdata.decoder->setCodecOption(prop.first, prop.second);
-                sdata.pass2decoder->setCodecOption(prop.first, prop.second);
-              }
-            sdata.decoder->setFrameRate(is->r_frame_rate);
-            sdata.pass2decoder->setFrameRate(is->r_frame_rate);
-            sdata.decoder->ctx->time_base = is->codec->time_base;
-            sdata.decoder->ctx->ticks_per_frame = is->codec->ticks_per_frame;
-            sdata.pass2decoder->ctx->ticks_per_frame = is->codec->ticks_per_frame;
+        foreach(Props::value_type prop, props) {
+          LOGDEBUG("Key=" << prop.first << " val=" << prop.second);
+          sdata.decoder->setCodecOption(prop.first, prop.second);
+          sdata.pass2decoder->setCodecOption(prop.first, prop.second);
+        }
+        sdata.decoder->setFrameRate(is->r_frame_rate);
+        sdata.pass2decoder->setFrameRate(is->r_frame_rate);
+        sdata.decoder->ctx->time_base = is->codec->time_base;
+        sdata.decoder->ctx->ticks_per_frame = is->codec->ticks_per_frame;
+        sdata.pass2decoder->ctx->ticks_per_frame = is->codec->ticks_per_frame;
 
-            sdata.decoder->ctx->width = is->codec->width;
-            sdata.decoder->ctx->height = is->codec->height;
-            sdata.decoder->ctx->extradata_size = is->codec->extradata_size;
-            LOGDEBUG("ExtradataSize:" << sdata.decoder->ctx->extradata_size);
-            if (sdata.decoder->ctx->extradata_size > 0) {
-                sdata.decoder->ctx->extradata = (uint8_t*) av_malloc(sdata.decoder->ctx->extradata_size);
-                //memcpy(sdata.decoder->ctx->extradata, is->codec->extradata, sdata.decoder->ctx->extradata_size);
-                memset(sdata.decoder->ctx->extradata, 0, sdata.decoder->ctx->extradata_size);
-              } else
-              sdata.decoder->ctx->extradata = NULL;
+        sdata.decoder->ctx->width = is->codec->width;
+        sdata.decoder->ctx->height = is->codec->height;
+        sdata.decoder->ctx->extradata_size = is->codec->extradata_size;
+        LOGDEBUG("ExtradataSize:" << sdata.decoder->ctx->extradata_size);
+        if (sdata.decoder->ctx->extradata_size > 0) {
+          sdata.decoder->ctx->extradata = (uint8_t*) av_malloc(sdata.decoder->ctx->extradata_size);
+          //memcpy(sdata.decoder->ctx->extradata, is->codec->extradata, sdata.decoder->ctx->extradata_size);
+          memset(sdata.decoder->ctx->extradata, 0, sdata.decoder->ctx->extradata_size);
+        } else
+          sdata.decoder->ctx->extradata = NULL;
 
-            sdata.pass2decoder->ctx->time_base = is->codec->time_base;
-            sdata.pass2decoder->ctx->width = is->codec->width;
-            sdata.pass2decoder->ctx->height = is->codec->height;
-            sdata.pass2decoder->ctx->extradata_size = is->codec->extradata_size;
-            LOGDEBUG("ExtradataSize:" << sdata.pass2decoder->ctx->extradata_size);
-            if (sdata.pass2decoder->ctx->extradata_size > 0) {
-                sdata.pass2decoder->ctx->extradata = (uint8_t*) av_malloc(sdata.pass2decoder->ctx->extradata_size);
-                //memcpy(sdata.pass2decoder->ctx->extradata, is->codec->extradata, sdata.pass2decoder->ctx->extradata_size);
-                memset(sdata.pass2decoder->ctx->extradata, 0, sdata.pass2decoder->ctx->extradata_size);
-              } else
-              sdata.pass2decoder->ctx->extradata = NULL;
+        sdata.pass2decoder->ctx->time_base = is->codec->time_base;
+        sdata.pass2decoder->ctx->width = is->codec->width;
+        sdata.pass2decoder->ctx->height = is->codec->height;
+        sdata.pass2decoder->ctx->extradata_size = is->codec->extradata_size;
+        LOGDEBUG("ExtradataSize:" << sdata.pass2decoder->ctx->extradata_size);
+        if (sdata.pass2decoder->ctx->extradata_size > 0) {
+          sdata.pass2decoder->ctx->extradata = (uint8_t*) av_malloc(sdata.pass2decoder->ctx->extradata_size);
+          //memcpy(sdata.pass2decoder->ctx->extradata, is->codec->extradata, sdata.pass2decoder->ctx->extradata_size);
+          memset(sdata.pass2decoder->ctx->extradata, 0, sdata.pass2decoder->ctx->extradata_size);
+        } else
+          sdata.pass2decoder->ctx->extradata = NULL;
 
 
-            sdata.decoder->open();
-            sdata.pass2decoder->open();
-          }
-
-        //sdata.decoder->reset();
-        //sdata.pass2decoder->reset();
-        /*create the encoder objects*/
-        typedef std::map<std::string, std::string> Parameter;
-        if (sdata.decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
-            if (_codecs["video"].count("codec_id") != 0) {
-                sdata.encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["video"]["codec_id"]));
-                sdata.pass2encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["video"]["codec_id"]));
-                if (_codecs["video"].count("width") == 0 ||
-                    atoi(_codecs["video"]["width"].c_str()) == 0 ||
-                    _codecs["video"].count("height") == 0 ||
-                    atoi(_codecs["video"]["height"].c_str()) == 0) {
-                    _codecs["video"]["width"] = org::esb::util::StringUtil::toString(sdata.decoder->getWidth());
-                    _codecs["video"]["height"] = org::esb::util::StringUtil::toString(sdata.decoder->getHeight());
-                    LOGDEBUG("setting video size from input to : " << _codecs["video"]["width"] << "*" << _codecs["video"]["height"]);
-                  }
-                if (_codecs["video"].count("time_base") == 0 || _codecs["video"]["time_base"].length() == 0) {
-                    std::ostringstream oss;
-                    oss << sdata.decoder->getFrameRate().den << "/" << sdata.decoder->getFrameRate().num;
-                    _codecs["video"]["time_base"] = oss.str();
-                    LOGDEBUG("setting framerate from input to : " << oss.str());
-                  }
-
-                org::esb::av::CodecPropertyTransformer transformer(_codecs["video"]);
-                std::map<std::string, std::string> params = transformer.getCodecProperties();
-
-                foreach(Parameter::value_type param, params) {
-                    LOGDEBUG("Parameter key=" << param.first << " value=" << param.second);
-                    sdata.encoder->setCodecOption(param.first, param.second);
-                    sdata.pass2encoder->setCodecOption(param.first, param.second);
-                  }
-              } else {
-                LOGERROR("Profile does not define a video codec");
-              }
-          }
-        if (sdata.decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
-            if (_codecs["audio"].count("codec_id") != 0) {
-                sdata.encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["audio"]["codec_id"]));
-                sdata.pass2encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["audio"]["codec_id"]));
-
-                foreach(Parameter::value_type param, _codecs["audio"]) {
-                    LOGDEBUG("Parameter key=" << param.first << " value=" << param.second);
-                    sdata.encoder->setCodecOption(param.first, param.second);
-                    sdata.pass2encoder->setCodecOption(param.first, param.second);
-                  }
-
-              } else {
-                LOGERROR("Profile does not define an audio codec");
-              }
-          }
-        if (sdata.encoder) {
-            sdata.encoder->open();
-            LOGDEBUG(sdata.encoder->toString());
-          } else {
-            stream_map.erase(is->index);
-            LOGERROR("Codec not found")
-          }
+        sdata.decoder->open();
+        sdata.pass2decoder->open();
       }
+
+      //sdata.decoder->reset();
+      //sdata.pass2decoder->reset();
+      /*create the encoder objects*/
+      typedef std::map<std::string, std::string> Parameter;
+      if (sdata.decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
+        if (_codecs["video"].count("codec_id") != 0) {
+          sdata.encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["video"]["codec_id"]));
+          sdata.pass2encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["video"]["codec_id"]));
+          if (_codecs["video"].count("width") == 0 ||
+          atoi(_codecs["video"]["width"].c_str()) == 0 ||
+          _codecs["video"].count("height") == 0 ||
+          atoi(_codecs["video"]["height"].c_str()) == 0) {
+            _codecs["video"]["width"] = org::esb::util::StringUtil::toString(sdata.decoder->getWidth());
+            _codecs["video"]["height"] = org::esb::util::StringUtil::toString(sdata.decoder->getHeight());
+            LOGDEBUG("setting video size from input to : " << _codecs["video"]["width"] << "*" << _codecs["video"]["height"]);
+          }
+          if (_codecs["video"].count("time_base") == 0 || _codecs["video"]["time_base"].length() == 0) {
+            std::ostringstream oss;
+            oss << sdata.decoder->getFrameRate().den << "/" << sdata.decoder->getFrameRate().num;
+            _codecs["video"]["time_base"] = oss.str();
+            LOGDEBUG("setting framerate from input to : " << oss.str());
+          }
+
+          org::esb::av::CodecPropertyTransformer transformer(_codecs["video"]);
+          std::map<std::string, std::string> params = transformer.getCodecProperties();
+
+          foreach(Parameter::value_type param, params) {
+            LOGDEBUG("Parameter key=" << param.first << " value=" << param.second);
+            sdata.encoder->setCodecOption(param.first, param.second);
+            sdata.pass2encoder->setCodecOption(param.first, param.second);
+          }
+        } else {
+          LOGERROR("Profile does not define a video codec");
+        }
+      }
+      if (sdata.decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+        if (_codecs["audio"].count("codec_id") != 0) {
+          sdata.encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["audio"]["codec_id"]));
+          sdata.pass2encoder = boost::shared_ptr<org::esb::av::Encoder > (new org::esb::av::Encoder(_codecs["audio"]["codec_id"]));
+
+          foreach(Parameter::value_type param, _codecs["audio"]) {
+            LOGDEBUG("Parameter key=" << param.first << " value=" << param.second);
+            sdata.encoder->setCodecOption(param.first, param.second);
+            sdata.pass2encoder->setCodecOption(param.first, param.second);
+          }
+
+        } else {
+          LOGERROR("Profile does not define an audio codec");
+        }
+      }
+      if (sdata.encoder) {
+        sdata.encoder->open();
+        LOGDEBUG(sdata.encoder->toString());
+      } else {
+        stream_map.erase(is->index);
+        LOGERROR("Codec not found")
+      }
+    }
 
     org::esb::av::PacketInputStream pis(&fis);
 
@@ -330,69 +366,69 @@ namespace encodingtask {
     Packet * packet;
 
     while (!isCanceled() && getStatus() != Task::ERROR && (packet = pis.readPacket()) != NULL) {
-        /**
+      /**
        * building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
        */
-        org::esb::av::PacketPtr pPacket(packet);
-        /**
+      org::esb::av::PacketPtr pPacket(packet);
+      /**
        * if the actuall stream not mapped then discard this and continue with next packet
        */
-        if (stream_map.find(packet->packet->stream_index) == stream_map.end())
-          continue;
-        /**
+      if (stream_map.find(packet->packet->stream_index) == stream_map.end())
+        continue;
+      /**
        * if the actual packets dts is lower than the last packet.dts encoded, then discard this packet
        * this is for the behaviour that the server process restarts an unfinished encoding
        * @TODO: writing detailed tests for this !!!
        */
-        //if (stream_map[packet->packet->stream_index].last_start_dts > packet->packet->dts)
-        //  continue;
-        //              LOGTRACE("Packet DTS:"<<packet->toString());
-        //pPacket->setStreamIndex(stream_map[pPacket->getStreamIndex()].outstream);
-        //LOGDEBUG("PacketStreamIndex:"<<packet->getStreamIndex());
-        if (packetizer.putPacket(pPacket)) {
-            PacketListPtr packets = packetizer.removePacketList();
-            LOGDEBUG("PacketListStartPts=" << packets.front()->getPts() << " PacketListEndPts=" << packets.back()->getPts())
-                boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit = builder.build(packets);
-            putToPartition(unit);
+      //if (stream_map[packet->packet->stream_index].last_start_dts > packet->packet->dts)
+      //  continue;
+      //              LOGTRACE("Packet DTS:"<<packet->toString());
+      //pPacket->setStreamIndex(stream_map[pPacket->getStreamIndex()].outstream);
+      //LOGDEBUG("PacketStreamIndex:"<<packet->getStreamIndex());
+      if (packetizer.putPacket(pPacket)) {
+        PacketListPtr packets = packetizer.removePacketList();
+        LOGDEBUG("PacketListStartPts=" << packets.front()->getPts() << " PacketListEndPts=" << packets.back()->getPts())
+        boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit = builder.build(packets);
+        putToPartition(unit);
 
-            //putToQueue(unit);
-            //wait_for_queue = true;
-          }
+        //putToQueue(unit);
+        //wait_for_queue = true;
       }
+    }
     /*calling flush Method in the Packetizer to get the last pending packets from the streams*/
     packetizer.flushStreams();
     int pc = packetizer.getPacketListCount();
     for (int a = 0; a < pc; a++) {
-        PacketListPtr packets = packetizer.removePacketList();
-        if (packets.size() > 0) {
+      PacketListPtr packets = packetizer.removePacketList();
+      if (packets.size() > 0) {
 
-            boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit = builder.build(packets);
-            putToPartition(unit, true);
-          }
+        boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit = builder.build(packets);
+        putToPartition(unit, true);
       }
+    }
 
     int prev_fps = 0;
     while (!isCanceled() && partitionservice::PartitionManager::getInstance()->getSize(_partition) > 0) {
-        setProgress(getProgressLength() - partitionservice::PartitionManager::getInstance()->getSize(_partition));
-        if (isCanceled()) {
-            LOGDEBUG("Encoding Task is Canceled");
-          } else {
-            LOGDEBUG("Encoding Task is not Canceled");
-          }
-        org::esb::lang::Thread::sleep2(1 * 1000);
-        if (prev_fps != partitionservice::PartitionManager::getInstance()->getFps()) {
-            prev_fps = partitionservice::PartitionManager::getInstance()->getFps();
-            std::string fps = org::esb::util::StringUtil::toString(partitionservice::PartitionManager::getInstance()->getFps());
-            fps += " Frames/sec.";
-            setStatusMessage(fps);
-          }
+      setProgress(getProgressLength() - partitionservice::PartitionManager::getInstance()->getSize(_partition));
+      if (isCanceled()) {
+        LOGDEBUG("Encoding Task is Canceled");
+      } else {
+        LOGDEBUG("Encoding Task is not Canceled");
       }
+      org::esb::lang::Thread::sleep2(1 * 1000);
+      if (prev_fps != partitionservice::PartitionManager::getInstance()->getFps()) {
+        prev_fps = partitionservice::PartitionManager::getInstance()->getFps();
+        std::string fps = org::esb::util::StringUtil::toString(partitionservice::PartitionManager::getInstance()->getFps());
+        fps += " Frames/sec.";
+        setStatusMessage(fps);
+      }
+    }
     if (isCanceled()) {
-        setStatus(CANCELED);
-        setStatusMessage("Encoding Task Canceled");
-        partitionservice::PartitionManager::getInstance()->clearPartition(_partition);
-        return;
-      }
+      setStatus(CANCELED);
+      setStatusMessage("Encoding Task Canceled");
+      partitionservice::PartitionManager::getInstance()->clearPartition(_partition);
+      return;
+    }
     setProgress(getProgressLength());
     exportFile();
     partitionservice::PartitionManager::getInstance()->resetFps();
@@ -408,10 +444,10 @@ namespace encodingtask {
     partitionservice::PartitionManager::Type t = partitionservice::PartitionManager::TYPE_UNKNOWN;
     LOGDEBUG("CodecType:" << unit->_decoder->getCodecType());
     if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
-        t = partitionservice::PartitionManager::TYPE_AUDIO;
-      } else if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
-        t = partitionservice::PartitionManager::TYPE_VIDEO;
-      }
+      t = partitionservice::PartitionManager::TYPE_AUDIO;
+    } else if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
+      t = partitionservice::PartitionManager::TYPE_VIDEO;
+    }
     /*create unique stream index*/
     unit->_source_stream = unit->_input_packets.front()->getStreamIndex();
     unit->_last_process_unit = isLast;
@@ -425,10 +461,10 @@ namespace encodingtask {
     partitionservice::PartitionManager::Type t = partitionservice::PartitionManager::TYPE_UNKNOWN;
 
     if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
-        t = partitionservice::PartitionManager::TYPE_AUDIO;
-      } else if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
-        t = partitionservice::PartitionManager::TYPE_VIDEO;
-      }
+      t = partitionservice::PartitionManager::TYPE_AUDIO;
+    } else if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
+      t = partitionservice::PartitionManager::TYPE_VIDEO;
+    }
     /*create unique stream index*/
     unit->_source_stream = unit->_input_packets.front()->getStreamIndex();
     unit->_last_process_unit = isLast;
@@ -446,125 +482,125 @@ namespace encodingtask {
 
   void EncodingTask::exportFile() {
     if (getStatus() == Task::ERROR) {
-        LOGERROR("ExportTask have error");
-        return;
-      }
+      LOGERROR("ExportTask have error");
+      return;
+    }
     org::esb::util::ScopedTimeCounter stc("export");
     std::string base = org::esb::config::Config::get("hive.tmp_path");
     org::esb::io::File inputdir(base + "/jobs/" + _task_uuid + "/collect");
     org::esb::io::FileList filelist = inputdir.listFiles();
     if (filelist.size() == 0) {
-        setStatus(Task::ERROR);
-        setStatusMessage(std::string("no files found to export from ").append(base + "/" + _task_uuid + "/collect"));
-        return;
-      }
+      setStatus(Task::ERROR);
+      setStatusMessage(std::string("no files found to export from ").append(base + "/" + _task_uuid + "/collect"));
+      return;
+    }
 
     foreach(Ptr<org::esb::io::File> file, filelist) {
-        LOGDEBUG("File : " << file->getPath());
-        org::esb::io::FileInputStream fis(file.get());
-        org::esb::io::ObjectInputStream ois(&fis);
-        //org::esb::hive::job::ProcessUnit pu;
-        boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit;
-        if (ois.readObject(unit) == 0) {
-            if (unit->_output_packets.size() > 0) {
-                boost::shared_ptr<org::esb::av::Packet> first_packet = unit->_output_packets.front();
-                ProcessUnitData data;
-                data.id = file->getPath();
-                data.startts = first_packet->getDtsTimeStamp();
-                data._sequence = unit->_sequence;
-                data.encoder = unit->getEncoder();
-                data.stream = unit->_target_stream;
-                _pudata.push_back(data);
-              } else {
-                LOGDEBUG("unit->_output_packets.size()<=0");
-              }
-          } else {
-            LOGDEBUG("OIS !=0")
-          }
+      LOGDEBUG("File : " << file->getPath());
+      org::esb::io::FileInputStream fis(file.get());
+      org::esb::io::ObjectInputStream ois(&fis);
+      //org::esb::hive::job::ProcessUnit pu;
+      boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit;
+      if (ois.readObject(unit) == 0) {
+        if (unit->_output_packets.size() > 0) {
+          boost::shared_ptr<org::esb::av::Packet> first_packet = unit->_output_packets.front();
+          ProcessUnitData data;
+          data.id = file->getPath();
+          data.startts = first_packet->getDtsTimeStamp();
+          data._sequence = unit->_sequence;
+          data.encoder = unit->getEncoder();
+          data.stream = unit->_target_stream;
+          _pudata.push_back(data);
+        } else {
+          LOGDEBUG("unit->_output_packets.size()<=0");
+        }
+      } else {
+        LOGDEBUG("OIS !=0")
       }
+    }
     _pudata.sort();
 
     /*creating streams here*/
     foreach(ProcessUnitData & data, _pudata) {
-        if (_stream_encoder.count(data.stream) == 0) {
-            _stream_encoder[data.stream] = data.encoder;
-          }
+      if (_stream_encoder.count(data.stream) == 0) {
+        _stream_encoder[data.stream] = data.encoder;
       }
+    }
 
     org::esb::io::File fout(base + "/jobs/" + _task_uuid + "/" + _target_file);
     LOGDEBUG("Export file to : " << fout.getPath());
     if (getContext()->getEnvironment<std::string > ("exporttask.overwrite") == "false" && fout.exists()) {
-        LOGDEBUG("File exist:" << _target_file);
-        setStatus(Task::ERROR);
-        setStatusMessage(std::string("file allready exist:").append(_target_file));
-        return;
-      }
+      LOGDEBUG("File exist:" << _target_file);
+      setStatus(Task::ERROR);
+      setStatusMessage(std::string("file allready exist:").append(_target_file));
+      return;
+    }
     /*creating output Directory*/
     org::esb::io::File outDirectory(fout.getFilePath().c_str());
     if (!outDirectory.exists()) {
-        outDirectory.mkdirs();
-      }
+      outDirectory.mkdirs();
+    }
     /*openning the OutputStreams*/
     FormatOutputStream * fos = new FormatOutputStream(&fout, _format.c_str());
     PacketOutputStream * pos = new PacketOutputStream(fos, base + "/jobs/" + _task_uuid + "/" + getSink() + ".stats");
     if (fos->_fmt->extensions) {
-        org::esb::util::StringTokenizer tok(fos->_fmt->extensions, ",");
-        std::string ext = tok.nextToken();
-        if (ext.length()) {
-            getContext()->set<std::string > ("profile.ext", ext);
-          }
+      org::esb::util::StringTokenizer tok(fos->_fmt->extensions, ",");
+      std::string ext = tok.nextToken();
+      if (ext.length()) {
+        getContext()->set<std::string > ("profile.ext", ext);
       }
+    }
 
     if (getContext()->get<std::string > ("profile.ext").length() == 0) {
-        getContext()->set<std::string > ("profile.ext", "unknown");
-      }
+      getContext()->set<std::string > ("profile.ext", "unknown");
+    }
     int a = 0;
 
     foreach(StreamEncoderMap::value_type & data, _stream_encoder) {
-        data.second->open();
-        StreamData & sd = _in_out_stream_map[data.first];
-        sd.next_timestamp = 0;
-        sd.last_timestamp = 0;
-        sd.out_stream_index = a;
-        sd.stream_type = data.second->getCodecType();
-        pos->setEncoder(*data.second, a++);
-        LOGDEBUG("StreamEncoder:" << data.first);
-      }
+      data.second->open();
+      StreamData & sd = _in_out_stream_map[data.first];
+      sd.next_timestamp = 0;
+      sd.last_timestamp = 0;
+      sd.out_stream_index = a;
+      sd.stream_type = data.second->getCodecType();
+      pos->setEncoder(*data.second, a++);
+      LOGDEBUG("StreamEncoder:" << data.first);
+    }
     pos->init();
 
     foreach(ProcessUnitData & data, _pudata) {
-        LOGDEBUG("StartTs : " << data.startts.toString());
-        LOGDEBUG("Sequence : " << data._sequence);
-        LOGDEBUG("File:" << data.id);
-        LOGDEBUG("TargetStream:" << data.stream);
-        LOGDEBUG("Encoder:" << data.encoder->toString());
-        org::esb::io::FileInputStream fis(data.id);
-        org::esb::io::ObjectInputStream ois(&fis);
-        boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit;
-        if (ois.readObject(unit) == 0) {
+      LOGDEBUG("StartTs : " << data.startts.toString());
+      LOGDEBUG("Sequence : " << data._sequence);
+      LOGDEBUG("File:" << data.id);
+      LOGDEBUG("TargetStream:" << data.stream);
+      LOGDEBUG("Encoder:" << data.encoder->toString());
+      org::esb::io::FileInputStream fis(data.id);
+      org::esb::io::ObjectInputStream ois(&fis);
+      boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit;
+      if (ois.readObject(unit) == 0) {
 
-            unit->_output_packets.sort(EncodingTask::ptsComparator);
+        unit->_output_packets.sort(EncodingTask::ptsComparator);
 
-            foreach(PacketPtr p, unit->_output_packets) {
-                int idx = p->getStreamIndex();
-                p->setPts(_in_out_stream_map[idx].next_timestamp);
-                _in_out_stream_map[idx].last_timestamp = _in_out_stream_map[idx].next_timestamp;
-                _in_out_stream_map[idx].next_timestamp += p->getDuration();
-              }
-            unit->_output_packets.sort(dtsComparator);
+        foreach(PacketPtr p, unit->_output_packets) {
+          int idx = p->getStreamIndex();
+          p->setPts(_in_out_stream_map[idx].next_timestamp);
+          _in_out_stream_map[idx].last_timestamp = _in_out_stream_map[idx].next_timestamp;
+          _in_out_stream_map[idx].next_timestamp += p->getDuration();
+        }
+        unit->_output_packets.sort(EncodingTask::dtsComparator);
 
-            foreach(PacketPtr p, unit->_output_packets) {
-                int idx = p->getStreamIndex();
-                p->packet->stream_index = _in_out_stream_map[idx].out_stream_index;
-                pos->writePacket(*p);
-              }
-
-          }
-        fis.close();
-        org::esb::io::File(data.id).deleteFile();
-        //infile.deleteFile();
+        foreach(PacketPtr p, unit->_output_packets) {
+          int idx = p->getStreamIndex();
+          p->packet->stream_index = _in_out_stream_map[idx].out_stream_index;
+          pos->writePacket(*p);
+        }
 
       }
+      fis.close();
+      org::esb::io::File(data.id).deleteFile();
+      //infile.deleteFile();
+
+    }
     pos->close();
 
     fos->close();

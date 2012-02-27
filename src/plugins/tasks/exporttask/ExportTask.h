@@ -13,6 +13,8 @@
 #include "ProcessUnitData.h"
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/av/Packet.h"
+#include "org/esb/av/FormatOutputStream.h"
+
 #include "exports.h"
 namespace plugin {
 
@@ -57,6 +59,8 @@ namespace plugin {
     InOutStreamMap _in_out_stream_map;
     //Ptr<db::Job> _job;
     std::string _task_uuid;
+    org::esb::av::FormatOutputStream * _fos;
+    org::esb::av::PacketOutputStream * _pos;
   };
   //  REGISTER_TASK("DownloadTask", DownloadTask)
 }

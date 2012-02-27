@@ -91,6 +91,7 @@ namespace plugin {
       //pPacket->_decoder=_decs[pPacket->getStreamIndex()];
       Task::pushBuffer(pPacket);
     }
+    Task::pushBuffer(Ptr<org::esb::av::Packet>(NULL));
   }
 
   REGISTER_TASK("HTTPPullSource", HTTPPullSource);

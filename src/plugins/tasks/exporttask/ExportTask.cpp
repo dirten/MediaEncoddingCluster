@@ -13,37 +13,44 @@
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/util/Foreach.h"
 #include "org/esb/util/ScopedTimeCounter.h"
-#include "org/esb/av/FormatOutputStream.h"
 #include "org/esb/config/config.h"
+#include "org/esb/libjson/libjson.h"
+#include "org/esb/core/TaskException.h"
 namespace plugin {
 
   ExportTask::ExportTask() {
   }
 
   ExportTask::~ExportTask() {
+    _pos->close();
+    _fos->close();
+    delete _pos;
+    delete _fos;
+    _pos=NULL;
+    _fos=NULL;
   }
 
   void ExportTask::prepare() {
-    /*
-    if (getContext()->contains("job")) {
-      _job = Ptr<db::Job > (new db::Job(getContext()->get<db::Job > ("job")));
-    } else {
-      setStatus(Task::ERROR);
-      setStatusMessage("there is no associated job to this encoding task");
-      return;
-    }*/
-    _task_uuid = getUUID();//getContext()->getEnvironment<std::string > ("task.uuid");
-    
-    if (true || getContext()->contains("exporttask.format")) {
-      _format = getContext()->getEnvironment<std::string > ("exporttask.format");
-    } else {
-      setStatus(Task::ERROR);
+    std::string data = getContext()->getEnvironment<std::string > ("data");
+    if (libjson::is_valid(data)) {
+      JSONNode node = libjson::parse(data);
+      if (node.contains("outurl")) {
+        _target_file = node["outurl"].as_string();
+      }
     }
-    if (true || getContext()->contains("exporttask.trg")) {
-      _target_file = getContext()->getEnvironment<std::string > ("exporttask.trg");
-    } else {
-      setStatus(Task::ERROR);
+    if (_target_file.length() == 0) {
+      throw org::esb::core::TaskException("No Target Url given!");
     }
+    /*openning the OutputStreams*/
+    org::esb::io::File fout(_target_file.c_str());
+    _fos = new FormatOutputStream(&fout);
+    _pos = new PacketOutputStream(_fos);
+    std::map<int, Ptr<org::esb::av::Encoder> > enc=getContext()->get<std::map<int, Ptr<org::esb::av::Encoder> > >("encoder");
+    std::map<int, Ptr<org::esb::av::Encoder> >::iterator it=enc.begin();
+    for(;it!=enc.end();it++){
+      _pos->setEncoder(*(*it).second.get(),(*it).first);
+    }
+    _pos->init();
   }
 
   org::esb::core::OptionsDescription ExportTask::getOptionsDescription() {
@@ -60,7 +67,8 @@ namespace plugin {
   }
 
   void ExportTask::pushBuffer(Ptr<org::esb::av::Packet> p){
-    LOGDEBUG("Ptr<org::esb::av::Packet>p"<<p->toString());
+    /*@TODO: need to calculate the timestamps here*/
+    _pos->writePacket(*p.get());
   }
 
 
