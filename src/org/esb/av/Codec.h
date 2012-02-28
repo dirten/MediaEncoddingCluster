@@ -114,6 +114,7 @@ class SampleFormat;*/
         std::list<Format> getSupportedInputFormats();
         //                void setStartTime(int64_t start);
         std::string toString(void);
+        void setStreamIndex(int idx);
         //				int getCodecType ();
         //				string getCodecName ();
 
@@ -160,7 +161,7 @@ class SampleFormat;*/
           ar & ctx->bits_per_coded_sample;
           ar & _options;
           ar & ctx->codec_type;
-
+          ar & _stream_index;
           if (_mode == Codec::DECODER) {
             ar & ctx->extradata_size;
             if (ctx->extradata_size > 0) {
@@ -195,6 +196,7 @@ class SampleFormat;*/
           ar & ctx->bits_per_coded_sample;
           ar & _options;
           ar & ctx->codec_type;
+          ar & _stream_index;
 
           if (_mode == Codec::DECODER) {
             ar & ctx->extradata_size;
@@ -231,6 +233,7 @@ class SampleFormat;*/
         Format _input_format;
         Format _output_format;
         static const PixelFormat STD_PIX_FMT=PIX_FMT_YUV420P;
+        int _stream_index;
       private:
         void setParams();
         void setContextDefaults();

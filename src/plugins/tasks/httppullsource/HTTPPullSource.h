@@ -27,6 +27,7 @@ namespace plugin {
     void execute();
     //org::esb::core::OptionsDescription getOptionsDescription();
     int getPadTypes();
+    org::esb::core::OptionsDescription getOptionsDescription();
   private:
     std::string _srcuristr;
     std::string _trguristr;

@@ -100,6 +100,15 @@ namespace org {
                 LOGDEBUG(task["data"].write_formatted());
               }
             }
+            if (task.contains("name") && task["name"].as_string() == "HTTPPullSource") {
+              if (task.contains("data") && task["data"].contains("srcurl")) {
+                LOGDEBUG("setting srcurl for graph to:" << infile);
+                JSONNode tmp = JSONNode("srcurl", infile);
+                task["data"]["srcurl"].swap(tmp);
+
+                LOGDEBUG(task["data"].write_formatted());
+              }
+            }
           }
         } else {
           throw GraphException("no tasks are defined in the graph");

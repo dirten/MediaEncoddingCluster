@@ -166,7 +166,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
         LOGDEBUG("stats available:" << ctx->stats_out);
       memcpy(pac.packet->data, data, ret);
       pac.packet->size = ret;
-      pac.packet->stream_index = _last_idx;
+      pac.packet->stream_index = _stream_index;
       if (ctx->coded_frame) {
         if (ctx->coded_frame->key_frame) {
           pac.packet->flags |= AV_PKT_FLAG_KEY;

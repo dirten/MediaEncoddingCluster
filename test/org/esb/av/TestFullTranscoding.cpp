@@ -75,8 +75,10 @@ Log::open("");
     if (audio && video)continue;
     fis.dumpFormat();
     _sdata[i].dec = new Decoder(fis.getAVStream(i));
+    _sdata[i].dec->setStreamIndex(i);
     _sdata[i].start_dts = fis.getStreamInfo(i)->getFirstDts();
     _sdata[i].enc = new Encoder();
+    _sdata[i].enc->setStreamIndex(i);
     _sdata[i].more_frames = true;
     if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_VIDEO) {
       video = true;
@@ -133,11 +135,12 @@ Log::open("");
     //reading a packet from the Stream
     if ((packet=pis.readPacket()) ==NULL )break; //when no more packets available(EOF) then it return <0
     boost::shared_ptr<Packet> p(packet);
-    if (_sdata.count(p->getStreamIndex()) == 0)continue;
+    int idx=p->getStreamIndex();
+    if (_sdata.count(idx) == 0)continue;
     //    p.setDts(p.getDts() - _sdata[p.getStreamIndex()].start_dts);
     //Decoding a Video or Audio Packet
     //LOGDEBUG("Packet:"<<p->toString());
-    Frame * src_frame = _sdata[p->getStreamIndex()].dec->decode2(*p);
+    Frame * src_frame = _sdata[idx].dec->decode2(*p);
 
     if (!src_frame->isFinished()) {
       delete src_frame;
@@ -145,24 +148,24 @@ Log::open("");
       continue;
     }
     //mapping input tp output stream
-    src_frame->stream_index = _smap[p->getStreamIndex()];
+    src_frame->stream_index = _smap[idx];
 
     //Convert an Audio or Video Packet
     Frame * trg_frame = NULL;
-    if (_sdata[p->getStreamIndex()].dec->getCodecType() == AVMEDIA_TYPE_VIDEO)
+    if (_sdata[idx].dec->getCodecType() == AVMEDIA_TYPE_VIDEO)
       trg_frame = new Frame(
-        _sdata[p->getStreamIndex()].enc->getInputFormat().pixel_format,
-        _sdata[p->getStreamIndex()].enc->getWidth(),
-        _sdata[p->getStreamIndex()].enc->getHeight());
-    if (_sdata[p->getStreamIndex()].dec->getCodecType() == AVMEDIA_TYPE_AUDIO)
+        _sdata[idx].enc->getInputFormat().pixel_format,
+        _sdata[idx].enc->getWidth(),
+        _sdata[idx].enc->getHeight());
+    if (_sdata[idx].dec->getCodecType() == AVMEDIA_TYPE_AUDIO)
       trg_frame = new Frame();
 
-    if (_sdata[p->getStreamIndex()].conv) {
-      _sdata[p->getStreamIndex()].conv->convert(*src_frame, *trg_frame);
+    if (_sdata[idx].conv) {
+      _sdata[idx].conv->convert(*src_frame, *trg_frame);
     }else{
       *trg_frame=*src_frame;
     }
-    int ret = _sdata[p->getStreamIndex()].enc->encode(*trg_frame);
+    int ret = _sdata[idx].enc->encode(*trg_frame);
 
     if(src_frame)
       delete src_frame;

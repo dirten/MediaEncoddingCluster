@@ -76,7 +76,10 @@ namespace org {
         boost::function<void (Graph*)> statusObserver;
         static void processElement(Ptr<Element> ,db::Job & );
         std::list<Ptr<Graph::Element> > elements;
+        void connect(Ptr<Element>);
+        void prepare(Ptr<Element>);
         void execute(Ptr<Element>);
+        void cleanup(Ptr<Element>);
         JSONNode status;
         std::string _uuid;
         STATUS _state;

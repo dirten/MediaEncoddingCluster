@@ -104,6 +104,7 @@ Frame Decoder::decodeLast() {
 Frame * Decoder::decode2(Packet & packet) {
   if (!_opened)
     throw runtime_error("Codec not opened");
+  packet.setStreamIndex(_stream_index);
   if (ctx->codec_type == AVMEDIA_TYPE_VIDEO)
     return decodeVideo2(packet);
   if (ctx->codec_type == AVMEDIA_TYPE_AUDIO)
@@ -222,7 +223,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
 
   frame->setFinished(_frameFinished!=0);
   //  frame->_pixFormat = ctx->pix_fmt;
-  frame->stream_index = packet.packet->stream_index;
+  frame->stream_index = _stream_index;//packet.packet->stream_index;
 
 
   frame->duration = dur;

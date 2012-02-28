@@ -54,34 +54,46 @@ namespace org {
       void Graph::cancel() {
         LOGDEBUG("Graph will be canceled");
         if (_current_task){
-            LOGDEBUG("Task signaled to cancel");
-            _current_task->cancel();
-          }else{
-            LOGDEBUG("no current task to cancel");
-          }
+          LOGDEBUG("Task signaled to cancel");
+          _current_task->cancel();
+        }else{
+          LOGDEBUG("no current task to cancel");
+        }
         _isCanceled = true;
       }
 
       void Graph::run() {
         _state = EXECUTE;
+        /*first connecting each task*/
+        foreach(Ptr<Graph::Element> el, elements) {
+          //if (_isCanceled)return;
+          if (el->getParents().size() == 0) {
+            connect(el);
+          }
+        }
+        foreach(Ptr<Graph::Element> el, elements) {
+          if (el->getParents().size() == 0) {
+            prepare(el);
+          }
+        }
 
         foreach(Ptr<Graph::Element> el, elements) {
-            //if (_isCanceled)return;
-            if (el->getParents().size() == 0) {
-                execute(el);
-              }
+          //if (_isCanceled)return;
+          if (el->getParents().size() == 0) {
+            execute(el);
           }
+        }
         if (haserror) {
-            _state = DONE_WITH_ERROR;
-          } else if (_isCanceled) {
-            _state = CANCELED;
-          } else {
-            _state = DONE;
-          }
+          _state = DONE_WITH_ERROR;
+        } else if (_isCanceled) {
+          _state = CANCELED;
+        } else {
+          _state = DONE;
+        }
       }
 
       void Graph::execute(Ptr<Element> e) {
-        LOGDEBUG("Context:" << e->task->getContext()->toString());
+        //LOGDEBUG("Context:" << e->task->getContext()->toString());
         if(_isCanceled)return;
         //KeyValue s;//=new KeyValue();
         Ptr<Status> s(new Status());
@@ -100,7 +112,7 @@ namespace org {
           _current_task->addStatusObserver(boost::bind(&Graph::setStatus, this, _1));
 
           _current_task->setSink(org::esb::util::PUUID());
-          _current_task->prepare();
+          //_current_task->prepare();
           //exec.push_back(JSONNode("status", "prepared"));
 
 
@@ -126,12 +138,12 @@ namespace org {
           setStatus(_current_task.get());
 
           if (_current_task->getStatus() != org::esb::core::Task::ERROR) {
-              foreach(Ptr<Graph::Element> el, e->getChilds()) {
-                  el->task->setSource(e->task->getSink());
-                  el->task->getContext()->merge(e->task->getContext());
-                  execute(el);
-                }
+            foreach(Ptr<Graph::Element> el, e->getChilds()) {
+              el->task->setSource(e->task->getSink());
+              el->task->getContext()->merge(e->task->getContext());
+              execute(el);
             }
+          }
         } catch (org::esb::core::TaskException & ex) {
           status_list.back()->message = "";
           status_list.back()->exception = ex.displayText();
@@ -141,6 +153,10 @@ namespace org {
           haserror = true;
           //throw GraphException(ex.displayText(), e->id);
         }
+      }
+
+      void Graph::cleanup(Ptr<Graph::Element>)
+      {
       }
 
       Graph::STATUS Graph::getState() {
@@ -171,14 +187,14 @@ namespace org {
         JSONNode node(JSON_NODE);
 
         foreach(Ptr<Status> s, status_list) {
-            JSONNode n(JSON_NODE);
-            n.set_name(s->uid);
-            n.push_back(JSONNode("status", s->status));
-            n.push_back(JSONNode("progress", s->progress));
-            n.push_back(JSONNode("message", s->message));
-            n.push_back(JSONNode("exception", s->exception));
-            node.push_back(n);
-          }
+          JSONNode n(JSON_NODE);
+          n.set_name(s->uid);
+          n.push_back(JSONNode("status", s->status));
+          n.push_back(JSONNode("progress", s->progress));
+          n.push_back(JSONNode("message", s->message));
+          n.push_back(JSONNode("exception", s->exception));
+          node.push_back(n);
+        }
         //status.preparse();
         return node.write_formatted();
       }
@@ -190,11 +206,11 @@ namespace org {
         job.update();
 
         foreach(Ptr<Graph::Element> el, els) {
-            //LOGDEBUG("childsize:"<<el.linksTo.size());
-            if (el->getParents().size() == 0) {
-                processElement(el, job);
-              }
+          //LOGDEBUG("childsize:"<<el.linksTo.size());
+          if (el->getParents().size() == 0) {
+            processElement(el, job);
           }
+        }
         db->commit();
       }
 
@@ -210,8 +226,28 @@ namespace org {
         job.tasks().link(task);
 
         foreach(Ptr<Graph::Element> e, el->getChilds()) {
-            processElement(e, job);
-          }
+          processElement(e, job);
+        }
+      }
+
+      void Graph::connect(Ptr<Graph::Element>e)
+      {
+
+        foreach(Ptr<Graph::Element> el, e->getChilds()) {
+          //el->task->addSourceTask(e->task);
+          e->task->addSinkTask(el->task);
+          el->task->getContext()->merge(e->task->getContext());
+          connect(el);
+        }
+      }
+
+      void Graph::prepare(Ptr<Graph::Element>e)
+      {
+        e->task->prepare();
+        foreach(Ptr<Graph::Element> el, e->getChilds()) {
+          el->task->getContext()->merge(e->task->getContext());
+          prepare(el);
+        }
       }
 
       void Graph::addElement(Ptr<Task> element) {

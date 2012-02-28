@@ -71,7 +71,7 @@ namespace org {
        * @param mode
        */
       Codec::Codec(AVStream * s, int mode) {
-
+        _stream_index=-1;
         _dict=NULL;
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         LOGWARN("!!!PLEASE DONT USE THIS CONSTRUCTOR!!!");
@@ -121,6 +121,8 @@ namespace org {
       }
 
       Codec::Codec(int mode) : _mode(mode) {
+        _stream_index=-1;
+
         _dict=NULL;
         //        logdebug("Codec::Codec()");
         ctx = avcodec_alloc_context();
@@ -136,6 +138,8 @@ namespace org {
 
       Codec::Codec(std::map<std::string, std::string> data,int mode): _mode(mode)
       {
+        _stream_index=-1;
+
         _dict=NULL;
         _codec_resolved = false;
         _opened = false;
@@ -178,6 +182,8 @@ namespace org {
       }
 
       Codec::Codec(std::string codec_name, int mode) {
+        _stream_index=-1;
+
         _dict=NULL;
         _codec_resolved = false;
         _opened = false;
@@ -199,6 +205,8 @@ namespace org {
       }
 
       Codec::Codec(const CodecID codecId, int mode) {
+        _stream_index=-1;
+
         _dict=NULL;
         //        logdebug("Codec::Codec(const CodecID codecId=" << codecId << ", int mode=" << mode << ")");
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
@@ -840,6 +848,11 @@ namespace org {
           data.append("InternalData:").append(std::string(buf)).append("\r\n");
         }
         return data;
+      }
+
+      void Codec::setStreamIndex(int idx)
+      {
+        _stream_index=idx;
       }
 
     }

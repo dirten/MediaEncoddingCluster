@@ -19,11 +19,15 @@
 namespace plugin {
 
   ExportTask::ExportTask() {
+    _pos=NULL;
+    _fos=NULL;
   }
 
   ExportTask::~ExportTask() {
-    _pos->close();
-    _fos->close();
+    if(_pos)
+      _pos->close();
+    if(_fos)
+      _fos->close();
     delete _pos;
     delete _fos;
     _pos=NULL;
@@ -56,18 +60,16 @@ namespace plugin {
   org::esb::core::OptionsDescription ExportTask::getOptionsDescription() {
     org::esb::core::OptionsDescription result("exporttask");
     result.add_options()
-            ("exporttask.overwrite", boost::program_options::value<std::string > ()->default_value("false"), "Export task overwrite existing outfile")
-            ("exporttask.format", boost::program_options::value<std::string > ()->required(), "Export task container output format")
-            ("exporttask.trg", boost::program_options::value<std::string > ()->required(), "Export task file target");
+            ("data", boost::program_options::value<std::string > ()->required(), "Export task data");
     return result;
   }
 
   int ExportTask::getPadTypes(){
-    return Task::SINK;
+    return Task::SOURCE;
   }
 
   void ExportTask::pushBuffer(Ptr<org::esb::av::Packet> p){
-    /*@TODO: need to calculate the timestamps here*/
+    /*@TODO: need to calculate the timestamps here???*/
     _pos->writePacket(*p.get());
   }
 
@@ -77,6 +79,7 @@ namespace plugin {
       LOGERROR("ExportTask have error");
       return;
     }
+    return;
     org::esb::util::ScopedTimeCounter stc("export");
     std::string base=org::esb::config::Config::get("hive.tmp_path");
     org::esb::io::File inputdir(base+"/jobs/"+_task_uuid+"/collect");

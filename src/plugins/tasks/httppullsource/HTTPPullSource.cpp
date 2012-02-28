@@ -41,9 +41,11 @@ namespace plugin {
     std::string data = getContext()->getEnvironment<std::string > ("data");
     if (libjson::is_valid(data)) {
       JSONNode node = libjson::parse(data);
-      if (node.contains("url")) {
-        _srcuristr = node["url"].as_string();
+      if (node.contains("srcurl")) {
+        _srcuristr = node["srcurl"].as_string();
       }
+    }else{
+      throw org::esb::core::TaskException("no valid json !");
     }
     if (_srcuristr.length() == 0) {
       throw org::esb::core::TaskException("No Source Url given!");
@@ -60,6 +62,7 @@ namespace plugin {
       /*getting the input stream from the file*/
       org::esb::av::AVInputStream* is = _fis->getAVStream(a);
       _decs[is->index]=new org::esb::av::Decoder(is);
+      _decs[is->index]->setStreamIndex(a);
       _decs[is->index]->open();
 
       //setBufferCodec(is->stream_identifier,_decs[is->stream_identifier]);
@@ -76,6 +79,13 @@ namespace plugin {
     }*/
   }
 
+  org::esb::core::OptionsDescription HTTPPullSource::getOptionsDescription() {
+    org::esb::core::OptionsDescription result("httppullsource");
+    result.add_options()
+    ("data", boost::program_options::value<std::string > ()->default_value(""), "HTTPPullSource task data");
+    return result;
+  }
+
   int HTTPPullSource::getPadTypes() {
     return Task::SINK;
   }
@@ -89,6 +99,7 @@ namespace plugin {
     while((packet = pis.readPacket()) != NULL){
       Ptr<org::esb::av::Packet> pPacket(packet);
       //pPacket->_decoder=_decs[pPacket->getStreamIndex()];
+      //LOGDEBUG("Push buffer")
       Task::pushBuffer(pPacket);
     }
     Task::pushBuffer(Ptr<org::esb::av::Packet>(NULL));

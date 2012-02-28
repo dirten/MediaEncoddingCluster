@@ -1,11 +1,11 @@
 {
 	"tasks" : [
 		{
-			"name" : "InputTask",
+			"name" : "HTTPPullSource",
 			"uid" : 1,
 			"linksTo":[2,5],
 			"data" : {
-				"infile" : "/Users/jhoelscher/Movies/ChocolateFactory.ts"
+				"srcurl" : "/Users/jhoelscher/Movies/ChocolateFactory.ts"
 			}
 		},
 		{
@@ -99,10 +99,10 @@
 			}
 		},
 		{
-			"name" : "OutputTask",
+			"name" : "ExportTask",
 			"uid" : 4,
 			"data" : {
-				"outfile" : "/tmp/test"
+				"outurl" : "/tmp/test.mp4"
 			}
 		},
 		{

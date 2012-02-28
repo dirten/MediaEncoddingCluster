@@ -39,7 +39,10 @@ namespace plugin {
          }
         std::list<std::string> keys=getContext()->keys();
         foreach(std::string key, keys){
-          _trguristr = org::esb::util::StringUtil::replace(_trguristr,std::string("$").append(key).append("$"),getContext()->get<std::string>(key));
+          /*
+          if(data.type() == typeid (std::string)){
+            _trguristr = org::esb::util::StringUtil::replace(_trguristr,std::string("$").append(key).append("$"),getContext()->get<std::string>(key));
+          }*/
         }
         _srcuristr = getSource();
         _task_uuid=getUUID();
