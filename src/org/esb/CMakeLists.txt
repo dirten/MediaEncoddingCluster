@@ -122,7 +122,7 @@ add_subdirectory (core)
 add_subdirectory (libjson)
 add_subdirectory (av)
 add_subdirectory (lang)
-#add_subdirectory (mq)
+add_subdirectory (mq)
 #add_subdirectory (grid)
 #add_subdirectory (rpc)
 #add_subdirectory (api)
@@ -340,9 +340,11 @@ add_library (hive SHARED
   config/config.cpp
   hive/TestLogAppender.cpp
   hive/Environment.cpp
+#  hive/EncodingClientHandler.cpp
+#  hive/ClientStream.cpp
 )
 
-TARGET_LINK_LIBRARIES(hive db net signal av lang json util)
+TARGET_LINK_LIBRARIES(hive db net signal av lang json util mq)
 
 INSTALL(TARGETS hive
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}

@@ -27,8 +27,8 @@ namespace encodingtask {
     u->_deinterlace = 1;//_map_data[idx].deinterlace;
     u->_decoder = dec;
     u->_encoder = enc;
-    u->_2passdecoder = dec;
-    u->_2passencoder = enc;
+    //u->_2passdecoder = dec;
+    //u->_2passencoder = enc;
     u->_input_packets = std::list<boost::shared_ptr<Packet> >(list.begin(), list.end());
     u->_gop_size = list.size(); //- _map_data[idx].b_frame_offset;
     //int cou = u->_gop_size;

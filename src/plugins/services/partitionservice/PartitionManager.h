@@ -54,7 +54,7 @@ namespace partitionservice {
         void addCollector( boost::function<void (boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit,boost::asio::ip::tcp::endpoint ep)> func);
 
       private:
-        boost::function<void (boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit,boost::asio::ip::tcp::endpoint ep)> _func;
+        std::list<boost::function<void (boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit,boost::asio::ip::tcp::endpoint ep)> > _func_list;
         /*
         class Endpoint{
         public:

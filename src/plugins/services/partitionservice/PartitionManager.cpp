@@ -314,9 +314,12 @@ namespace partitionservice {
   void PartitionManager::collectProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit,boost::asio::ip::tcp::endpoint ep) {
     if(_ep_pu.count(ep)){
         boost::mutex::scoped_lock partition_get_lock(_collector_mutex);
-        if(_func)
+        if(_func_list.size())
           {
-            _func(unit, ep);
+          std::list<boost::function<void (boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit,boost::asio::ip::tcp::endpoint ep)> >::iterator it=_func_list.begin();
+          for(;it!=_func_list.end();it++){
+            (*it)(unit, ep);
+          }
           }else{
             std::string name = org::esb::config::Config::get("hive.tmp_path") +"/jobs/"+unit->getJobId()+"/collect";
             name += "/";
@@ -385,7 +388,8 @@ namespace partitionservice {
 
   void PartitionManager::addCollector(boost::function<void (boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit,boost::asio::ip::tcp::endpoint ep)> func)
   {
-    _func=func;
+    //_func=func;
+    _func_list.push_front(func);
   }
   /*
 

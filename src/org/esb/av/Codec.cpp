@@ -181,6 +181,47 @@ namespace org {
         }
       }
 
+      Codec::Codec(const Codec & cp)
+      {
+        _stream_index=-1;
+
+        _dict=NULL;
+        _codec_resolved = false;
+        _opened = false;
+        ctx = avcodec_alloc_context();
+        ctx->codec_id=cp.ctx->codec_id;
+        _mode=cp._mode;
+        ctx->flags=cp.ctx->flags;
+        ctx->pix_fmt=cp.ctx->pix_fmt;
+        ctx->width=cp.ctx->width;
+        ctx->height=cp.ctx->height;
+        ctx->time_base=cp.ctx->time_base;
+        _frame_rate=cp._frame_rate;
+        ctx->gop_size=cp.ctx->gop_size;
+        ctx->bit_rate=cp.ctx->bit_rate;
+        ctx->channels=cp.ctx->channels;
+        ctx->sample_rate=cp.ctx->sample_rate;
+        ctx->sample_fmt=cp.ctx->sample_fmt;
+        _bytes_discard=cp._bytes_discard;
+        ctx->bits_per_coded_sample=cp.ctx->bits_per_coded_sample;
+        _options=cp._options;
+        ctx->codec_type=cp.ctx->codec_type;
+        _stream_index=cp._stream_index;
+
+        if (_mode == Codec::DECODER) {
+          ctx->extradata_size=cp.ctx->extradata_size;
+          //LOGDEBUG("Extra data"<<ctx->extradata_size);
+          if (ctx->extradata_size > 0) {
+            ctx->extradata = static_cast<boost::uint8_t*> (av_malloc(ctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE));
+            memset(ctx->extradata, 0, ctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
+            memcpy(ctx->extradata, cp.ctx->extradata, ctx->extradata_size);
+            //boost::serialization::make_binary_object(ctx->extradata, ctx->extradata_size);
+          } else {
+            ctx->extradata = NULL;
+          }
+        }
+      }
+
       Codec::Codec(std::string codec_name, int mode) {
         _stream_index=-1;
 
@@ -853,6 +894,9 @@ namespace org {
       void Codec::setStreamIndex(int idx)
       {
         _stream_index=idx;
+      }
+      int Codec::getStreamIndex(){
+        return _stream_index;
       }
 
     }

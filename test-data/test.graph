@@ -106,9 +106,16 @@
 			}
 		},
 		{
+			"name" : "ExportTask",
+			"uid" : 6,
+			"data" : {
+				"outurl" : "/tmp/test2.mp4"
+			}
+		},
+		{
 			"name" : "EncodingTask",
 			"uid" : 5,
-			"linksTo":[4],
+			"linksTo":[6],
 			"data" : {
 				"name" : "Mp4 x264(320x240 hq) mp3(128kb 44.1kHz stereo)",
 				"format" : {

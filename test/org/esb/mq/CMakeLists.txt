@@ -10,7 +10,7 @@ target_link_libraries (QueueOutputStreamTest io hive)
 #ADD_TEST(mq.QueueOutputStreamTest ${EXECUTABLE_OUTPUT_PATH}/QueueOutputStreamTest)
 
 add_executable (QueueInputStreamTest QueueInputStream.cpp)
-target_link_libraries (QueueInputStreamTest io hive )
+target_link_libraries (QueueInputStreamTest io hive io)
 #ADD_TEST(mq.QueueInputStreamTest ${EXECUTABLE_OUTPUT_PATH}/QueueInputStreamTest)
 
 #add_executable (StartSafmqTest StartSafmqTest.cpp)

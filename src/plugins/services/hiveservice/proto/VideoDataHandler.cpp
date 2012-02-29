@@ -30,38 +30,38 @@ using namespace org::esb;
 #define PUT_UNIT  "put process_unit"
 
 class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
-private:
-  classlogger("org.esb.hive.protocol.DataHandler")
-  InputStream * _is;
-  OutputStream * _os;
-  //	PacketOutputStream * _pos;
-  io::ObjectOutputStream * _oos;
-  io::ObjectInputStream * _ois;
-  //  ClientHandler* _handler;
+  private:
+    classlogger("org.esb.hive.protocol.DataHandler")
+    InputStream * _is;
+    OutputStream * _os;
+    //	PacketOutputStream * _pos;
+    io::ObjectOutputStream * _oos;
+    io::ObjectInputStream * _ois;
+    //  ClientHandler* _handler;
 
-  std::string _own_id;
-  //  boost::asio::io_service io_timer;
-  //  boost::asio::deadline_timer timer;
-  //  boost::shared_ptr<boost::thread> _timer_thread;
-  //  boost::asio::deadline_timer t2;
-  boost::shared_ptr<ProcessUnit> un;
-  boost::asio::ip::tcp::endpoint _ep;
-  bool shutdown;
+    std::string _own_id;
+    //  boost::asio::io_service io_timer;
+    //  boost::asio::deadline_timer timer;
+    //  boost::shared_ptr<boost::thread> _timer_thread;
+    //  boost::asio::deadline_timer t2;
+    boost::shared_ptr<ProcessUnit> un;
+    boost::asio::ip::tcp::endpoint _ep;
+    bool shutdown;
 
-public:
+  public:
 
-  VideoDataHandler(InputStream * is, OutputStream * os, boost::asio::ip::tcp::endpoint e) {
-    _ep=e;
-    _oos = new io::ObjectOutputStream(os);
-    _ois = new io::ObjectInputStream(is);
-    _own_id = e.address().to_string();
-    _own_id += ":";
-    _own_id += StringUtil::toString(e.port());
-    shutdown = false;
-    LOGDEBUG("endpoint:" << e);
-  }
+    VideoDataHandler(InputStream * is, OutputStream * os, boost::asio::ip::tcp::endpoint e) {
+      _ep=e;
+      _oos = new io::ObjectOutputStream(os);
+      _ois = new io::ObjectInputStream(is);
+      _own_id = e.address().to_string();
+      _own_id += ":";
+      _own_id += StringUtil::toString(e.port());
+      shutdown = false;
+      LOGDEBUG("endpoint:" << e);
+    }
 
-  /*
+    /*
   DataHandler(InputStream * is, OutputStream * os) {
     _is = is;
     _os = os;
@@ -77,18 +77,18 @@ public:
 
   }
    */
-  ~VideoDataHandler() {
-    partitionservice::PartitionManager::getInstance()->getInstance()->leavePartition("", _ep);
-    shutdown = true;
-    if (_oos)
-      delete _oos;
-    _oos = NULL;
-    if (_ois)
-      delete _ois;
-    _ois = NULL;
-  }
+    ~VideoDataHandler() {
+      partitionservice::PartitionManager::getInstance()->getInstance()->leavePartition("", _ep);
+      shutdown = true;
+      if (_oos)
+        delete _oos;
+      _oos = NULL;
+      if (_ois)
+        delete _ois;
+      _ois = NULL;
+    }
 
-  /*
+    /*
   DataHandler(TcpSocket * s) {
     socket = s;
     _is = socket->getInputStream();
@@ -107,31 +107,31 @@ public:
     LOGDEBUG("endpoint:" << ep);
   }
    */
-  int isResponsible(cmdId & cmid) {
-    return CMD_NA;
-  }
+    int isResponsible(cmdId & cmid) {
+      return CMD_NA;
+    }
 
-  int isResponsible(char * command) {
-    if (
-        strcmp(command, GET_UNIT) == 0 ||
-        strcmp(command, PUT_UNIT) == 0
-        ) {
+    int isResponsible(char * command) {
+      if (
+      strcmp(command, GET_UNIT) == 0 ||
+      strcmp(command, PUT_UNIT) == 0
+      ) {
         return CMD_PROCESS;
       } else
-      if (strcmp(command, "help") == 0) {
+        if (strcmp(command, "help") == 0) {
           return CMD_HELP;
         }
-    return CMD_NA;
-  }
+      return CMD_NA;
+    }
 
-  void process(char * command) {
-    if (_oos == NULL || _ois == NULL)return;
-    if (strcmp(command, GET_UNIT) == 0) {
+    void process(char * command) {
+      if (_oos == NULL || _ois == NULL)return;
+      if (strcmp(command, GET_UNIT) == 0) {
         partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
         un = man->getProcessUnit(_ep);
         _oos->writeObject(un);
-      } else
-      if (strcmp(command, PUT_UNIT) == 0) {
+      } else {
+        if (strcmp(command, PUT_UNIT) == 0) {
           //un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           _ois->readObject(un);
           partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
@@ -139,8 +139,9 @@ public:
         } else {
           LOGERROR("unknown command received:" << command);
         }
-  }
+      }
+    }
 
-  void printHelp() {
-  }
+    void printHelp() {
+    }
 };

@@ -52,7 +52,7 @@ namespace plugin {
     std::map<int, Ptr<org::esb::av::Encoder> > enc=getContext()->get<std::map<int, Ptr<org::esb::av::Encoder> > >("encoder");
     std::map<int, Ptr<org::esb::av::Encoder> >::iterator it=enc.begin();
     for(;it!=enc.end();it++){
-      _pos->setEncoder(*(*it).second.get(),(*it).first);
+      _pos->setEncoder(*(*it).second.get(),(*it).second->getStreamIndex());
     }
     _pos->init();
   }

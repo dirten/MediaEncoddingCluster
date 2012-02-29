@@ -37,7 +37,7 @@ namespace encodingtask {
       _srcuristr = getSource();
     }
     _partition = getContext()->getEnvironment<std::string > ("encodingtask.partition");
-    _task_uuid = getUUID(); //getContext()->getEnvironment<std::string > ("task.uuid");
+    _task_uuid = org::esb::util::PUUID();//getUUID(); //getContext()->getEnvironment<std::string > ("task.uuid");
     _target_file = getSink();
 
     std::string profiledata = getContext()->getEnvironment<std::string > ("data");
@@ -53,7 +53,7 @@ namespace encodingtask {
       std::map<int, Ptr<org::esb::av::Decoder> >tmp = getContext()->get<std::map<int, Ptr<org::esb::av::Decoder> > >("decoder");
       std::map<int, Ptr<org::esb::av::Decoder> >::iterator it = tmp.begin();
 
-      for (int a=0; it != tmp.end(); it++,a++) {
+      for (int a=0; it != tmp.end(); it++) {
         if ((*it).second->getCodecType() == AVMEDIA_TYPE_VIDEO) {
           /*special prepare of the encoder for using the input width/heigth*/
           if (_codecs["video"].count("width") == 0 ||
@@ -72,7 +72,7 @@ namespace encodingtask {
             LOGDEBUG("setting framerate from input to : " << oss.str());
           }
           _encs[(*it).first]=new Encoder(_codecs["video"]);
-          _encs[(*it).first]->setStreamIndex(a);
+          _encs[(*it).first]->setStreamIndex(a++);
           if(!_encs[(*it).first]->open()){
             _encs.erase((*it).first);
             throw org::esb::core::TaskException("could not open Video Encoder");
@@ -80,7 +80,7 @@ namespace encodingtask {
         }
         if ((*it).second->getCodecType() == AVMEDIA_TYPE_AUDIO) {
           _encs[(*it).first]=new Encoder(_codecs["audio"]);
-          _encs[(*it).first]->setStreamIndex(a);
+          _encs[(*it).first]->setStreamIndex(a++);
           if(!_encs[(*it).first]->open()){
             _encs.erase((*it).first);
             throw org::esb::core::TaskException("could not open Audio Encoder");
@@ -176,8 +176,9 @@ namespace encodingtask {
   {
     //boost::mutex::scoped_lock partition_get_lock(_partition_mutex);
 
-    std::cerr<<boost::this_thread::get_id()<<" collector invoked "<<unit->getDecoder()->getCodecName()<<", pu count"<<unit->_output_packets.size()<<" sequence:"<<unit->_sequence<<std::endl;
-    _unit_list.pushUnit(unit);
+    std::cerr<<unit->getJobId()<<"=="<<_task_uuid<<":"<<boost::this_thread::get_id()<<" collector invoked "<<unit->getDecoder()->getCodecName()<<", pu count"<<unit->_output_packets.size()<<" sequence:"<<unit->_sequence<<std::endl;
+    if(unit->getJobId()==_task_uuid)
+      _unit_list.pushUnit(unit);
     /*
     while(_unit_list.size()&&(*_unit_list.begin())->_sequence==lastSequence){
       std::cerr<<"lastSequence found:"<<lastSequence<<std::endl;
@@ -222,7 +223,7 @@ namespace encodingtask {
           Ptr<org::esb::av::Encoder>enc=_encs[(*it).first];
           StreamProcessUnitBuilder & spub=_spu[(*it).first];
           boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit = spub.build(list, (*it).second.getDecoder(), enc);
-          putToPartition(unit);
+          putToPartition(unit, true);
         }
       }
     }

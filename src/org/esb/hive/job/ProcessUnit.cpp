@@ -127,9 +127,10 @@ void ProcessUnit::process() {
     delete _converter;
     _output_packets.clear();
     _converter = NULL;
-    _decoder = _2passdecoder;
-
-    _encoder = _2passencoder;
+    _decoder = boost::shared_ptr<Decoder>(new Decoder(*_decoder.get()));//_2passdecoder;
+    _encoder = boost::shared_ptr<Encoder>(new Encoder(*_encoder.get()));//_2passencoder;
+    //_decoder->reset();
+    //_encoder->reset();
     //_encoder->setCodecID(CODEC_ID_LIBXVID);
     _encoder->setCodecOption("flags", "pass2");
     //_encoder->setCodecOption("g", org::esb::util::StringUtil::toString(_input_packets.size()));
