@@ -55,6 +55,7 @@ namespace org {
       int QueueInputStream::read(string & str) {
         if(!_queue)return -1;
         safmq::QueueMessage msg;
+
         _queue->Retrieve(true,-1,msg);
         size_t length=msg.getBufferSize();
         std::istream*buf=msg.getBufferStream();
