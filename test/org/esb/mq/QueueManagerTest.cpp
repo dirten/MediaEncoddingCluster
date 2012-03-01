@@ -16,6 +16,7 @@
 #include "org/esb/io/QueueInputStream.h"
 #include "org/esb/io/ObjectInputStream.h"
 #include "org/esb/hive/job/ProcessUnit.h"
+#include "org/esb/hive/Environment.h"
 using namespace std;
 
 using namespace org::esb::mq;
@@ -27,6 +28,7 @@ using namespace org::esb::hive::job;
  * 
  */
 int main(int argc, char** argv) {
+  org::esb::hive::Environment::build(argc,argv);
   org::esb::io::File d("data");
   if(!d.exists())
     d.mkdir();
@@ -66,6 +68,7 @@ int main(int argc, char** argv) {
   con.deleteQueue("testqueue");
   }
   man.stop();
+
   return 0;
 }
 

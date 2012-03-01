@@ -17,8 +17,11 @@ namespace encodingtask{
 
   private:
     boost::function<void (boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit)> _func;
-    std::set<boost::shared_ptr<org::esb::hive::job::ProcessUnit>, classcomp> _unit_list;
+    //std::set<boost::shared_ptr<org::esb::hive::job::ProcessUnit>, classcomp> _unit_list;
+    std::map<int, std::string > _unit_map;
     int lastSequence;
+    std::string _user_data_path;
+
   };
 }
 #endif // PROCESSUNITLIST_H

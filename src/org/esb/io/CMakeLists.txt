@@ -8,7 +8,7 @@ ELSE(SHARED_IO)
 ENDIF(SHARED_IO)
 MESSAGE("IO Build Type" ${LINK_TYPE})
 
-#include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
+include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
 add_library (io ${IO_LINK_TYPE} 
       File.cpp 
       FileInputStream.cpp 
@@ -21,13 +21,14 @@ add_library (io ${IO_LINK_TYPE}
       ObjectInputStream.cpp
       StringInputStream.cpp
       StringOutputStream.cpp
-      #QueueOutputStream.cpp
-      #QueueInputStream.cpp
+      QueueOutputStream.cpp
+      QueueInputStream.cpp
 )
 TARGET_LINK_LIBRARIES(io
 #    ${Boost_LIBRARIES}
     lang
     util
+    safmq
 )
 SET_TARGET_PROPERTIES( io PROPERTIES PREFIX "libmhive-")
 IF(SHARED_IO)
