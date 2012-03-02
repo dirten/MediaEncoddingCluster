@@ -16,15 +16,14 @@ namespace org {
 
       class QueueManager {
       public:
-        QueueManager();
-        QueueManager(const QueueManager& orig);
+        QueueManager(std::string base_dir);
         virtual ~QueueManager();
         void createQueue(std::string name);
         void start();
         void stop();
         std::string getUrl();
       private:
-
+        QueueManager(const QueueManager& orig);
         int numForwardThreads;
         bool _running;
       };

@@ -31,6 +31,7 @@ int main(int argc, char** argv) {
   org::esb::core::PluginRegistry::getInstance()->load(EXECUTABLETASK_PLUGIN);
   org::esb::core::PluginRegistry::getInstance()->load(UPLOADTASK_PLUGIN);
   org::esb::core::PluginRegistry::getInstance()->load(OUTPUTTASK_PLUGIN);
+  org::esb::core::PluginRegistry::getInstance()->load(HTTPPULLTASK_PLUGIN);
 
   org::esb::io::FileInputStream fis(argv[1]);
   std::string graph_data;

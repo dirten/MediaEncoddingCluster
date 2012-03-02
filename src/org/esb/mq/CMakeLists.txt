@@ -3,7 +3,7 @@
 
 include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
 
-add_library (mq
+add_library (mq SHARED
       QueueManager.cpp
       QueueConnection.cpp
       QueueMessage.cpp
@@ -17,18 +17,14 @@ IF(WIN32)
 ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES(mq
-    ${Boost_LIBRARIES}
-    lang
     safmq
-    util
-    io
-    ${EXTRA_LIBS}
 )
-IF(BUILD_SHARED_LIBS)
+
+SET_TARGET_PROPERTIES( mq PROPERTIES PREFIX "libmhive-")
+
 INSTALL(TARGETS mq
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
     RUNTIME DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-ENDIF(BUILD_SHARED_LIBS)
 

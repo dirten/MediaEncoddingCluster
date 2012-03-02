@@ -68,6 +68,8 @@ int main(int argc, char** argv) {
   org::esb::core::PluginRegistry::getInstance()->load(EXECUTABLETASK_PLUGIN);
   org::esb::core::PluginRegistry::getInstance()->load(UPLOADTASK_PLUGIN);
   org::esb::core::PluginRegistry::getInstance()->load(OUTPUTTASK_PLUGIN);
+  org::esb::core::PluginRegistry::getInstance()->load(HTTPPULLTASK_PLUGIN);
+
   LOGDEBUG("HttpPullSource:"<<HTTPPULLTASK_PLUGIN);
   org::esb::core::PluginRegistry::getInstance()->load(HTTPPULLTASK_PLUGIN);
   LOGDEBUG("using database in:" << org::esb::config::Config::get("db.url"));

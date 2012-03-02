@@ -17,6 +17,7 @@
 #include "org/esb/io/ObjectInputStream.h"
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/hive/Environment.h"
+#include "org/esb/config/config.h"
 using namespace std;
 
 using namespace org::esb::mq;
@@ -36,7 +37,7 @@ int main(int argc, char** argv) {
   File f("test.cfg");
   if(!f.exists())
     f.createNewFile();
-  QueueManager man;
+  QueueManager man(org::esb::config::Config::get("hive.data_path"));
   man.start();
   org::esb::lang::Thread::sleep2(1000);
   {

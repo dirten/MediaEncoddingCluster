@@ -31,47 +31,47 @@
 #include "ForwardThread.h"
 Config * pcfg = NULL;
 QManager * theQueueManager = NULL;
-        /// The global instance of the network serevr thread
+/// The global instance of the network serevr thread
 ServerThread* server;
-        /// The global instance of the TTL Error Delivery thread
+/// The global instance of the TTL Error Delivery thread
 SystemDelivery* sysdeliver;
-        /// The global instance of the message forwarding thread
+/// The global instance of the message forwarding thread
 ForwardThread* forwardthds;
-        safmq::Log* plog;
+safmq::Log* plog;
 
-const std::string			system_user("safmq_system");
+const std::string system_user("safmq_system");
 
 /// Global group including all users
-const std::string			safmq_all_users("safmq_all_users");
+const std::string safmq_all_users("safmq_all_users");
 namespace org {
   namespace esb {
     namespace mq {
 
-      QueueManager::QueueManager() {
-        sysdeliver=new SystemDelivery();
-        server=new ServerThread();
-        org::esb::io::File file(org::esb::config::Config::get("hive.data_path")+"/queues");
-        if(!file.exists()){
+      QueueManager::QueueManager(std::string base_dir) {
+        sysdeliver = new SystemDelivery();
+        server = new ServerThread();
+        org::esb::io::File file(base_dir + "/queues");
+        if (!file.exists()) {
           file.mkdir();
         }
-        org::esb::io::File f(org::esb::config::Config::get("hive.user_path")+"mq.cfg");
+        org::esb::io::File f(base_dir + "/mq.cfg");
         //if(!f.exists()){
-          org::esb::io::FileOutputStream fos(&f);
-          std::string line;
-          line="port:";
-          line+="20202\n";
-          fos.write(line);
-          line="queue_dir:";
-          line+=file.getFilePath()+"\n";
-          fos.write(line);
-          fos.close();          
+        org::esb::io::FileOutputStream fos(&f);
+        std::string line;
+        line = "port:";
+        line += "20202\n";
+        fos.write(line);
+        line = "queue_dir:";
+        line += file.getFilePath() + "\n";
+        fos.write(line);
+        fos.close();
         //}
         numForwardThreads = 1;
-        _running=false;
+        _running = false;
         try {
-          pcfg = new Config(org::esb::config::Config::get("hive.user_path")+"mq.cfg");
+          pcfg = new Config(base_dir + "/mq.cfg");
 
-//          std::string port=pcfg->getParam("port");
+          //          std::string port=pcfg->getParam("port");
         } catch (int) {
           safmq::Log::getLog()->Startup(safmq::Log::error, "Unable to load configuration file.");
         }
@@ -86,7 +86,7 @@ namespace org {
         plog->SetLogDestination(safmq::Log::message, pcfg->getParam(MESSAGE_LOG, safmq::Log::STDOUT).c_str());
         plog->SetLogDestination(safmq::Log::forward, pcfg->getParam(FORWARD_LOG, safmq::Log::STDOUT).c_str());
         plog->SetLogDestination(safmq::Log::info, pcfg->getParam(INFO_LOG, safmq::Log::STDOUT).c_str());
-*/
+         */
         theQueueManager = new QManager;
 
         //atexit(onExit);
@@ -100,19 +100,20 @@ namespace org {
       QueueManager::~QueueManager() {
         stop();
         delete theQueueManager;
-        theQueueManager=NULL;
+        theQueueManager = NULL;
         plog->Shutdown();
         delete plog;
-        plog=NULL;
+        plog = NULL;
         delete pcfg;
-        pcfg=NULL;
+        pcfg = NULL;
       }
+
       void QueueManager::createQueue(std::string name) {
       }
 
       std::string QueueManager::getUrl() {
-        std::string url="safmq://admin:@localhost:";
-        url+=pcfg->getParam("port", "9000");
+        std::string url = "safmq://admin:@localhost:";
+        url += pcfg->getParam("port", "9000");
         return url;
       }
 
@@ -130,12 +131,12 @@ namespace org {
         }
         server->start();
         //plog->Startup();
-        _running=true;
-        
+        _running = true;
+
       }
 
       void QueueManager::stop() {
-        if(!_running)return;
+        if (!_running)return;
         server->stop();
         for (int x = 0; x < numForwardThreads; ++x)
           forwardthds[x].stop();
@@ -153,8 +154,8 @@ namespace org {
         //Log::getLog()->Info("Shutting down SAFMQ, freeing theQueueManager");
         //delete theQueueManager;
 
-        
-        _running=false;
+
+        _running = false;
       }
     }
   }

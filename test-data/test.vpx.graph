@@ -1,11 +1,11 @@
 {
 	"tasks" : [
 		{
-			"name" : "InputTask",
+			"name" : "HTTPPullSource",
 			"uid" : 1,
 			"linksTo":[2],
 			"data" : {
-				"infile" : "/Users/jhoelscher/Movies/ChocolateFactory.ts"
+				"srcurl" : "/Users/jhoelscher/Movies/ChocolateFactory.ts"
 			}
 		},
 		{

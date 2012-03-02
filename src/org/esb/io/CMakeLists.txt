@@ -21,14 +21,13 @@ add_library (io ${IO_LINK_TYPE}
       ObjectInputStream.cpp
       StringInputStream.cpp
       StringOutputStream.cpp
-      QueueOutputStream.cpp
-      QueueInputStream.cpp
+      #QueueOutputStream.cpp
+      #QueueInputStream.cpp
 )
 TARGET_LINK_LIBRARIES(io
 #    ${Boost_LIBRARIES}
     lang
     util
-    safmq
 )
 SET_TARGET_PROPERTIES( io PROPERTIES PREFIX "libmhive-")
 IF(SHARED_IO)
