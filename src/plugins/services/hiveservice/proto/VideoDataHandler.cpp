@@ -15,6 +15,8 @@
 #include "org/esb/signal/Message.h"
 #include "org/esb/signal/Messenger.h"
 #include "plugins/services/partitionservice/PartitionManager.h"
+#include "org/esb/mq/QueueConnection.h"
+#include "org/esb/mq/ObjectMessage.h"
 #include <map>
 #include <string>
 using namespace org::esb::hive::job;
@@ -47,6 +49,11 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
     boost::shared_ptr<ProcessUnit> un;
     boost::asio::ip::tcp::endpoint _ep;
     bool shutdown;
+    static std::map<std::string, boost::asio::ip::tcp::endpoint> _label_ep_map;
+    Ptr<org::esb::mq::QueueConnection> con;
+    Ptr<safmq::MessageQueue> read_q;
+    Ptr<safmq::MessageQueue> write_q;
+
 
   public:
 
@@ -58,6 +65,10 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
       _own_id += ":";
       _own_id += StringUtil::toString(e.port());
       shutdown = false;
+      con=new org::esb::mq::QueueConnection("localhost", 20202);
+      read_q=con->getMessageQueue("read_q");
+      write_q=con->getMessageQueue("write_q");
+
       LOGDEBUG("endpoint:" << e);
     }
 
@@ -128,14 +139,20 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
       if (_oos == NULL || _ois == NULL)return;
       if (strcmp(command, GET_UNIT) == 0) {
         partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
-        un = man->getProcessUnit(_ep);
+        org::esb::mq::ObjectMessage msg;
+        read_q->Retrieve(true,-1,msg);
+        msg.getObject(un);
+        //un = man->getProcessUnit(_ep);
         _oos->writeObject(un);
       } else {
         if (strcmp(command, PUT_UNIT) == 0) {
           //un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           _ois->readObject(un);
-          partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
-          man->collectProcessUnit(un, _ep);
+          org::esb::mq::ObjectMessage msg;
+          msg.setObject(un);
+          write_q->Enqueue(msg);
+          //partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
+          //man->collectProcessUnit(un, _ep);
         } else {
           LOGERROR("unknown command received:" << command);
         }

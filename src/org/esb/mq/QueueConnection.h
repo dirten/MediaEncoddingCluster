@@ -4,6 +4,7 @@
 #include "MQConnection.h"
 #include "MessageQueue.h"
 #include "QueueMessageListener.h"
+#include "org/esb/lang/Ptr.h"
 #include <boost/thread.hpp>
 
 namespace org{
@@ -24,7 +25,8 @@ namespace org{
         void dequeue(std::string q_name,QueueMessage &msg);
         void startListener();
         void stopListener();
-        safmq::MessageQueue * getMessageQueue(std::string q_name);
+
+        Ptr<safmq::MessageQueue>  getMessageQueue(std::string q_name);
       private:
         safmq::MQConnection * _connection;
         QueueMessageListener * _listener;

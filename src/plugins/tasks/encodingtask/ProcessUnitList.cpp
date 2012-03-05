@@ -53,6 +53,14 @@ namespace encodingtask{
 
   void ProcessUnitList::addCallback(boost::function<void (boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit)> func)
   {
-    _func=func;
+      _func=func;
   }
+
+//  void ProcessUnitList::writeFile(boost::shared_ptr<org::esb::hive::job::ProcessUnit>, string uuid)
+//  {
+//  }
+
+//  boost::shared_ptr<org::esb::hive::job::ProcessUnit> ProcessUnitList::readFile(string uuid)
+//  {
+//  }
 }

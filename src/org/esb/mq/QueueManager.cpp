@@ -52,7 +52,7 @@ namespace org {
         server = new ServerThread();
         org::esb::io::File file(base_dir + "/queues");
         if (!file.exists()) {
-          file.mkdir();
+          file.mkdirs();
         }
         org::esb::io::File f(base_dir + "/mq.cfg");
         //if(!f.exists()){

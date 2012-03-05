@@ -25,6 +25,7 @@ namespace encodingtask {
 
   EncodingTask::EncodingTask() : Task() {
     _sequence_counter = 0;
+
     //lastSequence=0;
   }
 
@@ -98,6 +99,14 @@ namespace encodingtask {
     } else {
       throw org::esb::core::TaskException("could not find decoder in Tasks PluginContext");
     }
+    con=new org::esb::mq::QueueConnection("localhost", 20202);
+    if(!con->queueExist("read_q")){
+        con->createQueue("read_q");
+    }
+    if(!con->queueExist("write_q")){
+        con->createQueue("write_q");
+    }
+    read_q=con->getMessageQueue("read_q");
     getContext()->set<std::map<int, Ptr<org::esb::av::Encoder> > >("encoder",_encs);
 
     getContext()->set<std::string > ("profile.name", _preset["name"]);
@@ -250,7 +259,10 @@ namespace encodingtask {
     /*create unique stream index*/
     unit->_source_stream = unit->_input_packets.front()->getStreamIndex();
     unit->_last_process_unit = isLast;
-    partitionservice::PartitionManager::getInstance()->putProcessUnit(_partition, unit, t);
+    org::esb::mq::ObjectMessage msg;
+    msg.setObject(unit);
+    read_q->Enqueue(msg);
+    //partitionservice::PartitionManager::getInstance()->putProcessUnit(_partition, unit, t);
     setProgressLength(getProgressLength() + 1);
   }
 

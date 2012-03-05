@@ -2,6 +2,7 @@ include_directories (${MEC_SOURCE_DIR}/src)
 include_directories (${MEC_SOURCE_DIR})
 include_directories (${MYSQL_DIR}/include/mysql)
 include_directories (${MYSQL_DIR}/include)
+include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
 
 
 add_executable (PluginRegistryTest PluginRegistryTest.cpp)
@@ -60,3 +61,6 @@ ADD_DEFINITIONS(-DWEBSERVER_PLUGIN="${WEBSERVER_PLUGIN}")
 ADD_DEFINITIONS(-DJSONSERVICE_PLUGIN="${JSONSERVICE_PLUGIN}")
 get_target_property(HTTPPULLTASK_PLUGIN httppullsource LOCATION)
 ADD_DEFINITIONS(-DHTTPPULLTASK_PLUGIN="${HTTPPULLTASK_PLUGIN}")
+
+get_target_property(MQSERVER_PLUGIN mqserver LOCATION)
+ADD_DEFINITIONS(-DMQSERVER_PLUGIN="${MQSERVER_PLUGIN}")

@@ -23,7 +23,7 @@ namespace mqserver {
     void MQSERVICE_EXPORT startService();
     void MQSERVICE_EXPORT stopService();
     org::esb::core::OptionsDescription MQSERVICE_EXPORT getOptionsDescription();
-
+    org::esb::core::ServicePlugin::ServiceType getServiceType();
   private:
     void run();
     std::string _data_dir;

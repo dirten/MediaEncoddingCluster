@@ -34,6 +34,8 @@ if(USE_SAFMQ)
     add_definitions(-DUSE_SAFMQ)
 ENDIF(USE_SAFMQ)
 
+
+
 SET(POCO_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Use poco in directory")
 SET(LIBJSON_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
@@ -178,6 +180,15 @@ ELSE(WIN32)
   SET(CPACK_GENERATOR "DEB;STGZ" )
 ENDIF(WIN32)
 
+set(CPACK_SOURCE_IGNORE_FILES
+"~$"
+"\\\\.cvsignore$"
+"^${PROJECT_SOURCE_DIR}.*/CVS/"
+"^${PROJECT_SOURCE_DIR}/debian/"
+"^${PROJECT_SOURCE_DIR}/old/"
+"^${PROJECT_SOURCE_DIR}/build/"
+"^${PROJECT_SOURCE_DIR}/install/"
+)
 ############################################################
 #
 # Find the libbz2, it is needed for ffmpeg when visible

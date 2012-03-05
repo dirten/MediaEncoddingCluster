@@ -1,6 +1,7 @@
 #ifndef QUEUEMESSAGELISTENER_H
 #define QUEUEMESSAGELISTENER_H
 #include "QueueMessage.h"
+#include "ObjectMessage.h"
 namespace org{
     namespace esb{
         namespace mq{

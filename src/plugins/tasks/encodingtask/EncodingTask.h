@@ -20,6 +20,9 @@
 #include "StreamProcessUnitBuilder.h"
 #include "org/esb/core/Task.h"
 #include "ProcessUnitList.h"
+#include "org/esb/mq/QueueConnection.h"
+#include "org/esb/mq/ObjectMessage.h"
+
 
 namespace encodingtask {
   class ENCTASK_EXPORT EncodingTask : public org::esb::core::Task {
@@ -78,6 +81,10 @@ namespace encodingtask {
     boost::mutex _partition_mutex;
     ProcessUnitList _unit_list;
     std::map<int, Ptr<org::esb::av::Encoder> >_encs;
+
+    Ptr<org::esb::mq::QueueConnection> con;
+    Ptr<safmq::MessageQueue> read_q;
+
   };
   //  REGISTER_TASK("DownloadTask", DownloadTask)
 }

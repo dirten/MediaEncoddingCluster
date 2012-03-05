@@ -5,12 +5,12 @@ include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
 #target_link_libraries (SimpleEnqueue io)
 #ADD_TEST(mq.SimpleEnqueue ${EXECUTABLE_OUTPUT_PATH}/SimpleEnqueue )
 
-add_executable (QueueOutputStreamTest QueueOutputStream.cpp)
-target_link_libraries (QueueOutputStreamTest io hive)
+#add_executable (QueueOutputStreamTest QueueOutputStream.cpp)
+#target_link_libraries (QueueOutputStreamTest io hive)
 #ADD_TEST(mq.QueueOutputStreamTest ${EXECUTABLE_OUTPUT_PATH}/QueueOutputStreamTest)
 
-add_executable (QueueInputStreamTest QueueInputStream.cpp)
-target_link_libraries (QueueInputStreamTest io hive io)
+#add_executable (QueueInputStreamTest QueueInputStream.cpp)
+#target_link_libraries (QueueInputStreamTest io hive io)
 #ADD_TEST(mq.QueueInputStreamTest ${EXECUTABLE_OUTPUT_PATH}/QueueInputStreamTest)
 
 #add_executable (StartSafmqTest StartSafmqTest.cpp)

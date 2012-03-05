@@ -30,13 +30,13 @@ public:
  */
 int main(int argc, char** argv) {
   Log::open("");
-//  QueueManager man;
-  //man.start();
+  QueueManager man("./queue");
+  man.start();
   org::esb::lang::Thread::sleep2(1000);
 //  LOGDEBUG("QueueConnection="<<man.getUrl());
-  org::esb::mq::QueueConnection conl("localhost", 20200);
+  org::esb::mq::QueueConnection conl("localhost", 20202);
 
-  org::esb::mq::QueueConnection conw("localhost", 20200);
+  org::esb::mq::QueueConnection conw("localhost", 20202);
   if(!conw.queueExist("testqueue"))
     conw.createQueue("testqueue");
   std::string label="testlable";
@@ -46,44 +46,40 @@ int main(int argc, char** argv) {
   conl.startListener();
   LOGDEBUG("start")
   if(true){
-    safmq::MessageQueue * queue=conw.getMessageQueue("testqueue");
+    Ptr<safmq::MessageQueue> queue=conw.getMessageQueue("testqueue");
     QueueMessage msg;
 
     for(int a=0;a<100000;a++){
       queue->Enqueue(msg);
     }
-    delete queue;
   }
   if(true){
-    safmq::MessageQueue * queue=conw.getMessageQueue("testqueue");
+    Ptr<safmq::MessageQueue> queue=conw.getMessageQueue("testqueue");
     QueueMessage msg;
     msg.setLabel(label);
 
     for(int a=0;a<100000;a++){
       queue->Enqueue(msg);
     }
-    delete queue;
   }
-  safmq::MessageQueue * queue=conw.getMessageQueue("testqueue");
+  Ptr<safmq::MessageQueue> queue=conw.getMessageQueue("testqueue");
   LOGDEBUG("giong to dequeue");
-  while(false){
+  while(true){
     QueueMessage msg;
     safmq::ErrorCode err=queue->Retrieve(true,5, msg);
     if(err==safmq::EC_TIMEDOUT)
       break;
   }
-  delete queue;
   LOGDEBUG("delay 20 sec.")
   org::esb::lang::Thread::sleep2(10000);
   LOGDEBUG("enqueue again");
   if(true){
-    safmq::MessageQueue * queue=conw.getMessageQueue("testqueue");
+    Ptr<safmq::MessageQueue> queue=conw.getMessageQueue("testqueue");
     QueueMessage msg;
 
     for(int a=0;a<100000;a++){
       queue->Enqueue(msg);
     }
-    delete queue;
   }
 
   org::esb::lang::Thread::sleep2(120000);

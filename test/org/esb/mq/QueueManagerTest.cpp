@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   QueueManagerTest.cpp
  * Author: HoelscJ
  *
@@ -8,13 +8,14 @@
 #include <cstdlib>
 #include "org/esb/mq/QueueManager.h"
 #include "org/esb/mq/QueueConnection.h"
+#include "org/esb/mq/ObjectMessage.h"
 #include "org/esb/lang/CtrlCHitWaiter.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/io/File.h"
-#include "org/esb/io/QueueOutputStream.h"
-#include "org/esb/io/ObjectOutputStream.h"
-#include "org/esb/io/QueueInputStream.h"
-#include "org/esb/io/ObjectInputStream.h"
+//#include "org/esb/io/QueueOutputStream.h"
+//#include "org/esb/io/ObjectOutputStream.h"
+//#include "org/esb/io/QueueInputStream.h"
+//#include "org/esb/io/ObjectInputStream.h"
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/hive/Environment.h"
 #include "org/esb/config/config.h"
@@ -45,6 +46,12 @@ int main(int argc, char** argv) {
   if(!con.queueExist("testqueue"))
     con.createQueue("testqueue");
   }
+  ObjectMessage msg;
+  ProcessUnit unit;
+  msg.setObject(unit);
+  msg.getObject(unit);
+
+  /*
   {
   QueueOutputStream q(man.getUrl()+"/testqueue");
   ObjectOutputStream oos(&q);
@@ -60,7 +67,7 @@ int main(int argc, char** argv) {
     ProcessUnit unit;
   for(int a=0;a<1000;a++)
     ois.readObject(unit);
-  }
+  }*/
 //  org::esb::lang::Thread::sleep2(10000);
 //  CtrlCHitWaiter::wait();
   {

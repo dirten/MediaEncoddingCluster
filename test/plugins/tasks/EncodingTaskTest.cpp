@@ -26,18 +26,18 @@ void process(boost::asio::ip::tcp::endpoint e1, partitionservice::ProcessUnitCol
   boost::shared_ptr<org::esb::hive::job::ProcessUnit> pu;
   partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
   do {
-    pu = man->getProcessUnit(e1);
-    if (pu) {
-      //if(pu->getDecoder()->getCodecType()==AVMEDIA_TYPE_AUDIO)
-      //  org::esb::lang::Thread::sleep2(10*1000);
-      pu->process();
-      pu->_input_packets.clear();
-      man->collectProcessUnit(pu, e1);
-      //col.putProcessUnit(pu);
-    }else{
-      org::esb::lang::Thread::sleep2(1000);
-    }
-  } while (!toexit);
+      pu = man->getProcessUnit(e1);
+      if (pu) {
+          //if(pu->getDecoder()->getCodecType()==AVMEDIA_TYPE_AUDIO)
+          //  org::esb::lang::Thread::sleep2(10*1000);
+          pu->process();
+          pu->_input_packets.clear();
+          man->collectProcessUnit(pu, e1);
+          //col.putProcessUnit(pu);
+        }else{
+          org::esb::lang::Thread::sleep2(1000);
+        }
+    } while (!toexit);
 
 }
 
@@ -103,13 +103,13 @@ int main(int argc, char** argv) {
     enctask->addSinkTask(exporttask);
 
     if(pulltask){
-      pulltask->prepare();
-    }
+        pulltask->prepare();
+      }
 
     if(enctask){
-      enctask->getContext()->merge(pulltask->getContext());
-      enctask->prepare();
-    }
+        enctask->getContext()->merge(pulltask->getContext());
+        enctask->prepare();
+      }
 
     if(exporttask){
       exporttask->getContext()->merge(enctask->getContext());

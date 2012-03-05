@@ -15,9 +15,15 @@ namespace mqserver {
   }
 
   void Service::startService() {
+      _data_dir=org::esb::config::Config::get("hive.data_path");
+      LOGDEBUG("Using mqserver datadir="<<_data_dir);
     go(Service::run, this);
+    org::esb::lang::Thread::sleep2(2000);
   }
-  
+  org::esb::core::ServicePlugin::ServiceType Service::getServiceType() {
+    return org::esb::core::ServicePlugin::SERVICE_TYPE_SERVER;
+  }
+
   void Service::run() {
     _qm=new org::esb::mq::QueueManager(_data_dir);
     _qm->start();
@@ -29,10 +35,10 @@ namespace mqserver {
 
   org::esb::core::OptionsDescription Service::getOptionsDescription() {
     _data_dir=org::esb::config::Config::get("hive.data_path");
-    org::esb::core::OptionsDescription result("logserver");
+    org::esb::core::OptionsDescription result("mqserver");
     
     result.add_options()
-            ("mqserver.datadir", boost::program_options::value<std::string >()->default_value(_data_dir), "logserver port listen on")
+            ("mqserver.datadir", boost::program_options::value<std::string >()->default_value(_data_dir), "mqserver data path")
             ;
     return result;
   }

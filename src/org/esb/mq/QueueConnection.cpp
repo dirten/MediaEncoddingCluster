@@ -105,7 +105,7 @@ namespace org{
       }
       
       void QueueConnection::startListenerThread(){
-        safmq::MessageQueue * queue=getMessageQueue(_listener_queue);
+        Ptr<safmq::MessageQueue> queue=getMessageQueue(_listener_queue);
         safmq::MQConnection::CursorHandle cursor;
         queue->OpenCursor(cursor);
         while(true){
@@ -124,15 +124,15 @@ namespace org{
           }
           err=queue->AdvanceCursor(cursor);
           if(!err==safmq::EC_NOERROR){
-            org::esb::lang::Thread::sleep2(5000);
-            LOGDEBUG("no mor message, waiting!!!")
+            org::esb::lang::Thread::sleep2(1000);
+            LOGDEBUG("no more message, waiting!!!")
             queue->CloseCursor(cursor);
             queue->OpenCursor(cursor);
           }
         }
       }
 
-      safmq::MessageQueue * QueueConnection::getMessageQueue(std::string q_name){
+      Ptr<safmq::MessageQueue> QueueConnection::getMessageQueue(std::string q_name){
         return new safmq::MessageQueue(_connection, q_name);
       }
       

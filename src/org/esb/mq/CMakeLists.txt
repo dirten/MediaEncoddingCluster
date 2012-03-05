@@ -7,6 +7,7 @@ add_library (mq SHARED
       QueueManager.cpp
       QueueConnection.cpp
       QueueMessage.cpp
+      ObjectMessage.cpp
       QueueException.cpp
 )
 IF(WIN32)
@@ -18,6 +19,8 @@ ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES(mq
     safmq
+    #${Boost_LIBRARIES}
+    io
 )
 
 SET_TARGET_PROPERTIES( mq PROPERTIES PREFIX "libmhive-")

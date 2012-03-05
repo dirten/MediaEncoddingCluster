@@ -15,6 +15,7 @@ add_library (mqserver SHARED
 
 TARGET_LINK_LIBRARIES(mqserver
   mq
+  core
 )
 
 SET_TARGET_PROPERTIES( mqserver PROPERTIES PREFIX "")

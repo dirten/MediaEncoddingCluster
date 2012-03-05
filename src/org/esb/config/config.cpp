@@ -40,7 +40,7 @@ void Config::close() {
   //LOGDEBUG("void Config::close()");
   typedef std::vector< std::pair< std::string, std::string > > array;
   typedef std::pair< std::string, char* > row;
-
+    if(properties){
    array props=properties->toArray();
   //std::vector< std::pair< std::string, std::string > >::iterator it=props.begin();
   
@@ -56,6 +56,7 @@ void Config::close() {
 
   properties->clear();
   delete properties;
+    }
   properties = NULL;
 }
 
