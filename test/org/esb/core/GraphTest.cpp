@@ -123,10 +123,10 @@ int main(int argc, char** argv) {
   assert(man->joinPartition("global", e3, partitionservice::PartitionManager::TYPE_AUDIO) == partitionservice::PartitionManager::OK);
   assert(man->joinPartition("global", e4, partitionservice::PartitionManager::TYPE_AUDIO) == partitionservice::PartitionManager::OK);
   partitionservice::ProcessUnitCollector col("collector");
+  /*
   boost::thread t1 = go(process, e1, col);
   boost::thread t2 = go(process, e2, col);
   boost::thread t3 = go(process, e3, col);
-  /*
   boost::thread t4 = go(process, e4, col);
   boost::thread t5 = go(process, e5, col);
   */
@@ -161,10 +161,10 @@ int main(int argc, char** argv) {
       org::esb::lang::Thread::sleep2(1 * 1000);
   }
   toexit = true;
+/*
   t1.join();
   t2.join();
   t3.join();
-/*
   t4.join();
   t5.join();
 */

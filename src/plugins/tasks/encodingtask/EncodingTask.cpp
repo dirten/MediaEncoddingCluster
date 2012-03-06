@@ -244,6 +244,7 @@ namespace encodingtask {
   }
 
   void EncodingTask::putToPartition(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast) {
+    org::esb::mq::ObjectMessage msg;
     unit->_sequence = _sequence_counter++;
     //std::cerr <<"Sequence="<<_sequence_counter<<std::endl;
     unit->setJobId(_task_uuid);
@@ -252,6 +253,7 @@ namespace encodingtask {
     partitionservice::PartitionManager::Type t = partitionservice::PartitionManager::TYPE_UNKNOWN;
     LOGDEBUG("CodecType:" << unit->_decoder->getCodecType());
     if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+      msg.setLabel(_task_uuid+org::esb::util::StringUtil::toString(unit->_input_packets.front()->getStreamIndex()));
       t = partitionservice::PartitionManager::TYPE_AUDIO;
     } else if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
       t = partitionservice::PartitionManager::TYPE_VIDEO;
@@ -259,8 +261,8 @@ namespace encodingtask {
     /*create unique stream index*/
     unit->_source_stream = unit->_input_packets.front()->getStreamIndex();
     unit->_last_process_unit = isLast;
-    org::esb::mq::ObjectMessage msg;
     msg.setObject(unit);
+
     read_q->Enqueue(msg);
     //partitionservice::PartitionManager::getInstance()->putProcessUnit(_partition, unit, t);
     setProgressLength(getProgressLength() + 1);

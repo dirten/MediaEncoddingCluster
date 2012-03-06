@@ -41,6 +41,7 @@
 #include "org/esb/signal/Message.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/core/Application.h"
+#include "org/esb/mq/QueueConnection.h"
 
 #if !defined(_WIN32)
 
@@ -420,6 +421,14 @@ int main(int argc, char * argv[]) {
       //org::esb::api::JsonServer server(vm["webport"].as<int> ());
       config::Config::setProperty("mode", "server");
       org::esb::core::PluginRegistry::getInstance()->startServerServices();
+      Ptr<org::esb::mq::QueueConnection> con=new org::esb::mq::QueueConnection("localhost", 20202);
+      if(!con->queueExist("read_q")){
+          con->createQueue("read_q");
+      }
+      if(!con->queueExist("write_q")){
+          con->createQueue("write_q");
+      }
+
       //config::Config::setProperty("mode", "client");
       //org::esb::core::PluginRegistry::getInstance()->startClientServices();
 

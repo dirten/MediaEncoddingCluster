@@ -138,7 +138,7 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
     void process(char * command) {
       if (_oos == NULL || _ois == NULL)return;
       if (strcmp(command, GET_UNIT) == 0) {
-        partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
+        //partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
         org::esb::mq::ObjectMessage msg;
         read_q->Retrieve(true,-1,msg);
         msg.getObject(un);
