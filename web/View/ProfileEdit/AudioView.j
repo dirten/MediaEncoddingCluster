@@ -30,9 +30,9 @@
     codecs=[[MHiveApiController sharedController] codecs];
 
     var items=[{"key":"please select an audio codec","value":"0"}];
-    for(var a=0;a<codecs.data.length;a++){
-      if(codecs.data[a].type==1)
-        items.push({"key":codecs.data[a].longname,"value":codecs.data[a].id});
+    for(var a=0;a<codecs.length;a++){
+      if(codecs[a].type==1)
+        items.push({"key":codecs[a].longname,"value":codecs[a].id});
     }
     option.control.items=items;
     [self addSubview:_form];
@@ -52,11 +52,11 @@
     //var path = [[CPBundle mainBundle] pathForResource:@"encoder.video.libx264.gui"];
     var codec=codecid;
     CPLog.debug("set codec UI id"+codecid);
-    for(var i=0;i<codecs.data.length;i++){
+    for(var i=0;i<codecs.length;i++){
       //CPLog.debug(codecs.data[i].longname)
-      if(codecs.data[i].longname==codecid){
-        codec=codecs.data[i].id;
-        CPLog.debug("codec selected "+codecs.data[i].id);
+      if(codecs[i].longname==codecid){
+        codec=codecs[i].id;
+        CPLog.debug("codec selected "+codecs[i].id);
       }
     }
     var path = [[CPBundle mainBundle] pathForResource:@"UI/encoder.audio."+codec+".gui"];

@@ -59,11 +59,9 @@
   //var connection = [CPURLConnection connectionWithRequest:request delegate:self];
   //[buttonBar setValue:CPThemeStateDisabled forThemeAttribute:@"button-bezel-color"]
   json={
-    "data":{
-      "format":{},
-      "video":{},
-      "audio":{}
-    }
+    "format":{},
+    "video":{},
+    "audio":{}
   };
   pdata=[CPDictionary dictionaryWithJSObject:json recursively:YES];  
   //CPLog.debug("awakeFromCib profileEdirtView"+CPStringFromRect([profileView bounds]));
@@ -134,9 +132,9 @@
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification{
     [[profileView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
-  if(jsonData.data[[[aNotification object] selectedRow]]){
+  if(jsonData[[[aNotification object] selectedRow]]){
     //CPLog.debug("hello profile 1212:"+jsonData.data[[[aNotification object] selectedRow]].id);
-    selectedid=jsonData.data[[[aNotification object] selectedRow]].id;
+    selectedid=jsonData[[[aNotification object] selectedRow]].uuid;
     //var path="/api/v1/profile/"+selectedid;
     //var response=[CPHTTPURLResponse alloc];
     //var error;
@@ -154,8 +152,8 @@
   //CPLog.debug("awakeFromCib profileEdirtView"+CPStringFromRect([profileView bounds]));
     pdata=[CPDictionary dictionaryWithJSObject:profile recursively:YES];
   var name="";  
-  if(profile.data)
-      name=profile.data.name
+  if(profile)
+      name=profile.name
   [[TNGrowlCenter defaultCenter] pushNotificationWithTitle:@"Please wait" message:@"Please whait while loading profile "+name];
   [CPTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(open:) userInfo:pdata repeats:NO];
 
@@ -165,7 +163,7 @@
 }
 -(void)open:(id)data
 {
-    //CPLog.debug("Open Data:"+[data userInfo]);
+    CPLog.debug("Open Data:"+[data userInfo]);
     pdata=[data userInfo];
     profileEditView=[[ProfileEditView alloc] initWithData:pdata];
     [profileView addSubview:profileEditView];
@@ -195,7 +193,7 @@
 {
   var result=0;
   if(jsonData){
-    result=jsonData.data.length;
+    result=jsonData.length;
   }
   CPLog.debug("RowCount="+result);
   return result;
@@ -205,14 +203,14 @@
 {
   
   if([tableColumn identifier]==1){
-    return [CPString stringWithFormat:@"%s", jsonData.data[row].id ];
+    return [CPString stringWithFormat:@"%s", jsonData[row].uuid ];
   }else{
     if([tableColumn identifier]==2){
-      return [CPString stringWithFormat:@"%s", jsonData.data[row].name ];
+      return [CPString stringWithFormat:@"%s", jsonData[row].name ];
     }
   }
-    CPLog.debug("RowId="+jsonData.data[row].id+" selected="+selectedid);
-    if(jsonData.data[row].id==selectedid){
+    CPLog.debug("RowId="+jsonData[row].uuid+" selected="+selectedid);
+    if(jsonData[row].uuid==selectedid){
       [self selectProfileAtIndex:row];
     }
 }
@@ -263,15 +261,26 @@
 
 - (void)save:(id)sender
 {
-    CPLog.debug("SAVING Encoding Profile:"+ JSON.stringify([pdata toJSON].data));
+
+    //CPLog.debug("SAVING Encoding Profile:"+ JSON.stringify([pdata toJSON]));
+    CPLog.debug("SAVING Encoding Profile:"+ pdata);
     //var url="/api/v1/profile";
     var result;
-    if(selectedid){
-      result=[[MHiveApiController sharedController] updateProfile:[pdata toJSON].data uuid:selectedid];
-    }else{
-      result=[[MHiveApiController sharedController] createProfile:[pdata toJSON].data];
+    try{
+      if(selectedid){
+        result=[[MHiveApiController sharedController] updateProfile:[pdata toJSON] uuid:selectedid];
+      }else{
+        result=[[MHiveApiController sharedController] createProfile:[pdata toJSON]];
+      }
+    }catch(err){
+       var stopWarn = [[CPAlert alloc] init];
+       [stopWarn setTitle:"Failed to save the Profile?"];
+       [stopWarn setMessageText:err];
+       [stopWarn setAlertStyle:CPWarningAlertStyle];
+       [stopWarn addButtonWithTitle:"Close"];
+       [stopWarn runModal];
+       return;
     }
-      
     //CPLog.debug("Saving Profile URL="+url);
     //var request = [CPURLRequest requestWithURL:url];
     //[request setHTTPMethod:"POST"];
@@ -279,17 +288,8 @@
     //var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
     CPLog.debug("SAVING Encoding Profile Result:"+ JSON.stringify(result));
     //var mdata=[result JSONObject];
-    if(result.response.status==undefined||result.response.status=="error"){
-       var stopWarn = [[CPAlert alloc] init];
-       [stopWarn setTitle:"Failed to save the Profile?"];
-       [stopWarn setMessageText:result.response.message];
-       [stopWarn setAlertStyle:CPWarningAlertStyle];
-       [stopWarn addButtonWithTitle:"Close"];
-       [stopWarn runModal];
-    }else{
       [[TNGrowlCenter defaultCenter] pushNotificationWithTitle:@"Profile Saved" message:"Profile successful saved"];
       selectedid=result.uuid;
-    }
     [self loadTableView];
     //var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
     //[request setHTTPMethod:"GET"];
@@ -299,12 +299,10 @@
 - (void)new:(id)sender
 {
   CPLog.debug("New Encoding Profile:");
-    json={
-    "data":{
-      "format":{},
-      "video":{},
-      "audio":{}
-    }
+  json={
+    "format":{},
+    "video":{},
+    "audio":{}
   };
   pdata=[CPDictionary dictionaryWithJSObject:json recursively:YES];  
   //CPLog.debug("awakeFromCib profileEdirtView"+CPStringFromRect([profileView bounds]));

@@ -37,9 +37,9 @@
     codecs=[[MHiveApiController sharedController] codecs];//[[codecstxt rawString] objectFromJSON];
 
     var items=[{"key":"please select a video codec","value":"0"}];
-    for(var a=0;a<codecs.data.length;a++){
-      if(codecs.data[a].type==0)
-        items.push({"key":codecs.data[a].longname,"value":codecs.data[a].id});
+    for(var a=0;a<codecs.length;a++){
+      if(codecs[a].type==0)
+        items.push({"key":codecs[a].longname,"value":codecs[a].id});
     }
     option.control.items=items;
     //[self loadCodecUI:undefined];
@@ -67,10 +67,10 @@
       
     var codec=codecid;
     //CPLog.debug("set codec UI id"+codecid);
-    for(var i=0;i<codecs.data.length;i++){
+    for(var i=0;i<codecs.length;i++){
       //CPLog.debug(codecs.data[i].longname)
-      if(codecs.data[i].longname==codecid){
-        codec=codecs.data[i].id;
+      if(codecs[i].longname==codecid){
+        codec=codecs[i].id;
         //CPLog.debug("codec selected "+codecs.data[i].id);
       }
     }

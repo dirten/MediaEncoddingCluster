@@ -94,11 +94,11 @@
   [profileMenuItem setSubmenu:profileMenu];
   [menu addItem:profileMenuItem];
   
-  for (; i < json.data.length; i++)
+  for (; i < json.length; i++)
   {
-    var newMenuItem = [[CPMenuItem alloc] initWithTitle:json.data[i].name action:@selector(loadProfile:) keyEquivalent:nil];
+    var newMenuItem = [[CPMenuItem alloc] initWithTitle:json[i].name action:@selector(loadProfile:) keyEquivalent:nil];
     
-    [newMenuItem setRepresentedObject:json.data[i].id];
+    [newMenuItem setRepresentedObject:json[i].uuid];
     [newMenuItem setTarget:self];
 
     [profileMenu addItem:newMenuItem];  

@@ -51,7 +51,7 @@ SelectGraphByUUID = @"SelectGraphByUUID";
 {
   var result=0;
   if(jsonData){
-    result=jsonData.data.length;
+    result=jsonData.length;
   }
   return result;
 }
@@ -60,12 +60,12 @@ SelectGraphByUUID = @"SelectGraphByUUID";
 {
   if([tableColumn identifier]==1){
     var str="";
-    if(jsonData.data[row].name!=undefined&&jsonData.data[row].name.length>0){
-      str=jsonData.data[row].name;
+    if(jsonData[row].name!=undefined&&jsonData[row].name.length>0){
+      str=jsonData[row].name;
     }else{
-      str=jsonData.data[row].uuid;    
+      str=jsonData[row].uuid;    
     }
-    if(selectUUID==jsonData.data[row].uuid){
+    if(selectUUID==jsonData[row].uuid){
       [self selectGraphAtIndex:row];
       selectUUID="";
     }
@@ -101,7 +101,7 @@ SelectGraphByUUID = @"SelectGraphByUUID";
 -(CPString)selectedId
 {
   if([tableView selectedRow]!=-1){
-    return jsonData.data[[tableView selectedRow]].uuid;
+    return jsonData[[tableView selectedRow]].uuid;
   }else{
     return nil;
   }
@@ -110,7 +110,7 @@ SelectGraphByUUID = @"SelectGraphByUUID";
 -(CPString)selectedName
 {
   if([tableView selectedRow]!=-1){
-    return jsonData.data[[tableView selectedRow]].name;
+    return jsonData[[tableView selectedRow]].name;
   }else{
     return nil;
   }
@@ -142,7 +142,7 @@ SelectGraphByUUID = @"SelectGraphByUUID";
         var title = menuItems[i],
         newMenuItem = [[CPMenuItem alloc] initWithTitle:title action:menuActions[i] keyEquivalent:nil];
         [newMenuItem setTarget:self];
-        var st=jsonData.data[[tableView selectedRow]].status;
+        var st=jsonData[[tableView selectedRow]].status;
         //[newMenuItem setEnabled:parseInt(st)==st];
         //break;
         // we want a seperator so just skip it for now
@@ -160,9 +160,9 @@ SelectGraphByUUID = @"SelectGraphByUUID";
 {
   var uuid=[notification userInfo];
   selectUUID=uuid;
-  for(a=0;a<jsonData.data.length;a++){
-    CPLog.debug("data.uuid="+jsonData.data[a].uuid+" uuid="+uuid);
-    if(jsonData.data[a].uuid==uuid){
+  for(a=0;a<jsonData.length;a++){
+    CPLog.debug("data.uuid="+jsonData[a].uuid+" uuid="+uuid);
+    if(jsonData[a].uuid==uuid){
       [self selectGraphAtIndex:a];
       break;
     }

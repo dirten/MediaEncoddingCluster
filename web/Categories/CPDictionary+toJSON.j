@@ -71,6 +71,9 @@ var CKJSONKeyedArchiverClassKey = @"$$CLASS$$";
     {
         encodedJSON = objectToEncode;
     }
+    else if ([objectToEncode isKindOfClass:[CPNull class]]){
+      encodedJSON = null;
+    }
     else if ([objectToEncode isKindOfClass:[CPArray class]]) // Override CPArray's default encoding because we want native JS Objects
     {
         var encodedArray = [];

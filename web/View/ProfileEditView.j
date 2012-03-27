@@ -161,7 +161,7 @@ ProfileChanged=@"ProfileChanged";
 
 -(void)setData:(id)data{
   pdata=data
-  var data=[pdata objectForKey:@"data"];
+  //var data=[pdata objectForKey:@"data"];
   CPLog.debug("Data in ProfileEdit View:"+data);
   var format=[data objectForKey:@"format"];
   var video=[data objectForKey:@"video"];

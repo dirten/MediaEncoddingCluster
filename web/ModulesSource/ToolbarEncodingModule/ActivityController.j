@@ -42,7 +42,7 @@
 {
   var result=0;
   if(jsonData){
-    result=jsonData.data.length;
+    result=jsonData.length;
   }
   return result;
 }
@@ -64,43 +64,43 @@
     // return a CPString instance that will be displayed in a regular column (CPTextField)
     //CPLog.debug([tableColumn identifier]);
     if([tableColumn identifier]==1){
-      return [CPString stringWithFormat:@"%s (%s)", jsonData.data[row].flowname, jsonData.data[row].infile];
+      return [CPString stringWithFormat:@"%s (%s)", jsonData[row].flowname, jsonData[row].infile];
     }else if([tableColumn identifier]==2){
-      if(jsonData.data[row].created>1){
+      if(jsonData[row].created>1){
         //return [CPDate date:jsonData.data[row].created withFormat:@"isoDateTime"];
         //return [CPString stringWithFormat:@"%04d-%02d-%02d %02d:%02d:%02d %s", self.getFullYear(), self.getMonth()+1, self.getDate(), self.getHours(), self.getMinutes(), self.getSeconds(), [CPDate timezoneOffsetString:self.getTimezoneOffset()]];
-        return [[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].created ] description];
+        return [[CPDate dateWithTimeIntervalSince1970:jsonData[row].created ] description];
       }else{
         return ""
       }
       //return [CPString stringWithFormat:@"%s", jsonData.data[row].begintime ];
     }else if([tableColumn identifier]==3){
-      if(jsonData.data[row].endtime>1){
-        return [CPDate dateWithTimeIntervalSince1970:jsonData.data[row].endtime ];
+      if(jsonData[row].endtime>1){
+        return [CPDate dateWithTimeIntervalSince1970:jsonData[row].endtime ];
       }else{
         return "";
       }
       //return [CPString stringWithFormat:@"%s", jsonData.data[row].endtime ];
       //return [[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime] timeIntervalSinceDate:[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].endtime]];
     }else if([tableColumn identifier]==4){
-      if(jsonData.data[row].endtime.length>1){
-        return [self formatDuration:[[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].endtime] timeIntervalSinceDate:[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime]]];
+      if(jsonData[row].endtime.length>1){
+        return [self formatDuration:[[CPDate dateWithTimeIntervalSince1970:jsonData[row].endtime] timeIntervalSinceDate:[CPDate dateWithTimeIntervalSince1970:jsonData[row].begintime]]];
       }else{
         return "";
       }
     }else if([tableColumn identifier]==5){
-      if(jsonData.data[row].status=="Processing"){
-        return [CPString stringWithFormat:@"%s", jsonData.data[row].progress ];
+      if(jsonData[row].status=="Processing"){
+        return [CPString stringWithFormat:@"%s", jsonData[row].progress ];
       }else
-        return jsonData.data[row].status;
+        return jsonData[row].status;
     }else if([tableColumn identifier]==6){
-      if(jsonData.data[row].fps)
-        return [CPString stringWithFormat:@"%s", jsonData.data[row].fps ];
+      if(jsonData[row].fps)
+        return [CPString stringWithFormat:@"%s", jsonData[row].fps ];
       else return "";
     }else if([tableColumn identifier]==7){
-      return [CPString stringWithFormat:@"%s", jsonData.data[row].status ];
+      return [CPString stringWithFormat:@"%s", jsonData[row].status ];
     }else if([tableColumn identifier]==8){
-      return jsonData.data[row];
+      return jsonData[row];
     }
   }
 }
@@ -113,8 +113,8 @@
   //if([_response statusCode]==200){
     jsonData=[data objectFromJSON];
     [jobTableView reloadData];
-    for(var a=0;a<jsonData.data.length;a++){
-      if(jsonData.data[a].id==selectedid)
+    for(var a=0;a<jsonData.length;a++){
+      if(jsonData[a].id==selectedid)
       [jobTableView selectRowIndexes:[CPIndexSet indexSetWithIndex:a] byExtendingSelection:NO];
     }
   //}else{
@@ -130,11 +130,11 @@
 }
 
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification{
-  if(jsonData.data[[[aNotification object] selectedRow]]){
+  if(jsonData[[[aNotification object] selectedRow]]){
     selectedROwIndex=[[aNotification object] selectedRow];
-    CPLog.debug("hello new activity selected:"+jsonData.data[[[aNotification object] selectedRow]].id);
-    selectedid=jsonData.data[[[aNotification object] selectedRow]].id;
-    [activityWebView setData:jsonData.data[[[aNotification object] selectedRow]]];
+    CPLog.debug("hello new activity selected:"+jsonData[[[aNotification object] selectedRow]].uuid);
+    selectedid=jsonData[[[aNotification object] selectedRow]].uuid;
+    [activityWebView setData:jsonData[[[aNotification object] selectedRow]]];
     [[CPNotificationCenter defaultCenter]
      postNotificationName:EncodingClicked
      object:self
@@ -170,7 +170,7 @@
         newMenuItem = [[CPMenuItem alloc] initWithTitle:title action:menuActions[i] keyEquivalent:nil];
         [newMenuItem setTarget:self];
         if(i==0){
-          [newMenuItem setEnabled:jsonData.data[aRow].statuscode==1||jsonData.data[aRow].statuscode==0];
+          //[newMenuItem setEnabled:jsonData[aRow].statuscode==1||jsonData.data[aRow].statuscode==0];
         }else{
           //[newMenuItem setEnabled:jsonData.data[aRow].statuscode!=1];
         }

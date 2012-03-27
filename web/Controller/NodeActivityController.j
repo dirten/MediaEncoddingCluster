@@ -136,7 +136,7 @@ testfunc();
   //CPLog.debug("raw_data:"+[raw_data rawString]);
   //CPLog.debug("json_data:"+[raw_data JSONObject]);
   
-  data=result.data;//[raw_data JSONObject].data;
+  data=result;//[raw_data JSONObject].data;
   //var data=alldata.flow;
   if(data==undefined||data.flow==undefined){
     [growl pushNotificationWithTitle:@"Failed to load the Flow?" message:"The Server returns an unknown Flow Format!"];
@@ -194,7 +194,7 @@ testfunc();
     //[[[elements objectEnumerator] allObjects] makeObjectsPerformSelector:@selector(setProgress:) withObject:@" "];
     //[[[elements objectEnumerator] allObjects] makeObjectsPerformSelector:@selector(setMessage:) withObject:@" "];
     //[[[elements objectEnumerator] allObjects] makeObjectsPerformSelector:@selector(setStatus:) withObject:-1];
-    for(a=0;a<data.status.tasks.length;a++){
+    for(a=0;data.flowstatus!=undefined&&a<data.flowstatus.tasks.length;a++){
       var status=data.status.tasks[a];
       var obj=[elements objectForKey:status.uid];
       if(obj){

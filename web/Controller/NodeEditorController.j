@@ -165,7 +165,7 @@ testfunc();
   var error;
   var raw_data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:response];
   CPLog.debug("raw_data:"+[raw_data rawString]);
-  var data=[raw_data JSONObject].data;
+  var data=[raw_data JSONObject];
   loadedUUID=data.uuid;
   loadedName=data.name;
   //CPLog.debug("Obj:"+data.tasks.length);
@@ -300,13 +300,13 @@ testfunc();
 
 -(void)_submitNodeEditorView:(CPNotification)notification
 {
-  var result=[[MHiveApiController sharedController] submitFlow:[notification userInfo]];
-  if(result.response.status=="ok"){
+  try{  
+    var result=[[MHiveApiController sharedController] submitFlow:[notification userInfo]];
     [growl pushNotificationWithTitle:@"Graph submitted" message:"Graph "+loadedName+" successful submitted for execution!"];
-  }else{
+  }catch(err){
      var stopWarn = [[CPAlert alloc] init];
      [stopWarn setTitle:"Failed to submit the Graph?"];
-     [stopWarn setMessageText:result.response.message];
+     [stopWarn setMessageText:err];
      [stopWarn setAlertStyle:CPWarningAlertStyle];
      [stopWarn addButtonWithTitle:"Close"];
      [stopWarn runModal];

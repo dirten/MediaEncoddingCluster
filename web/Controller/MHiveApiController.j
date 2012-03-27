@@ -30,7 +30,23 @@ var SharedController;
     CPLog.debug("request payload:"+[CPString JSONFromObject:json]);
       [request setHTTPBody:[CPString JSONFromObject:json]];
     }
-    var txt = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+    var req = new CFHTTPRequest();
+    req.open([request HTTPMethod], [[request URL] absoluteString], NO);
+
+    var fields = [request allHTTPHeaderFields],
+    key = nil,
+    keys = [fields keyEnumerator];
+
+    while (key = [keys nextObject])
+    req.setRequestHeader(key, [fields objectForKey:key]);
+
+    req.send([request HTTPBody]);
+    CPLog.debug("Request Status="+req.status());
+    if(req.status()!=200 && req.status()!=201){
+      throw "Unable to complete your request! "+req.status()+"-"+req.statusText();
+    }
+    var txt = [CPData dataWithRawString:req.responseText()];
+    
     var data={
       "response":{
         "status":"error",

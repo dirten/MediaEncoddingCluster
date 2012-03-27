@@ -32,11 +32,11 @@
                 }
             };
     //var codecstxt = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/format"] returningResponse:nil];
-    formats=[[MHiveApiController sharedController] formats];;
+    formats=[[MHiveApiController sharedController] formats];
     
     var items=[{"key":"please select a file format","value":"0"}];
-    for(var a=0;a<formats.data.length;a++){
-        items.push({"key":formats.data[a].longname,"value":formats.data[a].id});
+    for(var a=0;a<formats.length;a++){
+        items.push({"key":formats[a].longname,"value":formats[a].id});
     }
     option.control.items=items;
     [self loadFormatUI:undefined];
@@ -56,11 +56,11 @@
     //var path = [[CPBundle mainBundle] pathForResource:@"encoder.video.libx264.gui"];
     var codec=codecid;
     CPLog.debug("set format UI id"+codecid);
-    for(var i=0;i<formats.data.length;i++){
+    for(var i=0;i<formats.length;i++){
       //CPLog.debug(codecs.data[i].longname)
-      if(formats.data[i].longname==codecid){
-        codec=formats.data[i].id;
-        CPLog.debug("codec selected "+formats.data[i].id);
+      if(formats[i].longname==codecid){
+        codec=formats[i].id;
+        CPLog.debug("codec selected "+formats[i].id);
       }
     }
     var path = [[CPBundle mainBundle] pathForResource:@"UI/format."+codec+".gui"];
