@@ -1,4 +1,5 @@
 @import "../View/NodeEditorView.j"
+@import "../Controller/ElementClassDictionary.j"
 
 
 SaveNodeEditorView = @"SaveNodeEditorView";
@@ -29,11 +30,8 @@ testfunc();
   self=[super init];
   CPLog.debug("Creating new Instance of NodeEditorController");
   view=theView;
-  elementClass=[CPDictionary dictionary];
-  [elementClass setObject:[NodeInput class] forKey:@"InputTask"];
-  [elementClass setObject:[NodeEncoding class] forKey:@"EncodingTask"];
-  [elementClass setObject:[NodeOutput class] forKey:@"OutputTask"];
-  [elementClass setObject:[NodeExecutable class] forKey:@"ExecutableTask"];
+  elementClass=[ElementClassDictionary nodeElementDictionary];
+
   loadedUUID="";
   elements=[CPDictionary dictionary];
 

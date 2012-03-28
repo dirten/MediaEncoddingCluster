@@ -233,8 +233,8 @@
   //CPLog.debug("raw_data:"+[raw_data rawString]);
   
   var json=[raw_data JSONObject];
-  if(json.data){
-    var arr=json.data.sort(callbackFunc);
+  if(json){
+    var arr=json.sort(callbackFunc);
     for(a=0;a<arr.length;a++){
       var newNode=[Node withData:arr[a]];
       //CPLog.debug("new Node"+[newNode name]);

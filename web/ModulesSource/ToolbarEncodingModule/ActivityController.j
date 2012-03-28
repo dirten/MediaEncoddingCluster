@@ -64,7 +64,7 @@
     // return a CPString instance that will be displayed in a regular column (CPTextField)
     //CPLog.debug([tableColumn identifier]);
     if([tableColumn identifier]==1){
-      return [CPString stringWithFormat:@"%s (%s)", jsonData[row].flowname, jsonData[row].infile];
+      return [CPString stringWithFormat:@"%s (%s)", jsonData[row].name, jsonData[row].filename];
     }else if([tableColumn identifier]==2){
       if(jsonData[row].created>1){
         //return [CPDate date:jsonData.data[row].created withFormat:@"isoDateTime"];
@@ -75,8 +75,8 @@
       }
       //return [CPString stringWithFormat:@"%s", jsonData.data[row].begintime ];
     }else if([tableColumn identifier]==3){
-      if(jsonData[row].endtime>1){
-        return [CPDate dateWithTimeIntervalSince1970:jsonData[row].endtime ];
+      if(jsonData[row].completed>1){
+        return [CPDate dateWithTimeIntervalSince1970:jsonData[row].completed ];
       }else{
         return "";
       }

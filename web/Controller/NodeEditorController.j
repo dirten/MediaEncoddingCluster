@@ -1,4 +1,5 @@
 @import "../View/NodeEditorView.j"
+@import "../Controller/ElementClassDictionary.j"
 
 
 SaveNodeEditorView = @"SaveNodeEditorView";
@@ -34,11 +35,9 @@ testfunc();
   self=[super init];
   CPLog.debug("Creating new Instance of NodeEditorController");
   view=theView;
-  elementClass=[CPDictionary dictionary];
-  [elementClass setObject:[NodeInput class] forKey:@"InputTask"];
-  [elementClass setObject:[NodeEncoding class] forKey:@"EncodingTask"];
-  [elementClass setObject:[NodeOutput class] forKey:@"OutputTask"];
-  [elementClass setObject:[NodeExecutable class] forKey:@"ExecutableTask"];
+
+  elementClass=[ElementClassDictionary nodeElementDictionary];
+
   loadedUUID="";
   growl=[TNGrowlCenter defaultCenter];
 
@@ -218,8 +217,8 @@ testfunc();
   loadedName=[notification object];
   var data={};
   data.tasks=new Array();
-  data.links=new Array();
-  data.positions=new Array();
+  //data.links=new Array();
+  //data.positions=new Array();
 
   CPLog.debug("new Editor with name "+loadedName);
   CPLog.debug("Data:"+JSON.stringify(data));
@@ -231,8 +230,8 @@ testfunc();
   //[request setHTTPMethod:"POST"];
   //[request setHTTPBody:JSON.stringify(data)];
   //var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
-  //CPLog.debug("Graph Save Result"+[result rawString]);
   var response=[[MHiveApiController sharedController] createFlow:data];
+  CPLog.debug("Graph new Result"+JSON.stringify(response));
 
   loadedUUID=response.uuid;
   //[[notification object] refresh];
@@ -256,17 +255,17 @@ testfunc();
 
   var result=[[MHiveApiController sharedController] viewFlow:[notification userInfo]];
 
-  var oldName=result.data.name;
-  result.data.name=[notification object];
+  var oldName=result.name;
+  result.name=[notification object];
 
   //var request = [CPURLRequest requestWithURL:@"/api/v1/flow/"+data.uuid];
   //[request setHTTPMethod:"POST"];
   //[request setHTTPBody:JSON.stringify(data)];
   //var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
-  var response=[[MHiveApiController sharedController] updateFlow:result.data uuid:[notification userInfo]];
+  var response=[[MHiveApiController sharedController] updateFlow:result uuid:[notification userInfo]];
   //CPLog.debug("Graph Save Result"+);
   //loadedUUID=[result JSONObject].uuid;
-  [growl pushNotificationWithTitle:@"Graph renamed" message:"Graph "+oldName+" successful renamed to "+result.data.name];
+  [growl pushNotificationWithTitle:@"Graph renamed" message:"Graph "+oldName+" successful renamed to "+result.name];
 }
 
 -(void)deleteNodeEditorView:(CPNotification)notification

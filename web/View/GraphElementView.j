@@ -1,5 +1,5 @@
 
-
+@import "../Controller/ElementClassDictionary.j"
 @implementation GraphElementView : CPScrollView
 {
 CPArray elements;
@@ -29,13 +29,16 @@ CPArray elements;
   [self setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
   [self setAutohidesScrollers:YES];
   [[self contentView] setBackgroundColor:[CPColor whiteColor]];
-  elements = [
+  /*
+var elements = [
     [[NodeInput alloc] init],
     [[NodeEncoding alloc] init],
     [[NodeOutput alloc] init]
     //[[NodeExecutable alloc] init]
-  ];
+  ];*/
+  elements=[ElementClassDictionary nodeElements];
   [elementsView setContent:elements];
+  //[elementsView setContent:elements];
   return self;
 }
 

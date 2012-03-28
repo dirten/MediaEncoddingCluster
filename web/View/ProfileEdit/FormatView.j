@@ -12,6 +12,7 @@
   }
   -(void)setData:(id)data
   {
+    CPLog.debug("Data in Format View:"+data);
     _json=data;
     [self loadFormatUI:[data valueForKey:@"id"]/*data.id*/];
     [_form setData:data];

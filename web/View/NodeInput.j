@@ -9,7 +9,7 @@
 }
 -(id)init
 {
-  self=[super initWithName:@"Input" withInputHandle:NO andOutputHandle:YES taskName:@"InputTask"];
+  self=[super initWithName:@"Input" withInputHandle:NO andOutputHandle:YES taskName:@"org.jhive.server.tasks.inputtask.InputTask"];
   json={
     "data":{
       "infile":""
@@ -97,9 +97,9 @@
   if([[chooser selectedItems] count]){
     var name=[[chooser selectedItem] path];
     if(![[chooser selectedItem] isDirectory]){
-      if(name!="/")
-        name+="/";
-      name+=[[chooser selectedItem] name];
+      //if(name!="/")
+        //name+="/";
+      //name+=[[chooser selectedItem] name];
     }
     [[data objectForKey:@"data"] setObject:name forKey:@"infile"];
   }

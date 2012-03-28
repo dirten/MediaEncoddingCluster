@@ -14,7 +14,7 @@
 }
 -(id)init
 {
-  self=[super initWithName:@"Encoding" withInputHandle:YES andOutputHandle:YES taskName:@"EncodingTask"];
+  self=[super initWithName:@"Encoding" withInputHandle:YES andOutputHandle:YES taskName:@"org.jhive.server.tasks.encodingtask.EncodingTask"];
   json={
     "data":{
       "format":{},
@@ -42,7 +42,7 @@
   data=ndata;
   //[self setLabelText:[[data objectForKey:@"data"] objectForKey:@"name"]];
   //[self setLabelText:@"name"];
-  CPLog.debug("Data in setData:"+[data objectForKey:@"name"]);
+  CPLog.debug("Data in setData:"+[[data objectForKey:@"data"] objectForKey:@"name"]);
 }
 
 -(void)drawContentsInView:(id)view inRect:(id)aRect
@@ -65,7 +65,7 @@
 */
   [[CPRunLoop currentRunLoop] performSelectors]; 
 
-  var view=[[ProfileEditView alloc] initWithData:data];
+  var view=[[ProfileEditView alloc] initWithData:[data objectForKey:@"data"]];
   [view setProfileId:0];
   return view;
 }
@@ -125,7 +125,11 @@
   var request = [CPURLRequest requestWithURL:@"/api/v1/profile/"+profileId];
   var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
   CPLog.debug("NodeEncoding Load Profile Result"+[result rawString]);
-  var json=[[result rawString] objectFromJSON];
+  //var d=;
+  var json={};
+  json.data=[[result rawString] objectFromJSON];
+
+
   data=[CPDictionary dictionaryWithJSObject:json recursively:YES];  
 
   CPLog.debug("LoadProfile:"+[sender title]);

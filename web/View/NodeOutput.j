@@ -7,7 +7,7 @@
 }
 -(id)init
 {
-  self=[super initWithName:@"Output" withInputHandle:YES andOutputHandle:NO taskName:@"OutputTask"];
+  self=[super initWithName:@"Output" withInputHandle:YES andOutputHandle:NO taskName:@"org.jhive.server.tasks.outputtask.OutputTask"];
   json={
     "data":{
       "outfile":""
