@@ -192,20 +192,24 @@ testfunc();
     //[[[elements objectEnumerator] allObjects] makeObjectsPerformSelector:@selector(setProgress:) withObject:@" "];
     //[[[elements objectEnumerator] allObjects] makeObjectsPerformSelector:@selector(setMessage:) withObject:@" "];
     //[[[elements objectEnumerator] allObjects] makeObjectsPerformSelector:@selector(setStatus:) withObject:-1];
+    CPLog.debug("try reading flowstatus");
     for(a=0;data.flowstatus!=undefined&&a<data.flowstatus.tasks.length;a++){
-      var status=data.status.tasks[a];
+      CPLog.debug("getting flowstatus:"+a);
+      var status=data.flowstatus.tasks[a];
+      CPLog.debug(status);
       var obj=[elements objectForKey:status.uid];
       if(obj){
         [obj setProgress:status.progress];
         [obj setMessage:status.message];
-        if(status.exception.length)
+        if(false&&status.exception.length)
           [obj setMessage:status.exception];
         [obj setStatus:status.status];
+        [obj setStatus:2];
       }else{
         CPLog.error("Object for status with id "+status.uid+" not found");
       }
       //CPLog.debug("Object = "+obj);
-      if(false&&alldata.graphstatus!=undefined&&alldata.graphstatus[task.uid]!=undefined){
+      if(false&&data.graphstatus!=undefined&&alldata.graphstatus[task.uid]!=undefined){
         CPLog.debug("task.uid"+task.uid+" set progress="+alldata.graphstatus[task.uid].progress);
         
         [obj setProgress:alldata.graphstatus[task.uid].progress];
