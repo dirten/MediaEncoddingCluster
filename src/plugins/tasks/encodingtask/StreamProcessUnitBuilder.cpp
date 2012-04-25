@@ -21,7 +21,7 @@ namespace encodingtask {
   boost::shared_ptr<org::esb::hive::job::ProcessUnit> StreamProcessUnitBuilder::build(org::esb::av::PacketListPtr list, Ptr<org::esb::av::Decoder> dec, Ptr<org::esb::av::Encoder> enc) {
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> u(new org::esb::hive::job::ProcessUnit());
     PacketPtr p = list.front();
-    int idx = p->getStreamIndex();
+    //int idx = p->getStreamIndex();
     //u->_source_stream = _map_data[idx].instream;
     //u->_target_stream = _map_data[idx].outstream;
     u->_deinterlace = 1;//_map_data[idx].deinterlace;

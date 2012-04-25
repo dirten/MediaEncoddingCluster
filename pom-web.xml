@@ -108,6 +108,7 @@
   <version>0.3.2</version>
   <name>webui</name>
   <url>http://maven.apache.org</url>
+  <packaging>war</packaging>
   <distributionManagement>
     <repository>
       <id>ftp-repository</id>
@@ -131,6 +132,19 @@
       </extension>
     </extensions>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <webResources>
+            <resource>
+              <!-- this is relative to the pom.xml directory -->
+              <directory>web/Build/${btype}/MediaEncodingAdmin</directory>
+            </resource>
+          </webResources>
+        </configuration>
+      </plugin>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <version>1.4</version>
@@ -165,23 +179,6 @@
             <goals>
               <goal>run</goal>
             </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>build-release</id>
-            <phase>package</phase>
-            <goals>
-              <goal>attached</goal>
-            </goals>
-            <configuration>
-              <descriptors>
-                <descriptor>assembly/release-web.xml</descriptor>
-              </descriptors>
-            </configuration>
           </execution>
         </executions>
       </plugin>

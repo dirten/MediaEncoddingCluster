@@ -141,13 +141,14 @@ int main(int argc, char** argv) {
   Listener listener4;
   con1.setMessageListener("read_q",listener1);
   con1.startListener();
+/*  
   con2.setMessageListener("read_q",listener2);
   con2.startListener();
   con3.setMessageListener("read_q",listener3);
   con3.startListener();
   con4.setMessageListener("read_q",listener4);
   con4.startListener();
-
+  */ 
   Graph graph(list, "0815");
   graph.addStatusObserver(boost::bind(&print_status,_1));
   //boost::thread t6 = go(print_status, &graph);
