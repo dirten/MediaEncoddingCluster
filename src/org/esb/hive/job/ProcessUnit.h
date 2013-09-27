@@ -52,7 +52,7 @@ namespace org {
             namespace job {
                 class HIVE_EXPORT ProcessUnit {
                 public:
-                    classlogger("org.esb.hive.job.ProcessUnit");
+                    classlogger("org.esb.hive.job.ProcessUnit")
                     ProcessUnit();
                     ~ProcessUnit();
                     void process();

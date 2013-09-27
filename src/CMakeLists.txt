@@ -115,7 +115,7 @@ ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 #MESSAGE("** BOOST_SERIAL_LIB_MT: " ${BOOST_SERIAL_LIB_MT})
 
 
-add_executable (mhive Hive.cpp)
+add_executable (mhive Hive.cpp MainApplication.cpp)
 #add_executable (mhiveconfig MHiveConfig.cpp)
 #target_link_libraries (mhiveconfig
 #    api

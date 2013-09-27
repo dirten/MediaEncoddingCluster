@@ -79,7 +79,7 @@
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
 #include "boost/lexical_cast.hpp"
-
+#include "MainApplication.h"
 #define TO_STRING(s) #s
 using namespace org::esb;
 using namespace org::esb::net;
@@ -111,7 +111,7 @@ std::string _hostname;
 int _port = 0;
 bool quiet = false;
 
-int main(int argc, char * argv[]) {
+int main_old(int argc, char * argv[]) {
   //org::esb::core::Application(argc, argv);
   //isatty(0);
   /*setting default path to Program*/
@@ -142,8 +142,9 @@ int main(int argc, char * argv[]) {
     po::options_description gen("General options");
     unsigned int cpu_count = Process::getCpuCount();
     gen.add_options()
-        ("help", "produce this message")
-        ("version", "Prints the Version");
+      ("help", "produce this message")
+        ("version", "Prints the Version")
+      ("plugindir", "which plugin directory to use");
     /*
             ("debug", "switch of the StackDumper and logging goes to the console instead of file")
             ("loglevel", po::value<std::string > ()->default_value("fatal"), "setting the loglevel for this process");**/
@@ -223,6 +224,7 @@ int main(int argc, char * argv[]) {
     setupDatabase();
     all.add(gen).add(ser).add(cli);
     org::esb::core::PluginRegistry::getInstance()->load(base_path + "/plugins");
+    std::cout<<"Plugindir:"<<config::Config::getProperty("MHIVE_PLUGIN_DIR");
 
     foreach(std::list<std::string>::value_type data, org::esb::core::PluginRegistry::getInstance()->getPluginNameList()) {
       org::esb::core::OptionsDescription od = org::esb::core::PluginRegistry::getInstance()->getOptionsDescription(data);
@@ -509,7 +511,10 @@ int main(int argc, char * argv[]) {
       return 0;
 }
 
-
+int main(int argc, char ** argv){
+  MainApplication * app=new MainApplication();
+  return 0;
+}
 
 bool setupDatabase() {
   org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
@@ -617,7 +622,6 @@ void setupConfig() {
 #else
   //#error "plattform not supported"
 #endif
-
   config::Config::setProperty("hive.user_path", upath);
   config::Config::setProperty("web.docroot", bpath + "/web");
   config::Config::setProperty("hive.config_path", upath + "/conf");
