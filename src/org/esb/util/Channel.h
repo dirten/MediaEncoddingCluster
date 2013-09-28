@@ -26,12 +26,12 @@ namespace org {
 
         bool operator<<(T data)
         {
-          return enqueue(data);
+          return this->enqueue(data);
         }
 
         bool operator>>(  T & data)
         {
-          return dequeue(data);
+          return this->dequeue(data);
         }
 
         bool isClosed(){

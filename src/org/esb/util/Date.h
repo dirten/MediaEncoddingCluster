@@ -84,12 +84,12 @@ namespace util{
         { return !operator==(dt); }
 
       bool operator< (const Date& dt) const
-      { return year < dt.year
-            || year == dt.year
+      { return (year < dt.year
+            || year == dt.year)
              && ( month < dt.month
-               || month == dt.month
-                && day < dt.day
-                ); }
+               || month == dt.month)
+                && (day < dt.day || day==dt.day);
+                }
 
       bool operator> (const Date& dt) const
         { return dt < *this; }
