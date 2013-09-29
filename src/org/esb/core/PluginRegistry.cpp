@@ -21,7 +21,7 @@
 #include "Poco/Net/HTTPStreamFactory.h"
 #include "Poco/Net/FTPStreamFactory.h"
 #include "WebHookHandlerFactory.h"
-
+#include <string.h>
 //#include "org/esb/api/ApiWebServer.h"
 namespace org {
   namespace esb {
@@ -262,6 +262,7 @@ namespace org {
       }
 
       void PluginRegistry::load(std::string file) {
+          //std::cout << "Plugin directory : "<<file<<std::endl;
         org::esb::io::File plugin_dir(file);
 
         if (plugin_dir.isDirectory()) {
@@ -270,8 +271,10 @@ namespace org {
           plugin_list.sort(compare_webservice);
 
           foreach(Ptr<org::esb::io::File> f, plugin_list) {
-            if (f->isFile())
+            if (f->isDirectory())
               load(f->getPath());
+            if (f->isFile())
+                loadFile(f->getPath());
           }
         } else if (plugin_dir.isFile()) {
 
@@ -281,8 +284,9 @@ namespace org {
       }
 
       void PluginRegistry::loadFile(std::string file) {
-        LOGDEBUG("loading plugins from " << file);
-        //std::cout<<"loading plugins from "<<file<<std::endl;
+          if(strstr(file.c_str(),"dylib")>0){
+          LOGDEBUG("loading plugins from " << file);
+        std::cout<<"loading plugins from "<<file<<std::endl;
 
         try {
           org::esb::lang::SharedObjectLoader * loader = new org::esb::lang::SharedObjectLoader(file);
@@ -291,6 +295,7 @@ namespace org {
           LOGERROR("failed loading plugin:"<<file);
           LOGERROR(ex.what());
         }
+          }
       }
 
       PluginRegistry::~PluginRegistry() {

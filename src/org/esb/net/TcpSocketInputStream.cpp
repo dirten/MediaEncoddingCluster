@@ -150,8 +150,9 @@ namespace org {
             throw SocketException("reading size is not equal 10");
           return atoi(tmp);
         }
+        //@TODO : needs implementation
         long long int internal_read(){
-
+            return 0;
         }
       };
     }

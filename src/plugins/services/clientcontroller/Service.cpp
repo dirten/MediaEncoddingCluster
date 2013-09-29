@@ -85,7 +85,7 @@ namespace clientcontroller {
     foreach(Ptr<org::esb::hive::HiveClient> client, _client_list){
       LOGDEBUG("Client");
       client->stop();
-      client.reset();
+      //client.reset();
     }
     _client_list.clear();
     //_client_audio->stop();

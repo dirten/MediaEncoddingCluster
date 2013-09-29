@@ -26,7 +26,8 @@ var SharedController;
     //[request setValue:@"application/x-www-form-urlencoded; charset=ISO-8859-1" forHTTPHeaderField:@"Content-Type"];
     //[request setValue:@"application/x-www-form-urlencoded; charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
     [request setValue:@"application/json; charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
-    if(json!=undefined){
+    debugger;
+if(json!=undefined){
     CPLog.debug("request payload:"+[CPString JSONFromObject:json]);
       [request setHTTPBody:[CPString JSONFromObject:json]];
     }

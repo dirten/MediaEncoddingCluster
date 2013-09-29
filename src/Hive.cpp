@@ -80,6 +80,8 @@
 #include "boost/uuid/uuid_io.hpp"
 #include "boost/lexical_cast.hpp"
 #include "MainApplication.h"
+
+#include "Poco/Environment.h"
 #define TO_STRING(s) #s
 using namespace org::esb;
 using namespace org::esb::net;
@@ -111,7 +113,7 @@ std::string _hostname;
 int _port = 0;
 bool quiet = false;
 
-int main_old(int argc, char * argv[]) {
+int main(int argc, char * argv[]) {
   //org::esb::core::Application(argc, argv);
   //isatty(0);
   /*setting default path to Program*/
@@ -223,8 +225,11 @@ int main_old(int argc, char * argv[]) {
     //return 0;
     setupDatabase();
     all.add(gen).add(ser).add(cli);
-    org::esb::core::PluginRegistry::getInstance()->load(base_path + "/plugins");
-    std::cout<<"Plugindir:"<<config::Config::getProperty("MHIVE_PLUGIN_DIR");
+
+    std::string pluginDir=Poco::Environment::get(std::string("MHIVE_PLUGIN_DIR"),base_path+"/plugins");
+    org::esb::core::PluginRegistry::getInstance()->load(pluginDir);
+
+    //std::cout<<"Plugindir:"<<config::Config::getProperty("MHIVE_PLUGIN_DIR");
 
     foreach(std::list<std::string>::value_type data, org::esb::core::PluginRegistry::getInstance()->getPluginNameList()) {
       org::esb::core::OptionsDescription od = org::esb::core::PluginRegistry::getInstance()->getOptionsDescription(data);
@@ -511,9 +516,12 @@ int main_old(int argc, char * argv[]) {
       return 0;
 }
 
-int main(int argc, char ** argv){
-  MainApplication * app=new MainApplication();
-  return 0;
+#include "subsystemone.h"
+int main_poco(int argc, char ** argv){
+  MainApplication * app=new MainApplication(argc, argv);
+  //app->addSubsystem(new SubSystemOne());
+  //app->init(argc, argv);
+  return app->run(argc,argv);
 }
 
 bool setupDatabase() {

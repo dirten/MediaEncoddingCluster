@@ -1,5 +1,5 @@
 #include "boost/shared_ptr.hpp"
-
+#include "Poco/SharedPtr.h"
 #ifndef ORG_ESB_LANG_PTR
 #define ORG_ESB_LANG_PTR
 #include "exports.h"
@@ -8,7 +8,8 @@ namespace org {
     namespace lang {
 
       template <typename T>
-      class Ptr : public boost::shared_ptr<T> {
+    class Ptr : public boost::shared_ptr<T> {
+        //class Ptr : public Poco::SharedPtr<T> {
       public:
 
         Ptr() {
@@ -16,6 +17,7 @@ namespace org {
 
         Ptr(T * elem) : boost::shared_ptr<T>(elem) {
         }
+
         Ptr(boost::shared_ptr<T>d):boost::shared_ptr<T>(d){}
       };
     }
