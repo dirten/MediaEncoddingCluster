@@ -5,17 +5,11 @@ Ext.define('MEC.view.format.List' ,{
     title: 'All Formats',
 
     initComponent: function() {
-        this.store = {
-            fields: ['name', 'email'],
-            data  : [
-                {name: 'Ed',    email: 'ed@sencha.com'},
-                {name: 'Tommy', email: 'tommy@sencha.com'}
-            ]
-        };
+        this.store = 'Formats';
 
         this.columns = [
-            {header: 'Name',  dataIndex: 'name',  flex: 1},
-            {header: 'Email', dataIndex: 'email', flex: 1}
+            {header: 'ID',  dataIndex: 'id',  flex: 1},
+            {header: 'Name', dataIndex: 'longname', flex: 1}
         ];
 
         this.callParent(arguments);

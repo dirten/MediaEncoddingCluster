@@ -1,27 +1,27 @@
-Ext.define('MEC.controller.Formats', {
+Ext.define('MEC.controller.Flows', {
                extend: 'Ext.app.Controller',
 
                views:[
-                   'format.List',
-                   'format.Edit'
+                   'flow.List',
+                   'flow.Edit'
                ],
                stores: [
-                   'Formats'
+                   'Flows'
                ],
-               models:['Format'],
+               models:['Flow'],
                init: function() {
                    this.control({
-                                    'viewport > formatlist': {
-                                        itemdblclick: this.editFormat
+                                    'flowlist': {
+                                        itemdblclick: this.editFlow
                                     },
-                                    'formatedit button[action=save]': {
+                                    'flowedit button[action=save]': {
                                         click: this.updateFormat
                                     }
                                 });
                },
 
-               editFormat: function(grid, record) {
-                   var view = Ext.widget('formatedit');
+               editFlow: function(grid, record) {
+                   var view = Ext.widget('flowedit');
                    view.down('form').loadRecord(record);
                    console.log('Double clicked on ' + record.get('name'));
                },
@@ -35,7 +35,7 @@ Ext.define('MEC.controller.Formats', {
                    record.set(values);
                    console.log(record);
                    win.close();
-                   this.getFormatsStore().sync();
+                   this.getFlowsStore().sync();
                }
            }
            );
