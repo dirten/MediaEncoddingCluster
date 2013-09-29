@@ -1,9 +1,0 @@
-
-
-@implementation JobEditor:CPView
-
-
-
-
-@end
- 
