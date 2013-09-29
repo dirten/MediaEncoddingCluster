@@ -284,7 +284,7 @@ namespace org {
       }
 
       void PluginRegistry::loadFile(std::string file) {
-          if(strstr(file.c_str(),"dylib")>0){
+          if(strstr(file.c_str(),".dylib")>0||strstr(file.c_str(),".dll")>0||strstr(file.c_str(),".so")>0){
           LOGDEBUG("loading plugins from " << file);
         std::cout<<"loading plugins from "<<file<<std::endl;
 
