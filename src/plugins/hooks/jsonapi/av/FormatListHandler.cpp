@@ -65,7 +65,7 @@ public:
   }
 
 };
-REGISTER_WEB_HOOK("/api/v1/format/?$", GET, FormatListHandler);
+REGISTER_WEB_HOOK("/api/v1/format/*", GET, FormatListHandler);
 
 
 

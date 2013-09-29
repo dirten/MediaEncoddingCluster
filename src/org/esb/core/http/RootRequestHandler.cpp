@@ -1,7 +1,7 @@
 /* 
  * File:   RootRequestHandler.cpp
  * Author: HoelscJ
- * 
+ *
  * Created on 3. Februar 2012, 15:58
  */
 
@@ -10,6 +10,8 @@
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/config/config.h"
+
+#include "Poco/StringTokenizer.h"
 namespace org {
   namespace esb {
     namespace core {
@@ -25,6 +27,8 @@ namespace org {
           org::esb::io::File dr_file(doc_root);
           LOGDEBUG("DocRoot:"<<dr_file.getPath());
           std::string uri=request.getURI();
+          Poco::StringTokenizer tokenz(uri,"?");//parsing out the get parameter
+          uri=tokenz[0];
           LOGDEBUG("URI"<<uri);
           if(uri=="/")
             uri+="index.html";
@@ -45,8 +49,10 @@ namespace org {
                 response.setContentType("text/html; charset=UTF-8");
               }else if(file.getExtension().find("sj")!= string::npos){
                 response.setContentType("application/javascript; charset=UTF-8");
+              }else if(file.getExtension().find("css")!= string::npos){
+                response.setContentType("text/css; charset=UTF-8");
               }else{
-                response.setContentType("text/plain; charset=UTF-8");      
+                response.setContentType("text/plain; charset=UTF-8");
               }
             }else{
               response.setStatusAndReason(response.HTTP_NOT_FOUND,"Resource not found");
@@ -59,7 +65,7 @@ namespace org {
           std::ostream& ostr = response.send();
           ostr << data;
         }
+        }
       }
     }
   }
-}

@@ -10,13 +10,14 @@
 #include "http/RootRequestHandler.h"
 #include "org/esb/util/Foreach.h"
 #include "Poco/RegularExpression.h"
+#include "Poco/StringTokenizer.h"
 #include "org/esb/util/UUID.h"
 #include "org/esb/config/config.h"
 #include "org/esb/util/StringUtil.h"
 namespace org {
   namespace esb {
     namespace core {
-
+using namespace Poco;
       WebHookHandlerFactory::WebHookHandlerFactory() {
         _user_path = org::esb::config::Config::get("hive.graph_path");
 
@@ -32,6 +33,9 @@ namespace org {
             if (factory->getMethod() == req.getMethod()) {
               /*matching url paceholder*/
               std::string url = factory->getUrl();
+              std::string uri=req.getURI();
+              Poco::StringTokenizer tokenz(uri,"?");
+              uri=tokenz[0];
               Poco::RegularExpression reholder("\\{(.*?)\\}");
               Poco::RegularExpression::MatchVec posVec;
               //std::string var;
@@ -60,12 +64,12 @@ namespace org {
               Poco::RegularExpression re(url);
               //LOGDEBUG(factory->getUrl()<<" / "<<req.getURI());
               Poco::RegularExpression::MatchVec posVec2;
-              if (re.match(req.getURI(), 0, posVec2)) {
+              if (re.match(uri, 0, posVec2)) {
                 LOGDEBUG("found:" << posVec2.size());
                 for (int a = 1; a < posVec2.size(); a++) {
-                  LOGDEBUG("setting parameter a=" << a << " : " << varVec[a] << "=" << req.getURI().substr(posVec2[a].offset, posVec2[a].length));
-                  req.add(varVec[a], req.getURI().substr(posVec2[a].offset, posVec2[a].length));
-                  req.add(org::esb::util::StringUtil::toString(a), req.getURI().substr(posVec2[a].offset, posVec2[a].length));
+                  LOGDEBUG("setting parameter a=" << a << " : " << varVec[a] << "=" << uri.substr(posVec2[a].offset, posVec2[a].length));
+                  req.add(varVec[a], uri.substr(posVec2[a].offset, posVec2[a].length));
+                  req.add(org::esb::util::StringUtil::toString(a), uri.substr(posVec2[a].offset, posVec2[a].length));
                 }
                 /*
                 if(var.length()){
