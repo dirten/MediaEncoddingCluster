@@ -3,9 +3,9 @@ Ext.define('MEC.view.flow.List' ,{
     alias: 'widget.flowlist',
 
     title: 'All Flows',
+    store : 'Flows',
     hideHeaders:true,
     initComponent: function() {
-        this.store = 'Flows';
 
         this.columns = [
             {header: 'Name', dataIndex: 'name', flex: 1}
