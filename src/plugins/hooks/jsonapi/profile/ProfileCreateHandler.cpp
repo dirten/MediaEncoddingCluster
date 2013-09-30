@@ -14,7 +14,12 @@
 #include "../PresetVerifier.h"
 #include "../exports.h"
 
+
+#include "Poco/TextConverter.h"
+#include "Poco/Latin1Encoding.h"
+#include "Poco/UTF8Encoding.h"
 class JSONAPI_EXPORT ProfileCreateHandler : public org::esb::core::WebHookPlugin {
+  private:
 public:
 
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
@@ -39,6 +44,7 @@ public:
                 LOGDEBUG("Update profile");
                 db::Preset preset = s.one();
                 preset.data = data;
+                std::string name=inode["name"].as_string();
                 preset.name = inode["name"].as_string();
                 preset.update();
                 result.push_back(JSONNode("uuid", iddata));
@@ -104,4 +110,4 @@ public:
 REGISTER_WEB_HOOK("/api/v1/profile/?$", POST, ProfileCreateHandler);
 
 typedef ProfileCreateHandler ProfileUpdateHandler;
-REGISTER_WEB_HOOK("/api/v1/profile/{profileid}$", POST, ProfileUpdateHandler);
+REGISTER_WEB_HOOK("/api/v1/profile/{profileid}$", PUT, ProfileUpdateHandler);

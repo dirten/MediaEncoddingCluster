@@ -21,6 +21,7 @@ TARGET_LINK_LIBRARIES(mq
     safmq
     #${Boost_LIBRARIES}
     io
+
 )
 
 SET_TARGET_PROPERTIES( mq PROPERTIES PREFIX "libmhive-")

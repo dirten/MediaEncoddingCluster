@@ -21,13 +21,13 @@ public:
 
     foreach(db::Preset preset, presets) {
       JSONNode prnode(JSON_NODE);
-      prnode.push_back(JSONNode("id", preset.uuid.value()));
+      prnode.push_back(JSONNode("uuid", preset.uuid.value()));
       prnode.push_back(JSONNode("name", preset.name.value()));
       c.push_back(prnode);
     }
     result.setData(c);
 
-    //res.setContentType("text/plain");
+    res.setContentType("text/plain");
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();
   }

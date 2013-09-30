@@ -515,7 +515,7 @@ int main(int argc, char * argv[]) {
 
       return 0;
 }
-
+#if 0
 #include "subsystemone.h"
 int main_poco(int argc, char ** argv){
   MainApplication * app=new MainApplication(argc, argv);
@@ -523,7 +523,7 @@ int main_poco(int argc, char ** argv){
   //app->init(argc, argv);
   return app->run(argc,argv);
 }
-
+#endif
 bool setupDatabase() {
   org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
   if (!DatabaseService::databaseExist()) {

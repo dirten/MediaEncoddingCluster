@@ -5,7 +5,8 @@ Ext.define('MEC.store.ProfileStore', {
                api: {
                        read: 'api/v1/profile',
                        update: 'data/updateUsers.json'
-                   },
+                   }
+               /*,
                proxy: {
                    type: 'ajax',
                    url: 'api/v1/profile',
@@ -14,4 +15,6 @@ Ext.define('MEC.store.ProfileStore', {
                        root: 'data',
                        successProperty: 'success'
                    }
-               }});
+               }*/
+           }
+           );

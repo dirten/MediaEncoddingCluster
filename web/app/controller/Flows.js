@@ -25,6 +25,8 @@ Ext.define('MEC.controller.Flows', {
                    view.down('form').loadRecord(record);
                    console.log('Double clicked on ' + record.get('name'));
                },
+
+
                updateFormat: function(button) {
                    console.log('clicked the Save button');
                    var win    = button.up('window'),

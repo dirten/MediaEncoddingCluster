@@ -1,55 +1,66 @@
-Ext.require('Ext.data.Store');
 Ext.define('MEC.controller.ProfileController', {
                extend: 'Ext.app.Controller',
 
                views:[
-                   'profile.List',
-                   'profile.Edit'
-               ],
+                         'profile.List',
+                         'profile.Edit'
+                     ],
                stores: [
-                   'ProfileStore'
-               ],
+                           'ProfileStore'
+                       ],
                models:['Profile'],
                init: function() {
-                   this.control({
-                                    'profilelist': {
-                                        itemdblclick: this.editFlow
-                                    },
-                                    'profileedit button[action=save]': {
-                                        click: this.updateFormat
-                                    }
-                                });
-               },
+                         this.control({
+                                          'profilelist': {
+                                              itemdblclick: this.editFlow
+                                          },
+                                          'profileedit button[action=save]': {
+                                              click: this.updateFormat
+                                          }
+                                      });
+                     },
 
                editFlow: function(grid, record) {
-                   /*
-                   userStore = Ext.create('Ext.data.Store', {
-                           model: 'Profile',
-                           autoLoad: true
-                       });
-                   var Profile = Ext.ModelMgr.getModel('Profile');
-                   console.log(record.get("id"));
-                   Profile.load(record.get("id"),{
-                                    success: function(profile) {
-                                            console.log("Loaded user 1: " + user.get('name'));
-                                        }
-                                });
-                   */
-                   var view = Ext.widget('profileedit');
-                   view.down('form').loadRecord(record);
-                   console.log(record);
-               },
-               updateFormat: function(button) {
-                   console.log('clicked the Save button');
-                   var win    = button.up('window'),
-                           form   = win.down('form'),
-                           record = form.getRecord(),
-                           values = form.getValues();
 
-                   record.set(values);
-                   console.log(record);
-                   win.close();
-                   this.getFlowsStore().sync();
-               }
+                             //console.log(record.get("uuid"));
+                             var Profile = Ext.ModelMgr.getModel('MEC.model.Profile');
+
+
+                             Profile.load(record.get("uuid"),{
+                                              success: function(profile) {
+                                                           var view = Ext.widget('profileedit');
+                                                           console.log(profile.data.audio);
+                                                           //profile.data['audioid']=profile.data.audio.id;
+                                                           //profile.set('audio.id','data');
+                                                           console.log(profile.getData());
+                                                           //profile.getData().audio
+                                                           view.down('form').loadRecord(profile);
+                                                           //view.getForm().loadRecord(profile);
+                                                           //view.down('form').setValue('audio','bla');
+                                                           //view.down('form').findField('audiofield').setValue('hallo');
+                                                       }
+                                          });
+
+
+                         },
+
+               updateFormat: function(button) {
+                                 //console.log('clicked the Save button');
+                                 var win    = button.up('window'),
+                                         form   = win.down('form'),
+                                         record = form.getRecord(),
+                                         values = form.getValues();
+
+                                 record.set(values);
+                                 console.log(record);
+                                 var store = this.getProfileStoreStore();
+                                 record.save({
+                                                 success: function(ed) {
+                                                              //console.log("Saved Ed! His ID is "+ ed);
+                                                              store.load();
+                                                          }
+                                             });
+                                 win.close();
+                             }
            }
            );
