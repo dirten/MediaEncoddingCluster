@@ -5,7 +5,8 @@ Ext.application({
                     appFolder: 'app',
                     controllers: [
                         'Flows',
-                        'Formats'
+                        'Formats',
+                        'ProfileController'
                     ],
                     /*
                     views: [
