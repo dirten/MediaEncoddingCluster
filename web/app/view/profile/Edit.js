@@ -1,3 +1,15 @@
+Ext.define('MEC.view.template.Edit', {
+    extend: 'Ext.XTemplate',
+
+    constructor: function (config) {
+        this.callParent(['<div style="padding-left: 20px;">',
+                                    '<div style="width:100%;float:left;position:relative">{label}bla fasel</div>',
+                                    '<img src="{icon}" style="float:left;position:relative;width:20px;right:20px;margin-left:-100%;height:20px;" />',
+                                  '</div>']
+                                  );
+    }
+}) ;
+
 Ext.define('MEC.view.profile.Edit', {
                extend: 'Ext.window.Window',
                alias: 'widget.profileedit',
@@ -6,6 +18,7 @@ Ext.define('MEC.view.profile.Edit', {
                layout: 'fit',
                autoShow: true,
                width:600,
+
                items : [
                            {
                                xtype: 'form',
@@ -54,7 +67,12 @@ Ext.define('MEC.view.profile.Edit', {
                                                                   ]
                                                         },
                                                         {
-                                                            title:'second'
+                                                            title:'second',
+                                                            items:[{
+                                                                       xtype:'panel',
+                                                                       html:Ext.create('Ext.XTemplate', 'first {firstName} last{lastName}').apply({firstName:'jon'})
+
+                                                            }]
                                                         }
 
                                                     ]
@@ -62,6 +80,7 @@ Ext.define('MEC.view.profile.Edit', {
                                       ]
                            }
                        ],
+
                initComponent: function() {
 
                                   this.buttons = [
@@ -75,6 +94,8 @@ Ext.define('MEC.view.profile.Edit', {
                                                handler: this.close
                                            }
                                        ];
+
+                                  //this.tpl.overwrite(this.getEl(),{firstName:"bla"});
 
                                   this.callParent(arguments);
                               }

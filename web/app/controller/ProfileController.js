@@ -28,13 +28,14 @@ Ext.define('MEC.controller.ProfileController', {
 
                              Profile.load(record.get("uuid"),{
                                               success: function(profile) {
+                                                           //var view2=this.getProfileEdit();
                                                            var view = Ext.widget('profileedit');
                                                            console.log(profile.data.audio);
                                                            //profile.data['audioid']=profile.data.audio.id;
                                                            //profile.set('audio.id','data');
                                                            console.log(profile.getData());
                                                            //profile.getData().audio
-                                                           view.down('form').loadRecord(profile);
+                                                           //view.down('form').loadRecord(profile);
                                                            //view.getForm().loadRecord(profile);
                                                            //view.down('form').setValue('audio','bla');
                                                            //view.down('form').findField('audiofield').setValue('hallo');
