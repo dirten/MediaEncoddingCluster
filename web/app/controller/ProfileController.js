@@ -35,7 +35,7 @@ Ext.define('MEC.controller.ProfileController', {
                                                            //profile.set('audio.id','data');
                                                            console.log(profile.getData());
                                                            //profile.getData().audio
-                                                           //view.down('form').loadRecord(profile);
+                                                           view.down('form').loadRecord(profile);
                                                            //view.getForm().loadRecord(profile);
                                                            //view.down('form').setValue('audio','bla');
                                                            //view.down('form').findField('audiofield').setValue('hallo');

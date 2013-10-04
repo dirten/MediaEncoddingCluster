@@ -49,6 +49,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <pthread.h>
+#include <sys/syscall.h>
+
 #else
 #include <windows.h>
 #include <tchar.h>
@@ -127,6 +129,7 @@ int main(int argc, char * argv[]) {
   std::istream& t = session.receiveResponse(res);
   std::cout << res.getStatus();
    */
+
   std::string base_path;
   if(config::Config::get("hive.base_path").length()){
     base_path=config::Config::get("hive.base_path");
