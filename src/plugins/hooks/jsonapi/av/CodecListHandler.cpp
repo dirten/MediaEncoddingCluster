@@ -31,7 +31,7 @@ public:
     ostr << result.write_formatted();
   }
 };
-REGISTER_WEB_HOOK("/api/v1/codec/?$", GET, CodecListHandler);
+REGISTER_WEB_HOOK("/api/v1/codec/?$", GET, CodecListHandler)
 
 
 

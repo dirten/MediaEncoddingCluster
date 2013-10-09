@@ -107,7 +107,7 @@ public:
   }
 
 };
-REGISTER_WEB_HOOK("/api/v1/profile/?$", POST, ProfileCreateHandler);
+REGISTER_WEB_HOOK("/api/v1/profile/?$", POST, ProfileCreateHandler)
 
 typedef ProfileCreateHandler ProfileUpdateHandler;
-REGISTER_WEB_HOOK("/api/v1/profile/{profileid}$", PUT, ProfileUpdateHandler);
+REGISTER_WEB_HOOK("/api/v1/profile/{profileid}$", PUT, ProfileUpdateHandler)

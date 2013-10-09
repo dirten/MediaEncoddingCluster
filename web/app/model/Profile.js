@@ -5,10 +5,10 @@ Ext.define('MEC.model.Profile', {
                            { name:'name', type:'auto' },
                            { name:'format', type:'auto' },
                            { name:'video', type:'auto' },
-                           { name:'audio', type:'auto' },
-                           { name:'audio.id', mapping:'audio.id'}
+                           /*{ name:'audio', type:'auto' },*/
+                           /*{ name:'audio.id', mapping:'audio.id'}*/
                        ],
-
+               belongsTo:'Audio',
                proxy: {
                    type: 'rest',
                    url: 'api/v1/profile',

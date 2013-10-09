@@ -118,7 +118,7 @@
                 <mkdir dir="source/x264"/>
 
                 <get src="http://www.nasm.us/pub/nasm/releasebuilds/2.09.04/nasm-2.09.04.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
-                <get src="http://www.tortall.net/projects/yasm/releases/yasm-1.1.0.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
+                <get src="http://www.tortall.net/projects/yasm/releases/yasm-1.2.0.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
                 <get src="http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
                 <get src="http://download.videolan.org/pub/videolan/x264/snapshots/last_x264.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
                 <!--<get src="ftp://ftp.videolan.org/pub/x264/snapshots/last_x264.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>-->
@@ -131,7 +131,7 @@
                 <get src="http://webm.googlecode.com/files/libvpx-v${vpx.version}.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
 
                 <bunzip2 src="source/nasm-2.09.04.tar.bz2" dest="source"/>
-                <gunzip src="source/yasm-1.1.0.tar.gz" dest="source"/>
+                <gunzip src="source/yasm-1.2.0.tar.gz" dest="source"/>
                 <bunzip2 src="source/ffmpeg-snapshot.tar.bz2" dest="source"/>
                 <bunzip2 src="source/last_x264.tar.bz2" dest="source"/>
                 <gunzip src="source/lame-3.98.4.tar.gz" dest="source"/>
@@ -145,7 +145,7 @@
                   <arg line="-xf nasm-2.09.04.tar"/>
                 </exec>
                 <exec executable="tar" dir="source">
-                  <arg line="-xf yasm-1.1.0.tar"/>
+                  <arg line="-xf yasm-1.2.0.tar"/>
                 </exec>
                 <exec executable="tar" dir="source">
                   <arg line="-xf ffmpeg-snapshot.tar --strip=1 --directory=ffmpeg"/>
@@ -187,11 +187,11 @@
                   <arg line="install"/>
                 </exec>
 
-                <exec executable="sh" dir="source/yasm-1.1.0" failonerror="yes">
-                  <arg line="${mybasedir}/source/yasm-1.1.0/configure --prefix=${mybasedir}/source/build/yasm "/>
+                <exec executable="sh" dir="source/yasm-1.2.0" failonerror="yes">
+                  <arg line="${mybasedir}/source/yasm-1.2.0/configure --prefix=${mybasedir}/source/build/yasm "/>
                   <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
-                <exec executable="make" dir="source/yasm-1.1.0">
+                <exec executable="make" dir="source/yasm-1.2.0">
                   <arg line="install"/>
                   <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
@@ -283,7 +283,7 @@
 			  ${mybasedir}/source/ffmpeg/configure
                     --prefix=${mybasedir}/source/build/ffmpeg
                     --extra-cflags=-I${mybasedir}/source/build/include
-                    --extra-ldflags=-L${mybasedir}/source/build/lib
+                    --extra-ldflags='-L${mybasedir}/source/build/lib -ldl'
                     --enable-libxvid
                     --enable-libx264
                     --enable-libmp3lame
@@ -341,7 +341,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <x264.version>-snapshot-20110621-2245</x264.version>
-    <vpx.version>0.9.6</vpx.version>
+    <vpx.version>1.2.0</vpx.version>
     <xvid.version>1.3.2</xvid.version>
   </properties>
 </project>

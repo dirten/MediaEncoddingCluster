@@ -85,5 +85,5 @@ public:
   }
 
 };
-REGISTER_WEB_HOOK("/api/v1/profile/{profileid}$", PUT, ProfileUpdateHandler);
+REGISTER_WEB_HOOK("/api/v1/profile/{profileid}$", PUT, ProfileUpdateHandler)
 

@@ -21,6 +21,7 @@ public:
       try {
         db::Preset preset = s.one();
         JSONNode data = libjson::parse(preset.data);
+
         data.set_name("data");
         if (data.contains("id")) {
           data.pop_back("id");
@@ -30,6 +31,18 @@ public:
         }else{
           data.push_back(JSONNode("uuid", id));
         }
+
+        /*convert old string values into number values*/
+        JSONNode audio=data["audio"];
+        if(audio.contains("ab")){
+          audio["ab"]=atoi(audio["ab"].as_string().c_str());
+          audio["ac"]=atoi(audio["ac"].as_string().c_str());
+          audio["ar"]=atoi(audio["ar"].as_string().c_str());
+
+          data.pop_back("audio");
+          data.push_back(audio);
+        }
+
         result.setData(data);
         result.setStatus("ok");
       } catch (std::exception &ex) {
@@ -48,7 +61,7 @@ public:
   }
 
 };
-REGISTER_WEB_HOOK("/api/v1/profile/{profileid}$", GET, ProfileLoadHandler);
+REGISTER_WEB_HOOK("/api/v1/profile/{profileid}(?:\\?.*)?$", GET, ProfileLoadHandler)
 
 
 

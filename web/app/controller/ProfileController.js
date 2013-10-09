@@ -8,7 +8,7 @@ Ext.define('MEC.controller.ProfileController', {
                stores: [
                            'ProfileStore'
                        ],
-               models:['Profile'],
+               models:['Profile','Audio'],
                init: function() {
                          this.control({
                                           'profilelist': {
@@ -30,12 +30,16 @@ Ext.define('MEC.controller.ProfileController', {
                                               success: function(profile) {
                                                            //var view2=this.getProfileEdit();
                                                            var view = Ext.widget('profileedit');
-                                                           console.log(profile.data.audio);
+                                                           //var view = Ext.widget('profiletop');
+                                                           console.log(profile.audio());
+                                                           console.log(view);
+                                                           console.log(view.down('form'));
                                                            //profile.data['audioid']=profile.data.audio.id;
                                                            //profile.set('audio.id','data');
-                                                           console.log(profile.getData());
+                                                           //console.log(profile.getData());
                                                            //profile.getData().audio
                                                            view.down('form').loadRecord(profile);
+                                                           //view.loadRecord(profile);
                                                            //view.getForm().loadRecord(profile);
                                                            //view.down('form').setValue('audio','bla');
                                                            //view.down('form').findField('audiofield').setValue('hallo');

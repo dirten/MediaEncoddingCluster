@@ -33,7 +33,7 @@ public:
   }
 
 };
-REGISTER_WEB_HOOK("/api/v1/profile/?$", GET, ProfileListHandler);
+REGISTER_WEB_HOOK("/api/v1/profile/?(?:\\?.*)?$", GET, ProfileListHandler)
 
 
 
