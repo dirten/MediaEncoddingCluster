@@ -29,13 +29,13 @@ using namespace Poco;
         if (req.getURI().find("/api/v1/") != string::npos) {
           LOGDEBUG("WebHookFactory.size()" << _webhook_factory_list.size());
           foreach(WebHookFactory * factory, _webhook_factory_list) {
-            LOGDEBUG(factory->getUrl() << " / " << req.getURI());
+            LOGDEBUG("RegEx="+factory->getUrl() << " / uri=" << req.getURI());
             if (factory->getMethod() == req.getMethod()) {
               /*matching url paceholder*/
               std::string url = factory->getUrl();
               std::string uri=req.getURI();
               Poco::StringTokenizer tokenz(uri,"?");
-              uri=tokenz[0];
+              //uri=tokenz[0];
               Poco::RegularExpression reholder("\\{(.*?)\\}");
               Poco::RegularExpression::MatchVec posVec;
               //std::string var;

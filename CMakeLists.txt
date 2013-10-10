@@ -10,6 +10,7 @@ project (MEC)
 
 INCLUDE(CTest)
 INCLUDE(cmake/HiveFindGo.txt)
+INCLUDE(cmake/CMakeListExternals.txt)
 INCLUDE(cmake/Go.cmake)
 #INCLUDE(cmake/DownloadDeps.txt)
 
@@ -38,7 +39,7 @@ ENDIF(USE_SAFMQ)
 
 SET(POCO_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Use poco in directory")
 SET(LIBJSON_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
-SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
+#SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 #SET(X264_DIR ${PROJECT_SOURCE_DIR}/target/dependency )
 SET(BOOST_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 #SET(BOOST_COMPILER gcc )

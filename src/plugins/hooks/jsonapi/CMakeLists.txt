@@ -38,6 +38,7 @@ add_library (jsonapi SHARED
   av/FormatListHandler.cpp
   av/FormatLoadHandler.cpp
   av/CodecListHandler.cpp
+  av/CodecInfoHandler.cpp
 
 #API Handling of all Profile Requests
   profile/ProfileListHandler.cpp

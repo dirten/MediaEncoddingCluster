@@ -22,6 +22,7 @@ Ext.define('MEC.view.profile.Edit', {
                items : [
                            {
                                xtype: 'form',
+                               alias:'widget.profiletop',
                                layout : 'vbox',
                                flex:1,
                                fieldDefaults:{
