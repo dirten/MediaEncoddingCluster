@@ -21,7 +21,7 @@ namespace org {
           void addRequestHandler(RequestHandler&);
         public:
           virtual RequestHandler * createHandler(HTTPServerRequest&) = 0;
-          virtual ~RequestHandlerFactory(){};
+          virtual ~RequestHandlerFactory(){}
           Poco::Net::HTTPRequestHandler* createRequestHandler(const Poco::Net::HTTPServerRequest&req) {
             Poco::Net::HTTPServerRequest * ptr = const_cast<Poco::Net::HTTPServerRequest *> (&req);
             HTTPServerRequest* httpPtr = static_cast<HTTPServerRequest*> (ptr);
