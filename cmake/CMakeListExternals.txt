@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+#cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
 project (Depndencies)
 INCLUDE(ExternalProject)
@@ -7,6 +7,7 @@ set(BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build")
 
 set(xvid_version "1.3.2")
 set(vpx_version "1.2.0")
+SET(FFMPEG_SHARED YES)
 
 
 ExternalProject_Add(yasm
@@ -16,7 +17,7 @@ CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR}
 
 ExternalProject_Add(nasm
 URL http://www.nasm.us/pub/nasm/releasebuilds/2.09.04/nasm-2.09.04.tar.gz
-CONFIGURE_COMMAND ${CMAKE_CURRENT_BINARY_DIR}/nasm-prefix/src/nasm/configure --prefix=${BUILD_DIR}
+CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR}
 BUILD_IN_SOURCE 1
 )
 
@@ -30,7 +31,7 @@ BUILD_IN_SOURCE 1
 ExternalProject_Add(x264
 DEPENDS yasm nasm
 URL http://download.videolan.org/pub/videolan/x264/snapshots/last_x264.tar.bz2
-CONFIGURE_COMMAND ${CMAKE_CURRENT_BINARY_DIR}/x264-prefix/src/x264/configure --prefix=${BUILD_DIR} --enable-static --disable-shared
+CONFIGURE_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && ${CMAKE_CURRENT_BINARY_DIR}/x264-prefix/src/x264/configure --prefix=${BUILD_DIR} --enable-static --disable-shared
 BUILD_IN_SOURCE 1
 )
 
@@ -74,19 +75,31 @@ BUILD_IN_SOURCE 1
 )
 
 set(EXTRA_LD_FLAGS "-L${BUILD_DIR}/lib -ldl")
+SET(EXTRA_CFLAGS "-I${BUILD_DIR}/include -DFF_API_ALLOC_CONTEXT")
+SET(LINKER_ARGS_STATIC --enable-static)
+SET(LINKER_ARGS_SHARED --disable-shared)
+IF(FFMPEG_SHARED)
+  SET(LINKER_ARGS_STATIC --disable-static)
+  SET(LINKER_ARGS_SHARED --enable-shared)
+ENDIF(FFMPEG_SHARED)
+
 
 ExternalProject_Add(ffmpeg
 DEPENDS lame x264 libogg libtheora speex libvorbis xvid libvpx
 URL http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
-CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --extra-cflags=-I${BUILD_DIR}/include --extra-ldflags=${EXTRA_LD_FLAGS} --enable-libxvid --enable-libx264 --enable-libmp3lame --enable-libvorbis --enable-libtheora --enable-libvpx --disable-devices --extra-cflags=-fno-common --disable-stripping --disable-zlib --enable-gpl
+CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} ${LINKER_ARGS_STATIC} ${LINKER_ARGS_SHARED} --enable-incompatible-libav-abi --extra-cflags=${EXTRA_CFLAGS} --extra-ldflags=${EXTRA_LD_FLAGS} --enable-libxvid --enable-libx264 --enable-libmp3lame --enable-libvorbis --enable-libtheora --enable-libvpx --disable-devices --extra-cflags=-fno-common --disable-stripping --disable-zlib --enable-gpl
 BUILD_IN_SOURCE 1
 )
+SET(LIBRARY_SUFFIX ${CMAKE_STATIC_LIBRARY_SUFFIX})
+IF(FFMPEG_SHARED)
+  SET(LIBRARY_SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX})
+ENDIF(FFMPEG_SHARED)
 
 SET(FFMPEG_DIR "${BUILD_DIR}")
-SET(FFMPEG_AVCODEC_LIBRARY ${BUILD_DIR}/lib/libavcodec${CMAKE_STATIC_LIBRARY_SUFFIX})
-SET(FFMPEG_AVFORMAT_LIBRARY ${BUILD_DIR}/lib/libavformat${CMAKE_STATIC_LIBRARY_SUFFIX})
-SET(FFMPEG_AVUTIL_LIBRARY ${BUILD_DIR}/lib/libavutil${CMAKE_STATIC_LIBRARY_SUFFIX})
-SET(FFMPEG_SWSCALE_LIBRARY ${BUILD_DIR}/lib/libswscale${CMAKE_STATIC_LIBRARY_SUFFIX})
+SET(FFMPEG_AVCODEC_LIBRARY ${BUILD_DIR}/lib/libavcodec${LIBRARY_SUFFIX})
+SET(FFMPEG_AVFORMAT_LIBRARY ${BUILD_DIR}/lib/libavformat${LIBRARY_SUFFIX})
+SET(FFMPEG_AVUTIL_LIBRARY ${BUILD_DIR}/lib/libavutil${LIBRARY_SUFFIX})
+SET(FFMPEG_SWSCALE_LIBRARY ${BUILD_DIR}/lib/libswscale${LIBRARY_SUFFIX})
 SET(FFMPEG_INCLUDE_DIR ${BUILD_DIR}/include)
 SET(FFMPEG_LIB_DIR ${BUILD_DIR}/lib)
 
@@ -99,11 +112,12 @@ BUILD_IN_SOURCE 1
 SET(POCO_DIR "${BUILD_DIR}")
 
 ExternalProject_Add(boost
-URL http://dfn.dl.sourceforge.net/project/boost/boost/1.54.0/boost_1_54_0.tar.gz
+URL http://dfn.dl.sourceforge.net/project/boost/boost/1.44.0/boost_1_44_0.tar.gz
 UPDATE_COMMAND <SOURCE_DIR>/bootstrap.sh
 CONFIGURE_COMMAND ""
 INSTALL_COMMAND ""
-BUILD_COMMAND <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} --with-program_options --with-filesystem --with-serialization --with-signals link=static threading=multi architecture=combined address-model=32_64 install
+BUILD_COMMAND <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} --with-date_time --with-thread --with-system --with-program_options --with-filesystem --with-serialization --with-signals link=static threading=multi address-model=32_64 install
+#BUILD_COMMAND <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} --without-wave --without-context --without-graph link=static threading=multi address-model=32_64 install
 BUILD_IN_SOURCE 1
 )
 SET(BOOST_DIR "${BUILD_DIR}")

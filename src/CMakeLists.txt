@@ -261,6 +261,7 @@ ENDIF(BUILD_MHIVECORE)
  
 target_link_libraries (mhive 
   ${POCO_LIB_FOUNDATION}
+  ${Boost_LIBRARIES}
   lang
   hive 
   av 
@@ -271,7 +272,6 @@ target_link_libraries (mhive
 #  rpc
   core
   core_http
-  ${Boost_LIBRARIES}
 #  log4cplus
 #  PocoNet
 )

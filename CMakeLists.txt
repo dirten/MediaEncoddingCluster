@@ -3,7 +3,7 @@
 # Main Cmake file
 #
 ############################################################
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 project (MEC)
 
@@ -15,8 +15,13 @@ INCLUDE(cmake/Go.cmake)
 #INCLUDE(cmake/DownloadDeps.txt)
 
 add_definitions(-DPOCO_NO_AUTOMATIC_LIBS)
+add_definitions(-DFF_API_ALLOC_CONTEXT)
+add_definitions(-DFF_API_AVCODEC_OPEN)
+add_definitions(-DFF_API_OLD_DECODE_AUDIO)
+add_definitions(-DFF_API_OLD_ENCODE_AUDIO)
+add_definitions(-DFF_API_CODEC_ID)
 
-SET(CMAKE_COLOR_MAKEFILE Off)
+#SET(CMAKE_COLOR_MAKEFILE Off)
 
 if(APPLE)
 add_definitions(-m32)
@@ -41,7 +46,7 @@ SET(POCO_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Use poco in dir
 SET(LIBJSON_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 #SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 #SET(X264_DIR ${PROJECT_SOURCE_DIR}/target/dependency )
-SET(BOOST_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
+#SET(BOOST_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 #SET(BOOST_COMPILER gcc )
 #SET(BOOST_VERSION "1_35" CACHE STRING "Boost libraries version signature")
 SET(SQLITE_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
@@ -95,7 +100,7 @@ SET(USE_EMBEDDED_MYSQL ON)
 set(BOOST_ROOT ${BOOST_DIR})
 set(Boost_COMPILER ${BOOST_COMPILER})
 set(Boost_USE_STATIC_LIBS On)
-find_package( Boost 1.36.0 COMPONENTS date_time regex program_options signals thread system filesystem serialization)
+find_package( Boost 1.44.0 COMPONENTS date_time program_options signals thread system filesystem serialization)
 if(Boost_FOUND)
     MESSAGE("*** New Boost found" ${Boost_LIBRARIES})
 #    MESSAGE("*** Boost Date Time found" ${BOOST_DATE_TIME_LIB})

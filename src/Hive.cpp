@@ -16,11 +16,11 @@
  * ----------------------------------------------------------------------
  */
 //#include "config.h"
+#include "org/esb/config/config.h"
 #include "boost/program_options.hpp"
 #include "boost/asio.hpp"
 #include "org/esb/api/JsonServer.h"
 #include "org/esb/hive/job/ProcessUnitController.h"
-#include "org/esb/config/config.h"
 #include "org/esb/lang/CtrlCHitWaiter.h"
 
 #include "org/esb/hive/DirectoryScanner.h"

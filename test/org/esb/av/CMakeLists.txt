@@ -12,7 +12,7 @@ include_directories (${XUGGLE}/include)
 
 
 
-
+MESSAGE("FFMPeg dir "${FFMPEG_DIR}/lib)
 LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
@@ -57,7 +57,7 @@ add_executable (TestOwnFFMpegUrl TestOwnFFMpegUrl.cpp)
 add_executable (AVDictionaryTest AVDictionaryTest.cpp)
 
 target_link_libraries (TestPacket av)
-target_link_libraries (TestFfmpeg av)
+target_link_libraries (TestFfmpeg av io util lang)
 target_link_libraries (TestSerializePacket io av util lang ${BOOST_SERIAL_LIB_MT} )
 target_link_libraries (TestDeSerializePacket io av util lang ${BOOST_SERIAL_LIB_MT})
 target_link_libraries (TestFormatInputStream io av util lang )

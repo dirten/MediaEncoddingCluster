@@ -16,7 +16,7 @@ public:
     AVCodec *p = NULL;
     int a = 0;
     while ((p = av_codec_next(p))) {
-      if (p->encode || p->encode2) {
+      if ( p->encode2) {
         if(codecid==std::string(p->name))
           break;
       }

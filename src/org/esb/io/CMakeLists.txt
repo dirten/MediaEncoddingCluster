@@ -24,8 +24,9 @@ add_library (io ${IO_LINK_TYPE}
       #QueueOutputStream.cpp
       #QueueInputStream.cpp
 )
+#MESSAGE("Boost Libraries in io " ${Boost_LIBRARIES})
 TARGET_LINK_LIBRARIES(io
-#    ${Boost_LIBRARIES}
+    ${Boost_LIBRARIES}
     lang
     util
 )
