@@ -121,6 +121,6 @@ BUILD_COMMAND <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} --with-date_time --with-th
 BUILD_IN_SOURCE 1
 )
 SET(BOOST_DIR "${BUILD_DIR}")
-#http://dfn.dl.sourceforge.net/project/boost/boost/1.44.0/boost_1_44_0.zip
-#http://pocoproject.org/releases/poco-1.4.6/poco-1.4.6p2.tar.gz
-#http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
+
+
+#https://github.com/philsquared/Catch.git
