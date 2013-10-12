@@ -5,8 +5,8 @@
  *
  * See the COPYING file for the terms of usage and distribution.
  */
-#ifndef ESBCONFIG_H
-#define ESBCONFIG_H
+#ifndef ORG_ESB_CONFIG_H
+#define ORG_ESB_CONFIG_H
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/util/Properties.h"
 #include "org/esb/util/Log.h"

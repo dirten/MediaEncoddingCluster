@@ -15,10 +15,10 @@ extern "C" {
 #include <libswscale/swscale.h>
 #include <libavutil/fifo.h>
 #include <libavutil/rational.h>
+typedef AVCodecID CodecID;
 #ifdef	__cplusplus
 }
 #endif
-
 #include "boost/thread/mutex.hpp"
 
 #undef USE_TIME_BASE_Q

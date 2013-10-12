@@ -243,7 +243,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   LOGDEBUG(packet.toString());
   //        Frame frame;
   int size = packet.packet->size;
-  int samples_size = AVCODEC_MAX_AUDIO_FRAME_SIZE;
+  int samples_size = 192000;//AVCODEC_MAX_AUDIO_FRAME_SIZE;
   int bps = av_get_bits_per_sample_fmt(ctx->sample_fmt) >> 3;
   //uint8_t* t=(uint8_t*)av_malloc(100);
   uint8_t *outbuf = static_cast<uint8_t*> (av_malloc(samples_size));
