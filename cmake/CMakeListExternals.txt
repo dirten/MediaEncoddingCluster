@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+#cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
 project (Depndencies)
 INCLUDE(ExternalProject)
@@ -53,6 +53,7 @@ BUILD_IN_SOURCE 1
 )
 
 ExternalProject_Add(libvorbis
+DEPENDS libogg
 URL http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz
 CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared
 BUILD_IN_SOURCE 1
@@ -103,7 +104,7 @@ URL http://dfn.dl.sourceforge.net/project/boost/boost/1.54.0/boost_1_54_0.tar.gz
 UPDATE_COMMAND <SOURCE_DIR>/bootstrap.sh
 CONFIGURE_COMMAND ""
 INSTALL_COMMAND ""
-BUILD_COMMAND <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} --with-program_options --with-filesystem --with-serialization --with-signals link=static threading=multi architecture=combined address-model=32_64 install
+BUILD_COMMAND <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} --with-program_options --with-filesystem --with-serialization --with-signals link=static threading=multi address-model=32_64 install
 BUILD_IN_SOURCE 1
 )
 SET(BOOST_DIR "${BUILD_DIR}")
