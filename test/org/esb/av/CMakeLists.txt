@@ -102,7 +102,7 @@ target_link_libraries (AVDictionaryTest av)
 #ENDIF(NOT WIN32)
 
 ADD_TEST(av.PacketTest ${EXECUTABLE_OUTPUT_PATH}/TestPacket)
-ADD_TEST(av.TestFfmpeg ${EXECUTABLE_OUTPUT_PATH}/TestFfmpeg )
+#ADD_TEST(av.TestFfmpeg ${EXECUTABLE_OUTPUT_PATH}/TestFfmpeg )
 ADD_TEST(av.SerializePacketTest ${EXECUTABLE_OUTPUT_PATH}/TestSerializePacket)
 ADD_TEST(av.DeSerializePacketTest ${EXECUTABLE_OUTPUT_PATH}/TestDeSerializePacket)
 ADD_TEST(av.FormatInputStreamTest ${EXECUTABLE_OUTPUT_PATH}/TestFormatInputStream)

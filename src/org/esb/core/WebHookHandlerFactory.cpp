@@ -30,6 +30,7 @@ using namespace Poco;
           LOGDEBUG("WebHookFactory.size()" << _webhook_factory_list.size());
           foreach(WebHookFactory * factory, _webhook_factory_list) {
             LOGDEBUG("RegEx="+factory->getUrl() << " / uri=" << req.getURI());
+            LOGDEBUG("Request Method"+factory->getMethod()<<" / "<< req.getMethod());
             if (factory->getMethod() == req.getMethod()) {
               /*matching url paceholder*/
               std::string url = factory->getUrl();

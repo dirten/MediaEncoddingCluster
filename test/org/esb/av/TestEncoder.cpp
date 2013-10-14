@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
   enc.setCodecOption("minrate","512000");
   enc.setCodecOption("coder","1");
   enc.setCodecOption("flags","+loop+mv4+psnr");
-  enc.setCodecOption("cmp","+chroma");
+  //enc.setCodecOption("cmp","+chroma");
   enc.setCodecOption("partitions","all");
   enc.setCodecOption("me_method","umh");
   enc.setCodecOption("subq","8");
