@@ -11,8 +11,8 @@ int main() {
   File f(src.c_str());
   FormatInputStream fis(&f);
   assert(fis.isValid() == true);
-  //LOGDEBUG(fis.getFileSize());
+  LOGDEBUG(fis.getStreamCount());
   //assert(fis.getFileSize() == 3409920);
-  assert(fis.getStreamCount() == 2);
+  assert(fis.getStreamCount() == 3);
   return 0;
 }

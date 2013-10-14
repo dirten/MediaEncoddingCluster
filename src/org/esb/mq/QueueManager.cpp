@@ -39,10 +39,11 @@ SystemDelivery* sysdeliver;
 ForwardThread* forwardthds;
 safmq::Log* plog;
 
-const std::string system_user("safmq_system");
+const std::string _system_user("safmq_system");
+//const std::string safmq_all_users("safmq_all_users");
 
 /// Global group including all users
-const std::string safmq_all_users("safmq_all_users");
+const std::string _safmq_all_users("safmq_all_users");
 namespace org {
   namespace esb {
     namespace mq {

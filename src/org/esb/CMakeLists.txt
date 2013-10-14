@@ -30,9 +30,9 @@ include_directories (${MEC_SOURCE_DIR}target/dependency/include)
 
 #link_directories (/c/bruteripper/target/dependency/lib)
 
-LINK_DIRECTORIES(${4CPLUS_DIR}/lib)
+LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
 
-#LINK_DIRECTORIES(${FFMPEG_LIB_DIR})
+LINK_DIRECTORIES(${LITESQL_DIR}/lib/static)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)

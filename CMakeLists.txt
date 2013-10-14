@@ -24,9 +24,9 @@ add_definitions(-DFF_API_CODEC_ID)
 #SET(CMAKE_COLOR_MAKEFILE Off)
 
 if(APPLE)
-add_definitions(-m32)
-add_definitions(-arch i386)
-SET (CMAKE_EXE_LINKER_FLAGS "-arch i386")
+#add_definitions(-m32)
+#add_definitions(-arch i386)
+#SET (CMAKE_EXE_LINKER_FLAGS "-arch i386")
 ENDIF(APPLE)
 
 if(WIN32)
@@ -42,15 +42,15 @@ ENDIF(USE_SAFMQ)
 
 
 
-SET(POCO_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Use poco in directory")
+#SET(POCO_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Use poco in directory")
 SET(LIBJSON_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 #SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 #SET(X264_DIR ${PROJECT_SOURCE_DIR}/target/dependency )
 #SET(BOOST_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 #SET(BOOST_COMPILER gcc )
 #SET(BOOST_VERSION "1_35" CACHE STRING "Boost libraries version signature")
-SET(SQLITE_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
-SET(LOG4CPLUS_DIR ${PROJECT_SOURCE_DIR}/target/dependency )
+#SET(SQLITE_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
+#SET(LOG4CPLUS_DIR ${PROJECT_SOURCE_DIR}/target/dependency )
 SET(WT_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 SET(BREAKPAD_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 SET(SOCORRO_HOST localhost CACHE PATH "Socorro Host")
@@ -98,7 +98,7 @@ SET(USE_EMBEDDED_MYSQL ON)
 
 #set(Boost_DEBUG true)
 set(BOOST_ROOT ${BOOST_DIR})
-set(Boost_COMPILER ${BOOST_COMPILER})
+#set(Boost_COMPILER ${BOOST_COMPILER})
 set(Boost_USE_STATIC_LIBS On)
 find_package( Boost 1.44.0 COMPONENTS date_time program_options signals thread system filesystem serialization)
 if(Boost_FOUND)
@@ -322,13 +322,13 @@ ENDIF(BUILD_EMBEDDED_LIBS)
 
 
 IF(NOT BUILD_EMBEDDED_LIBS)
-SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Use ffmpeg in directory")
+#SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Use ffmpeg in directory")
 #SET(X264_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Use x264 codec in directory")
 SET(BOOST_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Boost installation path prefix")
 SET(BOOST_COMPILER gcc CACHE STRING "Boost libraries compiler signature")
 SET(BOOST_VERSION "1_35" CACHE STRING "Boost libraries version signature")
 SET(MYSQL_DIR ${USERLIB_ROOT} CACHE PATH "Mysql libraries")
-SET(LOG4CPLUS_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Log4cplus libraries")
+#SET(LOG4CPLUS_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Log4cplus libraries")
 SET(WT_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "WebToolKit libraries")
 SET(BREAKPAD_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Google Breakpad libraries")
 SET(SOCORRO_HOST localhost CACHE PATH "Socorro Host")
@@ -357,7 +357,9 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/iss/mhive.xml.in ${PROJECT_SOURCE_DIR}/iss/
 
 SET(DEFAULT_DATABASE_HOST "127.0.0.1")
 SET(DEFAULT_DATABASE "sqlite3")
-include_directories (${MYSQL_DIR}/include/litesql)
+
+INCLUDE_DIRECTORIES (${LITESQL_DIR}/include/litesql)
+
 #include_directories (${MYSQL_DIR}/include/litesql/litesql)
 
 add_subdirectory (src)

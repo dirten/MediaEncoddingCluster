@@ -2,6 +2,8 @@
 
 
 include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
+include_directories (${SAFMQ_DIR}/include/safmq)
+LINK_DIRECTORIES(${SAFMQ_DIR}/lib)
 
 add_library (mq SHARED
       QueueManager.cpp

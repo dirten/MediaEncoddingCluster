@@ -24,7 +24,7 @@ namespace org {
         return result;
       }
       std::string StringUtil::replace(std::string s, const std::string& needle,const std::string& replace) {
-          unsigned int position = s.find(needle); 
+          size_t position = s.find(needle);
           while (position != std::string::npos) {
             s.erase(position, needle.length());
             s.insert(position, replace);

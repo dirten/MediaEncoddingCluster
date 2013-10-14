@@ -69,8 +69,8 @@
 #include "org/esb/hive/CodecFactory.h"
 #include "org/esb/lang/Process.h"
 #include "org/esb/lang/ProcessException.h"
-#include "org/esb/rpc/Server.h"
-#include "org/esb/rpc/rpc.pb.h"
+//#include "org/esb/rpc/Server.h"
+//#include "org/esb/rpc/rpc.pb.h"
 #include "MHiveConsole.cpp"
 #include "org/esb/core/PluginRegistry.h"
 /*

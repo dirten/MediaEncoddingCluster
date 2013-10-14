@@ -1,6 +1,7 @@
 
 include_directories (${MEC_SOURCE_DIR})
 include_directories (${BOOST_INCLUDE_DIRS})
+include_directories (${LITESQL_DIR}/include)
 
 include_directories (${FFMPEG_INCLUDE_DIR})
 

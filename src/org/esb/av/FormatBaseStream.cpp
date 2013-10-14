@@ -105,7 +105,7 @@ namespace org {
         }
 
         vsnprintf(line + strlen(line), sizeof (line) - strlen(line), fmt, vl);
-        vsnprintf(ptrLine, sizeof (ptrLine), fmt, vl);
+        //vsnprintf(ptrLine, sizeof (ptrLine), fmt, vl);
         /*
                 print_prefix = line[strlen(line) - 1] == '\n';
                 if (print_prefix && !strcmp(line, prev)) {

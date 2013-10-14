@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
   if(argc>1){
     filename=argv[1];
   }
-  int sidx=0;
+  int sidx=1;
 
   if(argc>2){
     sidx=atoi(argv[2]);
