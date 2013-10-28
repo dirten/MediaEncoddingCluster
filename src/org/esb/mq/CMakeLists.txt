@@ -3,6 +3,9 @@
 
 include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
 include_directories (${SAFMQ_DIR}/include/safmq)
+include_directories (${SAFMQ_DIR}/include/safmq/shared)
+include_directories (${SAFMQ_DIR}/include/shared)
+include_directories (${SAFMQ_DIR}/include/lib)
 LINK_DIRECTORIES(${SAFMQ_DIR}/lib)
 
 add_library (mq SHARED

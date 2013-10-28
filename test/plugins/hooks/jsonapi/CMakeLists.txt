@@ -16,7 +16,7 @@ target_link_libraries (GraphTaskCreatorTest jsonapi)
 target_link_libraries (BaseJSONApiTest core hive)
 target_link_libraries (PocoRegExpTest core )
 
-ADD_TEST(jsonapi ${EXECUTABLE_OUTPUT_PATH}/BaseJSONApiTest)
+ADD_TEST(hooks.BaseJSONApiTest ${EXECUTABLE_OUTPUT_PATH}/BaseJSONApiTest)
 
 get_target_property(DOWNLOADTASK_PLUGIN downloadtask LOCATION)
 ADD_DEFINITIONS(-DDOWNLOADTASK_PLUGIN="${DOWNLOADTASK_PLUGIN}")

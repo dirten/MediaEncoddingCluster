@@ -49,7 +49,7 @@ void test_profile_create(){
 
 void test_profile_update(){
   HTTPClientSession s(HOST, PORT);
-  HTTPRequest request(HTTPRequest::HTTP_POST, std::string("/api/v1/profile/").append(created_profile_uuid));
+  HTTPRequest request(HTTPRequest::HTTP_PUT, std::string("/api/v1/profile/").append(created_profile_uuid));
   JSONNode base(JSON_NODE);
   base.push_back(JSONNode("name","test profile"));
   base.push_back(JSONNode("description","test description"));
