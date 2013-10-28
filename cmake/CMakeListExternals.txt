@@ -26,15 +26,15 @@ BUILD_IN_SOURCE 1
 
 ExternalProject_Add(lame
 DEPENDS yasm nasm
-URL http://heanet.dl.sf.net/project/lame/lame/3.98.4/lame-3.98.4.tar.gz
-CONFIGURE_COMMAND ${CMAKE_CURRENT_BINARY_DIR}/lame-prefix/src/lame/configure --prefix=${BUILD_DIR} --enable-static --disable-shared
+URL http://heanet.dl.sf.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
+CONFIGURE_COMMAND ${CMAKE_CURRENT_BINARY_DIR}/lame-prefix/src/lame/configure --prefix=${BUILD_DIR} --enable-shared --disable-static
 BUILD_IN_SOURCE 1
 )
 
 ExternalProject_Add(x264
 DEPENDS yasm nasm
 URL http://download.videolan.org/pub/videolan/x264/snapshots/last_x264.tar.bz2
-CONFIGURE_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && ${CMAKE_CURRENT_BINARY_DIR}/x264-prefix/src/x264/configure --prefix=${BUILD_DIR} --enable-static --disable-shared
+CONFIGURE_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && ${CMAKE_CURRENT_BINARY_DIR}/x264-prefix/src/x264/configure --prefix=${BUILD_DIR} --enable-static
 BUILD_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && make
 
 BUILD_IN_SOURCE 1
@@ -78,7 +78,7 @@ BUILD_IN_SOURCE 1
 ExternalProject_Add(libvpx
 DEPENDS yasm nasm
 URL http://webm.googlecode.com/files/libvpx-v${vpx_version}.tar.bz2
-CONFIGURE_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared
+CONFIGURE_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --disable-unit-tests --enable-static --disable-shared
 BUILD_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && make
 BUILD_IN_SOURCE 1
 )
@@ -126,7 +126,7 @@ SET(POCO_LIB_NET_UTIL ${BUILD_DIR}/lib/libPocoUtil${LIBRARY_SUFFIX})
 SET(POCO_LIB_XML ${BUILD_DIR}/lib/libPocoXML${LIBRARY_SUFFIX})
 
 ExternalProject_Add(boost
-URL http://dfn.dl.sourceforge.net/project/boost/boost/1.44.0/boost_1_44_0.tar.gz
+URL http://dfn.dl.sourceforge.net/project/boost/boost/1.54.0/boost_1_54_0.tar.gz
 UPDATE_COMMAND <SOURCE_DIR>/bootstrap.sh
 CONFIGURE_COMMAND ""
 INSTALL_COMMAND ""

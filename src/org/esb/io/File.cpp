@@ -22,7 +22,7 @@ using namespace org::esb::io;
 namespace fs = boost::filesystem;
 
 File::File(const std::string pathname) : _pathname(pathname) {
-  fs::path p=fs::path(_pathname, fs::native);
+  fs::path p=fs::path(_pathname);
   _full_path = fs::system_complete(p).normalize();
 }
 
@@ -51,7 +51,7 @@ const string File::getParent() {
 }
 
 const string File::getFileName() {
-  return _full_path.leaf();
+  return _full_path.leaf().string();
 }
 
 const string File::getFilePath() {
