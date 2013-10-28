@@ -62,6 +62,7 @@ SET(BUILD_MHIVECORE Off)
 include_directories (${MEC_SOURCE_DIR})
 include_directories (${MEC_SOURCE_DIR}/src)
 include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
+include_directories (${SAFMQ_DIR}/include/lib)
 include_directories (${MEC_SOURCE_DIR}/target/dependency/include/litesql)
 
 include_directories (${WT_DIR}/include)
