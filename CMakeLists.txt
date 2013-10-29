@@ -32,7 +32,8 @@ ENDIF(APPLE)
 
 if(WIN32)
 add_definitions(-D_WIN32_WINNT=0x0501)
-add_definitions(/EHsc)
+#add_definitions(/EHsc)
+MESSAGE("Build Windows 32")
 ENDIF(WIN32)
 
 
