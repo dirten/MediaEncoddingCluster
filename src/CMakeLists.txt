@@ -59,9 +59,10 @@ SET(BUILD_MHIVEWRITER Off)
 SET(BUILD_MHIVEREADER Off)
 SET(BUILD_MHIVECLIENT Off)
 SET(BUILD_MHIVECORE Off)
-include_directories (${MEC_SOURCE_DIR})
+#include_directories (${BOOST_DIR}/include)
 include_directories (${MEC_SOURCE_DIR}/src)
-include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
+include_directories (${SAFMQ_DIR}/include/lib)
+include_directories (${SAFMQ_DIR}/include/shared)
 include_directories (${MEC_SOURCE_DIR}/target/dependency/include/litesql)
 
 include_directories (${WT_DIR}/include)
@@ -259,7 +260,7 @@ ENDIF(BUILD_MHIVECORE)
 #FIND_LIBRARY(COCOA_LIBRARY COCOA)
 #MARK_AS_ADVANCED(COCOA_LIBRARY)
 #SET(EXTRA_LIBS crypto ${COCOA_LIBRARY})
- 
+MESSAGE("Boost libs for mhive" ${Boost_LIBRARIES})
 target_link_libraries (mhive 
   ${POCO_LIB_FOUNDATION}
   ${Boost_LIBRARIES}

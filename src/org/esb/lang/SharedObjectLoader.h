@@ -71,7 +71,7 @@ namespace org {
 	{
 		result =  GetProcAddress(hMod, name.c_str()); 
 	}
-	catch( exception &exc)
+	catch( std::exception &exc)
 	{
 		//getLogger().log( Logger::LOG_ERROR, "[WinDllCreator#createObjectFromDll] Error occurred during calling DLL entry method, %1", exc.what() );
 		result = NULL;

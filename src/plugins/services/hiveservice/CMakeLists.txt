@@ -5,6 +5,9 @@ include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${FFMPEG_INCLUDE_DIR})
 include_directories (${LOG4CPLUS_DIR}/include/litesql)
 include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
+include_directories (${SAFMQ_DIR}/include/lib)
+include_directories (${SAFMQ_DIR}/include/shared)
+
 
 
 

@@ -8,6 +8,7 @@
 #include "org/esb/lang/Process.h"
 #include "org/esb/lang/ProcessException.h"
 #include <windows.h>
+#include <winbase.h>
 #include <tchar.h>
 #include <strsafe.h>
 //#include "org/esb/util/Log.h"
@@ -100,7 +101,7 @@ namespace org {
 
         //LOGDEBUG("start executable:" << _executable);
         //LOGDEBUG("start command line:" << vip);
-        bWorked = ::CreateProcess(_executable.c_str(),
+        bWorked = CreateProcessA(_executable.c_str(),
                 vip, // can also be NULL
                 NULL,
                 NULL,

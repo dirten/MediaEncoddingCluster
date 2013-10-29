@@ -18,7 +18,7 @@ target_link_libraries (TestException lang)
 target_link_libraries (ProcessTest lang io)
 target_link_libraries (ProcessTestExecutable lang util)
 target_link_libraries (SharedObjectLoaderTest lang util io)
-target_link_libraries (ObjectTest lang   ${POCO_LIB_FOUNDATION})
+target_link_libraries (ObjectTest lang)
 
 if(NOT WIN32)
   target_link_libraries (TestThread pthread)

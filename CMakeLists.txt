@@ -33,7 +33,8 @@ ENDIF(APPLE)
 
 if(WIN32)
 add_definitions(-D_WIN32_WINNT=0x0501)
-add_definitions(/EHsc)
+#add_definitions(/EHsc)
+MESSAGE("Build Windows 32")
 ENDIF(WIN32)
 
 
@@ -100,7 +101,11 @@ SET(USE_EMBEDDED_MYSQL ON)
 
 #set(Boost_DEBUG true)
 set(BOOST_ROOT ${BOOST_DIR})
+<<<<<<< HEAD
 ##set(Boost_COMPILER ${BOOST_COMPILER})
+=======
+#set(Boost_COMPILER ${BOOST_COMPILER})
+>>>>>>> 0f8ec1bc45ff96c3064e87af6c887582b3419e51
 set(Boost_USE_STATIC_LIBS On)
 find_package( Boost 1.44.0 COMPONENTS date_time program_options signals thread system filesystem serialization)
 if(Boost_FOUND)
