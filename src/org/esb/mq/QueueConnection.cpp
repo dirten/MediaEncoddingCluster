@@ -133,7 +133,14 @@ namespace org{
       }
 
       Ptr<safmq::MessageQueue> QueueConnection::getMessageQueue(std::string q_name){
-        return new safmq::MessageQueue(_connection, q_name);
+        try{
+          return new safmq::MessageQueue(_connection, q_name);
+        }catch(safmq::ErrorCode & error){
+          std::cout << "Error get queue : "<<error<<std::endl;
+          LOGERROR(error);
+          //LOGERROR(error.getError());
+          throw QueueException("could not get Queue "+q_name);
+        }
       }
       
       void QueueConnection::enqueue(std::string q_name,QueueMessage & msg){

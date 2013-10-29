@@ -139,6 +139,10 @@ int main(int argc, char** argv) {
   Listener listener2;
   Listener listener3;
   Listener listener4;
+
+  if(!con1.queueExist("read_q")){
+    con1.createQueue("read_q");
+  }
   con1.setMessageListener("read_q",listener1);
   con1.startListener();
 /*  
