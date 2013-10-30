@@ -37,6 +37,9 @@ add_definitions(-D_WIN32_WINNT=0x0501)
 #add_definitions(/EHsc)
 MESSAGE("Build Windows 32")
 ENDIF(WIN32)
+if(MINGW)
+MESSAGE("Build Windows 32 with mingw")
+ENDIF(MINGW)
 
 
 SET(USE_SAFMQ OFF)
