@@ -1,5 +1,5 @@
 #include "boost/shared_ptr.hpp"
-#include "Poco/SharedPtr.h"
+//#include "Poco/SharedPtr.h"
 #ifndef ORG_ESB_LANG_PTR
 #define ORG_ESB_LANG_PTR
 #include "exports.h"

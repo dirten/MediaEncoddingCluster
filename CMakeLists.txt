@@ -4,13 +4,14 @@
 #
 ############################################################
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+INCLUDE(cmake/CMakeListExternals.txt)
 
 project (MEC)
 
 
 INCLUDE(CTest)
 INCLUDE(cmake/HiveFindGo.txt)
-INCLUDE(cmake/CMakeListExternals.txt)
+#INCLUDE(cmake/CMakeListExternals.txt)
 INCLUDE(cmake/Go.cmake)
 #INCLUDE(cmake/DownloadDeps.txt)
 
@@ -101,11 +102,7 @@ SET(USE_EMBEDDED_MYSQL ON)
 
 #set(Boost_DEBUG true)
 set(BOOST_ROOT ${BOOST_DIR})
-<<<<<<< HEAD
-##set(Boost_COMPILER ${BOOST_COMPILER})
-=======
 #set(Boost_COMPILER ${BOOST_COMPILER})
->>>>>>> 0f8ec1bc45ff96c3064e87af6c887582b3419e51
 set(Boost_USE_STATIC_LIBS On)
 find_package( Boost 1.44.0 COMPONENTS date_time program_options signals thread system filesystem serialization)
 if(Boost_FOUND)

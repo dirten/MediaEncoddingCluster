@@ -61,6 +61,7 @@ BUILD_IN_SOURCE 1
 )
 
 ExternalProject_Add(libvorbis
+DEPENDS libogg
 URL http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz
 CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-pic
 BUILD_IN_SOURCE 1
