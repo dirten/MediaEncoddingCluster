@@ -1,0 +1,21 @@
+
+set(BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build")
+
+IF(MINGW)
+  SET(USER_CONFIG "--host=x86_64-w64-mingw32")
+ENDIF(MINGW)
+
+ExternalProject_Add(log4cplusdep
+URL http://downloads.sourceforge.net/project/log4cplus/log4cplus-stable/1.0.4/log4cplus-1.0.4.tar.bz2
+CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-pic ${USER_CONFIG}
+BUILD_IN_SOURCE 1
+)
+SET(LOG4CPLUS_DIR "${BUILD_DIR}")
+
+IF(MINGW)
+  ExternalProject_Add_Step(log4cplusdep setup_log4cplus
+    COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/log4cplus/win32debugappender.h <SOURCE_DIR>/include/log4cplus/Win32DebugAppender.h
+    DEPENDEES configure
+    DEPENDERS build
+  )
+ENDIF(MINGW)

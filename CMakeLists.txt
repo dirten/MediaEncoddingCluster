@@ -4,10 +4,11 @@
 #
 ############################################################
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
-INCLUDE(cmake/CMakeListExternals.txt)
 
 project (MEC)
 
+
+INCLUDE(cmake/CMakeListExternals.txt)
 
 INCLUDE(CTest)
 INCLUDE(cmake/HiveFindGo.txt)
@@ -37,6 +38,9 @@ add_definitions(-D_WIN32_WINNT=0x0501)
 #add_definitions(/EHsc)
 MESSAGE("Build Windows 32")
 ENDIF(WIN32)
+if(MINGW)
+MESSAGE("Build Windows 32 mingw")
+ENDIF(MINGW)
 
 
 SET(USE_SAFMQ OFF)
@@ -105,6 +109,7 @@ set(BOOST_ROOT ${BOOST_DIR})
 #set(Boost_COMPILER ${BOOST_COMPILER})
 set(Boost_USE_STATIC_LIBS On)
 find_package( Boost 1.44.0 COMPONENTS date_time program_options signals thread system filesystem serialization)
+SET(Boost_LIBRARIES libboost_date_time.a libboost_system.a libboost_thread.a libboost_filesystem.a)
 if(Boost_FOUND)
     MESSAGE("*** New Boost found" ${Boost_LIBRARIES})
 #    MESSAGE("*** Boost Date Time found" ${BOOST_DATE_TIME_LIB})

@@ -1,0 +1,30 @@
+
+set(BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build")
+
+
+IF(MINGW)
+  SET(USER_CONFIG "--config=MinGW-w64")
+ENDIF(MINGW)
+
+ExternalProject_Add(poco
+  URL http://pocoproject.org/releases/poco-1.4.6/poco-1.4.6p2-all.tar.gz
+  CONFIGURE_COMMAND CFLAGS=-fPIC && CXXFLAGS=-fPIC && <SOURCE_DIR>/configure --prefix=${BUILD_DIR} ${USER_CONFIG} --static --no-tests --no-samples --cflags=-fPIC --omit=Data/ODBC,Data/MySQL,NetSSL_OpenSSL,Crypto
+  BUILD_IN_SOURCE 1
+)
+
+IF(MINGW)
+  ExternalProject_Add_Step(poco setup_poco_config_mingw
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/cmake/MinGW-w64 <SOURCE_DIR>/build/config/MinGW-w64
+    DEPENDEES download
+    DEPENDERS configure
+  )
+ENDIF(MINGW)
+
+SET(LIBRARY_SUFFIX ".a")
+
+SET(POCO_DIR "${BUILD_DIR}")
+SET(POCO_LIB_FOUNDATION ${BUILD_DIR}/lib/libPocoFoundation${LIBRARY_SUFFIX})
+SET(POCO_LIB_NET ${BUILD_DIR}/lib/libPocoNet${LIBRARY_SUFFIX})
+SET(POCO_LIB_NET_UTIL ${BUILD_DIR}/lib/libPocoUtil${LIBRARY_SUFFIX})
+SET(POCO_LIB_XML ${BUILD_DIR}/lib/libPocoXML${LIBRARY_SUFFIX})
+
