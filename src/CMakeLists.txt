@@ -275,7 +275,7 @@ target_link_libraries (mhive
   net
 #  rpc
   core
-  core_http
+  #core_http
   mq
 #  log4cplus
 #  PocoNet

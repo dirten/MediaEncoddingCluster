@@ -20,10 +20,10 @@ add_library (core_http SHARED
 )
 
 TARGET_LINK_LIBRARIES(core_http
-  ${POCO_LIB_NET_UTIL}
-  ${POCO_LIB_NET}
-  ${POCO_LIB_FOUNDATION}
-  ${POCO_LIB_XML}
+  #${POCO_LIB_NET_UTIL}
+  #${POCO_LIB_NET}
+  #${POCO_LIB_FOUNDATION}
+  #${POCO_LIB_XML}
   util
   io
   hive
