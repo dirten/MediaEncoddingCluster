@@ -28,7 +28,9 @@ SET(core_source
 add_library (core SHARED
   ${core_source}
 )
+
 MESSAGE("PocoLinkLibarayUtil"  ${POCO_LIB_NET_UTIL})
+
 TARGET_LINK_LIBRARIES(core 
   lang
   io
@@ -36,11 +38,21 @@ TARGET_LINK_LIBRARIES(core
   db
   util
   core_http
-  #${POCO_LIB_NET}
+  ${POCO_LIB_NET}
   #${POCO_LIB_XML}
-  #${POCO_LIB_NET_UTIL}
+  ${POCO_LIB_NET_UTIL}
   #${POCO_LIB_FOUNDATION}
+  ${Boost_LIBRARIES}
 )
+
+if(MINGW)
+  TARGET_LINK_LIBRARIES(core 
+    #iphlpapi
+    #ws2_32
+    #wsock32
+    #gdi32
+  )
+ENDIF(MINGW)
 
 SET_TARGET_PROPERTIES( core PROPERTIES PREFIX "libmhive-")
 INSTALL(TARGETS core

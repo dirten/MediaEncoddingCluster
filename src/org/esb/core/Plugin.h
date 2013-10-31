@@ -23,25 +23,25 @@ namespace org {
       typedef boost::program_options::options_description OptionsDescription;
       //typedef boost::program_options::value Value;
 
-      class Plugin {
+      class CORE_EXPORT Plugin {
       public:
 
-        void CORE_EXPORT setContext(Ptr<PluginContext> ac) {
+        void  setContext(Ptr<PluginContext> ac) {
           _ctx = ac;
         }
 
-        Ptr<org::esb::core::PluginContext> CORE_EXPORT getContext() {
+        Ptr<org::esb::core::PluginContext> getContext() {
           return _ctx;
         }
 
-        virtual CORE_EXPORT ~Plugin() {
+        virtual  ~Plugin() {
         };
 
-        virtual OptionsDescription CORE_EXPORT getOptionsDescription() {
+        virtual OptionsDescription getOptionsDescription() {
           return OptionsDescription();
         };
 
-        virtual void CORE_EXPORT init() {
+        virtual void init() {
         };
         //virtual std::map<std::string,std::string> getProperties();
       private:

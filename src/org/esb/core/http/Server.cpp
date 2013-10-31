@@ -6,7 +6,7 @@
  */
 
 #include "Server.h"
-#include "HTTPException.h"
+//#include "HTTPException.h"
 #include "Poco/Util/XMLConfiguration.h"
 #include <istream>
 namespace org {
@@ -37,14 +37,14 @@ namespace org {
         
         void Server::start(){
           if(!_httpserver){
-            throw HTTPException(__FILE__,__LINE__,"no httpserver");
+            //throw HTTPException(__FILE__,__LINE__,"no httpserver");
           }
           _httpserver->start();
         }
         
         void Server::stop(){
           if(!_httpserver){
-            throw HTTPException(__FILE__,__LINE__,"no httpserver");
+            //throw HTTPException(__FILE__,__LINE__,"no httpserver");
           }
           _httpserver->stop();
         }

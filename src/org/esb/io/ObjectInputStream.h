@@ -8,7 +8,7 @@
 //#include <sstream>
 #include "ObjectStream.h"
 #include "InputStream.h"
-#include "org/esb/util/Log.h"
+//#include "org/esb/util/Log.h"
 #include "org/esb/io/exports.h"
 using namespace std;
 namespace org {
@@ -16,7 +16,7 @@ namespace org {
     namespace io {
 
       class IO_EXPORT ObjectInputStream : public InputStream {
-        classlogger("org.esb.io.ObjectInputStream");
+        //classlogger("org.esb.io.ObjectInputStream");
       public:
         ObjectInputStream(InputStream * is);
         long long int available(bool isBlocking = false);
@@ -29,7 +29,7 @@ namespace org {
           _is->read(data);
 
           if (!(data.length() > 0)) {
-            LOGERROR("Fehler in der groesse INBOUND_DATA:" << data.length());
+            //LOGERROR("Fehler in der groesse INBOUND_DATA:" << data.length());
             return -1;
           }
           istringstream archive_stream(data);
@@ -38,7 +38,7 @@ namespace org {
           try {
             archive >> object;
           } catch (exception & ex) {
-            LOGERROR("Exception reading archive:"<<ex.what());
+            //LOGERROR("Exception reading archive:"<<ex.what());
             return -1;
           }
           return 0;

@@ -8,7 +8,7 @@
 #ifndef QMANAGER_H
 #define	QMANAGER_H
 #include <string>
-#include "Log.h"
+//#include "Log.h"
 
 namespace org {
   namespace esb {

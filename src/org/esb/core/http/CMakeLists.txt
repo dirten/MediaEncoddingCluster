@@ -28,6 +28,13 @@ TARGET_LINK_LIBRARIES(core_http
   io
   hive
 )
+
+IF(MINGW)
+  TARGET_LINK_LIBRARIES(core_http
+    iphlpapi
+  )
+ENDIF()
+
 SET_TARGET_PROPERTIES( core_http PROPERTIES PREFIX "libmhive-")
 
 INSTALL(TARGETS core_http

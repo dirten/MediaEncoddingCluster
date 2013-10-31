@@ -8,7 +8,7 @@
 #define	_HIVECLIENT_H
 #include "string"
 #include "org/esb/net/TcpSocket.h"
-#include "org/esb/net/TcpSocket.h"
+//#include "org/esb/net/TcpSocket.h"
 
 #include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/io/ObjectInputStream.h"

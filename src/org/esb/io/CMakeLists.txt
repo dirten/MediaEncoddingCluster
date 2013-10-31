@@ -27,8 +27,8 @@ add_library (io ${IO_LINK_TYPE}
 #MESSAGE("Boost Libraries in io " ${Boost_LIBRARIES})
 TARGET_LINK_LIBRARIES(io
     ${Boost_LIBRARIES}
-    lang
-    util
+    #lang
+    #util
 )
 SET_TARGET_PROPERTIES( io PROPERTIES PREFIX "libmhive-")
 IF(SHARED_IO)

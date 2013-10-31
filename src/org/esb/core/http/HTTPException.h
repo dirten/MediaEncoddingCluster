@@ -7,8 +7,8 @@
 
 #ifndef HTTPEXCEPTION_H
 #define	HTTPEXCEPTION_H
-#include "org/esb/lang/Exception.h"
-typedef org::esb::lang::Exception HTTPException;
+//#include "org/esb/lang/Exception.h"
+//typedef org::esb::lang::Exception HTTPException;
 
 #endif	/* HTTPEXCEPTION_H */
 

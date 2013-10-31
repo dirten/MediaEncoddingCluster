@@ -24,7 +24,7 @@
 #include <inttypes.h>
 #include "param_config.h"
 #include "QManager.h"
-
+#include "Log.h"
 #include "SystemDelivery.h"
 #include "ServerThread.h"
 #include "SystemDelivery.h"

@@ -1,6 +1,11 @@
 #cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
 #project (Depndencies)
+
+IF(NOT MINGW)
+
+ENDIF(NOT MINGW)
+
 INCLUDE(ExternalProject)
 INCLUDE(cmake/CMakeExternalsBoost.txt)
 INCLUDE(cmake/CMakeExternalsPoco.txt)

@@ -1,6 +1,7 @@
 //#include "org/esb/net/TcpSocket.h"
 //#include "org/esb/io/ObjectOutputStream.h"
 //#include "org/esb/io/ObjectInputStream.h"
+#include "HiveClient.h"
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/lang/Thread.h"
 #include <boost/bind.hpp>
@@ -9,7 +10,6 @@
 #include <boost/shared_ptr.hpp>
 #include "org/esb/av/FormatBaseStream.h"
 //#include "org/esb/util/Log.h"
-#include "HiveClient.h"
 #include "org/esb/hive/protocol/PartitionHandler.h"
 #include "org/esb/config/config.h"
 #include "org/esb/net/SocketException.h"

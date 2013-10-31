@@ -1,5 +1,5 @@
 #include "FileInputStream.h"
-#include "org/esb/lang/Exception.h"
+//#include "org/esb/lang/Exception.h"
 #include <iostream>
 #include <stdio.h>
 #include <string.h>
@@ -35,7 +35,7 @@ void FileInputStream::open(const std::string name) {
     error += name;
     error += ")";
 
-    throw Exception(__FILE__, __LINE__, error.c_str());
+    //throw Exception(__FILE__, __LINE__, error.c_str());
   }
 
   fseek(_file_handle, 0, SEEK_END);

@@ -1,7 +1,7 @@
 #include "org/esb/mq/QueueConnection.h"
 #include "MQFactory.h"
 #include "safmq.h"
-#include "org/esb/util/Log.h"
+//#include "org/esb/util/Log.h"
 #include "org/esb/util/StringUtil.h"
 #include <exception>
 #include "QueueException.h"
@@ -55,8 +55,8 @@ namespace org{
           url+=org::esb::util::StringUtil::toString(port);
           _connection = safmq::MQFactory::BuildConnection(url, "", "");
         } catch (tcpsocket::SocketException & ex) {
-          LOGERROR(ex.what());
-          LOGERROR(ex.getError());
+          //LOGERROR(ex.what());
+          //LOGERROR(ex.getError());
           throw QueueException("could not connect to QueueManager");
         }
       }
@@ -125,7 +125,7 @@ namespace org{
           err=queue->AdvanceCursor(cursor);
           if(!err==safmq::EC_NOERROR){
             org::esb::lang::Thread::sleep2(1000);
-            LOGDEBUG("no more message, waiting!!!")
+            //LOGDEBUG("no more message, waiting!!!")
             queue->CloseCursor(cursor);
             queue->OpenCursor(cursor);
           }
@@ -137,7 +137,7 @@ namespace org{
           return new safmq::MessageQueue(_connection, q_name);
         }catch(safmq::ErrorCode & error){
           std::cout << "Error get queue : "<<error<<std::endl;
-          LOGERROR(error);
+          //LOGERROR(error);
           //LOGERROR(error.getError());
           throw QueueException("could not get Queue "+q_name);
         }

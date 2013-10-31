@@ -1,3 +1,4 @@
+#SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wl,--allow-multiple-definition" )
 
 add_subdirectory (hiveservice)
 add_subdirectory (jobexecutor)

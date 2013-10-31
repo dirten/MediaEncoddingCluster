@@ -22,6 +22,7 @@ TARGET_LINK_LIBRARIES(hiveservice
 net
 core
 partitionservice
+mq
 )
 
 SET_TARGET_PROPERTIES( hiveservice PROPERTIES PREFIX "")

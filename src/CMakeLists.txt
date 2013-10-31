@@ -36,6 +36,10 @@ ENDIF(WIN32)
 ADD_DEFINITIONS(-D__STDC_LIMIT_MACROS)
 ADD_DEFINITIONS(-DPOCO_NO_AUTOMATIC_LIBS)
 ADD_DEFINITIONS(-DPOCO_STATIC)
+#ADD_DEFINITIONS("-Wl,--allow-multiple-definition")
+SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wl,--allow-multiple-definition" )
+SET( CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_SHARED_LINKER_FLAGS}  -Wl,--allow-multiple-definition" )
+
 #add_definitions(/DBOOST_AUTO_LINK_NOMANGLE)
 #add_definitions(-DBOOST_LIB_DIAGNOSTIC)
 #add_definitions(/DBOOST_ALL_NO_LIB)
@@ -274,6 +278,7 @@ target_link_libraries (mhive
 #  rpc
   core
   core_http
+  mq
 #  log4cplus
 #  PocoNet
 )
