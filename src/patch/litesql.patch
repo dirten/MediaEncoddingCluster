@@ -1,0 +1,63 @@
+Nur in litesqldep: CMakeCache.txt.
+Nur in litesqldep: CMakeFiles.
+Nur in litesqldep: cmake_install.cmake.
+Nur in litesqldep: config.h.
+Nur in litesqldep: CPackConfig.cmake.
+Nur in litesqldep: CPackSourceConfig.cmake.
+Nur in litesqldep: CTestTestfile.cmake.
+Nur in litesqldep: install_manifest.txt.
+Nur in litesqldep: Makefile.
+Nur in litesqldep/src: CMakeFiles.
+Nur in litesqldep/src: cmake_install.cmake.
+diff -rup litesql-src-0.3.8/src/CMakeLists.txt litesqldep/src/CMakeLists.txt
+--- litesql-src-0.3.8/src/CMakeLists.txt	2010-08-09 10:26:34.000000000 +0200
++++ litesqldep/src/CMakeLists.txt	2013-10-30 17:49:20.477667818 +0100
+@@ -1,4 +1,4 @@
+ add_subdirectory(library)
+-add_subdirectory(generator)
+-add_subdirectory(tests)
+-add_subdirectory(examples)
++#add_subdirectory(generator)
++#add_subdirectory(tests)
++#add_subdirectory(examples)
+Nur in litesqldep/src: CTestTestfile.cmake.
+Nur in litesqldep/src/examples: CMakeFiles.
+Nur in litesqldep/src/examples: cmake_install.cmake.
+Nur in litesqldep/src/examples: CTestTestfile.cmake.
+Nur in litesqldep/src/examples: Makefile.
+Nur in litesqldep/src/generator: CMakeFiles.
+Nur in litesqldep/src/generator: cmake_install.cmake.
+Nur in litesqldep/src/generator: CTestTestfile.cmake.
+Nur in litesqldep/src/generator: Makefile.
+Nur in litesqldep/src/library: CMakeFiles.
+Nur in litesqldep/src/library: cmake_install.cmake.
+diff -rup litesql-src-0.3.8/src/library/compatibility.hpp litesqldep/src/library/compatibility.hpp
+--- litesql-src-0.3.8/src/library/compatibility.hpp	2010-08-09 10:26:37.000000000 +0200
++++ litesqldep/src/library/compatibility.hpp	2013-10-30 17:48:14.949667473 +0100
+@@ -20,7 +20,7 @@ struct tm *localtime_r(const time_t *clo
+ #endif
+ 
+ #ifdef WIN32
+-#define snprintf _snprintf
++//#define snprintf _snprintf
+ #endif
+ 
+ #endif
+Nur in litesqldep/src/library: CTestTestfile.cmake.
+diff -rup litesql-src-0.3.8/src/library/field.cpp litesqldep/src/library/field.cpp
+--- litesql-src-0.3.8/src/library/field.cpp	2010-08-09 10:26:37.000000000 +0200
++++ litesqldep/src/library/field.cpp	2013-10-30 17:48:50.501729952 +0100
+@@ -4,6 +4,7 @@
+  * 
+  * See LICENSE for copyright information. */
+ #include <cstdlib>
++#include <string.h>
+ #include "compatibility.hpp"
+ #include "litesql.hpp"
+ #include "litesql/field.hpp"
+Nur in litesqldep/src/library: Makefile.
+Nur in litesqldep/src: Makefile.
+Nur in litesqldep/src/tests: CMakeFiles.
+Nur in litesqldep/src/tests: cmake_install.cmake.
+Nur in litesqldep/src/tests: CTestTestfile.cmake.
+Nur in litesqldep/src/tests: Makefile.
