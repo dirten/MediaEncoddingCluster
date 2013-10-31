@@ -4,7 +4,7 @@ set(BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build")
 IF(MINGW)
   MESSAGE("build boost with mingw")
   SET(USER_CONFIG "--user-config=user-config.jam")
-  SET(SPECIAL_ARGS "toolset=gcc-mingw target-os=windows" "threadapi=win32" "variant=release")
+  SET(SPECIAL_ARGS "toolset=gcc-mingw" "target-os=windows" "threadapi=win32" "variant=release")
 ENDIF(MINGW)
 
 
@@ -13,8 +13,8 @@ ExternalProject_Add(boost
   UPDATE_COMMAND <SOURCE_DIR>/bootstrap.sh
   CONFIGURE_COMMAND ""
   INSTALL_COMMAND ""
-  #BUILD_COMMAND <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} ${USER_CONFIG} --with-date_time --with-thread --with-system --with-program_options --with-filesystem --with-serialization --with-signals ${SPECIAL_ARGS} link=static threading=multi cxxflags='-fPIC' install
-  BUILD_COMMAND ${CMAKE_COMMAND} -E echo <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} ${USER_CONFIG} --with-date_time --with-thread --with-system --with-program_options --with-filesystem --with-serialization --with-signals ${SPECIAL_ARGS} link=static threading=multi cxxflags='-fPIC' install
+  BUILD_COMMAND <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} ${USER_CONFIG} --with-date_time --with-thread --with-system --with-program_options --with-filesystem --with-serialization --with-signals ${SPECIAL_ARGS} link=static threading=multi cxxflags='-fPIC' install
+  #BUILD_COMMAND ${CMAKE_COMMAND} -E echo <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} ${USER_CONFIG} --with-date_time --with-thread --with-system --with-program_options --with-filesystem --with-serialization --with-signals ${SPECIAL_ARGS} link=static threading=multi cxxflags='-fPIC' install
   #BUILD_COMMAND <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} --without-wave --without-context --without-graph link=static threading=multi address-model=32_64 install
   BUILD_IN_SOURCE 1
 )
