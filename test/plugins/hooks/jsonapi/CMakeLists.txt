@@ -13,7 +13,8 @@ add_executable (PocoRegExpTest PocoRegExpTest.cpp)
 target_link_libraries (PresetVerifierTest jsonapi)
 target_link_libraries (GraphVerifierTest jsonapi)
 target_link_libraries (GraphTaskCreatorTest jsonapi)
-target_link_libraries (BaseJSONApiTest core hive)
+target_link_libraries (BaseJSONApiTest core)
+
 target_link_libraries (PocoRegExpTest core )
 
 ADD_TEST(hooks.BaseJSONApiTest ${EXECUTABLE_OUTPUT_PATH}/BaseJSONApiTest)
