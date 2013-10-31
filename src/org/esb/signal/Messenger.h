@@ -1,10 +1,12 @@
 #ifndef ORG_ESB_SIGNAL_MESSENGER_H
 #define ORG_ESB_SIGNAL_MESSENGER_H
+
+//#define BOOST_USE_WINDOWS_H
 #include <string>
 #include <map>
 #include <list>
 #include "MessageListener.h"
-#include "boost/thread/condition.hpp"
+#include "boost/thread/mutex.hpp"
 #include "org/esb/util/Log.h"
 #define DEFAULT_NAME "global"
 namespace org {

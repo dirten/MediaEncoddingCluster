@@ -15,12 +15,6 @@ add_library (mq SHARED
       ObjectMessage.cpp
       QueueException.cpp
 )
-IF(WIN32)
-	set(EXTRA_LIBS 
-		ws2_32
-		rpcrt4
-	)
-ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES(mq
     safmq
@@ -28,6 +22,13 @@ TARGET_LINK_LIBRARIES(mq
     io
 
 )
+IF(WIN32)
+TARGET_LINK_LIBRARIES(mq
+		ws2_32
+		rpcrt4
+		)
+ENDIF(WIN32)
+
 
 SET_TARGET_PROPERTIES( mq PROPERTIES PREFIX "libmhive-")
 

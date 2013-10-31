@@ -1,0 +1,29 @@
+
+set(BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build")
+
+IF(MINGW)
+  SET(USER_CONFIG "--host=x86_64-w64-mingw32")
+  SET(USER_CMAKE_CONFIG "-DCMAKE_TOOLCHAIN_FILE=${PROJECT_SOURCE_DIR}/cmake/Toolchain-mingw32.cmake")
+ENDIF(MINGW)
+
+ExternalProject_Add(sqlitedep
+URL http://www.sqlite.org/sqlite-amalgamation-3.7.2.tar.gz
+CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} ${USER_CONFIG} --enable-static --disable-shared --with-pic
+BUILD_IN_SOURCE 1
+)
+SET(SQLITE_DIR "${BUILD_DIR}")
+SET(SQLITE_LIBRARY ${BUILD_DIR}/lib/libsqlite3${LIBRARY_SUFFIX})
+
+
+#add_definitions(-fPIC)
+ExternalProject_Add(litesqldep
+DEPENDS sqlitedep
+URL http://downloads.sourceforge.net/project/litesql/litesql/0.3.8/litesql-src-0.3.8.tar.gz
+PATCH_COMMAND chmod +x <SOURCE_DIR>/configure && chmod +x <SOURCE_DIR>/install-sh && cd <SOURCE_DIR> && patch -p1  < ${PROJECT_SOURCE_DIR}/src/patch/litesql.patch
+#CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-sqlite3=${BUILD_DIR}
+CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${BUILD_DIR} ${USER_CMAKE_CONFIG} -DSHARED_LIBS=Off -DWITH_MYSQL=Off -DWITH_POSTGRES=Off 
+#-DCMAKE_CXX_FLAGS=-fPIC
+BUILD_IN_SOURCE 1
+)
+SET(LITESQL_DIR "${BUILD_DIR}")
+

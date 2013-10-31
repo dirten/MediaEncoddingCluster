@@ -1,7 +1,13 @@
 #cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
-project (Depndencies)
+#project (Depndencies)
 INCLUDE(ExternalProject)
+INCLUDE(cmake/CMakeExternalsBoost.txt)
+INCLUDE(cmake/CMakeExternalsPoco.txt)
+INCLUDE(cmake/CMakeExternalsLog4CPlus.txt)
+INCLUDE(cmake/CMakeExternalsSafmq.txt)
+INCLUDE(cmake/CMakeExternalsLitesql.txt)
+INCLUDE(cmake/CMakeExternalsFFMpeg.txt)
 
 set(BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build")
 
@@ -13,167 +19,155 @@ SET(FFMPEG_SHARED YES)
 #SET(ENV{CFLAGS} "$ENV{CFLAGS} -m32 -arch i386")
 #SET(ENV{LDFLAGS} "$ENV{LDFLAGS} -m32 -arch i386")
 
-ExternalProject_Add(yasm
-URL http://www.tortall.net/projects/yasm/releases/yasm-1.2.0.tar.gz
-CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR}
-)
+#ExternalProject_Add(yasm
+#URL http://www.tortall.net/projects/yasm/releases/yasm-1.2.0.tar.gz
+#CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR}
+#)
 
-ExternalProject_Add(nasm
-URL http://www.nasm.us/pub/nasm/releasebuilds/2.09.04/nasm-2.09.04.tar.gz
-CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR}
-BUILD_IN_SOURCE 1
-)
+#ExternalProject_Add(nasm
+#URL http://www.nasm.us/pub/nasm/releasebuilds/2.09.04/nasm-2.09.04.tar.gz
+#CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR}
+#BUILD_IN_SOURCE 1
+#)
 
-ExternalProject_Add(lame
-DEPENDS yasm nasm
-URL http://heanet.dl.sf.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
-CONFIGURE_COMMAND ${CMAKE_CURRENT_BINARY_DIR}/lame-prefix/src/lame/configure --prefix=${BUILD_DIR} --enable-shared --disable-static
-BUILD_IN_SOURCE 1
-)
+#ExternalProject_Add(lame
+#DEPENDS yasm nasm
+#URL http://heanet.dl.sf.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
+#CONFIGURE_COMMAND ${CMAKE_CURRENT_BINARY_DIR}/lame-prefix/src/lame/configure --prefix=${BUILD_DIR} --enable-shared --disable-static
+#BUILD_IN_SOURCE 1
+#)
 
-ExternalProject_Add(x264
-DEPENDS yasm nasm
-URL http://download.videolan.org/pub/videolan/x264/snapshots/last_x264.tar.bz2
-CONFIGURE_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && ${CMAKE_CURRENT_BINARY_DIR}/x264-prefix/src/x264/configure --prefix=${BUILD_DIR} --enable-static --enable-pic
-BUILD_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && make
+#ExternalProject_Add(x264
+#DEPENDS yasm nasm
+#URL http://download.videolan.org/pub/videolan/x264/snapshots/last_x264.tar.bz2
+#CONFIGURE_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && ${CMAKE_CURRENT_BINARY_DIR}/x264-prefix/src/x264/configure --prefix=${BUILD_DIR} --enable-static --enable-pic
+#BUILD_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && make
 
-BUILD_IN_SOURCE 1
-)
+#BUILD_IN_SOURCE 1
+#)
 
-ExternalProject_Add(libogg
-URL http://downloads.xiph.org/releases/ogg/libogg-1.1.3.tar.gz
-CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-pic
-BUILD_IN_SOURCE 1
-)
+#ExternalProject_Add(libogg
+#URL http://downloads.xiph.org/releases/ogg/libogg-1.1.3.tar.gz
+#CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-pic
+#BUILD_IN_SOURCE 1
+#)
 
-ExternalProject_Add(libtheora
-DEPENDS libogg
-URL http://downloads.xiph.org/releases/theora/libtheora-1.1.1.tar.bz2
-CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-ogg=${BUILD_DIR} --with-pic
-BUILD_IN_SOURCE 1
-)
+#ExternalProject_Add(libtheora
+#DEPENDS libogg
+#URL http://downloads.xiph.org/releases/theora/libtheora-1.1.1.tar.bz2
+#CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-ogg=${BUILD_DIR} --with-pic
+#BUILD_IN_SOURCE 1
+#)
 
-ExternalProject_Add(speex
-DEPENDS libogg
-URL http://downloads.xiph.org/releases/theora/libtheora-1.1.1.tar.bz2
-CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-ogg=${BUILD_DIR} --with-pic
-BUILD_IN_SOURCE 1
-)
+#ExternalProject_Add(speex
+#DEPENDS libogg
+#URL http://downloads.xiph.org/releases/theora/libtheora-1.1.1.tar.bz2
+#CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-ogg=${BUILD_DIR} --with-pic
+#BUILD_IN_SOURCE 1
+#)
 
-ExternalProject_Add(libvorbis
-DEPENDS libogg
-URL http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz
-CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-pic
-BUILD_IN_SOURCE 1
-)
-
-
-ExternalProject_Add(xvid
-URL http://downloads.xvid.org/downloads/xvidcore-${xvid_version}.tar.gz
-CONFIGURE_COMMAND cd <SOURCE_DIR>/build/generic/  && CFLAGS=-fPIC && ./configure --prefix=${BUILD_DIR} --enable-static --disable-shared
-BUILD_COMMAND cd <SOURCE_DIR>/build/generic && make
-INSTALL_COMMAND cd <SOURCE_DIR>/build/generic && make install
-BUILD_IN_SOURCE 1
-)
-
-ExternalProject_Add(libvpx
-DEPENDS yasm nasm
-URL http://webm.googlecode.com/files/libvpx-v${vpx_version}.tar.bz2
-CONFIGURE_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --disable-unit-tests --enable-static --disable-shared --enable-pic
-BUILD_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && make
-BUILD_IN_SOURCE 1
-)
-
-set(EXTRA_LD_FLAGS "-L${BUILD_DIR}/lib -ldl")
-SET(EXTRA_CFLAGS "-I${BUILD_DIR}/include -DFF_API_ALLOC_CONTEXT -fPIC")
-SET(LIBRARY_SUFFIX ${CMAKE_STATIC_LIBRARY_SUFFIX})
-SET(LINKER_ARGS_STATIC --enable-static)
-SET(LINKER_ARGS_SHARED --disable-shared)
-IF(FFMPEG_SHARED)
-  SET(LINKER_ARGS_STATIC --disable-static)
-  SET(LINKER_ARGS_SHARED --enable-shared)
-  SET(LIBRARY_SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX})
-ENDIF(FFMPEG_SHARED)
+#ExternalProject_Add(libvorbis
+#DEPENDS libogg
+#URL http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz
+#CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-pic
+#BUILD_IN_SOURCE 1
+#)
 
 
-ExternalProject_Add(ffmpeg
-DEPENDS lame x264 libogg libtheora speex libvorbis xvid libvpx
-URL http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
-CONFIGURE_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && <SOURCE_DIR>/configure --prefix=${BUILD_DIR} ${LINKER_ARGS_STATIC} ${LINKER_ARGS_SHARED} --enable-incompatible-libav-abi --extra-cflags=${EXTRA_CFLAGS} --extra-ldflags=${EXTRA_LD_FLAGS} --enable-libxvid --enable-libx264 --enable-libmp3lame --enable-libvorbis --enable-libtheora --enable-libvpx --disable-devices --extra-cflags=-fno-common --disable-stripping --disable-zlib --enable-gpl --enable-pic
-BUILD_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && make
-BUILD_IN_SOURCE 1
-)
+#ExternalProject_Add(xvid
+#URL http://downloads.xvid.org/downloads/xvidcore-${xvid_version}.tar.gz
+#CONFIGURE_COMMAND cd <SOURCE_DIR>/build/generic/  && CFLAGS=-fPIC && ./configure --prefix=${BUILD_DIR} --enable-static --disable-shared
+#BUILD_COMMAND cd <SOURCE_DIR>/build/generic && make
+#INSTALL_COMMAND cd <SOURCE_DIR>/build/generic && make install
+#BUILD_IN_SOURCE 1
+#)
 
-SET(FFMPEG_DIR "${BUILD_DIR}")
-SET(FFMPEG_AVCODEC_LIBRARY ${BUILD_DIR}/lib/libavcodec${LIBRARY_SUFFIX})
-SET(FFMPEG_AVFORMAT_LIBRARY ${BUILD_DIR}/lib/libavformat${LIBRARY_SUFFIX})
-SET(FFMPEG_AVUTIL_LIBRARY ${BUILD_DIR}/lib/libavutil${LIBRARY_SUFFIX})
-SET(FFMPEG_SWSCALE_LIBRARY ${BUILD_DIR}/lib/libswscale${LIBRARY_SUFFIX})
-SET(FFMPEG_INCLUDE_DIR ${BUILD_DIR}/include)
-SET(FFMPEG_LIB_DIR ${BUILD_DIR}/lib)
+#ExternalProject_Add(libvpx
+#DEPENDS yasm nasm
+#URL http://webm.googlecode.com/files/libvpx-v${vpx_version}.tar.bz2
+#CONFIGURE_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --disable-unit-tests --enable-static --disable-shared --enable-pic
+#BUILD_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && make
+#BUILD_IN_SOURCE 1
+#)
+
+#set(EXTRA_LD_FLAGS "-L${BUILD_DIR}/lib -ldl")
+#SET(EXTRA_CFLAGS "-I${BUILD_DIR}/include -DFF_API_ALLOC_CONTEXT -fPIC")
+#SET(LIBRARY_SUFFIX ${CMAKE_STATIC_LIBRARY_SUFFIX})
+#SET(LINKER_ARGS_STATIC --enable-static)
+#SET(LINKER_ARGS_SHARED --disable-shared)
+#IF(FFMPEG_SHARED)
+#  SET(LINKER_ARGS_STATIC --disable-static)
+#  SET(LINKER_ARGS_SHARED --enable-shared)
+#  SET(LIBRARY_SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX})
+#ENDIF(FFMPEG_SHARED)
 
 
-ExternalProject_Add(poco
-URL http://pocoproject.org/releases/poco-1.4.6/poco-1.4.6p2.tar.gz
-CONFIGURE_COMMAND CFLAGS=-fPIC && CXXFLAGS=-fPIC && <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --static --no-tests --no-samples --cflags=-fPIC
-BUILD_IN_SOURCE 1
-)
-SET(LIBRARY_SUFFIX ".a")
+#ExternalProject_Add(ffmpeg
+#DEPENDS lame x264 libogg libtheora speex libvorbis xvid libvpx
+#URL http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
+#CONFIGURE_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && <SOURCE_DIR>/configure --prefix=${BUILD_DIR} ${LINKER_ARGS_STATIC} ${LINKER_ARGS_SHARED} --enable-incompatible-libav-abi --extra-cflags=${EXTRA_CFLAGS} --extra-ldflags=${EXTRA_LD_FLAGS} --enable-libxvid --enable-libx264 --enable-libmp3lame --enable-libvorbis --enable-libtheora --enable-libvpx --disable-devices --extra-cflags=-fno-common --disable-stripping --disable-zlib --enable-gpl --enable-pic
+#BUILD_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && make
+#BUILD_IN_SOURCE 1
+#)
 
-SET(POCO_DIR "${BUILD_DIR}")
-SET(POCO_LIB_FOUNDATION ${BUILD_DIR}/lib/libPocoFoundation${LIBRARY_SUFFIX})
-SET(POCO_LIB_NET ${BUILD_DIR}/lib/libPocoNet${LIBRARY_SUFFIX})
-SET(POCO_LIB_NET_UTIL ${BUILD_DIR}/lib/libPocoUtil${LIBRARY_SUFFIX})
-SET(POCO_LIB_XML ${BUILD_DIR}/lib/libPocoXML${LIBRARY_SUFFIX})
+#SET(FFMPEG_DIR "${BUILD_DIR}")
+#SET(FFMPEG_AVCODEC_LIBRARY ${BUILD_DIR}/lib/libavcodec${LIBRARY_SUFFIX})
+#SET(FFMPEG_AVFORMAT_LIBRARY ${BUILD_DIR}/lib/libavformat${LIBRARY_SUFFIX})
+#SET(FFMPEG_AVUTIL_LIBRARY ${BUILD_DIR}/lib/libavutil${LIBRARY_SUFFIX})
+#SET(FFMPEG_SWSCALE_LIBRARY ${BUILD_DIR}/lib/libswscale${LIBRARY_SUFFIX})
+#SET(FFMPEG_INCLUDE_DIR ${BUILD_DIR}/include)
+#SET(FFMPEG_LIB_DIR ${BUILD_DIR}/lib)
 
-ExternalProject_Add(boost
-URL http://dfn.dl.sourceforge.net/project/boost/boost/1.54.0/boost_1_54_0.tar.gz
-UPDATE_COMMAND <SOURCE_DIR>/bootstrap.sh
-CONFIGURE_COMMAND ""
-INSTALL_COMMAND ""
-BUILD_COMMAND <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} --with-date_time --with-thread --with-system --with-program_options --with-filesystem --with-serialization --with-signals link=static threading=multi cxxflags='-fPIC' install
-#BUILD_COMMAND <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} --without-wave --without-context --without-graph link=static threading=multi address-model=32_64 install
-BUILD_IN_SOURCE 1
-)
-SET(BOOST_DIR "${BUILD_DIR}")
-SET(Boost_DATE_TIME_LIBRARY_DEBUG "libboost_date_time.a")
 
-ExternalProject_Add(log4cplusdep
-URL http://downloads.sourceforge.net/project/log4cplus/log4cplus-stable/1.0.4/log4cplus-1.0.4.tar.bz2
-CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-pic
-BUILD_IN_SOURCE 1
-)
-SET(LOG4CPLUS_DIR "${BUILD_DIR}")
 
-ExternalProject_Add(sqlitedep
-URL http://www.sqlite.org/sqlite-amalgamation-3.7.2.tar.gz
-CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-pic
-BUILD_IN_SOURCE 1
-)
-SET(SQLITE_DIR "${BUILD_DIR}")
-SET(SQLITE_LIBRARY ${BUILD_DIR}/lib/libsqlite3${LIBRARY_SUFFIX})
+#ExternalProject_Add(boost
+#URL http://dfn.dl.sourceforge.net/project/boost/boost/1.54.0/boost_1_54_0.tar.gz
+#UPDATE_COMMAND <SOURCE_DIR>/bootstrap.sh
+#CONFIGURE_COMMAND ""
+#INSTALL_COMMAND ""
+#BUILD_COMMAND <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} --with-date_time --with-thread --with-system --with-program_options --with-filesystem --with-serialization --with-signals link=static threading=multi cxxflags='-fPIC' install
+##BUILD_COMMAND <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} --without-wave --without-context --without-graph link=static threading=multi address-model=32_64 install
+#BUILD_IN_SOURCE 1
+#)
+#SET(BOOST_DIR "${BUILD_DIR}")
+#SET(Boost_DATE_TIME_LIBRARY_DEBUG "libboost_date_time.a")
+
+#ExternalProject_Add(log4cplusdep
+#URL http://downloads.sourceforge.net/project/log4cplus/log4cplus-stable/1.0.4/log4cplus-1.0.4.tar.bz2
+#CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-pic
+##BUILD_IN_SOURCE 1
+#)
+#SET(LOG4CPLUS_DIR "${BUILD_DIR}")
+
+#ExternalProject_Add(sqlitedep
+#URL http://www.sqlite.org/sqlite-amalgamation-3.7.2.tar.gz
+#CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-pic
+#BUILD_IN_SOURCE 1
+#)
+#SET(SQLITE_DIR "${BUILD_DIR}")
+#SET(SQLITE_LIBRARY ${BUILD_DIR}/lib/libsqlite3${LIBRARY_SUFFIX})
 
 
 #add_definitions(-fPIC)
-ExternalProject_Add(litesqldep
-DEPENDS sqlitedep
-URL http://downloads.sourceforge.net/project/litesql/litesql/0.3.8/litesql-src-0.3.8.tar.gz
-PATCH_COMMAND chmod +x <SOURCE_DIR>/configure && chmod +x <SOURCE_DIR>/install-sh
-#CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-sqlite3=${BUILD_DIR}
-CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${BUILD_DIR} -DSHARED_LIBS=Off -DWITH_MYSQL=Off -DWITH_POSTGRES=Off 
-#-DCMAKE_CXX_FLAGS=-fPIC
-BUILD_IN_SOURCE 1
-)
-SET(LITESQL_DIR "${BUILD_DIR}")
+#ExternalProject_Add(litesqldep
+#DEPENDS sqlitedep
+#URL http://downloads.sourceforge.net/project/litesql/litesql/0.3.8/litesql-src-0.3.8.tar.gz
+#PATCH_COMMAND chmod +x <SOURCE_DIR>/configure && chmod +x <SOURCE_DIR>/install-sh
+##CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-sqlite3=${BUILD_DIR}
+#CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${BUILD_DIR} -DSHARED_LIBS=Off -DWITH_MYSQL=Off -DWITH_POSTGRES=Off 
+##-DCMAKE_CXX_FLAGS=-fPIC
+#BUILD_IN_SOURCE 1
+#)
+#SET(LITESQL_DIR "${BUILD_DIR}")
 
-ExternalProject_Add(safmq_dep
-GIT_REPOSITORY https://github.com/psychobob666/safmq.git
-#PATCH_COMMAND patch -s -t -p0 -d <SOURCE_DIR> < ${PROJECT_SOURCE_DIR}/src/patch/safmq-configure.patch && patch -s -t -p0 -d <SOURCE_DIR> < ${PROJECT_SOURCE_DIR}/src/patch/safmq-shared-uuidgen.patch && patch -s -t -p0 -d <SOURCE_DIR> < ${PROJECT_SOURCE_DIR}/src/patch/safmq-makefile-unix.patch && cp ${PROJECT_SOURCE_DIR}/src/patch/safmq-CMakeLists.txt <SOURCE_DIR>/CMakeLists.txt
-#CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR}
-CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${BUILD_DIR}
-BUILD_IN_SOURCE 1
-)
-SET(SAFMQ_DIR "${BUILD_DIR}")
+#ExternalProject_Add(safmq_dep
+#GIT_REPOSITORY https://github.com/psychobob666/safmq.git
+##PATCH_COMMAND patch -s -t -p0 -d <SOURCE_DIR> < ${PROJECT_SOURCE_DIR}/src/patch/safmq-configure.patch && patch -s -t -p0 -d <SOURCE_DIR> < ${PROJECT_SOURCE_DIR}/src/patch/safmq-shared-uuidgen.patch && patch -s -t -p0 -d <SOURCE_DIR> < ${PROJECT_SOURCE_DIR}/src/patch/safmq-makefile-unix.patch && cp ${PROJECT_SOURCE_DIR}/src/patch/safmq-CMakeLists.txt <SOURCE_DIR>/CMakeLists.txt
+##CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR}
+#CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${BUILD_DIR}
+#BUILD_IN_SOURCE 1
+#)
+#SET(SAFMQ_DIR "${BUILD_DIR}")
 
 #http://www.sqlite.org/sqlite-amalgamation-3.7.2.tar.gz
 #http://heanet.dl.sf.net/project/safmq/SAFMQ/SAFMQ%200.8.3/safmq.0.8.3.zip
