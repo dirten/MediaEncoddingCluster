@@ -64,6 +64,9 @@ TARGET_LINK_LIBRARIES(jsonapi
   core
   json
   av
+  ${POCO_LIB_NET}
+  ${POCO_LIB_FOUNDATION}
+
 )
 SET_TARGET_PROPERTIES( jsonapi PROPERTIES PREFIX "")
 

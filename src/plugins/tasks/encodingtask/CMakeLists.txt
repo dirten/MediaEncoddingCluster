@@ -14,6 +14,7 @@ add_library (encodingtask SHARED
 TARGET_LINK_LIBRARIES(encodingtask
   core
   partitionservice
+  mq
 )
 
 SET_TARGET_PROPERTIES( encodingtask PROPERTIES PREFIX "")

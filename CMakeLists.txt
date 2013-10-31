@@ -28,7 +28,11 @@ ENDIF(NOT WIN32)
 
 IF(WIN32)
   ADD_DEFINITIONS(-DBOOST_USE_WINDOWS_H)
+  SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wl,--allow-multiple-definition" )
+  SET( CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_SHARED_LINKER_FLAGS}  -Wl,--allow-multiple-definition" )
+
 ENDIF(WIN32)
+SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fpermissive" )
 
 add_definitions(-ftemplate-depth=200)
 

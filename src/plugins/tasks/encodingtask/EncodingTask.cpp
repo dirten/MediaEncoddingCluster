@@ -4,6 +4,7 @@
  *
  * Created on 19. Oktober 2011, 11:41
  */
+#include "plugins/services/partitionservice/PartitionManager.h"
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/util/Foreach.h"
 #include "org/esb/lang/Ptr.h"
@@ -12,7 +13,6 @@
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/FormatOutputStream.h"
 #include "org/esb/av/PacketInputStream.h"
-#include "plugins/services/partitionservice/PartitionManager.h"
 #include "org/esb/av/CodecPropertyTransformer.h"
 #include "org/esb/util/ScopedTimeCounter.h"
 #include "org/esb/config/config.h"
