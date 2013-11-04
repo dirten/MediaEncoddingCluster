@@ -5,7 +5,7 @@
 #include <fstream>
 #include <iostream>
 //#include <ostream>
-//#include <sstream>
+#include <sstream>
 #include "ObjectStream.h"
 #include "InputStream.h"
 //#include "org/esb/util/Log.h"

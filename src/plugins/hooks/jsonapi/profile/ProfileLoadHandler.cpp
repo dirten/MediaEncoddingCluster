@@ -36,12 +36,15 @@ public:
         JSONNode audio=data["audio"];
         if(audio.contains("ab")){
           audio["ab"]=atoi(audio["ab"].as_string().c_str());
-          audio["ac"]=atoi(audio["ac"].as_string().c_str());
-          audio["ar"]=atoi(audio["ar"].as_string().c_str());
-
-          data.pop_back("audio");
-          data.push_back(audio);
         }
+        if(audio.contains("ac")){
+          audio["ac"]=atoi(audio["ac"].as_string().c_str());
+        }
+        if(audio.contains("ar")){
+          audio["ar"]=atoi(audio["ar"].as_string().c_str());
+        }
+        data.pop_back("audio");
+        data.push_back(audio);
 
         result.setData(data);
         result.setStatus("ok");
@@ -51,7 +54,7 @@ public:
         LOGDEBUG(ex.what());
       }
     } else {
-      //res.setStatusAndReason(res.HTTP_NOT_FOUND, "Profile not found with id : ");
+      res.setStatusAndReason(res.HTTP_NOT_FOUND, "Profile not found with id : "+id);
       result.setStatus("error","profile not found");
     }
     //req.response().setContentType("text/plain");

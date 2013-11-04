@@ -627,7 +627,8 @@ void setupConfig() {
 #ifdef __WIN32__
   std::string upath = config::Config::get("APPDATA") + "/mhive";
 #elif defined __APPLE__
-  std::string upath = config::Config::get("HOME") + "/.mhive";
+  /*uggly hack for the lldb debugger on qt creator*/
+  std::string upath = config::Config::get("HOME","/Users/jhoelscher") + "/.mhive";
 #elif defined __LINUX__
   std::string upath = config::Config::get("HOME") + "/.mhive";
 #else

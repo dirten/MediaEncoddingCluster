@@ -117,7 +117,7 @@ namespace org {
                   count = 0;
                 }*/
         std::string msg = org::esb::util::StringUtil::trim(line, "\n");
-        std::string msgPtr = org::esb::util::StringUtil::trim(ptrLine, "\n");
+        std::string msgPtr = org::esb::util::StringUtil::trim(line, "\n");
         if (logMap.count(ptrString)) {
           if (logMap[ptrString].size() > MAX_HISTORY) {
             logMap[ptrString].erase(--logMap[ptrString].end());
