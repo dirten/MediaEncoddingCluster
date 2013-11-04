@@ -5,7 +5,7 @@ include_directories (${LITESQL_DIR}/include)
 
 include_directories (${FFMPEG_INCLUDE_DIR})
 
-LINK_DIRECTORIES(${FFMPEG_LIB_DIR})
+#LINK_DIRECTORIES(${FFMPEG_LIB_DIR})
 add_library (av SHARED
   Init.cpp 
   FrameConverter.cpp 
