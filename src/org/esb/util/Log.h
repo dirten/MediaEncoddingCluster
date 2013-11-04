@@ -13,6 +13,7 @@
 #include <sstream>
 #include <ostream>
 #include <log4cplus/logger.h>
+#include <log4cplus/loggingmacros.h>
 #include <log4cplus/spi/factory.h>
 #include <log4cplus/configurator.h>
 #include "org/esb/util/exports.h"

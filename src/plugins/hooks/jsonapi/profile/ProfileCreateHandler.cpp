@@ -34,7 +34,7 @@ public:
           JSONNode inode = libjson::parse(data);
           std::string msg = checkJsonProfile(inode);
           if (msg.length() > 0) {
-            result.setStatus(res.HTTP_BAD_REQUEST, "error while profile check", msg);
+            result.setStatus(res.HTTP_BAD_REQUEST, msg);
           } else {
             if (req.has("profileid")) {
               std::string iddata = req.get("profileid");

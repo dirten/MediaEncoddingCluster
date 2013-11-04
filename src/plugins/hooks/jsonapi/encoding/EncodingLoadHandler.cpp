@@ -12,7 +12,6 @@ public:
 
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
 
-
     JSONResult result(req);
     std::string id = req.get("encodingid");
     db::HiveDb db("sqlite3", req.get("db.url"));

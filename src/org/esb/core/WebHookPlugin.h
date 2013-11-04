@@ -49,8 +49,7 @@ namespace org {
 { \
   public: \
   Register##clazz(){ \
-    std::string tmpname=#clazz; \
-    org::esb::core::PluginRegistry::getInstance()->registerWebHookFactory(tmpname, this); \
+    org::esb::core::PluginRegistry::getInstance()->registerWebHookFactory(#clazz, this); \
   } \
   org::esb::core::WebHookPlugin* create() { \
     return static_cast<org::esb::core::WebHookPlugin*>(new clazz()); \

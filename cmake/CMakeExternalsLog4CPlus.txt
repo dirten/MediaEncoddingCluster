@@ -6,8 +6,8 @@ IF(MINGW)
 ENDIF(MINGW)
 
 ExternalProject_Add(log4cplusdep
-URL http://downloads.sourceforge.net/project/log4cplus/log4cplus-stable/1.0.4/log4cplus-1.0.4.tar.bz2
-CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-pic ${USER_CONFIG}
+URL http://downloads.sourceforge.net/project/log4cplus/log4cplus-stable/1.1.2/log4cplus-1.1.2.tar.bz2
+CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --disable-static --enable-shared --with-pic ${USER_CONFIG}
 BUILD_IN_SOURCE 1
 )
 SET(LOG4CPLUS_DIR "${BUILD_DIR}")

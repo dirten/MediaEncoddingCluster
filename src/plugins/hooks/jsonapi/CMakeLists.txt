@@ -8,7 +8,7 @@ include_directories (${LOG4CPLUS_DIR}/include/litesql)
 
 include_directories (${FFMPEG_INCLUDE_DIR})
 
-    ADD_DEFINITIONS(-DJSONAPI_BUILD_SHARED)
+ADD_DEFINITIONS(-DJSONAPI_BUILD_SHARED)
 
 
 add_library (jsonapi SHARED
