@@ -8,7 +8,7 @@ ENDIF(MINGW)
 
 ExternalProject_Add(poco
   URL http://pocoproject.org/releases/poco-1.4.6/poco-1.4.6p2-all.tar.gz
-  CONFIGURE_COMMAND CFLAGS=-fPIC && CXXFLAGS=-fPIC && <SOURCE_DIR>/configure --prefix=${BUILD_DIR} ${USER_CONFIG} --static --no-tests --no-samples --cflags=-fPIC --omit=Data/ODBC,Data/MySQL,NetSSL_OpenSSL,Crypto
+  CONFIGURE_COMMAND CFLAGS=-fPIC && CXXFLAGS=-fPIC && <SOURCE_DIR>/configure --prefix=${BUILD_DIR} ${USER_CONFIG} --static --no-tests --no-samples --cflags=-fPIC --omit=Data/ODBC,Data/MySQL,NetSSL_OpenSSL,Crypto,PageCompiler
   BUILD_IN_SOURCE 1
 )
 

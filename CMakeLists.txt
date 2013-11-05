@@ -22,6 +22,8 @@ add_definitions(-DFF_API_AVCODEC_OPEN)
 add_definitions(-DFF_API_OLD_DECODE_AUDIO)
 add_definitions(-DFF_API_OLD_ENCODE_AUDIO)
 add_definitions(-DFF_API_CODEC_ID)
+#add_definitions(-Weffc++)
+
 IF(NOT WIN32)
   add_definitions(-fPIC)
 ENDIF(NOT WIN32)
@@ -34,7 +36,7 @@ IF(WIN32)
 ENDIF(WIN32)
 SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fpermissive" )
 
-add_definitions(-ftemplate-depth=200)
+
 
 #SET(CMAKE_COLOR_MAKEFILE Off)
 
@@ -46,6 +48,7 @@ ENDIF(APPLE)
 
 if(WIN32)
 add_definitions(-D_WIN32_WINNT=0x0501)
+add_definitions(-ftemplate-depth=200)
 #add_definitions(/EHsc)
 MESSAGE("Build Windows 32")
 ENDIF(WIN32)
