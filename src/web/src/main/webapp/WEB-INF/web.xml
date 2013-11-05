@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
+
+    <!-- Servlets -->
+    <servlet>
+        <servlet-name>greetServlet</servlet-name>
+        <servlet-class>de.wkd.server.GreetingServiceImpl</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>greetServlet</servlet-name>
+        <url-pattern>/PInstanz3/greet</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>xhiveServlet</servlet-name>
+        <servlet-class>de.wkd.xhive.server.XhiveServiceImpl</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>xhiveServlet</servlet-name>
+        <url-pattern>/PInstanz3/xhiveservice</url-pattern>
+    </servlet-mapping>
+
+    <!-- Default page to serve -->
+    <welcome-file-list>
+        <welcome-file>PInstanz3.html</welcome-file>
+    </welcome-file-list>
+
+
+    <servlet>
+        <servlet-name>remoteLogging</servlet-name>
+        <servlet-class>com.google.gwt.logging.server.RemoteLoggingServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>remoteLogging</servlet-name>
+        <url-pattern>/PInstanz3/remote_logging</url-pattern>
+    </servlet-mapping>
+<!--
+    <servlet> 
+        <servlet-name>jUnitHostImpl</servlet-name> 
+        <servlet-class>com.google.gwt.junit.server.JUnitHostImpl</servlet-class> 
+    </servlet> 
+    <servlet-mapping> 
+        <servlet-name>jUnitHostImpl</servlet-name> 
+        <url-pattern>/PInstanz3/junithost/*</url-pattern> 
+    </servlet-mapping>
+    -->
+</web-app>

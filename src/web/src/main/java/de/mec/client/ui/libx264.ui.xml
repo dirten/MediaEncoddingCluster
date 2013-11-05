@@ -1,0 +1,19 @@
+<!--
+Uncomment this for XHTML entities
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+-->
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:gxt="urn:import:com.extjs.gxt.ui.client.widget"
+             xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form">
+    <ui:style>
+
+    </ui:style>
+    <g:HTMLPanel>
+        <div>
+            Hello, 
+            <span ui:field='nameSpan'/>.
+        </div>
+         <form:ComboBox ui:field="codecs" allowBlank="true" forceSelection="true" triggerAction="ALL" />
+    </g:HTMLPanel>
+</ui:UiBinder>

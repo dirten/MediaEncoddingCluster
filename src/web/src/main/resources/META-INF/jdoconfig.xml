@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jdoconfig xmlns="http://java.sun.com/xml/ns/jdo/jdoconfig"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://java.sun.com/xml/ns/jdo/jdoconfig">
+
+    <persistence-manager-factory name="transactions-optional">
+        <property name="javax.jdo.PersistenceManagerFactoryClass"
+            value="org.datanucleus.api.jdo.JDOPersistenceManagerFactory"/>
+        
+        <property name="javax.jdo.option.ConnectionDriverName" value="com.mysql.jdbc.Driver"/>
+        <property name="javax.jdo.option.ConnectionURL" value="jdbc:mysql://127.0.0.1/test"/>
+        <!--<property name="javax.jdo.option.ConnectionURL" value="jdbc:oracle:thin:@(DESCRIPTION=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(HOST=euocld272001a.wkd.wolterskluwer.de)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=euocld272001b.wkd.wolterskluwer.de)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=WKDISCMS)))"/>-->
+        <property name="javax.jdo.option.ConnectionUserName" value="root"/>
+        <property name="javax.jdo.option.ConnectionPassword" value=""/>
+        
+        <property name="datanucleus.autoCreateSchema" value="false"/>
+            <property name="datanucleus.validateTables" value="false"/>
+            <property name="datanucleus.validateConstraints" value="false"/>
+        <!--<property name="javax.jdo.option.NontransactionalRead" value="true"/>
+        <property name="javax.jdo.option.NontransactionalWrite" value="true"/>
+        <property name="javax.jdo.option.RetainValues" value="true"/>
+        <property name="datanucleus.appengine.autoCreateDatastoreTxns" value="true"/>-->
+    </persistence-manager-factory>
+</jdoconfig>
