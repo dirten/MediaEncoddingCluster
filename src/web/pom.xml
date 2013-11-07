@@ -42,6 +42,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-dev</artifactId>
+            <version>${gwtVersion}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.google.gwt.inject</groupId>
             <artifactId>gin</artifactId>
             <version>2.0.0</version>
@@ -125,6 +131,7 @@
                     <hostedWebapp>${webappDirectory}</hostedWebapp>
                     <i18nMessagesBundle>de.mec.client.Messages</i18nMessagesBundle>
                     <extraJvmArgs>-Xmx1024M -Xss1024k -XX:MaxPermSize=128M</extraJvmArgs>
+                    <!--<bindAddress>0.0.0.0</bindAddress>-->
                     <noServer/>
                     <runClasspathExcludes>
                         <runClasspathExclude>xhive</runClasspathExclude>
@@ -211,7 +218,6 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
     
         </plugins>
     

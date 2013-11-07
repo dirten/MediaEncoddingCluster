@@ -5,6 +5,10 @@
 package de.mec.client.model;
 
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  *
@@ -27,6 +31,14 @@ public interface Profile {
 
         @PropertyName(value="video")
         Video getVideo();
+
+        //@PropertyName(value="video")
+        //Map<String, String> getVideoMap();
+        
+        //List<Entry<String, String>> getVideoEntryList();
+
+        @PropertyName(value="video")
+        void setVideoMap(final Map<String, String> map);
 
         @PropertyName(value="video")
         void setVideo(final Video video);

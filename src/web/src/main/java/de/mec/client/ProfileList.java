@@ -171,7 +171,7 @@ public class ProfileList extends ContentPanel {
           }
         });
         d.show();
-
+        
         final ProfileEditor editor = new ProfileEditor();
         d.add(editor);
         driver.initialize(editor);
@@ -186,10 +186,14 @@ public class ProfileList extends ContentPanel {
           public void onSuccess(Profile result) {
 
             driver.edit(result);
-
+            /*
+            result.getVideoMap().put("bla", "test");
             //d.setProfile(result);
-            logger.log(Level.INFO, "profile data :" + result.getAudio().getId());
-
+            
+            logger.log(Level.INFO, "profile data :" + result.getVideoMap().keySet());
+            for(String key:result.getVideoMap().keySet()){
+                logger.log(Level.INFO, "profile data video.key :" + key);
+            }*/
           }
         });
     

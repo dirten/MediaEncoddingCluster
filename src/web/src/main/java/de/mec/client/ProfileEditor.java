@@ -27,8 +27,14 @@ public class ProfileEditor extends SimpleContainer implements Editor<Profile> {
     public TextField name;
     public TextField uuid;
     public AudioEditor audio;
-    public VideoEditor video;
     public FormatEditor format;
+
+    //@Ignore
+    public VideoEditor video;
+
+    @Ignore
+    @Editor.Path("videoMap")
+    public VideoPropertyListEditor videoListEditor;
 
     public ProfileEditor() {
         //setHeadingText("Edit Profile!");
@@ -61,6 +67,7 @@ public class ProfileEditor extends SimpleContainer implements Editor<Profile> {
         audio = new AudioEditor();
         video=new VideoEditor();
         format=new FormatEditor();
+        videoListEditor=new VideoPropertyListEditor();
 
         TabPanel panel = new TabPanel();
         c.setSouthWidget(panel);

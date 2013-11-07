@@ -2,6 +2,7 @@
 <module rename-to='MHive'>
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User' />
+  
   <inherits name='com.google.gwt.editor.Editor' />
   <!--<inherits name='de.wkd.xhive.Tree' />-->
 
@@ -28,10 +29,6 @@
   <!--<entry-point class='de.wkd.client.PInstanz3' />-->
 
   <!-- Specify the paths for translatable code                    -->
-  <source path='pinstanz3/client' />
-  <source path='pinstanz3/model' />
-  <source path='mvp/client' />
-  <source path='mvp/model' />
   <source path='client' />
   <source path='shared' />
   

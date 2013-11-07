@@ -15,9 +15,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
+import com.google.web.bindery.autobean.shared.AutoBeanFactory.Category;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -72,12 +74,18 @@ public class MHiveService {
 
         Profile getData();
     }
-
+    //@Category(ProfileCategory.class)
     public interface ProfileResultAutoBeanFactory extends AutoBeanFactory {
 
         AutoBean<ProfileResult> data();
     }
-
+    /*
+    class ProfileCategory {
+      public List<Map.Entry<String, String>> getVideoEntryList(AutoBean<Profile> instance) {
+          
+          return new ArrayList<Map.Entry<String, String>>(instance.as().getVideoMap().entrySet());
+      }
+    }*/
     void getProfile(String profileId, final AsyncCallback<Profile> callback) {
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, "/api/v1/profile/" + profileId);
         builder.setCallback(new RequestCallback() {
