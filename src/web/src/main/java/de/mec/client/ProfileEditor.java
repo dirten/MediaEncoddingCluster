@@ -29,10 +29,11 @@ public class ProfileEditor extends SimpleContainer implements Editor<Profile> {
     public AudioEditor audio;
     public FormatEditor format;
 
-    //@Ignore
-    public VideoEditor video;
-
     @Ignore
+    public VideoEditor video;
+    //public VideoPropertyListEditor video;
+
+    //@Ignore
     @Editor.Path("videoMap")
     public VideoPropertyListEditor videoListEditor;
 
@@ -85,7 +86,7 @@ public class ProfileEditor extends SimpleContainer implements Editor<Profile> {
         panel.setResizeTabs(true);
         
         panel.add(format, new TabItemConfig("Format", false));
-        panel.add(video, new TabItemConfig("Video", false));
+        panel.add(videoListEditor, new TabItemConfig("Video", false));
         panel.add(audio, new TabItemConfig("Audio", false));
         //c.forceLayout();
         //grid.setWidget(2, 1, panel);

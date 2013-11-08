@@ -1,0 +1,11 @@
+and $x/datasource/paramlist/condition[starts-with(:attribute,"0")]
+
+
+
+for $x in //documentlist where $x/datasource/@:type="h" and $x/datasource/paramlist/condition/@:attribute="0:mbo_handbuch:zustaendigkeit" return $x/datasource/paramlist/condition[:attribute="0:mbo_handbuch:zustaendigkeit"]
+
+for $x in //documentlist where $x/datasource/@:type="h"  return $x/datasource/paramlist/condition[string-length(@:attribute)>0]
+
+
+
+for $x in //documentlist where $x/datasource/@:type="h"  return concat($x/@name,"->",$x/datasource/paramlist/condition[@:attribute="0:mbo_handbuch:zustaendigkeit"]/@value)

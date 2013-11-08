@@ -4,6 +4,8 @@
   <inherits name='com.google.gwt.user.User' />
   
   <inherits name='com.google.gwt.editor.Editor' />
+  <inherits name='com.google.web.bindery.autobean.AutoBean' />
+  
   <!--<inherits name='de.wkd.xhive.Tree' />-->
 
   <!-- We need the JUnit module in the main module,               -->

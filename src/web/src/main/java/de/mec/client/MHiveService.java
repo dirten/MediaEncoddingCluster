@@ -20,6 +20,7 @@ import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,7 +49,7 @@ public class MHiveService {
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, "/api/v1/profile/");
         builder.setCallback(new RequestCallback() {
             public void onResponseReceived(Request request, Response response) {
-                logger.log(Level.INFO, "response data :" + response.getText());
+                //logger.log(Level.INFO, "response data :" + response.getText());
                 ProfileListAutoBeanFactory fac = GWT.create(ProfileListAutoBeanFactory.class);
                 AutoBean<ProfileList> bean = AutoBeanCodex.decode(fac, ProfileList.class, response.getText());
                 //logger.log(Level.INFO, "response bean :" + bean.as().getData());
@@ -69,23 +70,18 @@ public class MHiveService {
         }
 
     }
-
+    
+    
+    //@Category(ProfileCategoryNew.class)
     public interface ProfileResult {
-
         Profile getData();
     }
-    //@Category(ProfileCategory.class)
+    
     public interface ProfileResultAutoBeanFactory extends AutoBeanFactory {
-
         AutoBean<ProfileResult> data();
     }
-    /*
-    class ProfileCategory {
-      public List<Map.Entry<String, String>> getVideoEntryList(AutoBean<Profile> instance) {
-          
-          return new ArrayList<Map.Entry<String, String>>(instance.as().getVideoMap().entrySet());
-      }
-    }*/
+    
+    
     void getProfile(String profileId, final AsyncCallback<Profile> callback) {
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, "/api/v1/profile/" + profileId);
         builder.setCallback(new RequestCallback() {
@@ -310,4 +306,5 @@ public class MHiveService {
             Logger.getLogger(ProfileList.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 }

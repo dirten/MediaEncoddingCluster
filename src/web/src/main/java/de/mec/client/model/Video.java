@@ -32,5 +32,6 @@ public interface Video {
     @PropertyName(value = "flags")
     void setFlags(String rate);
 
-    
+    @PropertyName(value = "")
+    Map<String,String> getSelf();
 }

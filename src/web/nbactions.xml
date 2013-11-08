@@ -25,4 +25,10 @@
                 <netbeans.deploy>true</netbeans.deploy>
             </properties>
         </action>
+        <action>
+            <actionName>test</actionName>
+            <goals>
+                <goal>gwt:test</goal>
+            </goals>
+        </action>
     </actions>
