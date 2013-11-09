@@ -7,11 +7,8 @@ package de.mec.client;
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.Label;
-import com.sencha.gxt.widget.core.client.form.FieldLabel;
-import com.sencha.gxt.widget.core.client.form.FieldSet;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.sencha.gxt.widget.core.client.form.TextField;
-import de.mec.client.model.Video;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,7 +17,7 @@ import java.util.logging.Logger;
  *
  * @author jan.hoelscher
  */
-public class PropertyItemEditor extends Composite implements Editor<Map.Entry<String,String>> {
+public class PropertyItemEditor extends SimplePanel implements Editor<PropertyItem> {
     private static final Logger LOG = Logger.getLogger(PropertyItemEditor.class.getName());
     
     @Path("key")
@@ -33,7 +30,7 @@ public class PropertyItemEditor extends Composite implements Editor<Map.Entry<St
         //setHeadingText("base");
         LOG.log(Level.INFO,"new PropertyItemEditor");
         Grid grid = new Grid(1, 2);
-        initWidget(grid);
+        setWidget(grid);
          //Label lblAge = new Label("Video Codec");
         name=new TextField();
         //key.setEnabled(false);

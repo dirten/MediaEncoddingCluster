@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  *
  * @author jan.hoelscher
  */
-public class PropertyItem implements Map.Entry<String, String>{
+public class PropertyItem {
     
     private String _key;
     private String _val;
@@ -37,7 +37,7 @@ public class PropertyItem implements Map.Entry<String, String>{
         _key=key;
         _val=value;
     }
-
+    /*
     public String getValue() {
         LOG.log(Level.INFO,"getValue:");
         return _val;
@@ -48,7 +48,7 @@ public class PropertyItem implements Map.Entry<String, String>{
         String result=_val;
         _val=value;
         return result;
-    }
+    }*/
     private static final Logger LOG = Logger.getLogger(PropertyItem.class.toString());
     
 }

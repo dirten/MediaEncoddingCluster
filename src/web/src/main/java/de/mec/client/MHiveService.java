@@ -39,7 +39,8 @@ public class MHiveService {
 
         List<Profile> getData();
     }
-
+    
+    @Category(ProfileCategory.class)
     public interface ProfileListAutoBeanFactory extends AutoBeanFactory {
 
         AutoBean<ProfileList> data();
@@ -77,6 +78,7 @@ public class MHiveService {
         Profile getData();
     }
     
+    @Category(ProfileCategory.class)
     public interface ProfileResultAutoBeanFactory extends AutoBeanFactory {
         AutoBean<ProfileResult> data();
     }

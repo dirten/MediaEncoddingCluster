@@ -186,7 +186,7 @@ public class ProfileList extends ContentPanel {
           public void onSuccess(Profile result) {
 
             driver.edit(result);
-            //logger.log(Level.INFO, "profile data :" + result.getVideo().getSelf());
+            //logger.log(Level.INFO, "profile data :" + result.getVideoPropertyItemList());
             /*
             result.getVideoMap().put("bla", "test");
             //d.setProfile(result);

@@ -7,16 +7,17 @@ package de.mec.client;
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.container.NorthSouthContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.form.ConverterEditorAdapter;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import de.mec.client.model.Profile;
+import de.mec.client.model.tools.PropertyItemListConverter;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -35,6 +36,9 @@ public class ProfileEditor extends SimpleContainer implements Editor<Profile> {
 
     //@Ignore
     @Editor.Path("videoMap")
+    ConverterEditorAdapter<Map<String,String>, List<PropertyItem>,  VideoPropertyListEditor> videoMap;
+
+    @Ignore
     public VideoPropertyListEditor videoListEditor;
 
     public ProfileEditor() {
@@ -69,6 +73,7 @@ public class ProfileEditor extends SimpleContainer implements Editor<Profile> {
         video=new VideoEditor();
         format=new FormatEditor();
         videoListEditor=new VideoPropertyListEditor();
+        videoMap = new ConverterEditorAdapter<Map<String,String>, List<PropertyItem>, VideoPropertyListEditor>(videoListEditor, new PropertyItemListConverter());
 
         TabPanel panel = new TabPanel();
         c.setSouthWidget(panel);
