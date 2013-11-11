@@ -6,7 +6,6 @@ package de.mec.client.model.tools;
 
 import com.sencha.gxt.data.shared.Converter;
 import de.mec.client.PropertyItem;
-import de.mec.client.model.Codec;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

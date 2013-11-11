@@ -7,8 +7,6 @@ package de.mec.client;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.CompositeEditor;
 import com.google.gwt.editor.client.EditorDelegate;
-import com.google.gwt.editor.client.LeafValueEditor;
-import com.google.gwt.editor.client.adapters.ListEditor;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell;
@@ -16,6 +14,8 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.ConverterEditorAdapter;
+import de.mec.client.editor.CheckboxItemEditor;
+import de.mec.client.editor.ItemEditorFactory;
 import de.mec.client.editor.SliderItemEditor;
 import de.mec.client.editor.TextItemEditor;
 import de.mec.client.model.Codec;
@@ -23,8 +23,6 @@ import de.mec.client.model.CodecProperties;
 import de.mec.client.model.tools.CodecIdConverter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,14 +31,14 @@ import java.util.logging.Logger;
  * @author jan.hoelscher
  */
 public class VideoPropertyListEditor extends Composite implements
-        CompositeEditor<List<PropertyItem>, PropertyItem, PropertyItemEditor<String,String>>//,
+        CompositeEditor<List<PropertyItem>, PropertyItem, PropertyItemEditor>//,
 /*
  * LeafValueEditor<Map<String,String>>
  */ {
 
   private List<PropertyItem> _currentData;
   private EditorDelegate<List<PropertyItem>> _delegate;
-  EditorChain<PropertyItem, PropertyItemEditor<String,String>> _chain;
+  EditorChain<PropertyItem, PropertyItemEditor> _chain;
   private static final Logger logger = Logger.getLogger(VideoEditor.class.toString());
   private List<PropertyItemEditor> editors = new ArrayList<PropertyItemEditor>();
   private FlowLayoutContainer vlc;
@@ -84,9 +82,10 @@ public class VideoPropertyListEditor extends Composite implements
     return "";//"[" + editors.indexOf(subEditor) + "]";
   }
 
-  public void setEditorChain(EditorChain<PropertyItem, PropertyItemEditor<String,String>> chain) {
+  public void setEditorChain(EditorChain<PropertyItem, PropertyItemEditor> chain) {
     _chain = chain;
   }
+  
 
   public void flush() {
     for (PropertyItemEditor editor : editors) {
@@ -101,24 +100,17 @@ public class VideoPropertyListEditor extends Composite implements
   }
 
   public void setValue(List<PropertyItem> value) {
-    //logger.log(Level.INFO,"data:"+value.size());
     _currentData = value;
-    //value.clear();
-    value.add(new PropertyItem("left","right"));
     for (PropertyItem entry : value) {
-      PropertyItemEditor editor = new TextItemEditor();
+      PropertyItemEditor editor = ItemEditorFactory.getEditor(entry.getKey());
       editor.setLabel(entry.getKey());
       if(entry.getKey().equals("id")){
-        //codecId.setEditorChain(_chain);
-        //codecId.setValue(entry.getVal());
         codecCombo.setValue(new CodecIdConverter(codecs).convertModelValue(entry.getVal()));
         continue;
       }
-      //PropertyItem item=new PropertyItem(entry.getKey(), entry.getValue());
       editors.add(editor);
       _chain.attach(entry, editor);
       vlc.add(editor);
-
     }
   }
 
