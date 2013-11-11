@@ -32,7 +32,18 @@ public:
           data.push_back(JSONNode("uuid", id));
         }
 
+
+
         /*convert old string values into number values*/
+        /*
+        JSONNode video=data["video"];
+        if(video.contains("b")){
+          video["b"]=video["b"].as_int();
+        }
+        data.pop_back("video");
+        data.push_back(video);
+        */
+
         JSONNode audio=data["audio"];
         if(audio.contains("ab")){
           audio["ab"]=atoi(audio["ab"].as_string().c_str());
