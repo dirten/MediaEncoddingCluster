@@ -30,8 +30,8 @@ public class ProfileEditor extends SimpleContainer implements Editor<Profile> {
     public AudioEditor audio;
     public FormatEditor format;
 
-    @Ignore
-    public VideoEditor video;
+    //@Ignore
+    //public VideoEditor video;
     //public VideoPropertyListEditor video;
 
     //@Ignore
@@ -70,7 +70,7 @@ public class ProfileEditor extends SimpleContainer implements Editor<Profile> {
         grid.setWidget(1, 1, uuid);
 
         audio = new AudioEditor();
-        video=new VideoEditor();
+        //video=new VideoEditor();
         format=new FormatEditor();
         videoListEditor=new VideoPropertyListEditor();
         videoMap = new ConverterEditorAdapter<Map<String,String>, List<PropertyItem>, VideoPropertyListEditor>(videoListEditor, new PropertyItemListConverter());

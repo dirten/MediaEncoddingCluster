@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @author jan.hoelscher
  */
-public interface Video {
+public interface Video /*extends Map<String,String>*/{
 
     @PropertyName(value = "id")
     String getId();

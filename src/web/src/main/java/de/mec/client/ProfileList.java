@@ -7,11 +7,7 @@ package de.mec.client;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -185,8 +181,8 @@ public class ProfileList extends ContentPanel {
 
           public void onSuccess(Profile result) {
 
+            logger.log(Level.INFO, "profile data :" + result.getVideoMap());
             driver.edit(result);
-            //logger.log(Level.INFO, "profile data :" + result.getVideoPropertyItemList());
             /*
             result.getVideoMap().put("bla", "test");
             //d.setProfile(result);
