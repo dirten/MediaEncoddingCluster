@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<guis>
+  <gui helpLink="encoder_mp4v.html">
+    <options>
+      <optiongroup id="general_settings" title="General settings"/>
+      <option id="rescale_mode" title="Rescale Mode" type="int" min="1" max="8" default="1" optionGroupId="general_settings">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="Fast Bilinear" value="1"/>
+          <item title="Bilinear" value="2"/>
+          <item title="Bicubic" value="4"/>
+          <item title="X ???" value="8"/>
+          <item title="Point" value="16"/>
+          <item title="Area" value="32"/>
+          <item title="Bicubic Linear" value="64"/>
+          <item title="Gaussian" value="128"/>
+          <item title="Sinc" value="256"/>
+          <item title="Lanczos" value="512"/>
+          <item title="Splie" value="1024"/>
+        </list>
+      </option>
+      <option id="scales" type="string" default="720x576" title="Frame Size" optionGroupId="general_settings" unit="pixel" onlyUI="1">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="VCD (320x240)" value="320x240">
+            <optiondata>
+              <data option="width" value="320"/>
+              <data option="height" value="240"/>
+            </optiondata>
+          </item>
+          <item title="SVCD (430x576)" value="430x576">
+            <optiondata>
+              <data option="width" value="430"/>
+              <data option="height" value="576"/>
+            </optiondata>
+          </item>
+          <item title="DVD (720x576)" value="720x576">
+            <optiondata>
+              <data option="width" value="720"/>
+              <data option="height" value="576"/>
+            </optiondata>
+          </item>
+          <item title="720p (1280x720)" value="720p">
+            <optiondata>
+              <data option="width" value="1280"/>
+              <data option="height" value="720"/>
+            </optiondata>
+          </item>
+          <item title="1080p (1920x1080)" value="1080p">
+            <optiondata>
+              <data option="width" value="1920"/>
+              <data option="height" value="1080"/>
+            </optiondata>
+          </item>
+          <item title="Custom" value="0">
+            <enables>
+              <option>width</option>
+              <option>height</option>
+            </enables>
+          </item>
+        </list>
+      </option>
+      <option id="width" title="Width" type="int" min="8000" max="48000" default="44100" optionGroupId="general_settings">
+        <control type="TextBox"></control>
+      </option>
+      <option id="height" title="Height" type="int" min="8000" max="48000" default="44100" optionGroupId="general_settings">
+        <control type="TextBox"></control>
+      </option>
+    </options>
+  </gui>
+</guis>

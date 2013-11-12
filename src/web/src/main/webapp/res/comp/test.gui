@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+<guis>
+  <gui helpLink="encoder_mp4v.html">
+    <plugin impl="pw_encoder_video_mc_mpeg4_handler.so" class="Mpeg4Handler"/>
+    <options>
+      <!--Groups-->
+      <optiongroup id="bandwidth_settings" title="Bandwidth settings"/>
+      <optiongroup id="keyframe_settings" title="Keyframe settings"/>
+      <optiongroup id="profile_settings" title="Profile Settings"/>
+      <optiongroup id="encoding_settings" title="Encoding Settings"/>
+      <!--Bandwidth settings-->
+      <option id="bitrate" title="Average Bit Rate" type="float" min="0" max="100000" default="300" optionGroupId="bandwidth_settings" unit="kbps">
+        <control type="TextBox"></control>
+      </option>
+      <option id="frameSkipProbability" title="Frame Skip Probability" type="float" min="0" max="1" default="0" optionGroupId="bandwidth_settings">
+        <control type="TrackBar">
+          <controlparameter name="startLabel" value="0"/>
+          <controlparameter name="endLabel" value="1"/>
+          <controlparameter name="hasTextBox" value="true"/>
+          <controlparameter name="textBoxPosition" value="start"/>
+        </control>
+        <format	value="%.2f" />
+      </option>
+      <option id="bufferTime" title="Video Buffering Verifier (VBV) Buffer Size" type="float" min="0" default="10" max="60" optionGroupId="bandwidth_settings" unit="Seconds">
+        <control type="TrackBar">
+          <controlparameter name="startLabel" value="0"/>
+          <controlparameter name="endLabel" value="60"/>
+          <controlparameter name="hasTextBox" value="true"/>
+          <controlparameter name="textBoxPosition" value="start"/>
+        </control>
+      </option>
+
+
+      <!--Keyframe settings-->
+      <option id="periodType" type="string" default="2" title="Keyframe Control" optionGroupId="keyframe_settings">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="Keyframes Only" value="4">
+            <object>
+              <dict>
+                <key>keyFramePeriod</key>
+                <string>1</string>
+                <key>B-VOP-Distance</key>
+                <string>2</string>
+              </dict>
+            </object>
+          </item>
+          <item title="Forced Keyframes Only" value="3">
+            <enables>
+              <option>keyFramePeriod</option>
+              <option>bitrate</option>
+            </enables>
+            <object>
+              <dict>
+                <key>keyFramePeriod</key>
+                <string>2</string>
+                <key>B-VOP-Distance</key>
+                <string>2</string>
+              </dict>
+            </object>
+          </item>
+          <item title="Natural and Forced Keyframes" value="2">
+            <enables>
+              <option>keyFramePeriod</option>
+            </enables>
+            <optiondata>
+                <data option="keyFramePeriod" value="250"/>
+                <data option="B-VOP-Distance" value="2"/>
+            </optiondata>
+            <object>
+              <dict>
+                <key>keyFramePeriod</key>
+                <string>2</string>
+                <key>B-VOP-Distance</key>
+                <string>2</string>
+              </dict>
+            </object>
+          </item>
+          <item title="Natural Keyframes Only" value="1">
+            <object>
+              <dict>
+                <key>keyFramePeriod</key>
+                <string>0</string>
+                <key>B-VOP-Distance</key>
+                <string>2</string>
+              </dict>
+            </object>
+          </item>
+        </list>
+      </option>
+      <option id="keyFramePeriod" title="Keyframe Interval" type="int" min="0" max="10000" default="100" optionGroupId="keyframe_settings" unit="Frames">
+        <control type="TextBox"></control>
+      </option>
+      <option id="B-VOP-Distance" title="Number of B-Frames" type="int" min="0" max="4" default="2" optionGroupId="keyframe_settings" unit="Frames">
+        <control type="TrackBar">
+          <controlparameter name="startLabel" value="0"/>
+          <controlparameter name="endLabel" value="4"/>
+          <controlparameter name="hasTextBox" value="true"/>
+          <controlparameter name="textBoxPosition" value="start"/>
+        </control>
+      </option>
+
+      <!--Profile settings-->
+      <option id="codecMode" title="Profile" type="string" default="1" min="0" max="1" optionGroupId="profile_settings">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="Simple Profile" value="0">
+            <enables>
+              <option>SVPL-0</option>
+            </enables>
+          </item>
+          <item title="Advanced Simple Profile" value="1">
+            <enables>
+<!--              <option>B-VOP-Distance</option>-->
+              <option>motionEstimationAccuracy</option>
+            </enables>
+          </item>
+        </list>
+      </option>
+      <option id="SVPL-0" title="Simple Profile Level 0" type="bool" default="0" optionGroupId="profile_settings">
+        <control type="CheckBox"></control>
+      </option>
+      <option id="motionEstimationAccuracy" title="Motion Estimation Accuracy" type="string" min="2" max="4" default="2" optionGroupId="profile_settings">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="Half Pel" value="2"/>
+          <item title="Quarter Pel" value="4"/>
+        </list>
+      </option>
+      <option id="displayAspectRatio" title="Display Aspect Ratio" type="string" default="1" min="1" max="4" optionGroupId="profile_settings">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="1:1" value="1"/>
+          <item title="4:3" value="2"/>
+          <item title="16:9" value="3"/>
+          <item title="2.21:1" value="4"/>
+        </list>
+      </option>
+
+      <optiongroup id="error_correction_settings" parentId="profile_settings" title="Error Correction"/>
+
+      <!--Error correction settings-->
+      <option id="videoPacketLength" title="Packet Length" type="int" default="0" max="163840" optionGroupId="error_correction_settings" unit="Bits">
+        <control type="TextBox">
+        </control>
+      </option>
+      <option id="useDataPartition" title="Data partition" type="bool" default="0" optionGroupId="error_correction_settings">
+        <control type="CheckBox"></control>
+      </option>
+      <option id="useRVLC" title="RVLC" type="bool" default="0" optionGroupId="error_correction_settings">
+        <control type="CheckBox"></control>
+      </option>
+
+
+      <!--Encoding settings-->
+      <option id="useTwoPassEncoding" title="Two-pass encoding" type="bool" default="1" optionGroupId="encoding_settings">
+        <control type="CheckBox"></control>
+      </option>
+      
+      <option id="bitrate_test" title="Average Bit Rate" type="float" min="0" max="100000" default="300" unit="kbps">
+        <control type="TextBox"></control>
+      </option>
+
+    </options>
+  </gui>
+</guis>

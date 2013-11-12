@@ -3,7 +3,7 @@
         <action>
             <actionName>build</actionName>
             <goals>
-                <goal>gwt:run</goal>
+                <goal>install</goal>
             </goals>
         </action>
         <action>

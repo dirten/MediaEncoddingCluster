@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<guis>
+  <gui>
+    <codecs>
+      <codec id="msmpeg4"/>
+      <codec id="wmv1"/>
+      <codec id="wmv2"/>
+      <codec id="libxvid"/>
+      <codec id="libx264"/>
+    </codecs>
+    <options>
+      <!--Groups-->
+      <optiongroup id="general_settings" title="General settings"/>
+      <optiongroup id="metadata_settings" title="Metadata"/>
+      <!--Keyframe settings-->
+      <option id="fileExtension" type="string" default="avi" title="File Extension" optionGroupId="general_settings">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="avi" value="avi"/>
+        </list>
+      </option>
+      <option id="title" title="Title" optionGroupId="metadata_settings">
+        <control type="TextBox"></control>
+      </option>
+      <option id="author" title="Author" optionGroupId="metadata_settings">
+        <control type="TextBox"></control>
+      </option>
+      <option id="copyright" title="Copyright" optionGroupId="metadata_settings">
+        <control type="TextBox"></control>
+      </option>
+      <option id="comment" title="Comment" optionGroupId="metadata_settings">
+        <control type="TextBox"></control>
+      </option>
+      <option id="album" title="Album" optionGroupId="metadata_settings">
+        <control type="TextBox"></control>
+      </option>
+      <option id="year" title="year" optionGroupId="metadata_settings">
+        <control type="TextBox"></control>
+      </option>
+      <option id="track" title="Track" optionGroupId="metadata_settings">
+        <control type="TextBox"></control>
+      </option>
+      <option id="genre" title="Genre" optionGroupId="metadata_settings">
+        <control type="TextBox"></control>
+      </option>
+
+    </options>
+  </gui>
+</guis>

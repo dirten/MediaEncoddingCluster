@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<guis>
+  <gui>
+    <options>
+      <option id="nooption" title="" default="There are currently no Options to set for this Audio Codec with the GUI.<br/>
+    		It is allways possible to set the Codec through the preset file!<br/>
+    		Please make an entry in the support forum when you want to use this codec!">
+        <control type="Label"></control>
+      </option>
+    </options>
+  </gui>
+</guis>

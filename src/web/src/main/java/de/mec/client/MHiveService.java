@@ -10,6 +10,7 @@ import de.mec.client.model.Audio;
 import de.mec.client.model.Profile;
 import de.mec.client.model.Format;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.http.client.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
@@ -17,6 +18,7 @@ import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory.Category;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
+import de.mec.client.editor.guimodel.GUITemplate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -295,6 +297,42 @@ public class MHiveService {
                 logger.log(Level.INFO, "response bean :" + bean.as());
                 _formats = all;
                 callback.onSuccess(all);
+            }
+
+            public void onError(Request request, Throwable exception) {
+                callback.onFailure(exception);
+            }
+        });
+        try {
+            builder.send();
+        } catch (RequestException ex) {
+            callback.onFailure(ex);
+            Logger.getLogger(ProfileList.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+     interface GUI {
+
+        GUITemplate getGui();
+    }
+
+    interface GUIAutoBeanFactory extends AutoBeanFactory {
+
+        AutoBean<GUI> gui();
+    }
+    
+    void getVideoUI(final String codecID,final AsyncCallback<GUITemplate> callback) {
+        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, "res/comp/encoder.video."+codecID+".gui");
+        builder.setCallback(new RequestCallback() {
+            public void onResponseReceived(Request request, Response response) {
+                if (response.getStatusCode() == 200) {
+                    logger.log(Level.INFO, "response data :" + response.getText());
+                    GUIAutoBeanFactory fac = GWT.create(GUIAutoBeanFactory.class);
+                    AutoBean<GUI> bean = AutoBeanCodex.decode(fac, GUI.class, response.getText());
+                    GUITemplate template = bean.as().getGui();
+                    callback.onSuccess(template);
+                } else {
+                    callback.onFailure(new Exception(response.getStatusText()));
+                }
             }
 
             public void onError(Request request, Throwable exception) {

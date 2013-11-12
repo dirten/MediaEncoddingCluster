@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<guis>
+  <gui>
+    <options>
+      <option id="nooption" title="" default="There are currently no Options <br/>to set for Deinterlace Filter">
+        <control type="Label"></control>
+      </option>
+    </options>
+  </gui>
+</guis>

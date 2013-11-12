@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<guis>
+  <gui helpLink="encoder_mp4v.html">
+    <options>
+      <option id="nooption" title="" default="This will copy the Video Stream into the target format!">
+        <control type="Label"></control>
+      </option>
+    </options>
+  </gui>
+</guis>

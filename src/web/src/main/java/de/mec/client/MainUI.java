@@ -143,6 +143,7 @@ public class MainUI implements EntryPoint {
 
     public void handleJsonResponse(JavaScriptObject obj) {
         GWT.log("received data:" + obj.toString());
+        
         iTunesData data = asITunesData(obj);
         GWT.log("itunes data count:" + data.getCount());
         GWT.log("itunes data artist:" + data.getArtists().get(0).getName());
