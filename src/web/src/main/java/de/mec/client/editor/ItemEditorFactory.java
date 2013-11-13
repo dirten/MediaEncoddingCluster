@@ -39,4 +39,20 @@ public class ItemEditorFactory {
         }
         return new TextItemEditor();
     }
+    
+    public static PropertyItemEditor getEditorByClassName(final String property) {
+      if("TextBox".equals(property)){
+        return new TextItemEditor();
+      }
+      if("ComboBox".equals(property)){
+        return new TextItemEditor();
+      }
+      if("CheckBox".equals(property)){
+        return new CheckboxItemEditor();
+      }
+      if("Slider".equals(property)){
+        return new SliderItemEditor();
+      }
+      return new TextItemEditor();
+    }
 }

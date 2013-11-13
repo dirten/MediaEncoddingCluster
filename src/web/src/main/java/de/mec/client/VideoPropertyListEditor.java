@@ -35,9 +35,7 @@ import de.mec.client.editor.guimodel.Option;
 import de.mec.client.model.Codec;
 import de.mec.client.model.CodecProperties;
 import de.mec.client.model.tools.CodecIdConverter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -118,7 +116,7 @@ public class VideoPropertyListEditor extends Composite implements
 
     public void setValue(List<PropertyItem> value) {
         _currentData = value;
-        for (PropertyItem entry : value) {
+        for (final PropertyItem entry : value) {
             _propertyMap.put(entry.getKey(), entry);
             final PropertyItemEditor editor = ItemEditorFactory.getEditor(entry.getKey());
 
@@ -130,6 +128,7 @@ public class VideoPropertyListEditor extends Composite implements
                     public void onSelection(SelectionEvent<Codec> event) {
                         logger.log(Level.INFO, "Field value:" + event.getSelectedItem().getId());
                         buildUI(event.getSelectedItem().getId());
+                        entry.setVal(event.getSelectedItem().getId());
                     }
                 });
                 continue;
@@ -162,6 +161,7 @@ public class VideoPropertyListEditor extends Composite implements
             }
 
             public void onSuccess(GUITemplate result) {
+              clearUI();
                 buildUI(result);
                 //logger.log(Level.INFO,"GUI received"+result.getGroups());
             }
@@ -178,9 +178,10 @@ public class VideoPropertyListEditor extends Composite implements
             vlc.add(panel);
             _fieldSets.put(group.getId(), p);
         }
+        
         for(Option option:gui.getOptions()){
-            logger.log(Level.INFO,"Create PropertyItemEditor:"+option.getId());
-            final PropertyItemEditor editor = new TextItemEditor();
+            logger.log(Level.INFO,"Create PropertyItemEditor:"+option.getControl().getType());
+            final PropertyItemEditor editor = ItemEditorFactory.getEditorByClassName(option.getControl().getType());
             editor.setLabel(option.getTitle());
             editor.setKey(option.getId());
             _fieldSets.get(option.getGroup()).add(editor);
@@ -194,5 +195,18 @@ public class VideoPropertyListEditor extends Composite implements
             _chain.attach(_propertyMap.get(option.getId()), editor);
             
         }
+    }
+    
+    private void clearUI(){
+      for(Map.Entry<String, VerticalLayoutContainer> entry : _fieldSets.entrySet()){
+        int widget_count=entry.getValue().getWidgetCount();
+        for(int a=0;a<widget_count;a++){
+          PropertyItemEditor editor=(PropertyItemEditor) entry.getValue().getWidget(0);
+            /*detach it from the chain*/
+            _chain.detach(editor);
+            editor.removeFromParent();
+        }
+        entry.getValue().getParent().removeFromParent();
+      }
     }
 }
