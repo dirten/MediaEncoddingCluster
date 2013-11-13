@@ -8,12 +8,15 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.sencha.gxt.core.client.GXT;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.state.client.CookieProvider;
 import com.sencha.gxt.state.client.StateManager;
 import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.MarginData;
@@ -57,7 +60,7 @@ public class MainUI implements EntryPoint {
                 dialogBox.setWidget(dialogVPanel);
                 //dialogBox.center();
                 dialogBox.setHideOnButtonClick(true);
-                dialogBox.setPredefinedButtons(Dialog.PredefinedButton.CANCEL);
+                dialogBox.setPredefinedButtons(Dialog.PredefinedButton.CLOSE);
                 dialogBox.show();
                 
                 
@@ -65,8 +68,8 @@ public class MainUI implements EntryPoint {
                 //logger.log(Level.SEVERE, e.getCause().getMessage());
                 //e.printStackTrace();
             }
-        });*/
-        
+        });
+        */
     StateManager.get().setProvider(new CookieProvider("/", null, null, GXT.isSecure()));
         Logger logger = Logger.getLogger(MainUI.class.toString());
         logger.log(Level.INFO, "starting MainUI");

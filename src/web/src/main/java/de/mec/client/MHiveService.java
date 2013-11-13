@@ -20,6 +20,7 @@ import com.google.web.bindery.autobean.shared.AutoBeanFactory.Category;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import de.mec.client.editor.guimodel.GUITemplate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -169,7 +170,7 @@ public class MHiveService {
         ProfileFactory factory = GWT.create(ProfileFactory.class);
         Profile profile = factory.profile().as();
         profile.setAudio(factory.audio().as());
-        profile.setVideo(factory.video().as());
+        profile.setVideoMap(new HashMap<String,String>());//setVideo(factory.video().as());
         profile.setFormat(factory.format().as());
         //logger.log(Level.INFO,"Audio from profile :"+profile.getAudio());
         return profile;
@@ -310,6 +311,11 @@ public class MHiveService {
             Logger.getLogger(ProfileList.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    
+    
+    
+    
      interface GUI {
 
         GUITemplate getGui();

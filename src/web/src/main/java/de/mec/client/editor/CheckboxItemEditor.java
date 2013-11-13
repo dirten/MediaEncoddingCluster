@@ -14,6 +14,6 @@ import de.mec.client.model.tools.StringBooleanConverter;
  */
 public class CheckboxItemEditor extends PropertyItemEditor{
     public CheckboxItemEditor(){
-         super(new CheckBox(),new StringBooleanConverter());
+        super(new CheckBox(),new StringBooleanConverter());
     }
 }

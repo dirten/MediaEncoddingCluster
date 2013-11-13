@@ -45,7 +45,7 @@ public class ItemEditorFactory {
         return new TextItemEditor();
       }
       if("ComboBox".equals(property)){
-        return new TextItemEditor();
+        return new ComboboxItemEditor();
       }
       if("CheckBox".equals(property)){
         return new CheckboxItemEditor();

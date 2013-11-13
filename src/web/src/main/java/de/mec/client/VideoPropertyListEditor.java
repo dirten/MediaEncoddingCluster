@@ -15,6 +15,8 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell;
 import com.sencha.gxt.core.client.dom.ScrollSupport;
@@ -24,8 +26,10 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.ConverterEditorAdapter;
 import com.sencha.gxt.widget.core.client.form.Field;
+import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
 import de.mec.client.editor.CheckboxItemEditor;
+import de.mec.client.editor.ComboboxItemEditor;
 import de.mec.client.editor.ItemEditorFactory;
 import de.mec.client.editor.SliderItemEditor;
 import de.mec.client.editor.TextItemEditor;
@@ -56,13 +60,12 @@ public class VideoPropertyListEditor extends Composite implements
     private ComboBox<Codec> codecCombo;
     private ConverterEditorAdapter<String, Codec, ComboBox<Codec>> codecId;
     private ListStore<Codec> codecs;
+    private HashMap<String, VerticalLayoutContainer> _fieldSets = new HashMap<String, VerticalLayoutContainer>();
+    private HashMap<String, PropertyItem> _propertyMap = new HashMap<String, PropertyItem>();
 
-    private HashMap<String,VerticalLayoutContainer> _fieldSets=new HashMap<String,VerticalLayoutContainer>();
-    private HashMap<String,PropertyItem> _propertyMap=new HashMap<String,PropertyItem>();
-    
     public VideoPropertyListEditor() {
         vlc = new FlowLayoutContainer();
-        vlc.setSize("100%", "200");
+        vlc.setSize("100%", "400");
         vlc.setScrollMode(ScrollSupport.ScrollMode.AUTO);
         initWidget(vlc);
         CodecProperties cprops = GWT.create(CodecProperties.class);
@@ -83,7 +86,27 @@ public class VideoPropertyListEditor extends Composite implements
         codecCombo.setTriggerAction(ComboBoxCell.TriggerAction.ALL);
         codecCombo.setForceSelection(true);
         codecCombo.setWidth(400);
-        vlc.add(codecCombo);
+        codecCombo.addSelectionHandler(new SelectionHandler<Codec>() {
+            public void onSelection(SelectionEvent<Codec> event) {
+                logger.log(Level.INFO, "Field value:" + event.getSelectedItem().getId());
+                buildUI(event.getSelectedItem().getId());
+                if (!_propertyMap.containsKey("id")) {
+                    _propertyMap.put("id", new PropertyItem("id", event.getSelectedItem().getId()));
+                    _currentData.add(_propertyMap.get("id"));
+                } else {
+                    _propertyMap.get("id").setVal(event.getSelectedItem().getId());
+                }
+            }
+        });
+        FieldSet panel = new FieldSet();
+        panel.setHeadingText("select the Codec");
+        Grid grid=new Grid(1,2);
+        panel.add(grid);
+        FieldLabel label=new FieldLabel();
+        label.setText("Codec");
+        grid.setWidget(0, 0, label);
+        grid.setWidget(0, 1, codecCombo);
+        vlc.add(panel);
 
         //codecId = new ConverterEditorAdapter<String, Codec, ComboBox<Codec>>(codecCombo, new CodecIdConverter(codecs));
 
@@ -118,30 +141,28 @@ public class VideoPropertyListEditor extends Composite implements
         _currentData = value;
         for (final PropertyItem entry : value) {
             _propertyMap.put(entry.getKey(), entry);
-            final PropertyItemEditor editor = ItemEditorFactory.getEditor(entry.getKey());
 
-            editor.setLabel(entry.getKey());
-            editor.setKey(entry.getKey());
+            //final PropertyItemEditor editor = ItemEditorFactory.getEditor(entry.getKey());
+
+            //editor.setLabel(entry.getKey());
+            //editor.setKey(entry.getKey());
             if (entry.getKey().equals("id")) {
                 codecCombo.setValue(new CodecIdConverter(codecs).convertModelValue(entry.getVal()));
-                codecCombo.addSelectionHandler(new SelectionHandler<Codec>() {
-                    public void onSelection(SelectionEvent<Codec> event) {
-                        logger.log(Level.INFO, "Field value:" + event.getSelectedItem().getId());
-                        buildUI(event.getSelectedItem().getId());
-                        entry.setVal(event.getSelectedItem().getId());
-                    }
-                });
+                /*loading initial codec ui*/
+                buildUI(entry.getVal());
                 continue;
             }
             //editors.add(editor);
             //_chain.attach(entry, editor);
             //vlc.add(editor);
-            editor.addValueChangeHandler(new ValueChangeHandler() {
-                public void onValueChange(ValueChangeEvent event) {
-                    logger.log(Level.INFO, "Field name:" + editor.getKey());
-                    logger.log(Level.INFO, "Field value:" + event.getValue());
-                }
-            });
+            /*
+             editor.addValueChangeHandler(new ValueChangeHandler() {
+             public void onValueChange(ValueChangeEvent event) {
+             logger.log(Level.INFO, "Field name:" + editor.getKey());
+             logger.log(Level.INFO, "Field value:" + event.getValue());
+             }
+             });
+             */
         }
     }
 
@@ -157,11 +178,11 @@ public class VideoPropertyListEditor extends Composite implements
         MHiveService mhiveService = new MHiveService();
         mhiveService.getVideoUI(codecID, new AsyncCallback<GUITemplate>() {
             public void onFailure(Throwable caught) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                //throw new UnsupportedOperationException("Not supported yet.");
             }
 
             public void onSuccess(GUITemplate result) {
-              clearUI();
+                clearUI();
                 buildUI(result);
                 //logger.log(Level.INFO,"GUI received"+result.getGroups());
             }
@@ -169,44 +190,57 @@ public class VideoPropertyListEditor extends Composite implements
     }
 
     private void buildUI(final GUITemplate gui) {
-        for(Group group : gui.getGroups()){
-            logger.log(Level.INFO,"Create simple panel");
-            FieldSet panel=new FieldSet();
+        for (Group group : gui.getGroups()) {
+            //logger.log(Level.INFO,"Create simple panel");
+            FieldSet panel = new FieldSet();
             panel.setHeadingText(group.getTitle());
             VerticalLayoutContainer p = new VerticalLayoutContainer();
             panel.add(p);
             vlc.add(panel);
             _fieldSets.put(group.getId(), p);
         }
-        
-        for(Option option:gui.getOptions()){
-            logger.log(Level.INFO,"Create PropertyItemEditor:"+option.getControl().getType());
+
+        for (Option option : gui.getOptions()) {
+            //logger.log(Level.INFO,"Create PropertyItemEditor:"+option.getControl().getType());
             final PropertyItemEditor editor = ItemEditorFactory.getEditorByClassName(option.getControl().getType());
             editor.setLabel(option.getTitle());
             editor.setKey(option.getId());
+            if (editor instanceof ComboboxItemEditor) {
+                logger.log(Level.INFO, "setting items for combobox" + option.getControl().getDefault());
+                ((ComboboxItemEditor) editor).setItems(option.getControl().getItems());
+            }
             _fieldSets.get(option.getGroup()).add(editor);
 
             /*create propertyItem when not exists*/
-            if(!_propertyMap.containsKey(option.getId())){
-                _propertyMap.put(option.getId(), new PropertyItem(option.getId(),""));
+            if (!_propertyMap.containsKey(option.getId())) {
+                _propertyMap.put(option.getId(), new PropertyItem(option.getId(), option.getControl().getDefault()));
                 _currentData.add(_propertyMap.get(option.getId()));
             }
+
             /*attache it to the chain*/
             _chain.attach(_propertyMap.get(option.getId()), editor);
-            
+
+
+            editor.addValueChangeHandler(new ValueChangeHandler() {
+                public void onValueChange(ValueChangeEvent event) {
+                    logger.log(Level.INFO, "Field name:" + editor.getKey());
+                    logger.log(Level.INFO, "Field value:" + event.getValue());
+                }
+            });
+
         }
     }
-    
-    private void clearUI(){
-      for(Map.Entry<String, VerticalLayoutContainer> entry : _fieldSets.entrySet()){
-        int widget_count=entry.getValue().getWidgetCount();
-        for(int a=0;a<widget_count;a++){
-          PropertyItemEditor editor=(PropertyItemEditor) entry.getValue().getWidget(0);
-            /*detach it from the chain*/
-            _chain.detach(editor);
-            editor.removeFromParent();
+
+    private void clearUI() {
+        for (Map.Entry<String, VerticalLayoutContainer> entry : _fieldSets.entrySet()) {
+            int widget_count = entry.getValue().getWidgetCount();
+            for (int a = 0; a < widget_count; a++) {
+                PropertyItemEditor editor = (PropertyItemEditor) entry.getValue().getWidget(0);
+                /*detach it from the chain*/
+                _chain.detach(editor);
+                editor.removeFromParent();
+            }
+            entry.getValue().getParent().removeFromParent();
         }
-        entry.getValue().getParent().removeFromParent();
-      }
     }
 }

@@ -12,13 +12,13 @@ import com.google.web.bindery.autobean.shared.AutoBean;
  */
 public interface Group {
     
-    @AutoBean.PropertyName(value = "id")
+    //@AutoBean.PropertyName(value = "id")
     String getId();
 
-    @AutoBean.PropertyName(value = "title")
+    //@AutoBean.PropertyName(value = "title")
     String getTitle();
 
-    @AutoBean.PropertyName(value = "tab")
+    //@AutoBean.PropertyName(value = "tab")
     String getTab();
 
 }

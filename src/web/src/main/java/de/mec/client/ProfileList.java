@@ -132,7 +132,7 @@ public class ProfileList extends ContentPanel {
         final Dialog d = new Dialog();
         d.setHeadingText("Edit Profile!");
         //d.setBodyStyle("fontWeight:bold;padding:13px;");
-        d.setSize("600", "400");
+        d.setSize("800", "600");
         d.setResize(true);
         //d.setHideOnButtonClick(true);
         d.setPredefinedButtons(PredefinedButton.YES, PredefinedButton.CANCEL);
@@ -156,6 +156,7 @@ public class ProfileList extends ContentPanel {
 
               public void onFailure(Throwable caught) {
                 logger.log(Level.WARNING, "editor profile save:", caught);
+                throw new IllegalStateException(caught);
               }
 
               public void onSuccess(Profile result) {

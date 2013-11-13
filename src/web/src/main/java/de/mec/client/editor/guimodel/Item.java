@@ -4,6 +4,7 @@
  */
 package de.mec.client.editor.guimodel;
 
+import com.google.web.bindery.autobean.shared.AutoBean;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import java.util.Map;
 public interface Item {
     String getKey();
     String getValue();
-    Map<String,String>getData();
-    List<String> getEnables();
+    @AutoBean.PropertyName(value = "data")
+    List<Map<String,String>>getOptionData();
+    //List<String> getEnables();
 }

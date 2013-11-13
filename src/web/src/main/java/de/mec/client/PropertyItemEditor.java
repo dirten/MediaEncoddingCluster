@@ -26,6 +26,7 @@ public abstract class PropertyItemEditor extends Composite implements Editor<Pro
     private static final Logger LOG = Logger.getLogger(PropertyItemEditor.class.getName());
     private FieldLabel label;
     private String _key;
+    private Grid grid = new Grid(1, 2);
 
     public String getKey() {
         return _component.getName();
@@ -34,38 +35,45 @@ public abstract class PropertyItemEditor extends Composite implements Editor<Pro
     public void setKey(String key) {
         _component.setName(key);
     }
+    
     private Field _component;
     @Path("val")
     public ConverterEditorAdapter<String, Object, Field<Object>> converter;
 
-    public PropertyItemEditor(Field component, Converter c) {
-        _component = component;
-        
-        //setHeadingText("base");
-        //LOG.log(Level.INFO,"new PropertyItemEditor 12");
-        Grid grid = new Grid(1, 2);
+    public PropertyItemEditor() {
         initWidget(grid);
-        //Label lblAge = new Label("Video Codec");
         label = new FieldLabel();
-        //key.setEnabled(false);
-        //wert=component;//new TextField();
-        if (c != null) {
-            //converter=new ConverterEditorAdapter(wert, new String2IntegerConverter());
-            //converter=new ConverterEditorAdapter(wert, new ObjectConverter<T>());
-            converter = new ConverterEditorAdapter(component, c);
-        } else {
-            converter = new ConverterEditorAdapter(component, new ObjectConverter<String>());
-        }
         grid.setWidget(0, 0, label);
-        grid.setWidget(0, 1, component);
+    }
 
+    public PropertyItemEditor(Field component, Converter c) {
+        this();
+        setComponent(component);
+        setConverter(c);
+        //_component = component;
+        
+
+    }
+
+    protected void setComponent(Field field) {
+        _component = field;
+        _component.setWidth(400);
+        grid.setWidget(0, 1, _component);
+    }
+
+    protected void setConverter(Converter c) {
+        if (c != null) {
+            converter = new ConverterEditorAdapter(_component, c);
+        } else {
+            converter = new ConverterEditorAdapter(_component, new ObjectConverter<String>());
+        }
     }
 
     public void setLabel(final String l) {
         label.setText(l);
     }
 
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Field> handler) {
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
         return _component.addHandler(handler, ValueChangeEvent.getType());
     }
 }
