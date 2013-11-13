@@ -55,13 +55,13 @@ public abstract class PropertyItemEditor extends Composite implements Editor<Pro
 
     }
 
-    protected void setComponent(Field field) {
+    protected final void setComponent(Field field) {
         _component = field;
         _component.setWidth(400);
         grid.setWidget(0, 1, _component);
     }
 
-    protected void setConverter(Converter c) {
+    protected final void setConverter(Converter c) {
         if (c != null) {
             converter = new ConverterEditorAdapter(_component, c);
         } else {
