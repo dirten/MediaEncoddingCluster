@@ -147,7 +147,7 @@ public:
     return job.uuid;
   }
 };
-REGISTER_WEB_HOOK("/api/v1/flow/{uuid}/{inputname}", POST, GraphSubmitHandler);
+REGISTER_WEB_HOOK("/api/v1/flow/{uuid}/{inputname}", POST, GraphSubmitHandler)
 
 
 

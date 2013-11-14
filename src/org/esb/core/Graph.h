@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   Graph.h
  * Author: jhoelscher
  *
@@ -20,97 +20,97 @@ namespace org {
     namespace core {
       
       class CORE_EXPORT Graph  {
-      public:
-        class Element{
         public:
-          ~Element(){
-            dependsOn.clear();
-          }
-          void setTask(Ptr<org::esb::core::Task>t){task=t;}
-          void addChild(Ptr<Element>  el){linksTo.push_back(el);}
-          void addParent(Ptr<Element>  el){dependsOn.push_back(el->id);}
-          std::list<Ptr<Element> > getChilds(){return linksTo;}
-          std::list<std::string> getParents(){return dependsOn;}
-          Ptr<org::esb::core::Task> task;
-        private:
-          std::list<Ptr<Element> > linksTo;
-          std::list<std::string> dependsOn;
-        public:
-          bool finished;
-          bool visited;
-          std::string parameter;
-          std::string name;
-          std::string id;
-        };
-        enum STATUS {
-          NONE,
-          PREPARE,
-          EXECUTE,
-          CLEANUP,
-          DONE,
-          INTERRUPT,
-          INTERRUPTED,
-          ERROR,
-          DONE_WITH_ERROR,
-          CANCELED
-        };
+          class Element{
+            public:
+              ~Element(){
+                dependsOn.clear();
+              }
+              void setTask(Ptr<org::esb::core::Task>t){task=t;}
+              void addChild(Ptr<Element>  el){linksTo.push_back(el);}
+              void addParent(Ptr<Element>  el){dependsOn.push_back(el->id);}
+              std::list<Ptr<Element> > getChilds(){return linksTo;}
+              std::list<std::string> getParents(){return dependsOn;}
+              Ptr<org::esb::core::Task> task;
+            private:
+              std::list<Ptr<Element> > linksTo;
+              std::list<std::string> dependsOn;
+            public:
+              bool finished;
+              bool visited;
+              std::string parameter;
+              std::string name;
+              std::string id;
+          };
+          enum STATUS {
+            NONE,
+            PREPARE,
+            EXECUTE,
+            CLEANUP,
+            DONE,
+            INTERRUPT,
+            INTERRUPTED,
+            ERROR,
+            DONE_WITH_ERROR,
+            CANCELED
+          };
 
-        Graph();
-        Graph(std::string);
-        Graph(std::list<Ptr<Graph::Element> >, std::string uuid="");
-        static void createJob(std::list<Ptr<Graph::Element> >,boost::shared_ptr<db::HiveDb>);
-        void addElement(Element);
-        void addElement(Ptr<Task>);
-        void linkElement(Ptr<Task>,Ptr<Task>);
-        void run();
-        void addStatusObserver(boost::function<void (Graph*)> func);
-        std::string getStatus();
-        STATUS getState();
+          Graph();
+          Graph(std::string);
+          Graph(std::list<Ptr<Graph::Element> >, std::string uuid="");
+          static void createJob(std::list<Ptr<Graph::Element> >,boost::shared_ptr<db::HiveDb>);
+          void addElement(Element);
+          void addElement(Ptr<Task>);
+          void linkElement(Ptr<Task>,Ptr<Task>);
+          void run();
+          void addStatusObserver(boost::function<void (Graph*)> func);
+          std::string getStatus();
+          STATUS getState();
           int getStepCount();
           int getProcessedStepCount();
-        virtual ~Graph();
-        void cancel();
-      private:
-        //friend class jobexecutor::Service;
+          virtual ~Graph();
+          void cancel();
+        private:
+          //friend class jobexecutor::Service;
 
-        boost::function<void (Graph*)> statusObserver;
-        static void processElement(Ptr<Element> ,db::Job & );
-        std::list<Ptr<Graph::Element> > elements;
-        void connect(Ptr<Element>);
-        void prepare(Ptr<Element>);
-        void execute(Ptr<Element>);
-        void cleanup(Ptr<Element>);
-        JSONNode status;
-        std::string _uuid;
-        STATUS _state;
-        int processedStepCount;
-        bool haserror;
-        class Status{
-        public:
-          Status(){
-            uid="";
-            progress="0";
-            status=Task::NONE;
-            message="";
-            exception="";
-          }
-          std::string uid;
-          Task::STATUS status;
-          std::string progress;
-          std::string message;
-          std::string exception;
-        };
-        
-        typedef std::map<std::string, std::string> KeyValue;
-        typedef std::list<Ptr<Status> > KeyValueList;
-        KeyValueList status_list;
-        void setStatus(Task*);
-        void setProgress(Task*);
-        bool _isCanceled;
-        Ptr<org::esb::core::Task> _current_task;
-        //std::set<Ptr<Task> > _taskList;
-        //std::list<Ptr<Task> > _taskLinkMap;
-        //std::string _link_matrix[100][100];
+          boost::function<void (Graph*)> statusObserver;
+          static void processElement(Ptr<Element> ,db::Job & );
+          std::list<Ptr<Graph::Element> > elements;
+          void connect(Ptr<Element>);
+          void prepare(Ptr<Element>);
+          void execute(Ptr<Element>);
+          void cleanup(Ptr<Element>);
+          JSONNode status;
+          std::string _uuid;
+          STATUS _state;
+          int processedStepCount;
+          bool haserror;
+          class Status{
+            public:
+              Status(){
+                uid="";
+                progress="0";
+                status=Task::NONE;
+                message="";
+                exception="";
+              }
+              std::string uid;
+              Task::STATUS status;
+              std::string progress;
+              std::string message;
+              std::string exception;
+          };
+
+          typedef std::map<std::string, std::string> KeyValue;
+          typedef std::list<Ptr<Status> > KeyValueList;
+          KeyValueList status_list;
+          void setStatus(Task*);
+          void setProgress(Task*);
+          bool _isCanceled;
+          Ptr<org::esb::core::Task> _current_task;
+          //std::set<Ptr<Task> > _taskList;
+          //std::list<Ptr<Task> > _taskLinkMap;
+          //std::string _link_matrix[100][100];
       };
     }
   }

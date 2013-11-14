@@ -60,6 +60,10 @@ public abstract class PropertyItemEditor extends Composite implements Editor<Pro
         _component.setWidth(400);
         grid.setWidget(0, 1, _component);
     }
+    @Ignore
+    public Field<String> getComponent(){
+        return _component;
+    }
 
     protected final void setConverter(Converter c) {
         if (c != null) {
@@ -72,7 +76,11 @@ public abstract class PropertyItemEditor extends Composite implements Editor<Pro
     public void setLabel(final String l) {
         label.setText(l);
     }
-
+    
+    public void setEnabled(final boolean b){
+        _component.setEnabled(b);
+    }
+    
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
         return _component.addHandler(handler, ValueChangeEvent.getType());
     }

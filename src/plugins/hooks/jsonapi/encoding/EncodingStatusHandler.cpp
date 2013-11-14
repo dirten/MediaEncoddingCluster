@@ -60,5 +60,5 @@ public:
   }
 
 };
-REGISTER_WEB_HOOK("/api/v1/encoding/{encodingid}/status$", GET, EncodingStatusHandler);
+REGISTER_WEB_HOOK("/api/v1/encoding/{encodingid}/status$", GET, EncodingStatusHandler)
 

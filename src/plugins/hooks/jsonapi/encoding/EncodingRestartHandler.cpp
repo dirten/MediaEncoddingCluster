@@ -48,7 +48,7 @@ public:
   }
 
 };
-REGISTER_WEB_HOOK("/api/v1/encoding/{encodingid}/restart", POST, EncodingRestartHandler);
+REGISTER_WEB_HOOK("/api/v1/encoding/{encodingid}/restart", POST, EncodingRestartHandler)
 
 
 

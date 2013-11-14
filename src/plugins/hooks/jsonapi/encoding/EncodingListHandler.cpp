@@ -35,4 +35,4 @@ public:
     ostr << result.write_formatted();
   }
 };
-REGISTER_WEB_HOOK("/api/v1/encoding/?$", GET, EncodingListHandler);
+REGISTER_WEB_HOOK("/api/v1/encoding/?$", GET, EncodingListHandler)

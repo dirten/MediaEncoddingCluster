@@ -4,6 +4,7 @@
  */
 package de.mec.client.editor.guimodel;
 
+import com.google.web.bindery.autobean.shared.AutoBean;
 import java.util.List;
 
 /**

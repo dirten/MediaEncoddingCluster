@@ -24,7 +24,7 @@ namespace org{
             HTTPServerRequest * request1=static_cast<HTTPServerRequest *>(&request);
             HTTPServerResponse * response1=static_cast<HTTPServerResponse *>(&response);
             handle(*request1,* response1);
-          };
+          }
         };
       }
     }

@@ -42,7 +42,7 @@ public:
   }
 
 };
-REGISTER_WEB_HOOK("/api/v1/encoding/{encodingid}/stop", POST, EncodingStopHandler);
+REGISTER_WEB_HOOK("/api/v1/encoding/{encodingid}/stop", POST, EncodingStopHandler)
 
 
 

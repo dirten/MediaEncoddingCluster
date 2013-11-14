@@ -17,5 +17,5 @@ public interface Item {
     String getValue();
     @AutoBean.PropertyName(value = "data")
     List<Map<String,String>>getOptionData();
-    //List<String> getEnables();
+    List<String> getEnables();
 }

@@ -53,6 +53,9 @@ public class ItemEditorFactory {
       if("Slider".equals(property)){
         return new SliderItemEditor();
       }
+      if("Hidden".equals(property)){
+        return new HiddenItemEditor();
+      }
       return new TextItemEditor();
     }
 }
