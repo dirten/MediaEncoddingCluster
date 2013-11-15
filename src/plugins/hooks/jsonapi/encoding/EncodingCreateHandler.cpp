@@ -32,13 +32,18 @@ class JSONAPI_EXPORT EncodingCreateHandler : public org::esb::core::WebHookPlugi
         JSONNode graph(JSON_NODE);
         JSONNode tasks(JSON_ARRAY);
         tasks.set_name("tasks");
-
+        if(!inode.contains("infile") || !inode.contains("outfile") || !inode.contains("preset")){
+          res.setStatus("wrong data in json");
+          std::ostream& ostr = res.send();
+          ostr << result.write_formatted();
+          return;
+        }
         tasks.push_back(createInfilenode(inode["infile"].as_string()));
         tasks.push_back(createOutfilenode(inode["outfile"].as_string()));
 
         //db::HiveDb db("sqlite3", req.get("db.url"));
+
         db::Preset preset = litesql::select<db::Preset > (_db, db::Preset::Uuid == inode["preset"].as_string()).one();
-        ;
         tasks.push_back(createProfilenode(inode["preset"].as_string(),preset.data));
 
 
@@ -60,17 +65,17 @@ class JSONAPI_EXPORT EncodingCreateHandler : public org::esb::core::WebHookPlugi
   private:
     JSONNode createInfilenode(std::string filename){
       JSONNode result;
-      result.push_back(JSONNode("name","InputTask"));
+      result.push_back(JSONNode("name","HTTPPullSource"));
       result.push_back(JSONNode("uid",1));
 
       JSONNode data(JSON_NODE);
       data.set_name("data");
-      data.push_back(JSONNode("infile",filename));
+      data.push_back(JSONNode("srcurl",filename));
       result.push_back(data);
 
       JSONNode links(JSON_ARRAY);
       links.set_name("linksTo");
-      links.push_back(JSONNode("","2"));
+      links.push_back(JSONNode("","3"));
       result.push_back(links);
 
 
@@ -87,10 +92,6 @@ class JSONAPI_EXPORT EncodingCreateHandler : public org::esb::core::WebHookPlugi
       data.push_back(JSONNode("outfile",filename));
       result.push_back(data);
 
-      JSONNode links(JSON_ARRAY);
-      links.set_name("linksTo");
-      links.push_back(JSONNode("","3"));
-      result.push_back(links);
 
       return result;
     }
@@ -103,6 +104,11 @@ class JSONAPI_EXPORT EncodingCreateHandler : public org::esb::core::WebHookPlugi
       JSONNode data=libjson::parse(jdata);
       data.set_name("data");
       result.push_back(data);
+
+      JSONNode links(JSON_ARRAY);
+      links.set_name("linksTo");
+      links.push_back(JSONNode("","2"));
+      result.push_back(links);
 
       return result;
     }

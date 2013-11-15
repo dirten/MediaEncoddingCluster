@@ -98,6 +98,7 @@ namespace jobexecutor {
           std::list<Ptr<org::esb::core::Graph::Element> > list;
 
           foreach(org::esb::core::GraphParser::ElementMap::value_type & element, el) {
+            element.second->task->getContext()->set<std::string>("uuid",job.uuid);
             list.push_back(element.second);
           }
           _job = &job;
@@ -126,6 +127,7 @@ namespace jobexecutor {
           log.message = ex.what();
           log.update();
           job.joblog().link(log);
+          LOGERROR(ex.what())
 
         } catch (std::exception & ex) {
           job.status = job.Status.Error;
@@ -134,6 +136,7 @@ namespace jobexecutor {
           log.message = ex.what();
           log.update();
           job.joblog().link(log);
+          LOGERROR(ex.what())
         }
 
         if (job.status != job.Status.Error)

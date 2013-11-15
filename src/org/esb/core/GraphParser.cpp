@@ -148,6 +148,8 @@ namespace org {
 
               foreach(const Option value, desc.options()) {
                 std::string def;
+
+                /*check if it has a default value to set*/
                 if (!value->semantic()->is_required()) {
                   boost::any data;
                   value->semantic()->apply_default(data);
@@ -183,7 +185,7 @@ namespace org {
                 parameter += key + "=" + v + ";";
                 para[key] = v;
               }
-
+              para["uuid"]=node["uid"].as_string();
               LOGDEBUG("Parameter:" << parameter);
               task = org::esb::core::PluginRegistry::getInstance()->createTask(node["name"].as_string(), para);
               //task->getContext()->_props["job"]=job;

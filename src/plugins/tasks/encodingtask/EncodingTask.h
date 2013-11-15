@@ -38,6 +38,8 @@ namespace encodingtask {
     int getPadTypes();
     void pushBuffer(Ptr<Packet> p);
   private:
+    classlogger("task.encodingtask")
+
     void unitListCallback(boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit);
     std::string _srcuristr;
     std::string _partition;
@@ -84,7 +86,7 @@ namespace encodingtask {
 
     Ptr<org::esb::mq::QueueConnection> con;
     Ptr<safmq::MessageQueue> read_q;
-
+    boost::shared_ptr<db::HiveDb> database;
   };
   //  REGISTER_TASK("DownloadTask", DownloadTask)
 }

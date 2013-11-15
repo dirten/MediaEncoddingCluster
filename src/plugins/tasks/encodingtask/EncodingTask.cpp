@@ -33,12 +33,15 @@ namespace encodingtask {
   }
 
   void EncodingTask::prepare() {
+
+    LOGDEBUG("PluginContext uuid="+getContext()->get<std::string > ("uuid"))
+    //database=getContext()->database;
     _srcuristr = getContext()->getEnvironment<std::string > ("encodingtask.src");
     if (_srcuristr.length() == 0) {
       _srcuristr = getSource();
     }
     _partition = getContext()->getEnvironment<std::string > ("encodingtask.partition");
-    _task_uuid = org::esb::util::PUUID();//getUUID(); //getContext()->getEnvironment<std::string > ("task.uuid");
+    _task_uuid = getContext()->get<std::string > ("uuid");//org::esb::util::PUUID();//getUUID(); //getContext()->getEnvironment<std::string > ("task.uuid");
     _target_file = getSink();
 
     std::string profiledata = getContext()->getEnvironment<std::string > ("data");
@@ -100,13 +103,13 @@ namespace encodingtask {
       throw org::esb::core::TaskException("could not find decoder in Tasks PluginContext");
     }
     con=new org::esb::mq::QueueConnection("localhost", 20202);
-    if(!con->queueExist("read_q")){
-        con->createQueue("read_q");
+    if(!con->queueExist("read_q-"+_task_uuid)){
+        con->createQueue("read_q-"+_task_uuid);
     }
-    if(!con->queueExist("write_q")){
-        con->createQueue("write_q");
+    if(!con->queueExist("write_q-"+_task_uuid)){
+        con->createQueue("write_q-"+_task_uuid);
     }
-    read_q=con->getMessageQueue("read_q");
+    read_q=con->getMessageQueue("read_q-"+_task_uuid);
     getContext()->set<std::map<int, Ptr<org::esb::av::Encoder> > >("encoder",_encs);
 
     getContext()->set<std::string > ("profile.name", _preset["name"]);
@@ -209,6 +212,9 @@ namespace encodingtask {
       if(_packetizer.count(p->getStreamIndex())){
         StreamPacketizer & pti = _packetizer[p->getStreamIndex()];
         StreamProcessUnitBuilder & spub=_spu[p->getStreamIndex()];
+        if(!pti.getDecoder()){
+          return;
+        }
         if (pti.putPacket(p)) {
           /*when the packet count per ProcessUnit reached*/
           PacketListPtr list = pti.removePacketList();
@@ -431,6 +437,6 @@ namespace encodingtask {
     return a->getDts() < b->getDts();
   }
 
-  REGISTER_TASK("EncodingTask", EncodingTask);
+  REGISTER_TASK("EncodingTask", EncodingTask)
 
 }
