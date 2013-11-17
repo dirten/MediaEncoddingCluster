@@ -137,6 +137,9 @@ ENDIF(WIN32)
 add_executable (info info.cpp)
 add_executable (pu pu.cpp)
 add_executable (pc PacketCount.cpp)
+add_executable(zeromq ZeroMQ.cpp)
+add_executable(zmqworker ZeroMQWorker.cpp)
+add_executable(zmqsink ZeroMQSink.cpp)
 #add_executable (testclass TestNewClass.cpp)
 
 add_executable (mytest test.cpp)
@@ -168,7 +171,15 @@ target_link_libraries (pc
   signal
   lang
   )
-
+target_link_libraries(zeromq
+  zmq
+)
+target_link_libraries(zmqworker
+  zmq
+)
+target_link_libraries(zmqsink
+  zmq
+)
 
 IF(WIN32)
 #  TARGET_LINK_LIBRARIES (info erl_interface ei libx264 wsock32 vfw32 winmm libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg)
