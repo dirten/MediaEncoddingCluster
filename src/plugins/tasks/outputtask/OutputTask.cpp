@@ -100,5 +100,5 @@ namespace plugin {
     setProgress(1);
     LOGDEBUG("Output finish!");
   }
-  REGISTER_TASK("OutputTask",OutputTask );
+  REGISTER_TASK("OutputTask",OutputTask )
 }

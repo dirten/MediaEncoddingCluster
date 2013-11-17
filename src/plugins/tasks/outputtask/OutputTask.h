@@ -20,6 +20,8 @@ namespace plugin {
     org::esb::core::OptionsDescription getOptionsDescription();
     int getPadTypes();
   private:
+    classlogger("task.outputtask")
+
     std::string _trguristr;
     std::string _srcuristr;
     std::string _task_uuid;

@@ -17,7 +17,7 @@ namespace jobexecutor {
 
   class Service : public org::esb::core::ServicePlugin , org::esb::signal::MessageListener {
     //logger("service.jobexecutor");
-    classlogger("service.jobexecutor");
+    classlogger("service.jobexecutor")
   public:
     Service();
     virtual ~Service();
