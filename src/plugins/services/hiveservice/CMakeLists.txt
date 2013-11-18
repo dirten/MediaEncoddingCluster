@@ -15,6 +15,7 @@ include_directories (${SAFMQ_DIR}/include/shared)
 add_library (hiveservice SHARED
   HiveListener.cpp
   ProtocolServer.cpp
+  proto/QueueNameHandler.cpp
   #proto/PartitionHandler.cpp
  )
 

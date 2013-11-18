@@ -114,6 +114,7 @@ namespace org {
 
           } catch (exception & ex) {
             LOGERROR("ERROR in ProtocolServer:" << ex.what());
+            //throw ex;
             break;
             //      socket->close();
             //			cout << "ERROR in ProtocolServer:" << ex.what () << endl;

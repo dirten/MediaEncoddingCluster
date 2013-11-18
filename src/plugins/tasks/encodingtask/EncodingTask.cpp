@@ -102,6 +102,7 @@ namespace encodingtask {
         std::string qReadName=_task_uuid+"#read#"+StringUtil::toString( (*it).first );
         std::string qWriteName=_task_uuid+"#write#"+StringUtil::toString( (*it).first );
         /*creating queue for each stream*/
+        /*
         if(!con->queueExist(qReadName)){
             con->createQueue(qReadName);
         }
@@ -109,11 +110,19 @@ namespace encodingtask {
             con->createQueue(qWriteName);
         }
         _queueMap[(*it).first]=con->getMessageQueue(qReadName);
+        */
+        _queueMap[(*it).first]=con->getMessageQueue("read_q");
         db::Queue queue(*database);
         //queue.job.link(job);
         queue.outputname=qReadName;
         queue.inputname=qWriteName;
         queue.uuid=_task_uuid;
+        if ((*it).second->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+          queue.qtype=db::Queue::Qtype::ONE4ALL;
+        }
+        if ((*it).second->getCodecType() == AVMEDIA_TYPE_VIDEO) {
+          queue.qtype=db::Queue::Qtype::ONE2ONE;
+        }
         queue.update();
 
       }

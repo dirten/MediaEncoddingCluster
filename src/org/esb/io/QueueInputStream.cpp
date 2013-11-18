@@ -34,7 +34,11 @@ namespace org {
           url+=queuename;
 
           /*url="safmq://admin:@localhost:9000/testqueue"*/
-          _queue = safmq::MQFactory::BuildQueueConnection(url, "", "");
+          LOGDEBUG("connecting queue :"+host+":")
+          _queue = safmq::MQFactory::BuildQueueConnection(url, "", std::string());
+          //con=new org::esb::mq::QueueConnection(host, port);
+          //_queue=con->getMessageQueue(queuename);
+          LOGDEBUG("queue connected")
         } catch (tcpsocket::SocketException & ex) {
           LOGERROR(ex.what());
           LOGERROR(ex.getError());

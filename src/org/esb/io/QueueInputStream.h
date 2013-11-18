@@ -10,6 +10,8 @@
 #include "InputStream.h"
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/io/exports.h"
+#include "org/esb/mq/QueueConnection.h"
+
 namespace safmq {
   class MessageQueue;
 }
@@ -31,6 +33,7 @@ namespace org {
 
       private:
         Ptr<safmq::MessageQueue> _queue;
+        Ptr<org::esb::mq::QueueConnection> con;
 
       };
     }

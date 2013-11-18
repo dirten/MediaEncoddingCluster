@@ -14,6 +14,9 @@ add_library (mq SHARED
       QueueMessage.cpp
       ObjectMessage.cpp
       QueueException.cpp
+      ../io/QueueOutputStream.cpp
+      ../io/QueueInputStream.cpp
+
 )
 
 TARGET_LINK_LIBRARIES(mq

@@ -30,7 +30,8 @@ namespace mqserver {
   }
 
   void Service::stopService() {
-    _qm->stop();
+    if(_qm)
+      _qm->stop();
   }
 
   org::esb::core::OptionsDescription Service::getOptionsDescription() {

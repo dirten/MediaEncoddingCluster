@@ -55,6 +55,9 @@ namespace org {
                 bool _running;
                 std::string _host;
                 int _port;
+
+                Ptr<org::esb::io::QueueInputStream> _qis;
+                Ptr<org::esb::io::QueueOutputStream> _qos;
                 Ptr<org::esb::io::ObjectInputStream> _ois;
                 Ptr<org::esb::io::ObjectOutputStream> _oos;
                 Ptr<org::esb::net::TcpSocket> _sock;

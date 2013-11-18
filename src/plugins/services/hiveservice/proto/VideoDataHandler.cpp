@@ -1,5 +1,5 @@
 #include "org/esb/util/Timer.h"
-#include "org/esb/hive/ProtocolCommand.h"
+//#include "org/esb/hive/ProtocolCommand.h"
 
 #include "org/esb/io/InputStream.h"
 #include "org/esb/io/OutputStream.h"
@@ -17,6 +17,8 @@
 #include "plugins/services/partitionservice/PartitionManager.h"
 #include "org/esb/mq/QueueConnection.h"
 #include "org/esb/mq/ObjectMessage.h"
+#include "org/esb/db/hivedb.hpp"
+#include "org/esb/config/config.h"
 #include <map>
 #include <string>
 using namespace org::esb::hive::job;
@@ -34,6 +36,7 @@ using namespace org::esb;
 class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
   private:
     classlogger("org.esb.hive.protocol.DataHandler")
+    db::HiveDb _db;
     InputStream * _is;
     OutputStream * _os;
     //	PacketOutputStream * _pos;
@@ -54,10 +57,42 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
     Ptr<safmq::MessageQueue> read_q;
     Ptr<safmq::MessageQueue> write_q;
 
+    std::string getMessageQueueName(){
+      db::Queue queue = litesql::select<db::Queue > (_db, db::Queue::Qtype==db::Queue::Qtype.ONE2ONE).one();
+      return queue.outputname;
+    }
+
+    Ptr<safmq::MessageQueue> getMessageQueue(std::string name){
+      if(con->queueExist(name)){
+        return con->getMessageQueue(name);
+      }
+      return Ptr<safmq::MessageQueue>();
+    }
+
+    void removeMessageQueue(std::string name){
+      if(con->queueExist(name)){
+        con->deleteQueue(name);
+      }
+    }
+
+    void removeMessageQueueName(std::string name){
+      db::Queue queue = litesql::select<db::Queue > (_db, db::Queue::Outputname==name).one();
+      queue.del();
+    }
+
+    Ptr<safmq::MessageQueue> getMessageQueue(){
+        std::string name=getMessageQueueName();
+        Ptr<safmq::MessageQueue> mq=getMessageQueue(name);
+        if(mq){
+          return mq;
+        }else{
+          removeMessageQueueName(name);
+        }
+    }
 
   public:
 
-    VideoDataHandler(InputStream * is, OutputStream * os, boost::asio::ip::tcp::endpoint e) {
+    VideoDataHandler(InputStream * is, OutputStream * os, boost::asio::ip::tcp::endpoint e): _db(db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"))) {
       _ep=e;
       _oos = new io::ObjectOutputStream(os);
       _ois = new io::ObjectInputStream(is);
@@ -140,6 +175,9 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
       if (strcmp(command, GET_UNIT) == 0) {
         //partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
         org::esb::mq::ObjectMessage msg;
+        //Ptr<safmq::MessageQueue> mq=getMessageQueue();
+        //mq
+        //mq->Retrieve(true,1,msg);
         read_q->Retrieve(true,-1,msg);
         msg.getObject(un);
         //un = man->getProcessUnit(_ep);

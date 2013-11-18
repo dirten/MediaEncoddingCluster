@@ -6,7 +6,7 @@
  */
 
 #include "QueueOutputStream.h"
-#include "MQFactory.h"
+#include "lib/MQFactory.h"
 #include "MessageQueue.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringUtil.h"

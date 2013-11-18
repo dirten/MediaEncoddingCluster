@@ -13,13 +13,14 @@
 #include "org/esb/hive/protocol/PartitionHandler.h"
 #include "org/esb/config/config.h"
 #include "org/esb/net/SocketException.h"
-
+#define USE_SAFMQ
 //#include "Version.h"
 namespace org {
   namespace esb {
     namespace hive {
 
       HiveClient::HiveClient(std::string host, int port) {
+        LOGDEBUG("start client")
         _host = host;
         _port = port;
         _sock = NULL;
@@ -29,8 +30,8 @@ namespace org {
         _running = false;
         _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
 #ifdef USE_SAFMQ
-        _qis = new QueueInputStream(_host, _port, "punitout");
-        _qos = new QueueOutputStream(_host, _port, "punitin");
+        //_qis = new QueueInputStream(_host, _port, "punitout");
+        //_qos = new QueueOutputStream(_host, _port, "punitin");
 #endif
         org::esb::av::FormatBaseStream::initialize();
         //        avcodec_register_all();
@@ -46,12 +47,15 @@ namespace org {
       }
 
       void HiveClient::onMessage(org::esb::signal::Message & msg) {
+        LOGDEBUG("message receiver")
         if (msg.getProperty<std::string > ("hiveclient") == "start") {
+          LOGDEBUG("start message received")
           _t = boost::thread(boost::bind(&HiveClient::start, this));
           _running = true;
         } else
           if (msg.getProperty<std::string > ("hiveclient") == "stop") {
-          stop();
+            LOGDEBUG("stop message received")
+            stop();
         }
       }
 
@@ -74,14 +78,15 @@ namespace org {
       }
 
       void HiveClient::connect() {
+        LOGDEBUG("connect")
         try {
           //delete _sock;
           _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
           _sock->connect();
 #ifdef USE_SAFMQ
 
-          _qis = new QueueInputStream(_host, _port, "punitout");
-          _qos = new QueueOutputStream(_host, _port, "punitin");
+          _qis = new QueueInputStream(_host, 20202, "read_q");
+          _qos = new QueueOutputStream(_host, 20202, "write_q");
           _ois = new org::esb::io::ObjectInputStream(_qis.get());
           _oos = new org::esb::io::ObjectOutputStream(_qos.get());
 #else
@@ -112,8 +117,11 @@ namespace org {
               boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit; // = new org::esb::hive::job::ProcessUnit();
 
               try {
+                LOGDEBUG("send command :"+std::string(text))
                 _sock->getOutputStream()->write(text, strlen(text));
+                LOGDEBUG("read object")
                 _ois->readObject(unit);
+                LOGDEBUG("object received")
               } catch (exception & ex) {
                 LOGERROR("Connection to Server lost!!!" << ex.what());
                 _sock->close();

@@ -20,6 +20,8 @@ IF(WIN32)
 ADD_DEFINITIONS(-DBOOST_USE_WINDOWS_H)
 ENDIF(WIN32)
 
+include_directories (${MEC_SOURCE_DIR}/build/build/include/shared)
+include_directories (${MEC_SOURCE_DIR}/build/build/include/lib)
 
 include_directories (${MEC_SOURCE_DIR})
 include_directories (${LOG4CPLUS_DIR}/include)
@@ -355,7 +357,7 @@ add_library (hive SHARED
 #  hive/ClientStream.cpp
 )
 
-TARGET_LINK_LIBRARIES(hive db net signal av lang json util  ${Boost_LIBRARIES}
+TARGET_LINK_LIBRARIES(hive db net signal av lang json util  ${Boost_LIBRARIES} mq
 )
 
 INSTALL(TARGETS hive
