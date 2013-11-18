@@ -86,6 +86,8 @@ namespace encodingtask {
 
     Ptr<org::esb::mq::QueueConnection> con;
     Ptr<safmq::MessageQueue> read_q;
+    std::map<int, Ptr<safmq::MessageQueue> > _queueMap;
+
     boost::shared_ptr<db::HiveDb> database;
   };
   //  REGISTER_TASK("DownloadTask", DownloadTask)

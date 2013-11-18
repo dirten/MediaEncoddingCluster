@@ -35,7 +35,7 @@ namespace encodingtask {
   void EncodingTask::prepare() {
 
     LOGDEBUG("PluginContext uuid="+getContext()->get<std::string > ("uuid"))
-    //database=getContext()->database;
+    database=getContext()->database;
     _srcuristr = getContext()->getEnvironment<std::string > ("encodingtask.src");
     if (_srcuristr.length() == 0) {
       _srcuristr = getSource();
@@ -51,6 +51,7 @@ namespace encodingtask {
     _filters = reader.getFilterList();
     _preset = reader.getPreset();
     _format = _preset["id"];
+    con=new org::esb::mq::QueueConnection("localhost", 20202);
 
     //Ptr<Task> itask=_sources.front();
     if (getContext()->contains("decoder")) {
@@ -98,11 +99,28 @@ namespace encodingtask {
 
         _packetizer[(*it).first] = StreamPacketizer(0, (*it).second);
         _spu[(*it).first]=StreamProcessUnitBuilder();
+        std::string qReadName=_task_uuid+"#read#"+StringUtil::toString( (*it).first );
+        std::string qWriteName=_task_uuid+"#write#"+StringUtil::toString( (*it).first );
+        /*creating queue for each stream*/
+        if(!con->queueExist(qReadName)){
+            con->createQueue(qReadName);
+        }
+        if(!con->queueExist(qWriteName)){
+            con->createQueue(qWriteName);
+        }
+        _queueMap[(*it).first]=con->getMessageQueue(qReadName);
+        db::Queue queue(*database);
+        //queue.job.link(job);
+        queue.outputname=qReadName;
+        queue.inputname=qWriteName;
+        queue.uuid=_task_uuid;
+        queue.update();
+
       }
     } else {
       throw org::esb::core::TaskException("could not find decoder in Tasks PluginContext");
     }
-    con=new org::esb::mq::QueueConnection("localhost", 20202);
+    /*
     if(!con->queueExist("read_q-"+_task_uuid)){
         con->createQueue("read_q-"+_task_uuid);
     }
@@ -110,23 +128,33 @@ namespace encodingtask {
         con->createQueue("write_q-"+_task_uuid);
     }
     read_q=con->getMessageQueue("read_q-"+_task_uuid);
-    getContext()->set<std::map<int, Ptr<org::esb::av::Encoder> > >("encoder",_encs);
-
-    getContext()->set<std::string > ("profile.name", _preset["name"]);
-    getContext()->set<std::string > ("video.codec", _codecs["video"]["codec_id"]);
-    if (_codecs["video"].count("multipass") && _codecs["video"]["multipass"] == "1") {
-      getContext()->set<std::string > ("video.passes", "2");
-    } else {
-      getContext()->set<std::string > ("video.passes", "1");
+    */
+    /*
+    if(!con->queueExist("read_q")){
+        con->createQueue("read_q");
     }
-    getContext()->set<std::string > ("video.bitrate", _codecs["video"]["b"]);
-    getContext()->set<std::string > ("video.height", _codecs["video"]["height"]);
-    getContext()->set<std::string > ("video.width", _codecs["video"]["width"]);
+    if(!con->queueExist("write_q")){
+        con->createQueue("write_q");
+    }
+    read_q=con->getMessageQueue("read_q");
+    */
+    getContext()->setProperty<std::map<int, Ptr<org::esb::av::Encoder> > >("encoder",_encs);
 
-    getContext()->set<std::string > ("audio.codec", _codecs["audio"]["codec_id"]);
-    getContext()->set<std::string > ("audio.bitrate", _codecs["audio"]["ab"]);
-    getContext()->set<std::string > ("audio.channels", _codecs["audio"]["ac"]);
-    getContext()->set<std::string > ("audio.samples", _codecs["audio"]["ar"]);
+    getContext()->setProperty<std::string > ("profile.name", _preset["name"]);
+    getContext()->setProperty<std::string > ("video.codec", _codecs["video"]["codec_id"]);
+    if (_codecs["video"].count("multipass") && _codecs["video"]["multipass"] == "1") {
+      getContext()->setProperty<std::string > ("video.passes", "2");
+    } else {
+      getContext()->setProperty<std::string > ("video.passes", "1");
+    }
+    getContext()->setProperty<std::string > ("video.bitrate", _codecs["video"]["b"]);
+    getContext()->setProperty<std::string > ("video.height", _codecs["video"]["height"]);
+    getContext()->setProperty<std::string > ("video.width", _codecs["video"]["width"]);
+
+    getContext()->setProperty<std::string > ("audio.codec", _codecs["audio"]["codec_id"]);
+    getContext()->setProperty<std::string > ("audio.bitrate", _codecs["audio"]["ab"]);
+    getContext()->setProperty<std::string > ("audio.channels", _codecs["audio"]["ac"]);
+    getContext()->setProperty<std::string > ("audio.samples", _codecs["audio"]["ar"]);
 
     /*} catch (std::exception & ex) {
       setStatus(Task::ERROR);
@@ -268,8 +296,8 @@ namespace encodingtask {
     unit->_source_stream = unit->_input_packets.front()->getStreamIndex();
     unit->_last_process_unit = isLast;
     msg.setObject(unit);
-
-    read_q->Enqueue(msg);
+    _queueMap[unit->_source_stream]->Enqueue(msg);
+    //read_q->Enqueue(msg);
     //partitionservice::PartitionManager::getInstance()->putProcessUnit(_partition, unit, t);
     setProgressLength(getProgressLength() + 1);
   }

@@ -568,6 +568,7 @@ bool setupDatabase() {
       std::string webroot = std::string(config::Config::getProperty("hive.base_path"));
       webroot.append("/web");
       conf["web.docroot"] = webroot;
+      conf["nodeid"] = org::esb::util::PUUID();
 
       std::map<std::string, std::string>::iterator it = conf.begin();
       db.begin();

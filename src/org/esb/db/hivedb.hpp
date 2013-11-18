@@ -27,6 +27,7 @@ class Request;
 class Partition;
 class Graph;
 class Location;
+class Queue;
 class FilterFilterParameterRelation {
 public:
     class Row {
@@ -368,6 +369,25 @@ public:
 ;
 ;
 };
+class GraphTaskRelationGraphTask {
+public:
+    class Row {
+    public:
+        litesql::Field<int> task;
+        litesql::Field<int> graph;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType Graph;
+    static const litesql::FieldType Task;
+    static void link(const litesql::Database& db, const db::Graph& o0, const db::Task& o1);
+    static void unlink(const litesql::Database& db, const db::Graph& o0, const db::Task& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<GraphTaskRelationGraphTask::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
 class JobJobLogRelationJobJobLog {
 public:
     class Row {
@@ -554,6 +574,25 @@ public:
     static void unlink(const litesql::Database& db, const db::Job& o0, const db::Partition& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     static litesql::DataSource<JobPartitionRelationJob2Partition::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
+class JobQueueRelationJob2Queue {
+public:
+    class Row {
+    public:
+        litesql::Field<int> queue;
+        litesql::Field<int> job;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType Job;
+    static const litesql::FieldType Queue;
+    static void link(const litesql::Database& db, const db::Job& o0, const db::Queue& o1);
+    static void unlink(const litesql::Database& db, const db::Job& o0, const db::Queue& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<JobQueueRelationJob2Queue::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 ;
 ;
@@ -1727,6 +1766,15 @@ public:
         litesql::DataSource<Partition> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
         litesql::DataSource<JobPartitionRelationJob2Partition::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
+    class QueuesHandle : public litesql::RelationHandle<Job> {
+    public:
+        QueuesHandle(const Job& owner);
+        void link(const Queue& o0);
+        void unlink(const Queue& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Queue> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<JobQueueRelationJob2Queue::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     static const std::string type__;
     static const std::string table__;
     static const std::string sequence__;
@@ -1787,6 +1835,7 @@ public:
     Job::JobdetailsHandle jobdetails();
     Job::ProcessUnitsHandle processUnits();
     Job::PartitionHandle partition();
+    Job::QueuesHandle queues();
     virtual std::string getStatusText();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
@@ -1836,6 +1885,15 @@ public:
         litesql::DataSource<Job> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
         litesql::DataSource<JobTaskRelationJobTask::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
+    class JobTaskHandle : public litesql::RelationHandle<Task> {
+    public:
+        JobTaskHandle(const Task& owner);
+        void link(const Graph& o0);
+        void unlink(const Graph& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Graph> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<GraphTaskRelationGraphTask::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     static const std::string type__;
     static const std::string table__;
     static const std::string sequence__;
@@ -1869,6 +1927,7 @@ public:
     Task(const Task& obj);
     const Task& operator=(const Task& obj);
     Task::JobHandle job();
+    Task::JobTaskHandle jobTask();
     virtual std::string getStatusText();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
@@ -2388,6 +2447,15 @@ public:
     public:
         static const litesql::FieldType Id;
     };
+    class TasksHandle : public litesql::RelationHandle<Graph> {
+    public:
+        TasksHandle(const Graph& owner);
+        void link(const Task& o0);
+        void unlink(const Task& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Task> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<GraphTaskRelationGraphTask::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     static const std::string type__;
     static const std::string table__;
     static const std::string sequence__;
@@ -2408,6 +2476,7 @@ public:
     Graph(const litesql::Database& db, const litesql::Record& rec);
     Graph(const Graph& obj);
     const Graph& operator=(const Graph& obj);
+    Graph::TasksHandle tasks();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
     void create();
@@ -2470,6 +2539,77 @@ public:
     std::auto_ptr<Location> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, Location o);
+class Queue : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    class QtypeType : public litesql::FieldType {
+    public:
+        static const int ONE2ONE;
+        static const int ONE4ALL;
+        QtypeType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
+    };
+    class Qtype {
+    public:
+        static const int ONE2ONE;
+        static const int ONE4ALL;
+    };
+    class JobHandle : public litesql::RelationHandle<Queue> {
+    public:
+        JobHandle(const Queue& owner);
+        void link(const Job& o0);
+        void unlink(const Job& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Job> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<JobQueueRelationJob2Queue::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType Uuid;
+    litesql::Field<std::string> uuid;
+    static const litesql::FieldType Outputname;
+    litesql::Field<std::string> outputname;
+    static const litesql::FieldType Inputname;
+    litesql::Field<std::string> inputname;
+protected:
+    static std::vector < std::pair< std::string, std::string > > qtype_values;
+public:
+    static const Queue::QtypeType Qtype;
+    litesql::Field<int> qtype;
+    static void initValues();
+protected:
+    void defaults();
+public:
+    Queue(const litesql::Database& db);
+    Queue(const litesql::Database& db, const litesql::Record& rec);
+    Queue(const Queue& obj);
+    const Queue& operator=(const Queue& obj);
+    Queue::JobHandle job();
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<Queue> upcast();
+    std::auto_ptr<Queue> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, Queue o);
 class HiveDb : public litesql::Database {
 public:
     HiveDb(std::string backendType, std::string connInfo);

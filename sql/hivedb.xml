@@ -278,7 +278,7 @@
     </relation>
 
     <relation id="GraphTask">
-        <relate object="Task" handle="job"/>
+        <relate object="Task" handle="jobTask"/>
         <relate object="Graph" handle="tasks"/>
     </relation>
 
@@ -417,10 +417,26 @@
         <field name="name" type="string"/>
         <field name="data" type="string"/>
     </object>
+
     <object name="Location">
         <field name="uuid" type="string"/>
         <field name="name" type="string"/>
         <field name="data" type="string"/>
     </object>
+
+    <object name="Queue">
+        <field name="uuid" type="string"/>
+        <field name="outputname" type="string"/>
+        <field name="inputname" type="string"/>
+        <field name="qtype" type="integer">
+          <value name="ONE2ONE" value="0"/>
+          <value name="ONE4ALL" value="1"/>
+        </field>
+    </object>
+
+   <relation id="Job2Queue">
+        <relate object="Queue" handle="job"/>
+        <relate object="Job" handle="queues"/>
+    </relation>
 
 </database>

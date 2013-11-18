@@ -11,6 +11,7 @@ INCLUDE(cmake/CMakeExternalsBoost.txt)
 INCLUDE(cmake/CMakeExternalsPoco.txt)
 INCLUDE(cmake/CMakeExternalsLog4CPlus.txt)
 INCLUDE(cmake/CMakeExternalsSafmq.txt)
+INCLUDE(cmake/CMakeExternalsZeromq.txt)
 INCLUDE(cmake/CMakeExternalsLitesql.txt)
 INCLUDE(cmake/CMakeExternalsFFMpeg.txt)
 

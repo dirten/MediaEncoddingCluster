@@ -194,7 +194,7 @@ namespace org {
           avformat_network_init();
           //av_log_set_callback(mhive_log_default_callback);
           av_log_set_callback(FormatBaseStream::mhive_log_default_callback);
-          av_log_set_level(AV_LOG_VERBOSE);
+          av_log_set_level(AV_LOG_INFO);
           //av_register_protocol2(&test_protocol, sizeof (URLProtocol));
           av_lockmgr_register(lockmgr);
           isInitialized = true;

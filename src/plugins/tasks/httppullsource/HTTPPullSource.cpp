@@ -67,7 +67,7 @@ namespace plugin {
 
       //setBufferCodec(is->stream_identifier,_decs[is->stream_identifier]);
     }
-    getContext()->set<std::map<int, Ptr<org::esb::av::Decoder> > >("decoder",_decs);
+    getContext()->setProperty<std::map<int, Ptr<org::esb::av::Decoder> > >("decoder",_decs);
     /*std::map<int, Ptr<org::esb::av::Decoder> >tmp=getContext()->get<std::map<int, Ptr<org::esb::av::Decoder> > >("decoder");
     std::map<int, Ptr<org::esb::av::Decoder> >::iterator it1=_decs.begin();
     for(;it1!=_decs.end();it1++){

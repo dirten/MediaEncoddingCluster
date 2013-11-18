@@ -47,7 +47,12 @@ namespace org {
         void set(std::string key, T value){
           _props[key]=value;
         }
-        
+
+        template<typename T>
+        void setProperty(std::string key, T value){
+          _props[key]=value;
+        }
+
         void merge(Ptr<PluginContext>);
         std::list<std::string> keys();
         std::string toString();
