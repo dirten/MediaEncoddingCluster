@@ -11,6 +11,7 @@ include_directories (${SAFMQ_DIR}/include/lib)
 add_library (mq SHARED
       QueueManager.cpp
       QueueConnection.cpp
+      Selector.cpp
       QueueMessage.cpp
       ObjectMessage.cpp
       QueueException.cpp

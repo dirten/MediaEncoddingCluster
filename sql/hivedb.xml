@@ -354,6 +354,8 @@
         <field name="framecount" type="integer"/>
         <field name="send" type="datetime"/>
         <field name="recv" type="datetime"/>
+        <field name="sendid" type="string"/>
+        <field name="recvid" type="string"/>
     </object>
 
     <relation id="ProcessUnitJob">

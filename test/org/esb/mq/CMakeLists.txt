@@ -23,3 +23,7 @@ ADD_TEST(mq.QueueManagerTest ${EXECUTABLE_OUTPUT_PATH}/QueueManagerTest)
 
 add_executable (QueueListenerTest QueueListenerTest.cpp)
 target_link_libraries (QueueListenerTest io mq hive)
+
+add_executable (SelectorTest SelectorTest.cpp)
+target_link_libraries (SelectorTest mq hive)
+ADD_TEST(mq.SelectorTest ${EXECUTABLE_OUTPUT_PATH}/SelectorTest)

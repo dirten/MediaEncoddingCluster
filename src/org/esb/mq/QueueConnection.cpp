@@ -9,9 +9,12 @@
 #include <boost/bind.hpp>
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/lang/Thread.h"
+#include "Selector.h"
+
 namespace org{
   namespace esb{
     namespace mq{
+      /*
       class Selector{
       public:
         Selector(std::string sel){
@@ -33,7 +36,7 @@ namespace org{
         std::string _name;
         std::string _value;
       };
-
+      */
       QueueConnection::QueueConnection(std::string url){
         _selector=NULL;
         try {

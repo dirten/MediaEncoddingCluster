@@ -2165,6 +2165,10 @@ public:
     litesql::Field<litesql::DateTime> send;
     static const litesql::FieldType Recv;
     litesql::Field<litesql::DateTime> recv;
+    static const litesql::FieldType Sendid;
+    litesql::Field<std::string> sendid;
+    static const litesql::FieldType Recvid;
+    litesql::Field<std::string> recvid;
 protected:
     void defaults();
 public:

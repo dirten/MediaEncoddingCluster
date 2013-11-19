@@ -54,7 +54,7 @@ namespace org {
 
         }
 
-        virtual ~QueueMessage();
+        //virtual ~QueueMessage();
       private:
 
       };

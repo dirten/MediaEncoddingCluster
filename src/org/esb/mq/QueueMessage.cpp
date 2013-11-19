@@ -13,8 +13,8 @@ namespace org {
       QueueMessage::QueueMessage():safmq::QueueMessage() {
       }
 
-      QueueMessage::~QueueMessage() {
-      }
+      //QueueMessage::~QueueMessage() {
+      //}
     }
   }
 }

@@ -19,6 +19,7 @@
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/core/PluginContext.h"
 #include "org/esb/core/TaskException.h"
+#include "org/esb/hive/job/ProcessUnit.h"
 #include "EncodingTask.h"
 
 namespace encodingtask {
@@ -306,6 +307,21 @@ namespace encodingtask {
     unit->_last_process_unit = isLast;
     msg.setObject(unit);
     _queueMap[unit->_source_stream]->Enqueue(msg);
+    db::ProcessUnit pu(*database);
+    pu.sorcestream=unit->_source_stream;
+    pu.targetstream=unit->_target_stream;
+    if (unit->_input_packets.size() > 0) {
+      boost::shared_ptr<org::esb::av::Packet> first_packet = unit->_input_packets.front();
+      boost::shared_ptr<org::esb::av::Packet> last_packet = unit->_input_packets.back();
+      pu.startts=(double)first_packet->getDts();
+      pu.endts=(double)last_packet->getDts();
+      pu.framecount=(int)unit->_input_packets.size();
+    }
+    std::ostringstream oss;
+    oss << msg.getMessageID();
+    pu.sendid=std::string(oss.str());
+
+    pu.update();
     //read_q->Enqueue(msg);
     //partitionservice::PartitionManager::getInstance()->putProcessUnit(_partition, unit, t);
     setProgressLength(getProgressLength() + 1);
