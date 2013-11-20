@@ -24,6 +24,22 @@
 #include "org/esb/mq/ObjectMessage.h"
 
 
+/*activemq implementation*/
+#include "activemq/library/ActiveMQCPP.h"
+#include "cms/Connection.h"
+#include "activemq/core/ActiveMQConnectionFactory.h"
+#include <decaf/lang/Thread.h>
+#include <decaf/lang/Runnable.h>
+#include <cms/TextMessage.h>
+#include <cms/BytesMessage.h>
+#include <cms/MapMessage.h>
+#include <cms/ExceptionListener.h>
+#include <cms/MessageListener.h>
+
+using namespace activemq::core;
+using namespace decaf::lang;
+using namespace cms;
+
 namespace encodingtask {
   class ENCTASK_EXPORT EncodingTask : public org::esb::core::Task {
   public:
@@ -89,6 +105,27 @@ namespace encodingtask {
     std::map<int, Ptr<safmq::MessageQueue> > _queueMap;
 
     boost::shared_ptr<db::HiveDb> database;
+
+
+
+
+    /*new Message Queue implementation*/
+
+    Connection* connection;
+    Session* session;
+    Destination* destination;
+    MessageProducer* producer;
+
+    template<typename T>
+    BytesMessage * serializeProcessUnit(const T &object) {
+        std::ostringstream archive_stream;
+        boost::archive::binary_oarchive archive(archive_stream);
+        archive << object;
+        std::string _outbound_data = archive_stream.str();
+        BytesMessage* message(session->createBytesMessage((const unsigned char*)_outbound_data.c_str(),_outbound_data.length()));
+        return message;
+        //this->getBufferStream()->write(_outbound_data.c_str(),_outbound_data.length());
+    }
   };
   //  REGISTER_TASK("DownloadTask", DownloadTask)
 }

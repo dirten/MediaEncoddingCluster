@@ -75,6 +75,8 @@ include_directories (${MYSQL_INCLUDE_DIR})
 include_directories (${MYSQL_INCLUDE_DIR}/mysql)
 include_directories (${FFMPEG_INCLUDE_DIR})
 include_directories (${LOG4CPLUS_DIR}/include)
+include_directories (${AMQ_DIR}/include/activemq-cpp-3.8.1)
+
 #MESSAGE("**MYSQL_INCLUDE_DIR: " ${MYSQL_INCLUDE_DIR})
 
 include_directories (${BREAKPAD_INCLUDE_DIR})
@@ -278,6 +280,7 @@ target_link_libraries (mhive
   core
   #core_http
   mq
+  activemq-cpp
 #  log4cplus
 #  PocoNet
 )

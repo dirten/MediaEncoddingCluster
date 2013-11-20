@@ -9,6 +9,7 @@ include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${LOG4CPLUS_DIR}/include)
 include_directories (${SAFMQ_DIR}/include/lib)
 include_directories (${SAFMQ_DIR}/include/shared)
+include_directories (${AMQ_DIR}/include/activemq-cpp-3.8.1)
 
 #include_directories (${MEC_SOURCE_DIR}/test/fobs/dist/include)
 #INCLUDE_DIRECTORIES (${ERLANG_INTERFACE_DIR}/include)
@@ -144,6 +145,9 @@ add_executable(zmqsink ZeroMQSink.cpp)
 
 add_executable (mytest test.cpp)
 
+add_executable(amqp AMQProducerTest.cpp)
+add_executable(amqc AMQConsumerTest.cpp)
+
 target_link_libraries (info
   hive
   av
@@ -179,6 +183,12 @@ target_link_libraries(zmqworker
 )
 target_link_libraries(zmqsink
   zmq
+)
+target_link_libraries(amqp
+  activemq-cpp
+)
+target_link_libraries(amqc
+  activemq-cpp
 )
 
 IF(WIN32)

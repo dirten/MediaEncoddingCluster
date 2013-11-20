@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   QManager.cpp
  * Author: HoelscJ
  * 

@@ -14,6 +14,7 @@ INCLUDE(cmake/CMakeExternalsSafmq.txt)
 INCLUDE(cmake/CMakeExternalsZeromq.txt)
 INCLUDE(cmake/CMakeExternalsLitesql.txt)
 INCLUDE(cmake/CMakeExternalsFFMpeg.txt)
+INCLUDE(cmake/CMakeExternalsActiveMQ.txt)
 
 set(BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build")
 

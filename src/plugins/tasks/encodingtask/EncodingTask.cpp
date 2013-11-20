@@ -26,6 +26,15 @@ namespace encodingtask {
 
   EncodingTask::EncodingTask() : Task() {
     _sequence_counter = 0;
+    ConnectionFactory* connectionFactory(ConnectionFactory::createCMSConnectionFactory("failover:tcp://127.0.0.1:61616"));
+    connection = connectionFactory->createConnection();
+    connection->start();
+
+    session = connection->createSession(Session::AUTO_ACKNOWLEDGE);
+    //Session*session = connection->createSession(Session::AUTO_ACKNOWLEDGE);
+    destination = session->createQueue("MHIVE.OUTPUT");
+    producer = session->createProducer(destination);
+    producer->setDeliveryMode(DeliveryMode::PERSISTENT);
 
     //lastSequence=0;
   }
@@ -305,8 +314,11 @@ namespace encodingtask {
     /*create unique stream index*/
     unit->_source_stream = unit->_input_packets.front()->getStreamIndex();
     unit->_last_process_unit = isLast;
-    msg.setObject(unit);
-    _queueMap[unit->_source_stream]->Enqueue(msg);
+    BytesMessage * bmsg=serializeProcessUnit(unit);
+    producer->send(bmsg);
+    delete bmsg;
+    //msg.setObject(unit);
+    //_queueMap[unit->_source_stream]->Enqueue(msg);
     db::ProcessUnit pu(*database);
     pu.sorcestream=unit->_source_stream;
     pu.targetstream=unit->_target_stream;
