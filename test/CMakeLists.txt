@@ -186,9 +186,11 @@ target_link_libraries(zmqsink
 )
 target_link_libraries(amqp
   activemq-cpp
+  apr-1
 )
 target_link_libraries(amqc
   activemq-cpp
+  apr-1
 )
 
 IF(WIN32)

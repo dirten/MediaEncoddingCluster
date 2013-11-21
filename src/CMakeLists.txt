@@ -131,7 +131,7 @@ add_executable (mhive Hive.cpp )
 #  PROPERTIES BUILD_WITH_INSTALL_RPATH 1
 #               INSTALL_NAME_DIR "@executable_path/../lib"
 #	         )
-add_executable (lemon lemon.c)
+#add_executable (lemon lemon.c)
 
 IF(BUILD_MHIVESERVICE)
     add_executable (mhiveservice HiveService.cpp)
@@ -281,6 +281,7 @@ target_link_libraries (mhive
   #core_http
   mq
   activemq-cpp
+  apr-1
 #  log4cplus
 #  PocoNet
 )

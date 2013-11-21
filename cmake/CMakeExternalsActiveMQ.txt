@@ -25,7 +25,7 @@ DEPENDS apr_dep
 URL http://apache.openmirror.de/activemq/activemq-cpp/source/activemq-cpp-library-3.8.1-src.tar.gz
 #PATCH_COMMAND ${DOWNLOAD_CMD} https://raw.github.com/zeromq/cppzmq/master/zmq.hpp ${DOWNLOAD_OPTION} ${BUILD_DIR}/include/zmq.hpp
 #CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR}
-CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-apr=${BUILD_DIR} --with-pic ${USER_CONFIG} 
+CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --disable-ssl --with-apr=${BUILD_DIR} --with-pic ${USER_CONFIG} 
 #CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${BUILD_DIR} ${USER_CONFIG}
 BUILD_IN_SOURCE 1
 )
