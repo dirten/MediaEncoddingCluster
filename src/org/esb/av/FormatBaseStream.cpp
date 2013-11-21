@@ -125,6 +125,8 @@ namespace org {
         }
         logMap[ptrString].push_front(msgPtr);
 
+        /*filter out unwnated logging by loglevel*/
+        if(level>av_log_get_level())return;
         switch (level) {
           case AV_LOG_DEBUG:
             LOGDEBUG(msg);

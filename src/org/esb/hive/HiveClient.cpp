@@ -13,7 +13,7 @@
 #include "org/esb/hive/protocol/PartitionHandler.h"
 #include "org/esb/config/config.h"
 #include "org/esb/net/SocketException.h"
-#define USE_SAFMQ
+//#define USE_SAFMQ
 //#include "Version.h"
 namespace org {
   namespace esb {

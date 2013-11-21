@@ -21,11 +21,13 @@
 #include "org/esb/core/TaskException.h"
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "EncodingTask.h"
+using org::esb::util::StringUtil;
 
 namespace encodingtask {
 
   EncodingTask::EncodingTask() : Task() {
     _sequence_counter = 0;
+    /*
     ConnectionFactory* connectionFactory(ConnectionFactory::createCMSConnectionFactory("failover:tcp://127.0.0.1:61616"));
     connection = connectionFactory->createConnection();
     connection->start();
@@ -35,7 +37,7 @@ namespace encodingtask {
     destination = session->createQueue("MHIVE.OUTPUT");
     producer = session->createProducer(destination);
     producer->setDeliveryMode(DeliveryMode::PERSISTENT);
-
+    */
     //lastSequence=0;
   }
 
@@ -314,14 +316,18 @@ namespace encodingtask {
     /*create unique stream index*/
     unit->_source_stream = unit->_input_packets.front()->getStreamIndex();
     unit->_last_process_unit = isLast;
+    /*
     BytesMessage * bmsg=serializeProcessUnit(unit);
     producer->send(bmsg);
     delete bmsg;
+    */
     //msg.setObject(unit);
     //_queueMap[unit->_source_stream]->Enqueue(msg);
     db::ProcessUnit pu(*database);
     pu.sorcestream=unit->_source_stream;
     pu.targetstream=unit->_target_stream;
+    pu.send=litesql::DateTime(1);
+    pu.recv=litesql::DateTime(1);
     if (unit->_input_packets.size() > 0) {
       boost::shared_ptr<org::esb::av::Packet> first_packet = unit->_input_packets.front();
       boost::shared_ptr<org::esb::av::Packet> last_packet = unit->_input_packets.back();
@@ -329,11 +335,29 @@ namespace encodingtask {
       pu.endts=(double)last_packet->getDts();
       pu.framecount=(int)unit->_input_packets.size();
     }
-    std::ostringstream oss;
-    oss << msg.getMessageID();
-    pu.sendid=std::string(oss.str());
+    std::string data=serializeProcessUnit(unit);
+    //boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit2;
+    //int c=deserializeProcessUnit(unit2, data);
+    litesql::Blob blob=litesql::Blob(data.c_str(),data.length());
+    pu.data=blob;
+    //std::ostringstream oss;
+    //oss << msg.getMessageID();
+    //pu.sendid=std::string(oss.str());
 
     pu.update();
+/*
+    std::string d;
+    litesql::Blob blob2=pu.data.value();
+    d.reserve(blob2.length());
+    LOGDEBUG("start copying bytes:"+StringUtil::toString(blob2.length()))
+    for(int a=0;a<blob2.length();a++){
+      char ch=blob2.data(a);
+      d.push_back(ch);
+    }
+    LOGDEBUG("finish copy")
+    //char ch=pu.data.value().data(0);
+    c=deserializeProcessUnit(unit2, d);
+*/
     //read_q->Enqueue(msg);
     //partitionservice::PartitionManager::getInstance()->putProcessUnit(_partition, unit, t);
     setProgressLength(getProgressLength() + 1);

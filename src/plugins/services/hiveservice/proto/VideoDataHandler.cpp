@@ -90,10 +90,24 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
         }
     }
 
+    db::ProcessUnit getProcessUnit(){
+      if(litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1).count()){
+        _db.query("begin exclusive");
+        db::ProcessUnit unit=litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1).orderBy(db::ProcessUnit::Id, false).one();
+        unit.send=litesql::DateTime();
+        unit.update();
+        _db.query("end");
+        return unit;
+      }
+      return  db::ProcessUnit(_db);
+    }
+
   public:
 
     VideoDataHandler(InputStream * is, OutputStream * os, boost::asio::ip::tcp::endpoint e): _db(db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"))) {
       _ep=e;
+      _os=os;
+      _is=is;
       _oos = new io::ObjectOutputStream(os);
       _ois = new io::ObjectInputStream(is);
       _own_id = e.address().to_string();
@@ -173,6 +187,7 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
     void process(char * command) {
       if (_oos == NULL || _ois == NULL)return;
       if (strcmp(command, GET_UNIT) == 0) {
+        /*
         //partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
         org::esb::mq::ObjectMessage msg;
         //Ptr<safmq::MessageQueue> mq=getMessageQueue();
@@ -182,6 +197,21 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
         msg.getObject(un);
         //un = man->getProcessUnit(_ep);
         _oos->writeObject(un);
+        */
+        db::ProcessUnit unit=getProcessUnit();
+
+        std::string d;
+        litesql::Blob blob2=unit.data.value();
+        d.reserve(blob2.length());
+        LOGDEBUG("start copying bytes:"+StringUtil::toString(blob2.length()))
+        for(int a=0;a<blob2.length();a++){
+          char ch=blob2.data(a);
+          d.push_back(ch);
+        }
+        LOGDEBUG("finish copy")
+        _os->write((char*) d.c_str(), d.length());
+        _os->flush();
+
       } else {
         if (strcmp(command, PUT_UNIT) == 0) {
           //un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());

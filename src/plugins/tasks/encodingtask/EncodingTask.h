@@ -117,14 +117,33 @@ namespace encodingtask {
     MessageProducer* producer;
 
     template<typename T>
-    BytesMessage * serializeProcessUnit(const T &object) {
+    std::string serializeProcessUnit(const T &object) {
         std::ostringstream archive_stream;
         boost::archive::binary_oarchive archive(archive_stream);
         archive << object;
         std::string _outbound_data = archive_stream.str();
-        BytesMessage* message(session->createBytesMessage((const unsigned char*)_outbound_data.c_str(),_outbound_data.length()));
-        return message;
+        //BytesMessage* message(session->createBytesMessage((const unsigned char*)_outbound_data.c_str(),_outbound_data.length()));
+        return _outbound_data;
         //this->getBufferStream()->write(_outbound_data.c_str(),_outbound_data.length());
+    }
+
+    template < typename T >
+    int deserializeProcessUnit(T & object, std::string data) {
+      if (data.length() <= 0) {
+        LOGERROR("Fehler in der groesse INBOUND_DATA:" << data.length());
+        return -1;
+      }
+      std::istringstream archive_stream(data);
+      boost::archive::binary_iarchive archive(archive_stream);
+      //boost::archive::text_iarchive archive(archive_stream);
+      try {
+        archive >> object;
+      } catch (std::exception & ex) {
+        LOGERROR("Exception reading archive:"<<ex.what());
+        return -1;
+      }
+      return 0;
+
     }
   };
   //  REGISTER_TASK("DownloadTask", DownloadTask)

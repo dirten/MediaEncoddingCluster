@@ -2169,6 +2169,8 @@ public:
     litesql::Field<std::string> sendid;
     static const litesql::FieldType Recvid;
     litesql::Field<std::string> recvid;
+    static const litesql::FieldType Data;
+    litesql::Field<litesql::Blob> data;
 protected:
     void defaults();
 public:
