@@ -197,7 +197,7 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
   //  	st->time_base.den=90000;
 
 
-  avcodec_get_context_defaults2(st->codec, encoder.ctx->codec_type);
+  //avcodec_get_context_defaults2(st->codec, encoder.ctx->codec_type);
   //        st->time_base=encoder.getTimeBase();
   //	st->time_base.num=1;
   //	st->time_base.den=90000;
@@ -249,9 +249,10 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
 
   AVCodec *codec;
   codec = avcodec_find_encoder(encoder.ctx->codec_id);
-  if (avcodec_open(st->codec, codec) < 0) {
+
+/*  if (avcodec_open(st->codec, codec) < 0) {
     fprintf(stderr, "Could not open Codec\n");
-  }
+  }*/
 
   //    st->time_base=st->codec->time_base;
   //  logdebug( "TimeBase #" << stream_id << "\tnum:" << st->time_base.num << "\tden" << st->time_base.den );
