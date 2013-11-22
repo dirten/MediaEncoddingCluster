@@ -37,7 +37,7 @@
 #include <sstream>
 #include <exception>
 
-
+#include "org/esb/util/Serializing.h"
 //#include "boost/date_time/gregorian/gregorian.hpp"
 
 namespace org {
@@ -109,10 +109,13 @@ namespace org {
       recv_socket_(recv_service_) {
         memset(&data_, 0, max_length);
         _self = node;
+        /*
         std::ostringstream archive_stream;
         boost::archive::binary_oarchive archive(archive_stream);
         archive << _self;
         message_ = archive_stream.str();
+        */
+        message_ = org::esb::util::Serializing::serialize(node);
         //        LOGDEBUG("Message size:"<<message_.size());
         send_socket_.async_send_to(
                 boost::asio::buffer(message_), send_endpoint_,
@@ -182,6 +185,12 @@ namespace org {
 
           if (bytes_recvd > 0) {
             std::string tmp(data_, bytes_recvd);
+            try {
+              org::esb::util::Serializing::deserialize(*nodePtr.get(),tmp);
+            } catch (std::exception & ex) {
+              LOGERROR("Exception reading archive:" << ex.what());
+            }
+            /*
             std::istringstream archive_stream(tmp);
             try {
               boost::archive::binary_iarchive archive(archive_stream);
@@ -190,6 +199,7 @@ namespace org {
 
               LOGERROR("Exception reading archive:" << ex.what());
             }
+            */
           }
           nodePtr->setEndpoint(recv_endpoint_);
 

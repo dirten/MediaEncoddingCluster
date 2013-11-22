@@ -94,11 +94,11 @@ namespace encodingtask {
 
 
 
-
+    /*
     template<typename T>
     std::string serializeProcessUnit(const T &object) {
         std::ostringstream archive_stream;
-        boost::archive::binary_oarchive archive(archive_stream);
+        boost::archive::text_oarchive archive(archive_stream);
         archive << object;
         std::string _outbound_data = archive_stream.str();
         //BytesMessage* message(session->createBytesMessage((const unsigned char*)_outbound_data.c_str(),_outbound_data.length()));
@@ -113,7 +113,7 @@ namespace encodingtask {
         return -1;
       }
       std::istringstream archive_stream(data);
-      boost::archive::binary_iarchive archive(archive_stream);
+      boost::archive::text_iarchive archive(archive_stream);
       //boost::archive::text_iarchive archive(archive_stream);
       try {
         archive >> object;
@@ -123,7 +123,7 @@ namespace encodingtask {
       }
       return 0;
 
-    }
+    }*/
   };
   //  REGISTER_TASK("DownloadTask", DownloadTask)
 }

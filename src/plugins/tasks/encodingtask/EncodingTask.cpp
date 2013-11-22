@@ -21,8 +21,9 @@
 #include "org/esb/core/TaskException.h"
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "EncodingTask.h"
+#include "org/esb/util/Serializing.h"
 using org::esb::util::StringUtil;
-
+using org::esb::util::Serializing;
 namespace encodingtask {
 
   EncodingTask::EncodingTask() : Task() {
@@ -335,7 +336,8 @@ namespace encodingtask {
       pu.endts=(double)last_packet->getDts();
       pu.framecount=(int)unit->_input_packets.size();
     }
-    std::string data=serializeProcessUnit(unit);
+    std::string data=Serializing::serialize(unit);
+    //std::string data=serializeProcessUnit(unit);
     //boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit2;
     //int c=deserializeProcessUnit(unit2, data);
     litesql::Blob blob=litesql::Blob(data.c_str(),data.length());
