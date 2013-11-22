@@ -123,8 +123,10 @@ namespace org {
                 _ois->readObject(unit);
                 LOGDEBUG("object received")
               } catch (exception & ex) {
-                LOGERROR("Connection to Server lost!!!" << ex.what());
-                _sock->close();
+                LOGERROR("failed to get ProcessUnit:" << ex.what());
+                //break;
+                //if(_sock->isClosed())
+                //  _sock->close();
               }
               if (!unit || unit->_input_packets.size() == 0) {
                 break;

@@ -96,7 +96,7 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
     db::ProcessUnit getProcessUnit(){
       if(litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1).count()){
         _db.query("begin exclusive");
-        db::ProcessUnit unit=litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1).orderBy(db::ProcessUnit::Id, false).one();
+        db::ProcessUnit unit=litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1).orderBy(db::ProcessUnit::Id, true).one();
         unit.send=litesql::DateTime();
         unit.update();
         _db.query("end");
