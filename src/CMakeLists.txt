@@ -280,8 +280,6 @@ target_link_libraries (mhive
   core
   #core_http
   mq
-  activemq-cpp
-  apr-1
 #  log4cplus
 #  PocoNet
 )

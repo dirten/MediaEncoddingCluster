@@ -145,8 +145,8 @@ add_executable(zmqsink ZeroMQSink.cpp)
 
 add_executable (mytest test.cpp)
 
-add_executable(amqp AMQProducerTest.cpp)
-add_executable(amqc AMQConsumerTest.cpp)
+#add_executable(amqp AMQProducerTest.cpp)
+#add_executable(amqc AMQConsumerTest.cpp)
 
 target_link_libraries (info
   hive
@@ -184,15 +184,6 @@ target_link_libraries(zmqworker
 target_link_libraries(zmqsink
   zmq
 )
-target_link_libraries(amqp
-  activemq-cpp
-  apr-1
-)
-target_link_libraries(amqc
-  activemq-cpp
-  apr-1
-)
-
 IF(WIN32)
 #  TARGET_LINK_LIBRARIES (info erl_interface ei libx264 wsock32 vfw32 winmm libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg)
 #  TARGET_LINK_LIBRARIES (info erl_interface ei  libgcc libmingwex libcoldname libmoldname90 wsock32 vfw32 winmm )

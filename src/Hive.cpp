@@ -86,7 +86,7 @@
 #include "Poco/Environment.h"
 
 
-#include "activemq/library/ActiveMQCPP.h"
+//#include "activemq/library/ActiveMQCPP.h"
 #define TO_STRING(s) #s
 using namespace org::esb;
 using namespace org::esb::net;
@@ -119,7 +119,7 @@ int _port = 0;
 bool quiet = false;
 
 int main(int argc, char * argv[]) {
-  activemq::library::ActiveMQCPP::initializeLibrary();
+  //activemq::library::ActiveMQCPP::initializeLibrary();
   //org::esb::core::Application(argc, argv);
   //isatty(0);
   /*setting default path to Program*/

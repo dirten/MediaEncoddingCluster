@@ -24,21 +24,6 @@
 #include "org/esb/mq/ObjectMessage.h"
 
 
-/*activemq implementation*/
-#include "activemq/library/ActiveMQCPP.h"
-#include "cms/Connection.h"
-#include "activemq/core/ActiveMQConnectionFactory.h"
-#include <decaf/lang/Thread.h>
-#include <decaf/lang/Runnable.h>
-#include <cms/TextMessage.h>
-#include <cms/BytesMessage.h>
-#include <cms/MapMessage.h>
-#include <cms/ExceptionListener.h>
-#include <cms/MessageListener.h>
-
-using namespace activemq::core;
-using namespace decaf::lang;
-using namespace cms;
 
 namespace encodingtask {
   class ENCTASK_EXPORT EncodingTask : public org::esb::core::Task {
@@ -109,12 +94,6 @@ namespace encodingtask {
 
 
 
-    /*new Message Queue implementation*/
-
-    Connection* connection;
-    Session* session;
-    Destination* destination;
-    MessageProducer* producer;
 
     template<typename T>
     std::string serializeProcessUnit(const T &object) {

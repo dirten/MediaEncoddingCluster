@@ -16,8 +16,6 @@ TARGET_LINK_LIBRARIES(encodingtask
   core
   partitionservice
   mq
-  activemq-cpp
-  apr-1
 )
 
 SET_TARGET_PROPERTIES( encodingtask PROPERTIES PREFIX "")
