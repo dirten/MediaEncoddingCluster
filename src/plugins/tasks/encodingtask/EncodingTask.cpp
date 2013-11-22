@@ -22,8 +22,10 @@
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "EncodingTask.h"
 #include "org/esb/util/Serializing.h"
+#include "org/esb/io/FileOutputStream.h"
 using org::esb::util::StringUtil;
 using org::esb::util::Serializing;
+using org::esb::io::FileOutputStream;
 namespace encodingtask {
 
   EncodingTask::EncodingTask() : Task() {
@@ -304,6 +306,7 @@ namespace encodingtask {
     unit->_sequence = _sequence_counter++;
     //std::cerr <<"Sequence="<<_sequence_counter<<std::endl;
     unit->setJobId(_task_uuid);
+    unit->uuid=org::esb::util::PUUID();
     //unit->setJobId("121212");
 
     partitionservice::PartitionManager::Type t = partitionservice::PartitionManager::TYPE_UNKNOWN;
@@ -329,6 +332,9 @@ namespace encodingtask {
     pu.targetstream=unit->_target_stream;
     pu.send=litesql::DateTime(1);
     pu.recv=litesql::DateTime(1);
+    pu.sendid=unit->uuid;
+    pu.jobid=_task_uuid;
+
     if (unit->_input_packets.size() > 0) {
       boost::shared_ptr<org::esb::av::Packet> first_packet = unit->_input_packets.front();
       boost::shared_ptr<org::esb::av::Packet> last_packet = unit->_input_packets.back();
@@ -336,12 +342,25 @@ namespace encodingtask {
       pu.endts=(double)last_packet->getDts();
       pu.framecount=(int)unit->_input_packets.size();
     }
-    std::string data=Serializing::serialize(unit);
     //std::string data=serializeProcessUnit(unit);
     //boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit2;
     //int c=deserializeProcessUnit(unit2, data);
-    litesql::Blob blob=litesql::Blob(data.c_str(),data.length());
-    pu.data=blob;
+
+    /*serialize the process unit into string format*/
+    std::string data=Serializing::serialize(unit);
+
+    /*writing process units to the file system for delivery*/
+    std::string base = org::esb::config::Config::get("hive.data_path");
+    org::esb::io::File outputfile(base + "/"+_task_uuid+"/"+ unit->uuid);
+    if(!File(outputfile.getParent()).exists()){
+      File(outputfile.getParent()).mkdirs();
+    }
+    FileOutputStream outstream(&outputfile);
+    outstream.write(data);
+    outstream.close();
+
+    //litesql::Blob blob=litesql::Blob(data.c_str(),data.length());
+    //pu.data=blob;
     //std::ostringstream oss;
     //oss << msg.getMessageID();
     //pu.sendid=std::string(oss.str());

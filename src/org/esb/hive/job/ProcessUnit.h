@@ -89,6 +89,7 @@ namespace org {
                     int _process_unit;
                     int id;
                     std::string _job_id;
+                    std::string uuid;
                     double _frameRateCompensateBase;
                     int _gop_size;
                    
@@ -122,6 +123,7 @@ namespace org {
                         ar & _job_id;
                         ar & _sequence;
                         ar & _fps;
+                        ar & uuid;
                     }
                 private:
                   Frame * convertToRgb(Frame *);

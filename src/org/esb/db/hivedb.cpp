@@ -6413,6 +6413,10 @@ const litesql::FieldType ProcessUnit::Recv("recv_","INTEGER",table__);
 const litesql::FieldType ProcessUnit::Sendid("sendid_","TEXT",table__);
 const litesql::FieldType ProcessUnit::Recvid("recvid_","TEXT",table__);
 const litesql::FieldType ProcessUnit::Data("data_","BLOB",table__);
+const litesql::FieldType ProcessUnit::ResponseData("responseData_","BLOB",table__);
+const litesql::FieldType ProcessUnit::Clientid("clientid_","TEXT",table__);
+const litesql::FieldType ProcessUnit::Deliverycount("deliverycount_","INTEGER",table__);
+const litesql::FieldType ProcessUnit::Jobid("jobid_","TEXT",table__);
 void ProcessUnit::defaults() {
     id = 0;
     sorcestream = 0;
@@ -6425,16 +6429,26 @@ void ProcessUnit::defaults() {
     send = 0;
     recv = 0;
     data = Blob::nil;
+    responseData = Blob::nil;
+    deliverycount = 0;
 }
 ProcessUnit::ProcessUnit(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), sorcestream(Sorcestream), targetstream(Targetstream), timebasenum(Timebasenum), timebaseden(Timebaseden), startts(Startts), endts(Endts), framecount(Framecount), send(Send), recv(Recv), sendid(Sendid), recvid(Recvid), data(Data) {
+     : litesql::Persistent(db), id(Id), type(Type), sorcestream(Sorcestream), targetstream(Targetstream), timebasenum(Timebasenum), timebaseden(Timebaseden), startts(Startts), endts(Endts), framecount(Framecount), send(Send), recv(Recv), sendid(Sendid), recvid(Recvid), data(Data), responseData(ResponseData), clientid(Clientid), deliverycount(Deliverycount), jobid(Jobid) {
     defaults();
 }
 ProcessUnit::ProcessUnit(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), sorcestream(Sorcestream), targetstream(Targetstream), timebasenum(Timebasenum), timebaseden(Timebaseden), startts(Startts), endts(Endts), framecount(Framecount), send(Send), recv(Recv), sendid(Sendid), recvid(Recvid), data(Data) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), sorcestream(Sorcestream), targetstream(Targetstream), timebasenum(Timebasenum), timebaseden(Timebaseden), startts(Startts), endts(Endts), framecount(Framecount), send(Send), recv(Recv), sendid(Sendid), recvid(Recvid), data(Data), responseData(ResponseData), clientid(Clientid), deliverycount(Deliverycount), jobid(Jobid) {
     defaults();
-    size_t size = (rec.size() > 14) ? 14 : rec.size();
+    size_t size = (rec.size() > 18) ? 18 : rec.size();
     switch(size) {
+    case 18: jobid = convert<const std::string&, std::string>(rec[17]);
+        jobid.setModified(false);
+    case 17: deliverycount = convert<const std::string&, int>(rec[16]);
+        deliverycount.setModified(false);
+    case 16: clientid = convert<const std::string&, std::string>(rec[15]);
+        clientid.setModified(false);
+    case 15: responseData = convert<const std::string&, litesql::Blob>(rec[14]);
+        responseData.setModified(false);
     case 14: data = convert<const std::string&, litesql::Blob>(rec[13]);
         data.setModified(false);
     case 13: recvid = convert<const std::string&, std::string>(rec[12]);
@@ -6466,7 +6480,7 @@ ProcessUnit::ProcessUnit(const litesql::Database& db, const litesql::Record& rec
     }
 }
 ProcessUnit::ProcessUnit(const ProcessUnit& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), sorcestream(obj.sorcestream), targetstream(obj.targetstream), timebasenum(obj.timebasenum), timebaseden(obj.timebaseden), startts(obj.startts), endts(obj.endts), framecount(obj.framecount), send(obj.send), recv(obj.recv), sendid(obj.sendid), recvid(obj.recvid), data(obj.data) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), sorcestream(obj.sorcestream), targetstream(obj.targetstream), timebasenum(obj.timebasenum), timebaseden(obj.timebaseden), startts(obj.startts), endts(obj.endts), framecount(obj.framecount), send(obj.send), recv(obj.recv), sendid(obj.sendid), recvid(obj.recvid), data(obj.data), responseData(obj.responseData), clientid(obj.clientid), deliverycount(obj.deliverycount), jobid(obj.jobid) {
 }
 const ProcessUnit& ProcessUnit::operator=(const ProcessUnit& obj) {
     if (this != &obj) {
@@ -6484,6 +6498,10 @@ const ProcessUnit& ProcessUnit::operator=(const ProcessUnit& obj) {
         sendid = obj.sendid;
         recvid = obj.recvid;
         data = obj.data;
+        responseData = obj.responseData;
+        clientid = obj.clientid;
+        deliverycount = obj.deliverycount;
+        jobid = obj.jobid;
     }
     litesql::Persistent::operator=(obj);
     return *this;
@@ -6537,6 +6555,18 @@ std::string ProcessUnit::insert(litesql::Record& tables, litesql::Records& field
     fields.push_back(data.name());
     values.push_back(data);
     data.setModified(false);
+    fields.push_back(responseData.name());
+    values.push_back(responseData);
+    responseData.setModified(false);
+    fields.push_back(clientid.name());
+    values.push_back(clientid);
+    clientid.setModified(false);
+    fields.push_back(deliverycount.name());
+    values.push_back(deliverycount);
+    deliverycount.setModified(false);
+    fields.push_back(jobid.name());
+    values.push_back(jobid);
+    jobid.setModified(false);
     fieldRecs.push_back(fields);
     valueRecs.push_back(values);
     return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
@@ -6566,6 +6596,10 @@ void ProcessUnit::addUpdates(Updates& updates) {
     updateField(updates, table__, sendid);
     updateField(updates, table__, recvid);
     updateField(updates, table__, data);
+    updateField(updates, table__, responseData);
+    updateField(updates, table__, clientid);
+    updateField(updates, table__, deliverycount);
+    updateField(updates, table__, jobid);
 }
 void ProcessUnit::addIDUpdates(Updates& updates) {
 }
@@ -6584,6 +6618,10 @@ void ProcessUnit::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Sendid);
     ftypes.push_back(Recvid);
     ftypes.push_back(Data);
+    ftypes.push_back(ResponseData);
+    ftypes.push_back(Clientid);
+    ftypes.push_back(Deliverycount);
+    ftypes.push_back(Jobid);
 }
 void ProcessUnit::delRecord() {
     deleteFromTable(table__, id);
@@ -6639,6 +6677,10 @@ std::auto_ptr<ProcessUnit> ProcessUnit::upcastCopy() {
     np->sendid = sendid;
     np->recvid = recvid;
     np->data = data;
+    np->responseData = responseData;
+    np->clientid = clientid;
+    np->deliverycount = deliverycount;
+    np->jobid = jobid;
     np->inDatabase = inDatabase;
     return auto_ptr<ProcessUnit>(np);
 }
@@ -6658,6 +6700,10 @@ std::ostream & operator<<(std::ostream& os, ProcessUnit o) {
     os << o.sendid.name() << " = " << o.sendid << std::endl;
     os << o.recvid.name() << " = " << o.recvid << std::endl;
     os << o.data.name() << " = " << o.data << std::endl;
+    os << o.responseData.name() << " = " << o.responseData << std::endl;
+    os << o.clientid.name() << " = " << o.clientid << std::endl;
+    os << o.deliverycount.name() << " = " << o.deliverycount << std::endl;
+    os << o.jobid.name() << " = " << o.jobid << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -8133,7 +8179,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("JobLog_","table","CREATE TABLE JobLog_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,message_ TEXT)"));
     res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + backend->getRowIDType() + ",type_ TEXT,lastpts_ DOUBLE,lastdts_ DOUBLE,deinterlace_ INTEGER)"));
     res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,folder_ TEXT,filefilter_ TEXT,subdirs_ INTEGER,flowuuid_ TEXT,interval_ INTEGER,start_ INTEGER,end_ INTEGER)"));
-    res.push_back(Database::SchemaItem("ProcessUnit_","table","CREATE TABLE ProcessUnit_ (id_ " + backend->getRowIDType() + ",type_ TEXT,sorcestream_ INTEGER,targetstream_ INTEGER,timebasenum_ INTEGER,timebaseden_ INTEGER,startts_ DOUBLE,endts_ DOUBLE,framecount_ INTEGER,send_ INTEGER,recv_ INTEGER,sendid_ TEXT,recvid_ TEXT,data_ BLOB)"));
+    res.push_back(Database::SchemaItem("ProcessUnit_","table","CREATE TABLE ProcessUnit_ (id_ " + backend->getRowIDType() + ",type_ TEXT,sorcestream_ INTEGER,targetstream_ INTEGER,timebasenum_ INTEGER,timebaseden_ INTEGER,startts_ DOUBLE,endts_ DOUBLE,framecount_ INTEGER,send_ INTEGER,recv_ INTEGER,sendid_ TEXT,recvid_ TEXT,data_ BLOB,responseData_ BLOB,clientid_ TEXT,deliverycount_ INTEGER,jobid_ TEXT)"));
     res.push_back(Database::SchemaItem("User_","table","CREATE TABLE User_ (id_ " + backend->getRowIDType() + ",type_ TEXT,authname_ TEXT,authpass_ TEXT,company_ TEXT,firstname_ TEXT,lastname_ TEXT,street_ TEXT,city_ TEXT,zip_ TEXT,country_ TEXT,state_ TEXT,telefone_ TEXT,fax_ TEXT,email_ TEXT,www_ TEXT,language_ TEXT,licensekey_ TEXT,apikey_ TEXT,registered_ INTEGER,fileroot_ TEXT)"));
     res.push_back(Database::SchemaItem("UserGroup_","table","CREATE TABLE UserGroup_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ INTEGER,nodecount_ INTEGER)"));
     res.push_back(Database::SchemaItem("Request_","table","CREATE TABLE Request_ (id_ " + backend->getRowIDType() + ",type_ TEXT,requestId_ TEXT,requestType_ TEXT,uri_ TEXT,query_ TEXT,data_ TEXT,response_ TEXT)"));

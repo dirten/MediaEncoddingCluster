@@ -3,6 +3,7 @@
 
 #include "org/esb/io/InputStream.h"
 #include "org/esb/io/OutputStream.h"
+#include "org/esb/io/FileInputStream.h"
 #include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/io/ObjectInputStream.h"
 
@@ -27,6 +28,7 @@ using namespace org::esb::av;
 using namespace org::esb::util;
 using namespace org::esb::signal;
 using namespace org::esb;
+using org::esb::io::FileInputStream;
 
 #define GET_UNIT  "get process_unit"
 #define GET_AUDIO_UNIT  "get audio_process_unit"
@@ -56,6 +58,7 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
     Ptr<org::esb::mq::QueueConnection> con;
     Ptr<safmq::MessageQueue> read_q;
     Ptr<safmq::MessageQueue> write_q;
+    Ptr<db::ProcessUnit> _current_unit;
 
     std::string getMessageQueueName(){
       db::Queue queue = litesql::select<db::Queue > (_db, db::Queue::Qtype==db::Queue::Qtype.ONE2ONE).one();
@@ -138,6 +141,10 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
   }
    */
     ~VideoDataHandler() {
+      if(_current_unit){
+        _current_unit->send=1;
+        _current_unit->update();
+      }
       partitionservice::PartitionManager::getInstance()->getInstance()->leavePartition("", _ep);
       shutdown = true;
       if (_oos)
@@ -199,8 +206,17 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
         _oos->writeObject(un);
         */
         db::ProcessUnit unit=getProcessUnit();
+        _current_unit=new db::ProcessUnit(unit);
 
+
+
+        /*reading process units from the file system for delivery*/
+        std::string base = org::esb::config::Config::get("hive.data_path");
+        org::esb::io::File inputfile(base + "/"+unit.jobid+"/"+ unit.sendid);
+        FileInputStream inputstream(&inputfile);
         std::string d;
+        inputstream.read(d);
+        /*
         litesql::Blob blob2=unit.data.value();
         d.reserve(blob2.length());
         LOGDEBUG("start copying bytes:"+StringUtil::toString(blob2.length()))
@@ -209,18 +225,36 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
           d.push_back(ch);
         }
         LOGDEBUG("finish copy")
+        */
         _os->write((char*) d.c_str(), d.length());
         _os->flush();
 
       } else {
         if (strcmp(command, PUT_UNIT) == 0) {
-          //un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-          _ois->readObject(un);
-          org::esb::mq::ObjectMessage msg;
-          msg.setObject(un);
-          write_q->Enqueue(msg);
-          //partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
-          //man->collectProcessUnit(un, _ep);
+
+          string data;
+          _is->read(data);
+
+
+          std::string recvid=org::esb::util::PUUID();
+          _current_unit->recvid=recvid;
+          /*writing process units to the file system for delivery*/
+          std::string base = org::esb::config::Config::get("hive.data_path");
+          org::esb::io::File outputfile(base + "/"+_current_unit->jobid+"/"+ recvid);
+          if(!File(outputfile.getParent()).exists()){
+            File(outputfile.getParent()).mkdirs();
+          }
+          FileOutputStream outstream(&outputfile);
+          outstream.write(data);
+          outstream.close();
+
+          /*
+          litesql::Blob blob=litesql::Blob(data.c_str(),data.length());
+          _current_unit->responseData=blob;
+          */
+
+          _current_unit->recv=litesql::DateTime();
+          _current_unit->update();
         } else {
           LOGERROR("unknown command received:" << command);
         }

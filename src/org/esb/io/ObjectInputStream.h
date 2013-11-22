@@ -10,7 +10,9 @@
 #include "InputStream.h"
 //#include "org/esb/util/Log.h"
 #include "org/esb/io/exports.h"
+#include "org/esb/util/Serializing.h"
 using namespace std;
+using org::esb::util::Serializing;
 namespace org {
   namespace esb {
     namespace io {
@@ -25,9 +27,11 @@ namespace org {
         int read();
 
         template < typename T > int readObject(T & object) {
-          string data;
-          _is->read(data);
 
+            string data;
+            _is->read(data);
+            return Serializing::deserialize(object, data);
+            /*
           if (!(data.length() > 0)) {
             //LOGERROR("Fehler in der groesse INBOUND_DATA:" << data.length());
             return -1;
@@ -42,6 +46,7 @@ namespace org {
             return -1;
           }
           return 0;
+          */
 
         }
       private:

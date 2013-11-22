@@ -8,24 +8,29 @@
 //#include <boost/iostreams/device/array.hpp>
 #include <fstream>
 #include "org/esb/io/exports.h"
+#include "org/esb/util/Serializing.h"
+
+using org::esb::util::Serializing;
 
 namespace org {
-    namespace esb {
-        namespace io {
+  namespace esb {
+    namespace io {
 
-            class  IO_EXPORT ObjectOutputStream : public OutputStream {
-            public:
-                ObjectOutputStream(OutputStream * out);
+      class  IO_EXPORT ObjectOutputStream : public OutputStream {
+        public:
+          ObjectOutputStream(OutputStream * out);
 
-                void write(char buffer);
-                void write(char * buffer, int length);
-                void write(vector <unsigned char >& buffer);
-                bool close();
-                void flush();
+          void write(char buffer);
+          void write(char * buffer, int length);
+          void write(vector <unsigned char >& buffer);
+          bool close();
+          void flush();
 
-                template<typename T>
-                void writeObject(const T &object) {
-                    std::ostringstream archive_stream;
+          template<typename T>
+          void writeObject(const T &object) {
+            std::string data=Serializing::serialize(object);
+            /*
+                  std::ostringstream archive_stream;
                     boost::archive::binary_oarchive archive(archive_stream);
                     //boost::archive::text_oarchive archive(archive_stream);
                     archive << object;
@@ -33,14 +38,15 @@ namespace org {
                     //int length=_outbound_data.length();
                     //cout << "WriteLength"<<length<<endl;
                     //	    _os->write((char*)&length,sizeof(int));
-                    _os->write((char*) _outbound_data.c_str(), _outbound_data.length());
-                    _os->flush();
-                }
+                    */
+            _os->write((char*) data.c_str(), data.length());
+            _os->flush();
+          }
 
-            private:
-                OutputStream * _os;
-            };
-        }
+        private:
+          OutputStream * _os;
+      };
     }
+  }
 }
 #endif

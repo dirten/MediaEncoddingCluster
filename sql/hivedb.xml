@@ -357,6 +357,10 @@
         <field name="sendid" type="string"/>
         <field name="recvid" type="string"/>
         <field name="data" type="blob"/>
+        <field name="responseData" type="blob"/>
+        <field name="clientid" type="string"/>
+        <field name="deliverycount" type="integer"/>
+        <field name="jobid" type="string"/>
     </object>
 
     <relation id="ProcessUnitJob">

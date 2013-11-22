@@ -2171,6 +2171,14 @@ public:
     litesql::Field<std::string> recvid;
     static const litesql::FieldType Data;
     litesql::Field<litesql::Blob> data;
+    static const litesql::FieldType ResponseData;
+    litesql::Field<litesql::Blob> responseData;
+    static const litesql::FieldType Clientid;
+    litesql::Field<std::string> clientid;
+    static const litesql::FieldType Deliverycount;
+    litesql::Field<int> deliverycount;
+    static const litesql::FieldType Jobid;
+    litesql::Field<std::string> jobid;
 protected:
     void defaults();
 public:
