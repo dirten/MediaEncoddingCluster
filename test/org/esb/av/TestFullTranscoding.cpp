@@ -78,9 +78,9 @@ Log::open("");
     _sdata[i].dec->setStreamIndex(i);
     _sdata[i].start_dts = fis.getStreamInfo(i)->getFirstDts();
     _sdata[i].enc = new Encoder();
-    _sdata[i].enc->setStreamIndex(i);
     _sdata[i].more_frames = true;
     if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_VIDEO) {
+      _sdata[i].enc->setStreamIndex(0);
       video = true;
       _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
       //_sdata[i].enc->setCodecId(CODEC_ID_THEORA);
@@ -98,7 +98,8 @@ Log::open("");
       // logdebug(_sdata[i].enc->toString());
     } else if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_AUDIO) {
       audio = true;
-      
+      _sdata[i].enc->setStreamIndex(1);
+
       _sdata[i].enc->setCodecId(CODEC_ID_MP2);
       _sdata[i].enc->setBitRate(128000);
       _sdata[i].enc->setSampleRate(48000);
@@ -119,9 +120,10 @@ Log::open("");
     _sdata[i].enc->open();
     _smap[i] = s++;
     //if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_VIDEO)
-      _sdata[i].conv = new FrameConverter(_sdata[i].dec, _sdata[i].enc);
+    //if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_VIDEO)
+    _sdata[i].conv = new FrameConverter(_sdata[i].dec, _sdata[i].enc);
 
-    pos.setEncoder(*_sdata[i].enc, _smap[i]);
+    pos.setEncoder(*_sdata[i].enc, _sdata[i].enc->getStreamIndex());
     _sdata[i].enc->setOutputStream(&pos);
     LOGDEBUG(_sdata[i].enc->toString());
     LOGDEBUG(_sdata[i].dec->toString());

@@ -788,6 +788,11 @@ namespace org {
         return ctx->channels;
       }
 
+      int64_t Codec::getChannelLayout(){
+        return ctx->channel_layout;
+      }
+
+
       int Codec::getGopSize() {
         return ctx->gop_size;
       }

@@ -117,6 +117,7 @@ class SampleFormat;*/
         std::string toString(void);
         void setStreamIndex(int idx);
         int getStreamIndex();
+        int64_t getChannelLayout();
 
         //				int getCodecType ();
         //				string getCodecName ();

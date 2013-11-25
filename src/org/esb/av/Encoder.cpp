@@ -30,6 +30,7 @@
 #include "Packet.h"
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/lang/Exception.h"
+#include "org/esb/util/StringUtil.h"
 #include <iostream>
 
 
@@ -37,7 +38,7 @@
 using namespace org::esb::av;
 using namespace org::esb;
 using namespace std;
-
+using org::esb::util::StringUtil;
 Encoder::Encoder(CodecID id) : Codec(id, Codec::ENCODER) {
   _pos = NULL;
   _sink = NULL;
@@ -270,8 +271,11 @@ int Encoder::encodeAudio(Frame & frame) {
       LOGERROR("av_fifo_realloc2() failed current_size=" << av_fifo_size(fifo) << " adding=" << frame._size);
       //      fprintf(stderr, "av_fifo_realloc2() failed\n");
     }
-    av_fifo_generic_write(fifo, frame._buffer, frame._size, NULL);
-
+    LOGDEBUG("fifo size:"<< av_fifo_size(fifo)<<" fifo space:"<<av_fifo_space(fifo))
+    int bytes=av_fifo_generic_write(fifo, frame._buffer, frame._size, NULL);
+    if(bytes<=0 && bytes!=frame._size){
+      throw new Exception("fifo not correctly filles up -> buffer_size="+StringUtil::toString(frame._size)+" bytes reded from fifo="+StringUtil::toString(bytes));
+    }
     int audio_buf_size = (2 * 128 * 1024);
     uint8_t * audio_buf = static_cast<uint8_t*> (av_malloc(audio_buf_size));
     //uint8_t * audio_buf = new uint8_t[audio_buf_size];
@@ -355,7 +359,8 @@ int Encoder::encodeAudio(Frame & frame) {
     //      pak.setDuration(ctx->frame_size);
     pak.setDuration((float) frame_bytes / (float) (ctx->channels * osize));
 #endif
-    pak.packet->stream_index = frame.stream_index;
+    //pak.packet->stream_index = frame.stream_index;
+    pak.packet->stream_index = _stream_index;
     pak.packet->dts = _last_dts;
     pak.packet->pts = _last_dts;
     _last_dts += pak.getDuration();

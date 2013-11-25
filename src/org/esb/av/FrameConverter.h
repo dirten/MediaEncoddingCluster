@@ -57,6 +57,7 @@ namespace org {
             private:
                 void convertVideo(Frame & input, Frame & out);
                 void convertAudio(Frame & input, Frame & out);
+                void convertAudio2(Frame & in_frame, Frame & out_frame);
                 void rescaleTimestamp(Frame & input, Frame & out);
                 void compensateAudioResampling(Frame & input, Frame & out);
                 void compensateFrameRateConversion(Frame & input, Frame & out);
@@ -83,6 +84,8 @@ namespace org {
                 int64_t duplicatedframes;
                 static boost::mutex ctx_mutex;
                 int inchannels;
+
+                SwrContext * _swr_ctx;
 
             };
         }

@@ -195,7 +195,6 @@ Frame::~Frame() {
 
 AVPacket * Frame::getPacket() {
   return _packet;
-
 }
 
 AVFrame * Frame::getAVFrame() {
@@ -204,6 +203,10 @@ AVFrame * Frame::getAVFrame() {
 
 uint8_t * Frame::getData() {
   return framePtr->data[0];
+}
+
+int Frame::getSampleCount(){
+  return framePtr->nb_samples;
 }
 
 PixelFormat Frame::getFormat() {
@@ -452,22 +455,24 @@ std::string Frame::toString() {
  }
  */
 void Frame::dumpHex() {
+  printf("hexdump:\n");
   int len, i, j, c;
-
-  for (i = 0; i < _size; i += 16) {
-    len = _size - i;
+  int size=_size;//framePtr->nb_samples;
+  uint8_t* buffer=_buffer;//framePtr->data[0];
+  for (i = 0; i < size; i += 16) {
+    len = size - i;
     if (len > 16)
       len = 16;
     printf("%08x ", i);
     for (j = 0; j < 16; j++) {
       if (j < len)
-        printf(" %02x", _buffer[i + j]);
+        printf(" %02x", buffer[i + j]);
       else
         printf("   ");
     }
     printf(" ");
     for (j = 0; j < len; j++) {
-      c = _buffer[i + j];
+      c = buffer[i + j];
       if (c < ' ' || c > '~')
         c = '.';
       printf("%c", c);

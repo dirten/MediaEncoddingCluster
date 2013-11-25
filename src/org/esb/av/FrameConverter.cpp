@@ -20,6 +20,7 @@ namespace org {
       FrameConverter::FrameConverter(Decoder * dec, Encoder * enc) {
         LOGDEBUG("FrameConverter::FrameConverter(Decoder * dec, Encoder * enc)");
         _swsContext = NULL;
+        _swr_ctx=NULL;
         _audioCtx = NULL;
         _frameRateCompensateBase = 0;
         _gop_size = -1;
@@ -174,12 +175,12 @@ namespace org {
           if (delta <= -0.6)
             frames = 0; //static_cast<int> (floor(delta - 0.5));
           LOGDEBUG(
-                "inframe.pts=" << input.getPts() <<
-                ":_dec->getLastTimeStamp()=" << _dec->getLastTimeStamp() <<
-                ":_dec->getTimeBase().den=" << _dec->getTimeBase().den <<
-                ":av_q2d(_enc->getTimeBase())=" << av_q2d(_enc->getTimeBase()) <<
-                ":_enc->getLastTimeStamp()=" << _enc->getLastTimeStamp() <<
-                ":vdelta=" << delta << ":frames=" << frames);
+          "inframe.pts=" << input.getPts() <<
+          ":_dec->getLastTimeStamp()=" << _dec->getLastTimeStamp() <<
+          ":_dec->getTimeBase().den=" << _dec->getTimeBase().den <<
+          ":av_q2d(_enc->getTimeBase())=" << av_q2d(_enc->getTimeBase()) <<
+          ":_enc->getLastTimeStamp()=" << _enc->getLastTimeStamp() <<
+          ":vdelta=" << delta << ":frames=" << frames);
           if (_gop_size > 0)
             _gop_size--;
         }
@@ -288,6 +289,35 @@ namespace org {
       /**
        * this resample the input Frame data into the output Frame data
        */
+      void FrameConverter::convertAudio2(Frame & in_frame, Frame & out_frame) {
+        if (_swr_ctx== NULL || inchannels != in_frame.channels) {
+          inchannels = in_frame.channels;
+          if(_swr_ctx) swr_free(&_swr_ctx);
+          _swr_ctx = swr_alloc();
+
+          /* set options */
+              av_opt_set_int(_swr_ctx, "in_channel_layout",    _dec->getChannelLayout(), 0);
+              av_opt_set_int(_swr_ctx, "in_sample_rate",       _dec->getSampleRate(), 0);
+              av_opt_set_sample_fmt(_swr_ctx, "in_sample_fmt", _dec->getSampleFormat(), 0);
+
+              av_opt_set_int(_swr_ctx, "out_channel_layout",    _enc->getChannelLayout(), 0);
+              av_opt_set_int(_swr_ctx, "out_sample_rate",       _enc->getSampleRate(), 0);
+              av_opt_set_sample_fmt(_swr_ctx, "out_sample_fmt", _enc->getSampleFormat(), 0);
+
+        }
+        if (!_swr_ctx) {
+          throw org::esb::lang::Exception(__FILE__,__LINE__,"Could not initialize SWResample Context");
+        }
+        int isize = av_get_bytes_per_sample(_dec->getSampleFormat());
+        int osize = av_get_bytes_per_sample(_enc->getSampleFormat());
+        uint8_t * audio_buf = (uint8_t*) av_malloc(2 * MAX_AUDIO_PACKET_SIZE);
+        /*
+        int ret = swr_convert(_swr_ctx, audio_buf, dst_nb_samples, (const uint8_t **)src_data, src_nb_samples);
+                if (ret < 0) {
+                  throw org::esb::lang::Exception(__FILE__,__LINE__,"Could not initialize SWResample Context");
+                }*/
+      }
+
       void FrameConverter::convertAudio(Frame & in_frame, Frame & out_frame) {
 
         if (_audioCtx == NULL || inchannels != in_frame.channels) {
@@ -295,6 +325,7 @@ namespace org {
           if (_audioCtx)audio_resample_close(_audioCtx);
           if (_dec->getCodecType() == AVMEDIA_TYPE_AUDIO && _enc->getCodecType() == AVMEDIA_TYPE_AUDIO) {
             if (_dec->getSampleFormat() != AV_SAMPLE_FMT_S16){
+              //_dec->setSampleFormat(AV_SAMPLE_FMT_S16);
               LOGWARN("Warning, using s16 intermediate sample format for resampling\n");
             }
             _audioCtx = av_audio_resample_init(_enc->getChannels(), _dec->getChannels(), _enc->getSampleRate(), _dec->getSampleRate(), _enc->getSampleFormat(), _dec->getSampleFormat(), 16, 10, 0, 0.8 );
@@ -304,6 +335,16 @@ namespace org {
             }
           }
         }
+
+        if (_swr_ctx== NULL || inchannels != in_frame.channels) {
+          inchannels = in_frame.channels;
+          if(_swr_ctx) swr_free(&_swr_ctx);
+          _swr_ctx = swr_alloc();
+          if (!_swr_ctx) {
+            throw org::esb::lang::Exception(__FILE__,__LINE__,"Could not initialize SWResample Context");
+          }
+        }
+
 
         //        LOGTRACEMETHOD("org.esb.av.FrameConverter","Convert Audio");
         boost::mutex::scoped_lock scoped_lock(ctx_mutex);
@@ -316,6 +357,7 @@ namespace org {
         int osize = av_get_bits_per_sample_fmt(_enc->getSampleFormat()) / 8;
         uint8_t * audio_buf = (uint8_t*) av_malloc(2 * MAX_AUDIO_PACKET_SIZE);
 
+        //int out_size = audio_resample(_audioCtx, (short *) audio_buf, (short *) in_frame.getAVFrame()->data[0], in_frame.getSampleCount() / (in_frame.channels * isize));
         int out_size = audio_resample(_audioCtx, (short *) audio_buf, (short *) in_frame._buffer, in_frame._size / (in_frame.channels * isize));
         if(out_size==0){
           LOGERROR("Audio resample failed");
@@ -334,7 +376,7 @@ namespace org {
         last_outsamples = out_frame._size / osize;
         LOGDEBUG("convert audio ready")
       }
-      }
     }
   }
+}
 

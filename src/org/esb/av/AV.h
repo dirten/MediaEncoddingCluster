@@ -15,6 +15,7 @@ extern "C" {
 #include <libswscale/swscale.h>
 #include <libavutil/fifo.h>
 #include <libavutil/rational.h>
+#include <libswresample/swresample.h>
 typedef AVCodecID CodecID;
 #ifdef	__cplusplus
 }

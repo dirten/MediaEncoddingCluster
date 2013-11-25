@@ -28,6 +28,8 @@ namespace org {
         void setHeight(int);
 
         int getSize();
+        int getSampleCount();
+
         PixelFormat getFormat();
         AVPacket * getPacket();
         Frame getFrame(int format = 0);

@@ -242,12 +242,16 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   LOGTRACEMETHOD("Decode Audio");
   LOGDEBUG(packet.toString());
   //        Frame frame;
+  //Frame * frame = new Frame();
+
   int size = packet.packet->size;
   int samples_size = 192000;//AVCODEC_MAX_AUDIO_FRAME_SIZE;
   int bps = av_get_bits_per_sample_fmt(ctx->sample_fmt) >> 3;
   //uint8_t* t=(uint8_t*)av_malloc(100);
   uint8_t *outbuf = static_cast<uint8_t*> (av_malloc(samples_size));
   int len = avcodec_decode_audio3(ctx, (short *) outbuf, &samples_size, packet.packet);
+  //int len = avcodec_decode_audio4(ctx, frame->getAVFrame(), &samples_size, packet.packet);
+
   //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded
   if (_next_pts == AV_NOPTS_VALUE) {
 #ifdef USE_TIME_BASE_Q
@@ -265,8 +269,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
     av_free(outbuf);
     return new Frame();
   }
-  Frame * frame = new Frame(outbuf, samples_size);
-
+  Frame * frame = new Frame(outbuf,samples_size);
   if (samples_size > 0) {
     frame->setFinished(true);
   } else {
@@ -306,9 +309,11 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   frame->pos = packet.packet->pos;
   //  frame->duration = packet.packet->duration;
   frame->_size = samples_size;
+  frame->_buffer=outbuf;
   frame->_type = AVMEDIA_TYPE_AUDIO;
   frame->channels = ctx->channels;
   frame->sample_rate = ctx->sample_rate;
+  frame->dumpHex();
   LOGDEBUG(frame->toString());
   //  frame->dumpHex();
   return frame;
