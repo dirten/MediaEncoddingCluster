@@ -2179,6 +2179,8 @@ public:
     litesql::Field<int> deliverycount;
     static const litesql::FieldType Jobid;
     litesql::Field<std::string> jobid;
+    static const litesql::FieldType Group;
+    litesql::Field<std::string> group;
 protected:
     void defaults();
 public:

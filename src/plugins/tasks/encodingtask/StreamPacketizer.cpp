@@ -28,6 +28,7 @@
 
 #include "org/esb/av/Encoder.h"
 #include "org/esb/av/Decoder.h"
+#include "org/esb/util/StringUtil.h"
 using namespace org::esb::av;
 namespace encodingtask {
 
@@ -51,6 +52,7 @@ namespace encodingtask {
     _decoder=decoder;
     _stream.min_packet_count = size<=0?_codec_min_packets[decoder->getCodecType()]:size;
     _stream.state = STATE_NOP;
+    delay=0;
   }
 
   /**
@@ -155,43 +157,53 @@ namespace encodingtask {
     /**
          * case handling for mpeg2 video packets(formaly streams with b frames)
          * */
-    if (_stream.state == STATE_END_I_FRAME && (_decoder->getCodecId() == CODEC_ID_MPEG2VIDEO && ptr->_pict_type == AV_PICTURE_TYPE_P)) {
-      //LOGDEBUG("Processing Mpeg2 Stream");
-      /*in the first roundtrip the stream packets look like this, the first B Frames are not removed*/
-      /*_streams[stream_idx].packets =IBBPBBPBBPBB*/
-      /*in the following roundtrip the stream packets look like this*/
-      /*_streams[stream_idx].packets =IPBBPBBPBB*/
-      /*_overlap_queue[stream_idx]   =IBBP*/
-      _stream.state = STATE_START_I_FRAME;
-      /**
+    if (_stream.state == STATE_END_I_FRAME && (_decoder->getCodecId() == CODEC_ID_MPEG2VIDEO /*&& ptr->_pict_type == AV_PICTURE_TYPE_P*/)) {
+      LOGDEBUG("decode Mpeg2 Stream");
+      Frame * frame=_decoder->decode2(*ptr.get());
+      if(!frame->isFinished()){
+        delay++;
+      }
+      if(frame->getAVFrame()->pict_type== AV_PICTURE_TYPE_P){
+
+        //IBBPBBPBBP
+        //   IBBP
+        //LOGDEBUG("frame type = "+ org::esb::util::StringUtil::toString(frame->getAVFrame()->pict_type));
+        /*in the first roundtrip the stream packets look like this, the first B Frames are not removed*/
+        /*_streams[stream_idx].packets =IBBPBBPBBPBB*/
+        /*in the following roundtrip the stream packets look like this*/
+        /*_streams[stream_idx].packets =IPBBPBBPBB*/
+        /*_overlap_queue[stream_idx]   =IBBP*/
+        _stream.state = STATE_START_I_FRAME;
+        /**
            * appending the next IBB from the IBBP order to the actual packet_list
            * */
-      _stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.end() - 1);
-      /*_streams[stream_idx].packets =IBBPBBPBBPBBIBB*/
-      /*_overlap_queue[stream_idx]   =IBBP*/
+        _stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.end() - (1+delay));
+        /*_streams[stream_idx].packets =IBBPBBPBBPBBIBB*/
+        /*_overlap_queue[stream_idx]   =IBBP*/
 
-      _packet_list.push_back(_stream.packets);
-      _stream.packets.clear();
-      /*_streams[stream_idx].packets =    */
-      /*_overlap_queue[stream_idx]   =IBBP*/
+        _packet_list.push_back(_stream.packets);
+        _stream.packets.clear();
+        /*_streams[stream_idx].packets =    */
+        /*_overlap_queue[stream_idx]   =IBBP*/
 
 
-      /**
+        /**
            * appending the IP frames from the IBBP order to the actual packet_list
            * that are the first and the last entries in the overlap queue
            * */
-      _stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.begin() + 1);
-      _stream.packets.insert(_stream.packets.end(), _overlap_queue.end() - 1, _overlap_queue.end());
-      //            _streams[stream_idx].packets.insert(_streams[stream_idx].packets.end(), _overlap_queue[stream_idx].begin(), _overlap_queue[stream_idx].end());
-      /*_streams[stream_idx].packets =IP  */
-      /*_overlap_queue[stream_idx]   =IBBP*/
+        _stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.begin() + 1);
+        _stream.packets.insert(_stream.packets.end(), _overlap_queue.end() - (1+delay), _overlap_queue.end());
+        //            _streams[stream_idx].packets.insert(_streams[stream_idx].packets.end(), _overlap_queue[stream_idx].begin(), _overlap_queue[stream_idx].end());
+        /*_streams[stream_idx].packets =IP  */
+        /*_overlap_queue[stream_idx]   =IBBP*/
 
 
-      _overlap_queue.clear();
-      /*_streams[stream_idx].packets =IP */
-      /*_overlap_queue[stream_idx]   =   */
-      result = true;
-
+        _overlap_queue.clear();
+        /*_streams[stream_idx].packets =IP */
+        /*_overlap_queue[stream_idx]   =   */
+        result = true;
+        delay=0;
+      }
     } else if (_stream.state == STATE_END_I_FRAME && _decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
       /**************************************
            * this is used for all audio streams
@@ -224,6 +236,6 @@ namespace encodingtask {
     }
     return result;
   }
-}
+  }
 
 

@@ -176,6 +176,7 @@ namespace bla {
       //	printf("%10d|", f->streams[p.packet->stream_index]->index_entries[pidx].timestamp);
       //	printf("%10d|", av_index_search_timestamp(f->streams[p.packet->stream_index], p.packet->dts, 0));
       printf("%s|", p.isKeyFrame() == 1 && fis.getFormatContext()->streams[p.getStreamIndex()]->codec->codec_type == AVMEDIA_TYPE_VIDEO ? "x " : "  ");
+      //printf("%2d|", fis.getFormatContext()->streams[p.getStreamIndex()]->codec->codec_type == AVMEDIA_TYPE_VIDEO ? p._pict_type :-1);
       printf("%5d|", p.packet->duration);
       std::string type;
       //	if(f->streams[p.packet->stream_index]->parser){

@@ -60,44 +60,13 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
     Ptr<safmq::MessageQueue> write_q;
     Ptr<db::ProcessUnit> _current_unit;
 
-    std::string getMessageQueueName(){
-      db::Queue queue = litesql::select<db::Queue > (_db, db::Queue::Qtype==db::Queue::Qtype.ONE2ONE).one();
-      return queue.outputname;
-    }
-
-    Ptr<safmq::MessageQueue> getMessageQueue(std::string name){
-      if(con->queueExist(name)){
-        return con->getMessageQueue(name);
-      }
-      return Ptr<safmq::MessageQueue>();
-    }
-
-    void removeMessageQueue(std::string name){
-      if(con->queueExist(name)){
-        con->deleteQueue(name);
-      }
-    }
-
-    void removeMessageQueueName(std::string name){
-      db::Queue queue = litesql::select<db::Queue > (_db, db::Queue::Outputname==name).one();
-      queue.del();
-    }
-
-    Ptr<safmq::MessageQueue> getMessageQueue(){
-        std::string name=getMessageQueueName();
-        Ptr<safmq::MessageQueue> mq=getMessageQueue(name);
-        if(mq){
-          return mq;
-        }else{
-          removeMessageQueueName(name);
-        }
-    }
 
     db::ProcessUnit getProcessUnit(){
       if(litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1).count()){
         _db.query("begin exclusive");
         db::ProcessUnit unit=litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1).orderBy(db::ProcessUnit::Id, true).one();
         unit.send=litesql::DateTime();
+        unit.deliverycount=unit.deliverycount+1;
         unit.update();
         _db.query("end");
         return unit;

@@ -30,6 +30,7 @@ namespace encodingtask {
 
   EncodingTask::EncodingTask() : Task() {
     _sequence_counter = 0;
+    flushed=false;
     /*
     ConnectionFactory* connectionFactory(ConnectionFactory::createCMSConnectionFactory("failover:tcp://127.0.0.1:61616"));
     connection = connectionFactory->createConnection();
@@ -50,7 +51,7 @@ namespace encodingtask {
   void EncodingTask::prepare() {
 
     LOGDEBUG("PluginContext uuid="+getContext()->get<std::string > ("uuid"))
-    database=getContext()->database;
+        database=getContext()->database;
     _srcuristr = getContext()->getEnvironment<std::string > ("encodingtask.src");
     if (_srcuristr.length() == 0) {
       _srcuristr = getSource();
@@ -77,9 +78,9 @@ namespace encodingtask {
         if ((*it).second->getCodecType() == AVMEDIA_TYPE_VIDEO) {
           /*special prepare of the encoder for using the input width/heigth*/
           if (_codecs["video"].count("width") == 0 ||
-          atoi(_codecs["video"]["width"].c_str()) == 0 ||
-          _codecs["video"].count("height") == 0 ||
-          atoi(_codecs["video"]["height"].c_str()) == 0) {
+              atoi(_codecs["video"]["width"].c_str()) == 0 ||
+              _codecs["video"].count("height") == 0 ||
+              atoi(_codecs["video"]["height"].c_str()) == 0) {
             _codecs["video"]["width"] = org::esb::util::StringUtil::toString(tmp[(*it).first]->getWidth());
             _codecs["video"]["height"] = org::esb::util::StringUtil::toString(tmp[(*it).first]->getHeight());
             LOGDEBUG("setting video size from input to : " << _codecs["video"]["width"] << "*" << _codecs["video"]["height"]);
@@ -187,6 +188,8 @@ namespace encodingtask {
     }*/
     partitionservice::PartitionManager::getInstance()->addCollector(boost::bind(&EncodingTask::collector, this, _1,_2));
     _unit_list.addCallback(boost::bind(&EncodingTask::unitListCallback, this, _1));
+    LOGDEBUG("starting progress observer")
+        boost::thread(boost::bind(&EncodingTask::observeProgress,this));
 
     setStatus(PREPARED);
   }
@@ -207,18 +210,81 @@ namespace encodingtask {
   org::esb::core::OptionsDescription EncodingTask::getOptionsDescription() {
     org::esb::core::OptionsDescription result("encodingtask");
     result.add_options()
-    ("encodingtask.src", boost::program_options::value<std::string > ()->default_value(""), "Encoding task source file")
-    ("encodingtask.partition", boost::program_options::value<std::string > ()->default_value("global"), "Encoding task partition")
-    //("encodingtask.profile", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile");
-    ("encodingtask.profiledata", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data")
-    ("data", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data");
+        ("encodingtask.src", boost::program_options::value<std::string > ()->default_value(""), "Encoding task source file")
+        ("encodingtask.partition", boost::program_options::value<std::string > ()->default_value("global"), "Encoding task partition")
+        //("encodingtask.profile", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile");
+        ("encodingtask.profiledata", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data")
+        ("data", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data");
     return result;
   }
 
   void EncodingTask::observeProgress() {
-    while (getStatus() == Task::EXECUTE) {
-      setProgress(getProgressLength() - partitionservice::PartitionManager::getInstance()->getSize(_partition));
+    int next_id=0;
+    while (true) {
+      //LOGDEBUG("running observer")
+      int count=litesql::select<db::ProcessUnit > (*database, db::ProcessUnit::Jobid == _task_uuid).count();
+      if(count > 0){
+        if(next_id==0){
+          /*reading out the first id from the database*/
+          db::ProcessUnit unit=litesql::select<db::ProcessUnit > (*database, db::ProcessUnit::Jobid == _task_uuid).orderBy(db::ProcessUnit::Id).one();
+          next_id=unit.id;
+          LOGDEBUG("setting first id:"+StringUtil::toString(next_id))
+        }
+
+
+        /*calculating progress*/
+        int completed=litesql::select<db::ProcessUnit > (*database, db::ProcessUnit::Jobid == _task_uuid && db::ProcessUnit::Recv == 1).count();
+
+        /*!!!!caution: this order is needed to prevent race condition in completition!!!!*/
+
+        /*next process unit ready*/
+        int next_ready=litesql::select<db::ProcessUnit > (*database, db::ProcessUnit::Id==next_id && db::ProcessUnit::Recv > 1).count();
+        if(next_ready){
+          LOGDEBUG("pushing next id"+StringUtil::toString(next_id));
+          db::ProcessUnit pu=litesql::select<db::ProcessUnit > (*database, db::ProcessUnit::Id==next_id).one();
+
+          /*here comes the pushbuffer*/
+          std::string base = org::esb::config::Config::get("hive.data_path");
+          org::esb::io::File inputfile(base + "/"+pu.jobid+"/"+ pu.recvid);
+          FileInputStream inputstream(&inputfile);
+          std::string d;
+          int readed=inputstream.read(d);
+          LOGDEBUG("bytes readed:"+StringUtil::toString(readed))
+          boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit;
+          try{
+            Serializing::deserialize(unit, d);
+            unit->_output_packets.sort(EncodingTask::ptsComparator);
+
+            foreach(PacketPtr p, unit->_output_packets) {
+              int idx = p->getStreamIndex();
+              p->setPts(_in_out_stream_map[idx].next_timestamp);
+              _in_out_stream_map[idx].last_timestamp = _in_out_stream_map[idx].next_timestamp;
+              _in_out_stream_map[idx].next_timestamp += p->getDuration();
+            }
+            unit->_output_packets.sort(EncodingTask::dtsComparator);
+
+            foreach(PacketPtr p, unit->_output_packets) {
+              Task::pushBuffer(p);
+            }
+          }catch(std::exception & ex){
+            LOGERROR(ex.what())
+          }
+          next_id++;
+          continue;
+        }
+
+        /*division by zero!!!??*/
+        setProgress((completed*100)/count);
+        if(flushed && completed==0){
+          break;
+        }
+      }
       org::esb::lang::Thread::sleep2(1 * 1000);
+    }
+    LOGDEBUG("finishing observer ")
+    {
+      boost::mutex::scoped_lock notify_lock(finish_notify_mutex);
+      finish_condition.notify_one();
     }
   }
 
@@ -240,7 +306,17 @@ namespace encodingtask {
   {
     //boost::mutex::scoped_lock partition_get_lock(_partition_mutex);
 
-    std::cerr<<unit->getJobId()<<"=="<<_task_uuid<<":"<<boost::this_thread::get_id()<<" collector invoked "<<unit->getDecoder()->getCodecName()<<", pu count"<<unit->_output_packets.size()<<" sequence:"<<unit->_sequence<<std::endl;
+    std::cerr<<unit->getJobId()<<
+               "=="<<
+               _task_uuid<<
+               ":"<<boost::this_thread::get_id()<<
+               " collector invoked "<<
+               unit->getDecoder()->getCodecName()<<
+               ", pu count"<<
+               unit->_output_packets.size()<<
+               " sequence:"<<unit->_sequence<<
+               std::endl;
+
     if(unit->getJobId()==_task_uuid)
       _unit_list.pushUnit(unit);
     /*
@@ -273,7 +349,7 @@ namespace encodingtask {
           Ptr<org::esb::av::Encoder>enc=_encs[p->getStreamIndex()];
           boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit = spub.build(list, pti.getDecoder(), enc);
           putToPartition(unit);
-          LOGDEBUG("Process PU");
+          LOGDEBUG("Process PU----------------------------------------------------------------------------------------------");
         }
       }else{
         LOGERROR("no StreamPacketizer found for stream:"<<p->getStreamIndex());
@@ -293,6 +369,12 @@ namespace encodingtask {
           putToPartition(unit, true);
         }
       }
+      flushed=true;
+      /*needs to wait here for completition*/
+      LOGDEBUG("waiting for encoding finished");
+      boost::mutex::scoped_lock finish_lock(finish_mutex);
+      finish_condition.wait(finish_lock);
+      LOGDEBUG("encoding finished");
     }
   }
 
@@ -366,7 +448,7 @@ namespace encodingtask {
     //pu.sendid=std::string(oss.str());
 
     pu.update();
-/*
+    /*
     std::string d;
     litesql::Blob blob2=pu.data.value();
     d.reserve(blob2.length());
@@ -549,4 +631,4 @@ namespace encodingtask {
 
   REGISTER_TASK("EncodingTask", EncodingTask)
 
-}
+  }

@@ -47,6 +47,7 @@ namespace org {
         void setProgress(unsigned int);
         void setStatus(STATUS);
         void setStatusMessage(std::string);
+        //virtual void newBuffer(Ptr<org::esb::av::Packet>);
 
       public:
         Task();

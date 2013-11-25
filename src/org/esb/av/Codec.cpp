@@ -341,7 +341,8 @@ namespace org {
         ctx->sample_rate = 0;
         ctx->sample_fmt = AV_SAMPLE_FMT_NONE;
         ctx->channels = 0;
-        //        ctx->idct_algo = FF_IDCT_AUTO;
+        ctx->channel_layout=AV_CH_LAYOUT_STEREO;
+          //        ctx->idct_algo = FF_IDCT_AUTO;
         //        ctx->skip_idct = AVDISCARD_DEFAULT;
         //        ctx->error_recognition = FF_ER_CAREFUL;
         //        ctx->error_concealment = 3;
@@ -637,6 +638,7 @@ namespace org {
             while ((t = av_dict_get(_dict, "", t, AV_DICT_IGNORE_SUFFIX)))
               LOGDEBUG((_mode == ENCODER ? "Encoder" : "Decoder")<<"Setting CodecDictionary Key:"<<t->key<<" val:"<<t->value);
           }
+          ctx->channel_layout=AV_CH_LAYOUT_STEREO;
           if (avcodec_open2(ctx, _codec,&_dict) < 0) {
             LOGERROR("error in openning Codec (" << ctx->codec_id << ")");
           } else {

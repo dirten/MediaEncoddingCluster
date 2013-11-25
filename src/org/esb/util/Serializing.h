@@ -31,7 +31,8 @@ namespace org {
             boost::archive::text_iarchive archive(archive_stream);
             try {
               archive >> object;
-            } catch (std::exception & ex) {
+            } catch (boost::archive::archive_exception & ex) {
+              std::cout << "Exception=" << ex.what() <<" code="<<ex.code<<std::endl;
               throw ex;
               //return -1;
             }

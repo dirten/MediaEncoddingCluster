@@ -133,18 +133,19 @@ void writeProcessUnit(ProcessUnit & unit) {
 void execute(char * infile, char * outfile) {
   FileInputStream fis(infile);
   ObjectInputStream ois(&fis);
-  ProcessUnit pu;
+  //ProcessUnit pu;
+  boost::shared_ptr<ProcessUnit> pu;
   ois.readObject(pu);
-  pu._encoder->setCodecOption("multipass", "1");
-  pu._encoder->reset();
-  pu._decoder->reset();
-  //pu.process();
-  delete pu._converter;
+  pu->_encoder->setCodecOption("multipass", "1");
+  pu->_encoder->reset();
+  pu->_decoder->reset();
+  pu->process();
+  delete pu->_converter;
 
   FileOutputStream fos(outfile);
   ObjectOutputStream oos(&fos);
   oos.writeObject(pu);
-  writeProcessUnit(pu);
+  //writeProcessUnit(*pu.get());
 }
 
 void view_codec_data(boost::shared_ptr<Codec>c) {
@@ -196,11 +197,11 @@ void viewPuData(ProcessUnit & pu) {
 void view(char * filename) {
   FileInputStream fis(filename);
   ObjectInputStream ois(&fis);
-  ProcessUnit * pu_get = new ProcessUnit();
-  ois.readObject(*pu_get);
+  boost::shared_ptr<ProcessUnit> pu_get;// = new ProcessUnit();
+  ois.readObject(pu_get);
   LOGDEBUG("readed");
-  viewPuData(*pu_get);
-  ProcessUnit pu = *pu_get;
+  viewPuData(*pu_get.get());
+  ProcessUnit pu = *pu_get.get();
   //  logdebug(pu._decoder->toString());
   //  logdebug(pu._encoder->toString());
   printf("----------------------------------------------------------------------------------------------------------");

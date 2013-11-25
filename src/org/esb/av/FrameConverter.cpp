@@ -99,7 +99,7 @@ namespace org {
         out_frame.setPixelAspectRatio(in_frame.getPixelAspectRatio());
         out_frame.setDisplayAspectRatio(in_frame.getDisplayAspectRatio());
         out_frame.setStorageAspectRatio(in_frame.getStorageAspectRatio());
-        LOGDEBUG(out_frame.toString());
+        LOGDEBUG("out frame"+out_frame.toString());
       }
 
       void FrameConverter::rescaleTimestamp(Frame & in_frame, Frame & out_frame) {
@@ -174,12 +174,12 @@ namespace org {
           if (delta <= -0.6)
             frames = 0; //static_cast<int> (floor(delta - 0.5));
           LOGDEBUG(
-                  "inframe.pts=" << input.getPts() <<
-                  ":_dec->getLastTimeStamp()=" << _dec->getLastTimeStamp() <<
-                  ":_dec->getTimeBase().den=" << _dec->getTimeBase().den <<
-                  ":av_q2d(_enc->getTimeBase())=" << av_q2d(_enc->getTimeBase()) <<
-                  ":_enc->getLastTimeStamp()=" << _enc->getLastTimeStamp() <<
-                  ":vdelta=" << delta << ":frames=" << frames);
+                "inframe.pts=" << input.getPts() <<
+                ":_dec->getLastTimeStamp()=" << _dec->getLastTimeStamp() <<
+                ":_dec->getTimeBase().den=" << _dec->getTimeBase().den <<
+                ":av_q2d(_enc->getTimeBase())=" << av_q2d(_enc->getTimeBase()) <<
+                ":_enc->getLastTimeStamp()=" << _enc->getLastTimeStamp() <<
+                ":vdelta=" << delta << ":frames=" << frames);
           if (_gop_size > 0)
             _gop_size--;
         }
@@ -204,10 +204,10 @@ namespace org {
           //inframes+=outframes-inframes;
         } else
           if ((outframes - inframes - duplicatedframes - 0.0001) <= -1.0) {
-          out.setFrameCount(0);
-          duplicatedframes = outframes - inframes - 0.0001;
-          //inframes+=outframes-inframes;
-        }
+            out.setFrameCount(0);
+            duplicatedframes = outframes - inframes - 0.0001;
+            //inframes+=outframes-inframes;
+          }
         double tmp = 0;
         _frameRateCompensateBase = modf(outframes, &tmp);
 
@@ -311,17 +311,21 @@ namespace org {
           LOGERROR("_audioCtx not initialised");
           return;
         }
-        LOGDEBUG("convert audio")
-                int isize = av_get_bits_per_sample_fmt(_dec->getSampleFormat()) / 8;
+        LOGDEBUG("convert audio");
+        int isize = av_get_bits_per_sample_fmt(_dec->getSampleFormat()) / 8;
         int osize = av_get_bits_per_sample_fmt(_enc->getSampleFormat()) / 8;
         uint8_t * audio_buf = (uint8_t*) av_malloc(2 * MAX_AUDIO_PACKET_SIZE);
 
         int out_size = audio_resample(_audioCtx, (short *) audio_buf, (short *) in_frame._buffer, in_frame._size / (in_frame.channels * isize));
+        if(out_size==0){
+          LOGERROR("Audio resample failed");
+          memcpy(audio_buf,in_frame._buffer,in_frame._size);
+        }
         out_frame._allocated = true;
         out_frame._buffer = audio_buf;
         out_frame.pos = in_frame.pos;
         out_frame.stream_index = in_frame.stream_index;
-        out_frame._size = out_size * _enc->getChannels() * osize;
+        out_frame._size = in_frame._size;//out_size * _enc->getChannels() * osize;
         out_frame._type = AVMEDIA_TYPE_AUDIO;
         out_frame.channels = _enc->getChannels();
         out_frame.sample_rate = _enc->getSampleRate();
@@ -330,7 +334,7 @@ namespace org {
         last_outsamples = out_frame._size / osize;
         LOGDEBUG("convert audio ready")
       }
+      }
     }
   }
-}
 

@@ -361,6 +361,7 @@
         <field name="clientid" type="string"/>
         <field name="deliverycount" type="integer"/>
         <field name="jobid" type="string"/>
+        <field name="group" type="string"/>
     </object>
 
     <relation id="ProcessUnitJob">

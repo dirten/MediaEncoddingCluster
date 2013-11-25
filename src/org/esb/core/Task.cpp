@@ -103,6 +103,7 @@ namespace org {
 
         foreach(Ptr<Task> t, _sinks) {
           t->pushBuffer(p);
+          //t->newBuffer(p);
         }
       }
 

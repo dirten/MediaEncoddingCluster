@@ -166,7 +166,7 @@ namespace org {
           if (!_toHalt)
             org::esb::lang::Thread::sleep2(5000);
         }
-
+        /*
         std::string cmd = LEAVE_PARTITION;
         try {
           _sock->getOutputStream()->write(cmd);
@@ -174,6 +174,7 @@ namespace org {
         } catch (org::esb::net::SocketException & ex) {
           LOGDEBUG("error while leaving partition:" << ex.what());
         }
+        */
         boost::mutex::scoped_lock terminationLock(terminationMutex);
         ctrlCHit.notify_all();
       }

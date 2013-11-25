@@ -289,7 +289,7 @@ void ProcessUnit::processInternal() {
       _discard_audio_bytes = 0;
     }
 
-    LOGTRACE("Frame Converted" << f->toString());
+    LOGDEBUG("Frame Converted" << f->toString());
 
     /*encode the frame into a packet*/
     /*NOTE: the encoder write Packets to the PacketSink, because some codecs duplicates frames*/
@@ -299,7 +299,7 @@ void ProcessUnit::processInternal() {
      */
 
     int ret = _encoder->encode(*f);
-    LOGTRACE("Frame Encoded");
+    LOGDEBUG("Frame Encoded");
     //LOGDEBUG("Stats="<<_encoder->ctx->stats_out);
     if (false && _encoder->getCodecType() == AVMEDIA_TYPE_VIDEO && sink.getList().size() > 0) {
       boost::shared_ptr<Packet>enc_packet = sink.getList().back();

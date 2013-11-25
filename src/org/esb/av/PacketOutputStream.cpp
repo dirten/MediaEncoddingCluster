@@ -78,7 +78,7 @@ int PacketOutputStream::writePacket(Packet & packet) {
   }
 
   /**
-   * @TOTO implementing now
+   * @TODO implementing now
    * calculate right pts for the entire streams here
    */
   //  streamDts[packet.getStreamIndex()]++;

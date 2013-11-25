@@ -42,7 +42,15 @@ namespace org {
           }
           return boost::any_cast<T>(data);
         }
-        
+        template<typename T>
+        T getProperty(std::string key){
+          boost::any data;
+          if(_props.count(key)>0){
+            data = _props[key];
+          }
+          return boost::any_cast<T>(data);
+        }
+
         template<typename T>
         void set(std::string key, T value){
           _props[key]=value;
