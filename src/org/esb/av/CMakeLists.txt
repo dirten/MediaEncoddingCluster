@@ -43,7 +43,8 @@ add_library (av SHARED
   FrameRateFilter.cpp
 #  TestFFMpegUrl.cpp
   AVPipe.cpp
-  )
+  Resampler.cpp
+)
 TARGET_LINK_LIBRARIES(av
   ${FFMPEG_SWSCALE_LIBRARY}
   ${FFMPEG_AVUTIL_LIBRARY}
