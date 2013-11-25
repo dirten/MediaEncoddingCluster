@@ -363,6 +363,7 @@ namespace org {
           LOGERROR("Audio resample failed");
           memcpy(audio_buf,in_frame._buffer,in_frame._size);
         }
+
         out_frame._allocated = true;
         out_frame._buffer = audio_buf;
         out_frame.pos = in_frame.pos;

@@ -42,6 +42,7 @@ add_library (av SHARED
   DeinterlaceFilter.cpp
   FrameRateFilter.cpp
 #  TestFFMpegUrl.cpp
+  AVPipe.cpp
   )
 TARGET_LINK_LIBRARIES(av
   ${FFMPEG_SWSCALE_LIBRARY}
