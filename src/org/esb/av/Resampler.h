@@ -2,6 +2,7 @@
 #define RESAMPLER_H
 #include <inttypes.h>
 #include "AV.h"
+#include "Frame.h"
 namespace org {
   namespace esb {
     namespace av {
@@ -18,9 +19,18 @@ namespace org {
           void setTargetSampleRate(int64_t);
           void setTargetSampleFormat(AVSampleFormat);
 
-          void resample(uint8_t * src, uint8_t * dst);
+          int resample(uint8_t ** src_data, int src_size , uint8_t ** trg_data, int trg_size);
+          int resample(Frame & src_data,Frame & trg_data);
         private:
           SwrContext * _swr_ctx;
+          int64_t src_channel_layout;
+          int64_t trg_channel_layout;
+
+          int64_t src_sample_rate;
+          int64_t trg_sample_rate;
+
+          AVSampleFormat src_sample_format;
+          AVSampleFormat trg_sample_format;
       };
     }
   }
