@@ -118,6 +118,7 @@ class SampleFormat;*/
         void setStreamIndex(int idx);
         int getStreamIndex();
         int64_t getChannelLayout();
+        void setChannelLayout(int64_t);
 
         //				int getCodecType ();
         //				string getCodecName ();

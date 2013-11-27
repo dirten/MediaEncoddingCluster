@@ -115,7 +115,7 @@ int Encoder::encode(Frame & frame) {
   }
   if (ctx->codec_type == AVMEDIA_TYPE_AUDIO) {
     LOGTRACEMETHOD("Encode Audio");
-    return encodeAudio(frame);
+    return encodeAudio2(frame);
   }
   LOGERROR("Encoder does not support type:" << ctx->codec_type);
   return -1;
@@ -251,6 +251,21 @@ void Encoder::setOutputStream(PacketOutputStream * pos) {
 void Encoder::setSink(Sink * sink) {
   _sink = sink;
 }
+int Encoder::encodeAudio2(Frame & frame) {
+  LOGDEBUG("EncodeAudio2:"<<frame.toString());
+  Packet pak;
+  int got_packet;
+  int out_size = avcodec_encode_audio2(
+          ctx,
+          pak.getAVPacket(),
+          frame.getAVFrame(),
+          &got_packet
+          );
+
+  LOGDEBUG("EncodeAudio2:"<<pak.toString());
+
+}
+
 
 int Encoder::encodeAudio(Frame & frame) {
 

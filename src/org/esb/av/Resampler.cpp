@@ -45,17 +45,36 @@ namespace org {
       }
 
       int Resampler::resample(Frame & src_data,Frame & trg_data){
+        AVFrame * src_frame=src_data.getAVFrame();
+        AVFrame * trg_frame=trg_data.getAVFrame();
+        return resample(src_frame->data,src_frame->nb_samples,trg_frame->data,trg_frame->nb_samples);
+        //return 0;
+      }
+      int Resampler::init(){
+        int ret=0;
+        if ((ret = swr_init(_swr_ctx)) < 0) {
+          throw org::esb::lang::Exception(__FILE__,__LINE__,"Failed to initialize the resampling context");
 
-        return 0;
+        }
       }
 
       int Resampler::resample(uint8_t ** src_data, int src_size , uint8_t ** trg_data, int trg_size){
-        int src_nb_channels = av_get_channel_layout_nb_channels(src_channel_layout);
-        int trg_nb_channels = av_get_channel_layout_nb_channels(trg_channel_layout);
+        int src_linesize, dst_linesize;
 
-        int dst_nb_samples = av_rescale_rnd(src_size, trg_sample_rate, src_sample_rate, AV_ROUND_UP);
+        int src_nb_channels = av_get_channel_layout_nb_channels(src_channel_layout);
+
+        int trg_nb_channels = av_get_channel_layout_nb_channels(trg_channel_layout);
+        int trg_nb_samples = av_rescale_rnd(src_size, trg_sample_rate, src_sample_rate, AV_ROUND_UP);
+        int ret = av_samples_alloc_array_and_samples(&trg_data, &dst_linesize, trg_nb_channels, trg_nb_samples, trg_sample_format, 0);
+
+        if (ret < 0) {
+          throw org::esb::lang::Exception(__FILE__,__LINE__,"could not allocate samples array");
+        }
+        ret = swr_convert(_swr_ctx, trg_data, trg_nb_samples, (const uint8_t **)src_data, src_size);
+        if (ret < 0) {
+          throw org::esb::lang::Exception(__FILE__,__LINE__,"Error while converting samples");
+        }
         /*
-        int ret = av_samples_alloc_array_and_samples(&trg_data, &dst_linesize, dst_nb_channels, dst_nb_samples, dst_sample_fmt, 0);
         if (ret < 0) {
           fprintf(stderr, "Could not allocate destination samples\n");
         }

@@ -36,6 +36,7 @@
 #include "org/esb/util/Log.h"
 #include "org/esb/lang/Ptr.h"
 #include "exports.h"
+#include "Resampler.h"
 //struct SwsContext;
 namespace org {
     namespace esb {
@@ -85,7 +86,8 @@ namespace org {
                 static boost::mutex ctx_mutex;
                 int inchannels;
 
-                SwrContext * _swr_ctx;
+                //SwrContext * _swr_ctx;
+                Resampler * resampler;
 
             };
         }

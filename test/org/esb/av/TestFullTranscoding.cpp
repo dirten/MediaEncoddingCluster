@@ -104,6 +104,8 @@ Log::open("");
       _sdata[i].enc->setBitRate(128000);
       _sdata[i].enc->setSampleRate(48000);
       _sdata[i].enc->setChannels(2);
+      _sdata[i].enc->setChannelLayout(AV_CH_LAYOUT_STEREO);
+
       _sdata[i].enc->setSampleFormat(_sdata[i].dec->getSampleFormat());
       //          _sdata[i].enc->open();
     AVRational ar;

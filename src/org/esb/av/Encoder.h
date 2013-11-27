@@ -67,6 +67,7 @@ namespace org {
                 int encodeVideo(Frame & f);
                 int encodeVideo(AVFrame *);
                 int encodeAudio(Frame & f);
+                int encodeAudio2(Frame & f);
                 void writeStatistics(std::string data);
                 std::string readStatistics();
                 //        AVFifoBuffer *fifo;

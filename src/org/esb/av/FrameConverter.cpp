@@ -20,7 +20,7 @@ namespace org {
       FrameConverter::FrameConverter(Decoder * dec, Encoder * enc) {
         LOGDEBUG("FrameConverter::FrameConverter(Decoder * dec, Encoder * enc)");
         _swsContext = NULL;
-        _swr_ctx=NULL;
+        //_swr_ctx=NULL;
         _audioCtx = NULL;
         _frameRateCompensateBase = 0;
         _gop_size = -1;
@@ -260,7 +260,7 @@ namespace org {
         delta = last_insamples - last_outsamples;
         LOGDEBUG("new Resample Comensate delta:" << delta << " last_insamples:" << last_insamples << " last_outsamples:" << last_outsamples << " all_insamples" << insamples << " alloutsamples:" << outsamples << " lastdiff:" << (last_insamples - last_outsamples) << " alldiff:" << (insamples - outsamples));
 
-        av_resample_compensate(*(struct AVResampleContext**) _audioCtx, delta, _enc->getSampleRate() / 2);
+        //av_resample_compensate(*(struct AVResampleContext**) _audioCtx, delta, _enc->getSampleRate() / 2);
       }
 
       /**
@@ -289,37 +289,28 @@ namespace org {
       /**
        * this resample the input Frame data into the output Frame data
        */
-      void FrameConverter::convertAudio2(Frame & in_frame, Frame & out_frame) {
-         uint8_t **src_data = NULL, **dst_data = NULL;
-         int dst_nb_samples=0,src_nb_samples=0;
-        if (_swr_ctx== NULL || inchannels != in_frame.channels) {
-          inchannels = in_frame.channels;
-          if(_swr_ctx) swr_free(&_swr_ctx);
-          _swr_ctx = swr_alloc();
+      void FrameConverter::convertAudio(Frame & in_frame, Frame & out_frame) {
+        //out_frame=in_frame;
+        //return;
+        if(resampler==NULL){
+          resampler=new Resampler();
 
-          /* set options */
-          av_opt_set_int(_swr_ctx, "in_channel_layout",    _dec->getChannelLayout(), 0);
-          av_opt_set_int(_swr_ctx, "in_sample_rate",       _dec->getSampleRate(), 0);
-          av_opt_set_sample_fmt(_swr_ctx, "in_sample_fmt", _dec->getSampleFormat(), 0);
+          resampler->setSourceChannelLayout(_dec->getChannelLayout());
+          resampler->setSourceSampleFormat(_dec->getSampleFormat());
+          resampler->setSourceSampleRate(_dec->getSampleRate());
 
-          av_opt_set_int(_swr_ctx, "out_channel_layout",    _enc->getChannelLayout(), 0);
-          av_opt_set_int(_swr_ctx, "out_sample_rate",       _enc->getSampleRate(), 0);
-          av_opt_set_sample_fmt(_swr_ctx, "out_sample_fmt", _enc->getSampleFormat(), 0);
-
+          resampler->setTargetChannelLayout(_enc->getChannelLayout());
+          resampler->setTargetSampleFormat(_enc->getSampleFormat());
+          resampler->setTargetSampleRate(_enc->getSampleRate());
+          resampler->init();
         }
-        if (!_swr_ctx) {
-          throw org::esb::lang::Exception(__FILE__,__LINE__,"Could not initialize SWResample Context");
-        }
-        int isize = av_get_bytes_per_sample(_dec->getSampleFormat());
-        int osize = av_get_bytes_per_sample(_enc->getSampleFormat());
-
-        int ret = swr_convert(_swr_ctx, dst_data, dst_nb_samples, (const uint8_t **)src_data, src_nb_samples);
-        if (ret < 0) {
-          throw org::esb::lang::Exception(__FILE__,__LINE__,"Could not initialize SWResample Context");
+        if(resampler->resample(in_frame, out_frame)){
+          LOGERROR("Could not audio Resample");
+          throw org::esb::lang::Exception(__FILE__,__LINE__,"Could not Audio Resample");
         }
       }
 
-      void FrameConverter::convertAudio(Frame & in_frame, Frame & out_frame) {
+      void FrameConverter::convertAudio2(Frame & in_frame, Frame & out_frame) {
 
         if (_audioCtx == NULL || inchannels != in_frame.channels) {
           inchannels = in_frame.channels;
@@ -336,7 +327,7 @@ namespace org {
             }
           }
         }
-
+        /*
         if (_swr_ctx== NULL || inchannels != in_frame.channels) {
           inchannels = in_frame.channels;
           if(_swr_ctx) swr_free(&_swr_ctx);
@@ -345,6 +336,7 @@ namespace org {
             throw org::esb::lang::Exception(__FILE__,__LINE__,"Could not initialize SWResample Context");
           }
         }
+        */
 
 
         //        LOGTRACEMETHOD("org.esb.av.FrameConverter","Convert Audio");

@@ -21,6 +21,7 @@ namespace org {
 
           int resample(uint8_t ** src_data, int src_size , uint8_t ** trg_data, int trg_size);
           int resample(Frame & src_data,Frame & trg_data);
+          int init();
         private:
           SwrContext * _swr_ctx;
           int64_t src_channel_layout;

@@ -791,7 +791,9 @@ namespace org {
       int64_t Codec::getChannelLayout(){
         return ctx->channel_layout;
       }
-
+      void Codec::setChannelLayout(int64_t l){
+        ctx->channel_layout=l;
+      }
 
       int Codec::getGopSize() {
         return ctx->gop_size;
