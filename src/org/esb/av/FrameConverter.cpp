@@ -327,7 +327,7 @@ namespace org {
           if (_dec->getCodecType() == AVMEDIA_TYPE_AUDIO && _enc->getCodecType() == AVMEDIA_TYPE_AUDIO) {
             if (_dec->getSampleFormat() != AV_SAMPLE_FMT_S16){
               //_dec->setSampleFormat(AV_SAMPLE_FMT_S16);
-              LOGWARN("Warning, using s16 intermediate sample format for resampling\n");
+              LOGWARN("Warning, using s16 intermediate sample format for resampling\n"<<av_get_sample_fmt_name(_dec->getSampleFormat()));
             }
             _audioCtx = av_audio_resample_init(_enc->getChannels(), _dec->getChannels(), _enc->getSampleRate(), _dec->getSampleRate(), _enc->getSampleFormat(), _dec->getSampleFormat(), 16, 10, 0, 0.8 );
             if (!_audioCtx){
