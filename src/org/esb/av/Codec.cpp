@@ -92,7 +92,7 @@ namespace org {
         while (option = av_opt_next(s->codec, option)) {
           if (option->offset > 0) {
 
-            /*jump over depricated options*/
+            /*jump over deprecated options*/
             if (
             strcmp(option->name, "lpc_coeff_precision") == 0 ||
             strcmp(option->name, "prediction_order_method") == 0 ||

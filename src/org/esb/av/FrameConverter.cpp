@@ -20,6 +20,7 @@ namespace org {
       FrameConverter::FrameConverter(Decoder * dec, Encoder * enc) {
         LOGDEBUG("FrameConverter::FrameConverter(Decoder * dec, Encoder * enc)");
         _swsContext = NULL;
+        resampler=NULL;
         //_swr_ctx=NULL;
         _audioCtx = NULL;
         _frameRateCompensateBase = 0;
@@ -74,6 +75,10 @@ namespace org {
         if (_audioCtx)
           audio_resample_close(_audioCtx);
         _audioCtx = 0;
+        if(resampler){
+          delete resampler;
+          resampler=NULL;
+        }
       }
 
       void FrameConverter::convert(Frame & in_frame, Frame & out_frame) {

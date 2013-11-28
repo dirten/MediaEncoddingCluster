@@ -14,6 +14,10 @@ namespace org {
         _swr_ctx = swr_alloc();
 
       }
+      Resampler::~Resampler()
+      {
+
+      }
       void Resampler::setSourceChannelLayout(int64_t d){
         av_opt_set_int(_swr_ctx, "in_channel_layout", d, 0);
         src_channel_layout=d;
@@ -44,18 +48,50 @@ namespace org {
         trg_sample_format=d;
       }
 
-      int Resampler::resample(Frame & src_data,Frame & trg_data){
-        AVFrame * src_frame=src_data.getAVFrame();
-        AVFrame * trg_frame=trg_data.getAVFrame();
-        return resample(src_frame->data,src_frame->nb_samples,trg_frame->data,trg_frame->nb_samples);
-        //return 0;
-      }
       int Resampler::init(){
         int ret=0;
         if ((ret = swr_init(_swr_ctx)) < 0) {
           throw org::esb::lang::Exception(__FILE__,__LINE__,"Failed to initialize the resampling context");
 
         }
+      }
+
+      int Resampler::resample(Frame & in_data,Frame & out_data){
+
+        AVFrame * src_frame=in_data.getAVFrame();
+        AVFrame * trg_frame=out_data.getAVFrame();
+        uint8_t ** src_data=src_frame->data;
+        uint8_t ** trg_data;
+        int src_size=src_frame->nb_samples;
+        int trg_size=trg_frame->nb_samples;
+
+        int src_linesize, dst_linesize;
+
+        int src_nb_channels = av_get_channel_layout_nb_channels(src_channel_layout);
+        int trg_nb_channels = av_get_channel_layout_nb_channels(trg_channel_layout);
+        int trg_nb_samples = av_rescale_rnd(swr_get_delay(_swr_ctx, trg_sample_rate) + src_size, trg_sample_rate, src_sample_rate, AV_ROUND_UP);
+
+        int trg_samples_size = av_samples_get_buffer_size(NULL, trg_nb_channels, trg_nb_samples, trg_sample_format, 0);
+
+        int ret = av_samples_alloc_array_and_samples(&trg_data, &dst_linesize, trg_nb_channels, trg_nb_samples, trg_sample_format, 0);
+
+        if (ret < 0) {
+          throw org::esb::lang::Exception(__FILE__,__LINE__,"could not allocate samples array");
+        }
+        ret = swr_convert(_swr_ctx, trg_data, trg_nb_samples, (const uint8_t **)src_data, src_size);
+        if (ret < 0) {
+          throw org::esb::lang::Exception(__FILE__,__LINE__,"Error while converting samples");
+        }
+        trg_frame->nb_samples = trg_nb_samples;
+        ret = avcodec_fill_audio_frame(trg_frame, trg_nb_channels, trg_sample_format,trg_data[0], trg_samples_size , 0);
+        if (ret < 0) {
+          throw org::esb::lang::Exception(__FILE__,__LINE__,"Error while copying samples into frame");
+        }
+
+
+        //int ret=resample(src_frame->data,src_frame->nb_samples,trg_data,trg_frame->nb_samples);
+        return 0;
+        //return 0;
       }
 
       int Resampler::resample(uint8_t ** src_data, int src_size , uint8_t ** trg_data, int trg_size){

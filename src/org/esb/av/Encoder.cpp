@@ -252,7 +252,7 @@ void Encoder::setSink(Sink * sink) {
   _sink = sink;
 }
 int Encoder::encodeAudio2(Frame & frame) {
-  LOGDEBUG("EncodeAudio2:"<<frame.toString());
+ // LOGDEBUG("EncodeAudio2:"<<frame.toString());
   Packet pak;
   int got_packet;
   int out_size = avcodec_encode_audio2(
@@ -262,8 +262,22 @@ int Encoder::encodeAudio2(Frame & frame) {
           &got_packet
           );
 
-  LOGDEBUG("EncodeAudio2:"<<pak.toString());
+  pak.setTimeBase(ctx->time_base);
+  pak.setDuration(ctx->frame_size);
+  pak.packet->stream_index = _stream_index;
 
+  pak.packet->dts = _last_dts;
+  pak.packet->pts = _last_dts;
+  if (ctx->coded_frame) {
+    pak.setDts(ctx->coded_frame->pts);
+    pak.setPts(ctx->coded_frame->pts);
+  }
+  _last_dts += pak.getDuration();
+  LOGDEBUG("EncodeAudio2:"<<pak.toString());
+  if (_pos != NULL)
+    _pos->writePacket(pak);
+  if (_sink != NULL)
+    _sink->write(&pak);
 }
 
 

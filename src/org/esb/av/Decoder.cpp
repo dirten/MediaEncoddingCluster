@@ -314,7 +314,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   frame->_type = AVMEDIA_TYPE_AUDIO;
   frame->channels = ctx->channels;
   frame->sample_rate = ctx->sample_rate;
-  frame->dumpHex();
+  //frame->dumpHex();
   LOGDEBUG(frame->toString());
   //  frame->dumpHex();
   return frame;

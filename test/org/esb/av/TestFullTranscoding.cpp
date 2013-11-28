@@ -102,7 +102,7 @@ Log::open("");
 
       _sdata[i].enc->setCodecId(CODEC_ID_MP2);
       _sdata[i].enc->setBitRate(128000);
-      _sdata[i].enc->setSampleRate(48000);
+      _sdata[i].enc->setSampleRate(44100);
       _sdata[i].enc->setChannels(2);
       _sdata[i].enc->setChannelLayout(AV_CH_LAYOUT_STEREO);
 
@@ -135,7 +135,7 @@ Log::open("");
   fos.dumpFormat();
   /*main loop to encode the packets*/
     Packet *packet;
-  for (int i = 0; i < 1500 ; i++) {
+  for (int i = 0; i < 2500 ; i++) {
     //reading a packet from the Stream
     if ((packet=pis.readPacket()) ==NULL )break; //when no more packets available(EOF) then it return <0
     boost::shared_ptr<Packet> p(packet);

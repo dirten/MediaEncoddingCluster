@@ -11,6 +11,7 @@ namespace org {
       {
         public:
           Resampler();
+          ~Resampler();
           void setSourceChannelLayout(int64_t);
           void setSourceSampleRate(int64_t);
           void setSourceSampleFormat(AVSampleFormat);

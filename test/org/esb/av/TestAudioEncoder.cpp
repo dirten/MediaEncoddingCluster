@@ -81,9 +81,9 @@ int main(int argc, char** argv){
   enc.setChannels(2);
   enc.setBitRate(128000);
 //  enc.setSampleRate(dec.getSampleRate());
-  enc.setSampleRate(44100);
+  enc.setSampleRate(48000);
   enc.setSampleFormat(dec.getSampleFormat());
-//  enc.setFlag(CODEC_FLAG_GLOBAL_HEADER);
+  //enc.setFlag(CODEC_FLAG_);
 //  enc.setPixelFormat(PIX_FMT_YUV420P);
   enc.open();
   PacketSink sink;
