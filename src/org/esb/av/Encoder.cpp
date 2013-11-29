@@ -95,6 +95,10 @@ bool Encoder::open() {
   return result;
 }
 
+void Encoder::newFrame(Ptr<Frame> f){
+  encode(*f);
+}
+
 int Encoder::encode(Frame & frame) {
   LOGTRACEMETHOD("Encode");
   _actualFrame = &frame;
@@ -210,7 +214,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
         }
         delete tmpf;
       }
-
+      pushPacket(Ptr<Packet>(new Packet(pac)));
       if (_pos != NULL) {
         _pos->writePacket(pac);
       }
@@ -253,31 +257,33 @@ void Encoder::setSink(Sink * sink) {
 }
 int Encoder::encodeAudio2(Frame & frame) {
  // LOGDEBUG("EncodeAudio2:"<<frame.toString());
-  Packet pak;
+  Ptr<Packet> pak=new Packet();
   int got_packet;
   int out_size = avcodec_encode_audio2(
           ctx,
-          pak.getAVPacket(),
+          pak->getAVPacket(),
           frame.getAVFrame(),
           &got_packet
           );
 
-  pak.setTimeBase(ctx->time_base);
-  pak.setDuration(ctx->frame_size);
-  pak.packet->stream_index = _stream_index;
+  pak->setTimeBase(ctx->time_base);
+  pak->setDuration(ctx->frame_size);
+  pak->packet->stream_index = _stream_index;
 
-  pak.packet->dts = _last_dts;
-  pak.packet->pts = _last_dts;
+  pak->packet->dts = _last_dts;
+  pak->packet->pts = _last_dts;
   if (ctx->coded_frame) {
-    pak.setDts(ctx->coded_frame->pts);
-    pak.setPts(ctx->coded_frame->pts);
+    pak->setDts(ctx->coded_frame->pts);
+    pak->setPts(ctx->coded_frame->pts);
   }
-  _last_dts += pak.getDuration();
-  LOGDEBUG("EncodeAudio2:"<<pak.toString());
+  _last_dts += pak->getDuration();
+  LOGDEBUG("EncodeAudio2:"<<pak->toString());
+  pushPacket(pak);
+
   if (_pos != NULL)
-    _pos->writePacket(pak);
+    _pos->writePacket(*pak);
   if (_sink != NULL)
-    _sink->write(&pak);
+    _sink->write(pak.get());
 }
 
 

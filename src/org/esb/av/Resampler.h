@@ -19,6 +19,7 @@ namespace org {
           void setTargetChannelLayout(int64_t);
           void setTargetSampleRate(int64_t);
           void setTargetSampleFormat(AVSampleFormat);
+          void setTargetSampleSize(int64_t);
 
           int resample(uint8_t ** src_data, int src_size , uint8_t ** trg_data, int trg_size);
           int resample(Frame & src_data,Frame & trg_data);
@@ -30,6 +31,8 @@ namespace org {
 
           int64_t src_sample_rate;
           int64_t trg_sample_rate;
+
+          int64_t trg_sample_size;
 
           AVSampleFormat src_sample_format;
           AVSampleFormat trg_sample_format;

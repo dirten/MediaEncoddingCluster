@@ -101,6 +101,10 @@ Frame Decoder::decodeLast() {
 
 }
 
+void Decoder::newPacket(Ptr<Packet> p){
+  decode2(*p);
+}
+
 Frame * Decoder::decode2(Packet & packet) {
   if (!_opened)
     throw runtime_error("Codec not opened");
@@ -147,7 +151,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   //  while (len > 0) {
   //    logdebug("Decode Packet");
   int bytesDecoded = 0;
-  if (ctx->codec_id>-1) {
+  if (ctx->codec_id > -1) {
     bytesDecoded = avcodec_decode_video2(ctx, frame->getAVFrame(), &_frameFinished, packet.packet);
   }
   if (_frameFinished) {
@@ -235,6 +239,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   frame->pos = 0;
   frame->_type = AVMEDIA_TYPE_VIDEO;
   LOGDEBUG(frame->toString());
+  pushFrame(frame);
   return frame;
 }
 
@@ -317,6 +322,8 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   //frame->dumpHex();
   LOGDEBUG(frame->toString());
   //  frame->dumpHex();
+  pushFrame(frame);
+
   return frame;
 }
 

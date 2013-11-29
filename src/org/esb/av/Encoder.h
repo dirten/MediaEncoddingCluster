@@ -35,7 +35,7 @@
 #include "org/esb/lang/Ptr.h"
 #include "Decoder.h"
 #include "exports.h"
-
+#include "AVPipe.h"
 
 //class PacketTermSink;
 namespace org {
@@ -43,7 +43,7 @@ namespace org {
         namespace av {
             class Packet;
 
-            class AV_EXPORT Encoder : public Codec {
+            class AV_EXPORT Encoder : public Codec, public AVPipe {
               classlogger("org.esb.av.Encoder")
             public:
                 Encoder(CodecID id);
@@ -63,6 +63,8 @@ namespace org {
                 int64_t getSamplesBufferd();
                 void setPassLogfile(std::string);
                 std::string getPassLogfile();
+                void newFrame(Ptr<Frame>);
+
             private:
                 int encodeVideo(Frame & f);
                 int encodeVideo(AVFrame *);

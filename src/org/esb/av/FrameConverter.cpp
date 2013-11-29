@@ -81,13 +81,27 @@ namespace org {
         }
       }
 
+      void FrameConverter::newFrame(Ptr<Frame> f){
+        Frame * trg_frame = NULL;
+        if (_dec->getCodecType() == AVMEDIA_TYPE_VIDEO)
+          trg_frame = new Frame(
+            _enc->getInputFormat().pixel_format,
+            _enc->getWidth(),
+            _enc->getHeight());
+        if (_dec->getCodecType() == AVMEDIA_TYPE_AUDIO)
+          trg_frame = new Frame();
+        convert(*f, *trg_frame);
+        pushFrame(trg_frame);
+        //delete trg_frame;
+      }
+
       void FrameConverter::convert(Frame & in_frame, Frame & out_frame) {
         LOGTRACEMETHOD("Convert Frame");
 
         LOGDEBUG(in_frame.toString());
         LOGDEBUG(out_frame.toString());
         if (_dec->getCodecType() == AVMEDIA_TYPE_VIDEO) {
-          
+
           if (doDeinterlaceFrame(in_frame, in_frame)) {
             
           }
@@ -180,12 +194,12 @@ namespace org {
           if (delta <= -0.6)
             frames = 0; //static_cast<int> (floor(delta - 0.5));
           LOGDEBUG(
-          "inframe.pts=" << input.getPts() <<
-          ":_dec->getLastTimeStamp()=" << _dec->getLastTimeStamp() <<
-          ":_dec->getTimeBase().den=" << _dec->getTimeBase().den <<
-          ":av_q2d(_enc->getTimeBase())=" << av_q2d(_enc->getTimeBase()) <<
-          ":_enc->getLastTimeStamp()=" << _enc->getLastTimeStamp() <<
-          ":vdelta=" << delta << ":frames=" << frames);
+                "inframe.pts=" << input.getPts() <<
+                ":_dec->getLastTimeStamp()=" << _dec->getLastTimeStamp() <<
+                ":_dec->getTimeBase().den=" << _dec->getTimeBase().den <<
+                ":av_q2d(_enc->getTimeBase())=" << av_q2d(_enc->getTimeBase()) <<
+                ":_enc->getLastTimeStamp()=" << _enc->getLastTimeStamp() <<
+                ":vdelta=" << delta << ":frames=" << frames);
           if (_gop_size > 0)
             _gop_size--;
         }
@@ -307,6 +321,7 @@ namespace org {
           resampler->setTargetChannelLayout(_enc->getChannelLayout());
           resampler->setTargetSampleFormat(_enc->getSampleFormat());
           resampler->setTargetSampleRate(_enc->getSampleRate());
+          resampler->setTargetSampleSize(_enc->ctx->frame_size);
           resampler->init();
         }
         if(resampler->resample(in_frame, out_frame)){
@@ -375,7 +390,7 @@ namespace org {
         last_outsamples = out_frame._size / osize;
         LOGDEBUG("convert audio ready")
       }
+      }
     }
   }
-}
 

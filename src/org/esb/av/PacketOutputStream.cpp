@@ -66,6 +66,10 @@ PacketOutputStream::~PacketOutputStream() {
 }
 bool first_packet = true;
 
+void PacketOutputStream::newPacket(Ptr<Packet> p){
+  writePacket(*p);
+}
+
 int PacketOutputStream::writePacket(Packet & packet) {
   if (!_isInitialized) {
     if (first_packet)

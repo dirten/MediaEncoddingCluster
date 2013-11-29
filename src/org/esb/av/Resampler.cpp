@@ -12,7 +12,8 @@ namespace org {
       Resampler::Resampler()
       {
         _swr_ctx = swr_alloc();
-
+        /*setting default sample size*/
+        trg_sample_size=1152;
       }
       Resampler::~Resampler()
       {
@@ -43,6 +44,10 @@ namespace org {
         trg_sample_rate=d;
       }
 
+      void Resampler::setTargetSampleSize(int64_t d){
+        trg_sample_size=d;
+      }
+
       void Resampler::setTargetSampleFormat(AVSampleFormat d){
         av_opt_set_sample_fmt(_swr_ctx, "out_sample_fmt", d, 0);
         trg_sample_format=d;
@@ -52,8 +57,8 @@ namespace org {
         int ret=0;
         if ((ret = swr_init(_swr_ctx)) < 0) {
           throw org::esb::lang::Exception(__FILE__,__LINE__,"Failed to initialize the resampling context");
-
         }
+        return ret;
       }
 
       int Resampler::resample(Frame & in_data,Frame & out_data){
@@ -69,9 +74,10 @@ namespace org {
 
         int src_nb_channels = av_get_channel_layout_nb_channels(src_channel_layout);
         int trg_nb_channels = av_get_channel_layout_nb_channels(trg_channel_layout);
-        int trg_nb_samples = av_rescale_rnd(swr_get_delay(_swr_ctx, trg_sample_rate) + src_size, trg_sample_rate, src_sample_rate, AV_ROUND_UP);
+        LOGDEBUG("swr_buffering:"<<swr_get_delay(_swr_ctx, trg_sample_rate))
+        int trg_nb_samples = trg_sample_size;//av_rescale_rnd(swr_get_delay(_swr_ctx, trg_sample_rate) + src_size, trg_sample_rate, src_sample_rate, AV_ROUND_UP);
 
-        int trg_samples_size = av_samples_get_buffer_size(NULL, trg_nb_channels, trg_nb_samples, trg_sample_format, 0);
+        int trg_samples_size_int = av_samples_get_buffer_size(NULL, trg_nb_channels, trg_nb_samples, trg_sample_format, 0);
 
         int ret = av_samples_alloc_array_and_samples(&trg_data, &dst_linesize, trg_nb_channels, trg_nb_samples, trg_sample_format, 0);
 
@@ -83,7 +89,7 @@ namespace org {
           throw org::esb::lang::Exception(__FILE__,__LINE__,"Error while converting samples");
         }
         trg_frame->nb_samples = trg_nb_samples;
-        ret = avcodec_fill_audio_frame(trg_frame, trg_nb_channels, trg_sample_format,trg_data[0], trg_samples_size , 0);
+        ret = avcodec_fill_audio_frame(trg_frame, trg_nb_channels, trg_sample_format,trg_data[0], trg_samples_size_int , 0);
         if (ret < 0) {
           throw org::esb::lang::Exception(__FILE__,__LINE__,"Error while copying samples into frame");
         }

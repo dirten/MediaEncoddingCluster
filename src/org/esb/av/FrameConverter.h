@@ -37,6 +37,7 @@
 #include "org/esb/lang/Ptr.h"
 #include "exports.h"
 #include "Resampler.h"
+#include "AVPipe.h"
 //struct SwsContext;
 namespace org {
     namespace esb {
@@ -45,7 +46,7 @@ namespace org {
             //class Frame;
             //struct FrameFormat;
 
-            class AV_EXPORT FrameConverter {
+            class AV_EXPORT FrameConverter : public AVPipe {
               classlogger("org.esb.av.FrameConverter")
             public:
                 FrameConverter(Decoder* dec, Encoder* enc);
@@ -55,6 +56,7 @@ namespace org {
                 void setGopSize(int);
                 void setDeinterlace(bool);
                 void setKeepAspectRatio(bool);
+                void newFrame(Ptr<Frame>);
             private:
                 void convertVideo(Frame & input, Frame & out);
                 void convertAudio(Frame & input, Frame & out);

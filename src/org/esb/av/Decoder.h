@@ -31,6 +31,7 @@
 #include "PixelFormatConverter.h"
 #include "org/esb/lang/Ptr.h"
 #include "exports.h"
+#include "AVPipe.h"
 #ifdef WIN32
 #define DEPRICATED(func) __declspec(deprecated) func
 #else
@@ -41,7 +42,7 @@ namespace org {
     namespace av {
       class Frame;
 
-      class AV_EXPORT Decoder : public Codec {
+      class AV_EXPORT Decoder : public Codec , public AVPipe {
         classlogger("org.esb.av.Decoder")
       public:
         Decoder(CodecID id);
@@ -64,6 +65,7 @@ namespace org {
         Frame * decodeVideo2(Packet & packet);
         Frame * decodeAudio2(Packet & packet);
         int64_t getLastTimeStamp();
+        void newPacket(Ptr<Packet>p);
         static std::string getStaticCodecName(CodecID codec_id);
         static CodecID getStaticCodecId(std::string codec_name);
 

@@ -125,22 +125,40 @@ Log::open("");
     //if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_VIDEO)
     _sdata[i].conv = new FrameConverter(_sdata[i].dec, _sdata[i].enc);
 
+
+    /*buidl the processing chain*/
+    /* decoder -> converter -> encoder -> outputstream */
+    _sdata[i].dec->addTarget(_sdata[i].conv);
+    //_sdata[i].dec->addTarget(_sdata[i].enc);
+    _sdata[i].conv->addTarget(_sdata[i].enc);
+    _sdata[i].enc->addTarget(&pos);
+
     pos.setEncoder(*_sdata[i].enc, _sdata[i].enc->getStreamIndex());
-    _sdata[i].enc->setOutputStream(&pos);
+    //_sdata[i].enc->setOutputStream(&pos);
     LOGDEBUG(_sdata[i].enc->toString());
     LOGDEBUG(_sdata[i].dec->toString());
   }
 
   pos.init();
   fos.dumpFormat();
+
+  /*build the processing chain*/
+
   /*main loop to encode the packets*/
     Packet *packet;
-  for (int i = 0; i < 2500 ; i++) {
+  for (int i = 0; i < 2500 || true; i++) {
     //reading a packet from the Stream
     if ((packet=pis.readPacket()) ==NULL )break; //when no more packets available(EOF) then it return <0
     boost::shared_ptr<Packet> p(packet);
     int idx=p->getStreamIndex();
     if (_sdata.count(idx) == 0)continue;
+
+    /*simply pushing the packet into the decoder to process the complete chain*/
+    _sdata[idx].dec->newPacket(p);
+
+    continue;
+
+
     //    p.setDts(p.getDts() - _sdata[p.getStreamIndex()].start_dts);
     //Decoding a Video or Audio Packet
     //LOGDEBUG("Packet:"<<p->toString());
@@ -194,12 +212,13 @@ Log::open("");
 cleanup:
   pos.close();
   fos.close();
+  /*
   map<int, StreamData>::iterator streams = _sdata.begin();
   for (; streams != _sdata.end(); streams++) {
     delete (*streams).second.enc;
     delete (*streams).second.dec;
     delete (*streams).second.conv;
-  }
+  }*/
 //  Log::close();
   return (EXIT_SUCCESS);
 }

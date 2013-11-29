@@ -9,12 +9,13 @@
 #include <list>
 #include <map>
 #include "exports.h"
+#include "AVPipe.h"
 using namespace org::esb::io;
 namespace org {
   namespace esb {
     namespace av {
 
-      class AV_EXPORT PacketOutputStream : public OutputStream {
+      class AV_EXPORT PacketOutputStream : public OutputStream, public AVPipe {
         classlogger("org.esb.av.PacketOutputStream")
       public:
         PacketOutputStream(OutputStream * os, std::string statsfile="");
@@ -22,7 +23,8 @@ namespace org {
         //int writePacket(Packet * packet);
         void setEncoder(Codec & code);
         void setEncoder(Codec & code, int stream_id);
-		std::list<AVStream*> getStreamList();
+        void newPacket(Ptr<Packet>p);
+    std::list<AVStream*> getStreamList();
         bool init();
         int writePacket(Packet & packet);
         void write(char * buffer, int length);
