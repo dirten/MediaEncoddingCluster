@@ -214,7 +214,10 @@ int Encoder::encodeVideo(AVFrame * inframe) {
         }
         delete tmpf;
       }
+
       pushPacket(Ptr<Packet>(new Packet(pac)));
+      //pushPacket(pac);
+
       if (_pos != NULL) {
         _pos->writePacket(pac);
       }

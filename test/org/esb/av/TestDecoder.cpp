@@ -248,9 +248,9 @@ int main(int argc, char** argv) {
     filename=argv[1];
   }
   testVideoDecoderTimings();
-//  testDecodeRawVideo();
-//  testDecodeVideo(filename);
-//  testDecodeAudio();
+  testDecodeRawVideo();
+  testDecodeVideo(filename);
+  testDecodeAudio();
   Log::close();
   return (EXIT_SUCCESS);
 

@@ -129,7 +129,6 @@ Log::open("");
     /*buidl the processing chain*/
     /* decoder -> converter -> encoder -> outputstream */
     _sdata[i].dec->addTarget(_sdata[i].conv);
-    //_sdata[i].dec->addTarget(_sdata[i].enc);
     _sdata[i].conv->addTarget(_sdata[i].enc);
     _sdata[i].enc->addTarget(&pos);
 
@@ -155,7 +154,6 @@ Log::open("");
 
     /*simply pushing the packet into the decoder to process the complete chain*/
     _sdata[idx].dec->newPacket(p);
-
     continue;
 
 
@@ -212,13 +210,18 @@ Log::open("");
 cleanup:
   pos.close();
   fos.close();
-  /*
+
   map<int, StreamData>::iterator streams = _sdata.begin();
   for (; streams != _sdata.end(); streams++) {
-    delete (*streams).second.enc;
-    delete (*streams).second.dec;
+    (*streams).second.enc->close();
+    (*streams).second.dec->close();
     delete (*streams).second.conv;
-  }*/
+    delete (*streams).second.enc;
+    //delete (*streams).second.enc;
+    delete (*streams).second.dec;
+
+
+  }
 //  Log::close();
   return (EXIT_SUCCESS);
 }

@@ -12,7 +12,9 @@ namespace org {
       {
         public:
           AVPipe();
-          void addTarget(Ptr<AVPipe> pipe);
+          //virtual ~AVPipe();
+          void addTarget(AVPipe * pipe);
+
         protected:
           void pushPacket(Ptr<Packet> p);
           virtual void newPacket(Ptr<Packet> p);
@@ -20,7 +22,7 @@ namespace org {
           virtual void newFrame(Ptr<Frame> p);
 
         private:
-          std::list< Ptr<AVPipe> > _targets;
+          std::list< AVPipe * > _targets;
       };
     }
   }

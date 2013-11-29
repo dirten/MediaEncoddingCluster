@@ -18,19 +18,19 @@ namespace org {
 
       }
 
-      void AVPipe::addTarget(Ptr<AVPipe> pipe){
+      void AVPipe::addTarget(AVPipe * pipe){
         _targets.push_back(pipe);
       }
 
       void AVPipe::pushPacket(Ptr<Packet> p){
-        std::list<Ptr<AVPipe> >::iterator it=_targets.begin();
+        std::list<AVPipe *>::iterator it=_targets.begin();
         for(;it!=_targets.end();it++){
           (*it)->newPacket(p);
         }
       }
 
       void AVPipe::pushFrame(Ptr<Frame> p){
-        std::list<Ptr<AVPipe> >::iterator it=_targets.begin();
+        std::list<AVPipe* >::iterator it=_targets.begin();
         for(;it!=_targets.end();it++){
           (*it)->newFrame(p);
         }

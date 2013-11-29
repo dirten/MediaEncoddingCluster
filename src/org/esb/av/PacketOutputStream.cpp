@@ -46,10 +46,10 @@ bool PacketOutputStream::close() {
     result = av_write_trailer(_fmtCtx) == 0;
 
     it = streams.begin();
-
     for (; it != streams.end(); it++) {
       av_free((*it));
     }
+
     if (_stats_fos) {
       delete _stats_fos;
       _stats_fos = NULL;

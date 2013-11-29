@@ -688,7 +688,7 @@ namespace org {
             av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);
         } else {
-          LOGDEBUG("Codec not closed, because it was not opened:" << ctx->codec_id<<"("<<this<<")");
+          LOGDEBUG("Codec not closed, because it was not opened:" << ctx <<"("<<this<<")");
         }
         if (ctx && !_pre_allocated) {
           av_free(ctx);

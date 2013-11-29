@@ -102,7 +102,8 @@ Frame Decoder::decodeLast() {
 }
 
 void Decoder::newPacket(Ptr<Packet> p){
-  decode2(*p);
+  Frame * frame=decode2(*p);
+  delete frame;
 }
 
 Frame * Decoder::decode2(Packet & packet) {
@@ -239,7 +240,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   frame->pos = 0;
   frame->_type = AVMEDIA_TYPE_VIDEO;
   LOGDEBUG(frame->toString());
-  pushFrame(frame);
+  pushFrame(new Frame(*frame));
   return frame;
 }
 
@@ -322,7 +323,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   //frame->dumpHex();
   LOGDEBUG(frame->toString());
   //  frame->dumpHex();
-  pushFrame(frame);
+  pushFrame(new Frame(*frame));
 
   return frame;
 }

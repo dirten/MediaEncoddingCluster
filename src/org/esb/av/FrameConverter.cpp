@@ -101,10 +101,10 @@ namespace org {
         LOGDEBUG(in_frame.toString());
         LOGDEBUG(out_frame.toString());
         if (_dec->getCodecType() == AVMEDIA_TYPE_VIDEO) {
-
+          /*
           if (doDeinterlaceFrame(in_frame, in_frame)) {
             
-          }
+          }*/
           convertVideo(in_frame, out_frame);
 
         }
@@ -325,7 +325,7 @@ namespace org {
           resampler->init();
         }
         if(resampler->resample(in_frame, out_frame)){
-          LOGERROR("Could not audio Resample");
+          //LOGERROR("Could not audio Resample");
           throw org::esb::lang::Exception(__FILE__,__LINE__,"Could not Audio Resample");
         }
       }
