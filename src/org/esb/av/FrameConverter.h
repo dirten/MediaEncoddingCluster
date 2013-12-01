@@ -38,6 +38,7 @@
 #include "exports.h"
 #include "Resampler.h"
 #include "AVPipe.h"
+#include "AVFilter.h"
 //struct SwsContext;
 namespace org {
     namespace esb {
@@ -90,6 +91,7 @@ namespace org {
 
                 //SwrContext * _swr_ctx;
                 Resampler * resampler;
+                AVFilter * audio_filter;
 
             };
         }

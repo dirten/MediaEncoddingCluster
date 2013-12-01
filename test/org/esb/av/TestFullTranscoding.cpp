@@ -21,12 +21,17 @@
 
 #include "org/esb/av/FrameConverter.h"
 #include "org/esb/av/Frame.h"
-using namespace org::esb::av;
+#include "org/esb/av/AVFilter.h"
 
+#include "org/esb/util/StringUtil.h"
+using namespace org::esb::av;
+//using org::esb::av::AVFilter;
+using org::esb::util::StringUtil;
 struct StreamData {
   Decoder * dec;
   Encoder * enc;
   FrameConverter * conv;
+  org::esb::av::AVFilter * filter;
   int64_t start_dts;
   bool more_frames;
 };
@@ -35,10 +40,10 @@ map<int, StreamData> _sdata;
 map<int, int> _smap;
 
 /*
- * 
+ *
  */
 int main(int argc, char** argv) {
-Log::open("");
+  Log::open("");
   /*open the fixed test File or the file from command line input*/
   std::string src;
   std::string trg;
@@ -74,44 +79,82 @@ Log::open("");
     //if(i!=4&&i!=1)continue;
     if (audio && video)continue;
     fis.dumpFormat();
+    _sdata[i].filter=NULL;
     _sdata[i].dec = new Decoder(fis.getAVStream(i));
     _sdata[i].dec->setStreamIndex(i);
     _sdata[i].start_dts = fis.getStreamInfo(i)->getFirstDts();
     _sdata[i].enc = new Encoder();
     _sdata[i].more_frames = true;
     if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_VIDEO) {
-      _sdata[i].enc->setStreamIndex(0);
+      _sdata[i].enc->setStreamIndex(s);
       video = true;
       _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
       //_sdata[i].enc->setCodecId(CODEC_ID_THEORA);
       _sdata[i].enc->setWidth(720);
       _sdata[i].enc->setHeight(576);
-//      _sdata[i].enc->setWidth(320);
-//      _sdata[i].enc->setHeight(240);
+      //      _sdata[i].enc->setWidth(320);
+      //      _sdata[i].enc->setHeight(240);
       _sdata[i].enc->setGopSize(200);
       _sdata[i].enc->setCodecOption("flags","+psnr");
       AVRational ar;
       ar.num = 1;
-      ar.den = 30;
+      ar.den = 25;
       _sdata[i].enc->setTimeBase(ar);
       _sdata[i].enc->setBitRate(1500000);
+
+
+
+      _sdata[i].filter=new org::esb::av::AVFilter(VIDEO,"scale=720:576");
+
+      //char buf[512];
+      //av_get_channel_layout_string(buf, sizeof(buf), _sdata[i].enc->getChannels(), _sdata[i].enc->getChannelLayout());
+      _sdata[i].filter->setInputParameter("width",StringUtil::toString(_sdata[i].dec->getWidth()));
+      _sdata[i].filter->setInputParameter("height",StringUtil::toString(_sdata[i].dec->getHeight()));
+      _sdata[i].filter->setInputParameter("pixel_format",StringUtil::toString(_sdata[i].dec->getPixelFormat()));
+      _sdata[i].filter->setInputParameter("time_base", StringUtil::toString(_sdata[i].dec->getTimeBase().num)+"/"+StringUtil::toString(_sdata[i].dec->getTimeBase().den));
+      _sdata[i].filter->setInputParameter("sample_aspect_ratio", StringUtil::toString(_sdata[i].dec->ctx->sample_aspect_ratio.num)+"/"+StringUtil::toString(_sdata[i].dec->ctx->sample_aspect_ratio.den));
+
+      _sdata[i].filter->setOutputParameter("pixel_format",StringUtil::toString(_sdata[i].enc->getPixelFormat()));
+
+
+
+
+      //_sdata[i].filter=NULL;
+
       // logdebug(_sdata[i].enc->toString());
     } else if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_AUDIO) {
       audio = true;
-      _sdata[i].enc->setStreamIndex(1);
+      _sdata[i].enc->setStreamIndex(s);
 
       _sdata[i].enc->setCodecId(CODEC_ID_MP2);
       _sdata[i].enc->setBitRate(128000);
-      _sdata[i].enc->setSampleRate(44100);
+      _sdata[i].enc->setSampleRate(48000);
       _sdata[i].enc->setChannels(2);
       _sdata[i].enc->setChannelLayout(AV_CH_LAYOUT_STEREO);
 
-      _sdata[i].enc->setSampleFormat(_sdata[i].dec->getSampleFormat());
+      //_sdata[i].enc->setSampleFormat(_sdata[i].dec->getSampleFormat());
+
+
+      _sdata[i].filter=new org::esb::av::AVFilter(AUDIO,"aresample=48000,aformat=sample_fmts=s16:channel_layouts=stereo");
+
+      char buf[512];
+      av_get_channel_layout_string(buf, sizeof(buf), _sdata[i].enc->getChannels(), _sdata[i].enc->getChannelLayout());
+      _sdata[i].filter->setInputParameter("channel_layout",buf);
+      _sdata[i].filter->setInputParameter("sample_rate",StringUtil::toString(_sdata[i].dec->getSampleRate()));
+      _sdata[i].filter->setInputParameter("sample_format", av_get_sample_fmt_name(_sdata[i].dec->getSampleFormat()));
+      _sdata[i].filter->setInputParameter("time_base", "1/"+StringUtil::toString(fis.getStreamInfo(i)->getTimeBase().den));
+
+      _sdata[i].filter->setOutputParameter("channel_layout","stereo");
+      _sdata[i].filter->setOutputParameter("channel_layout2","stereo");
+      _sdata[i].filter->setOutputParameter("frame_size",StringUtil::toString(_sdata[i].enc->ctx->frame_size));
+      _sdata[i].filter->setOutputParameter("sample_rate",StringUtil::toString(_sdata[i].enc->getSampleRate()));
+
+      //_sdata[i].filter=NULL;
       //          _sdata[i].enc->open();
-    AVRational ar;
-    ar.num = 1;
-    ar.den = _sdata[i].dec->getSampleRate();
-    _sdata[i].dec->setTimeBase(ar);
+      AVRational ar;
+      ar.num = 1;
+      ar.den = _sdata[i].dec->getSampleRate();
+      _sdata[i].dec->setTimeBase(ar);
 
     }
     if (fos._fmt->flags & AVFMT_GLOBALHEADER)
@@ -120,6 +163,11 @@ Log::open("");
 
     _sdata[i].dec->open();
     _sdata[i].enc->open();
+
+    if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_AUDIO){
+      _sdata[i].filter->setOutputParameter("sample_format", av_get_sample_fmt_name(_sdata[i].enc->getSampleFormat()));
+      _sdata[i].filter->setOutputParameter("frame_size",StringUtil::toString(_sdata[i].enc->ctx->frame_size));
+    }
     _smap[i] = s++;
     //if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_VIDEO)
     //if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_VIDEO)
@@ -128,8 +176,14 @@ Log::open("");
 
     /*buidl the processing chain*/
     /* decoder -> converter -> encoder -> outputstream */
-    _sdata[i].dec->addTarget(_sdata[i].conv);
-    _sdata[i].conv->addTarget(_sdata[i].enc);
+    if(_sdata[i].filter){
+      _sdata[i].filter->init();
+      _sdata[i].dec->addTarget(_sdata[i].filter);
+      _sdata[i].filter->addTarget(_sdata[i].enc);
+    }else{
+      _sdata[i].dec->addTarget(_sdata[i].conv);
+      _sdata[i].conv->addTarget(_sdata[i].enc);
+    }
     _sdata[i].enc->addTarget(&pos);
 
     pos.setEncoder(*_sdata[i].enc, _sdata[i].enc->getStreamIndex());
@@ -144,7 +198,7 @@ Log::open("");
   /*build the processing chain*/
 
   /*main loop to encode the packets*/
-    Packet *packet;
+  Packet *packet;
   for (int i = 0; i < 2500 || true; i++) {
     //reading a packet from the Stream
     if ((packet=pis.readPacket()) ==NULL )break; //when no more packets available(EOF) then it return <0
@@ -164,7 +218,7 @@ Log::open("");
 
     if (!src_frame->isFinished()) {
       delete src_frame;
-  
+
       continue;
     }
     //mapping input tp output stream
@@ -174,9 +228,9 @@ Log::open("");
     Frame * trg_frame = NULL;
     if (_sdata[idx].dec->getCodecType() == AVMEDIA_TYPE_VIDEO)
       trg_frame = new Frame(
-        _sdata[idx].enc->getInputFormat().pixel_format,
-        _sdata[idx].enc->getWidth(),
-        _sdata[idx].enc->getHeight());
+            _sdata[idx].enc->getInputFormat().pixel_format,
+            _sdata[idx].enc->getWidth(),
+            _sdata[idx].enc->getHeight());
     if (_sdata[idx].dec->getCodecType() == AVMEDIA_TYPE_AUDIO)
       trg_frame = new Frame();
 
@@ -193,7 +247,7 @@ Log::open("");
     if(trg_frame)
       delete trg_frame;
     trg_frame=NULL;
-//    delete p;
+    //    delete p;
 
   }
   map<int, StreamData>::iterator it = _sdata.begin();
@@ -222,7 +276,7 @@ cleanup:
 
 
   }
-//  Log::close();
+  //  Log::close();
   return (EXIT_SUCCESS);
 }
 

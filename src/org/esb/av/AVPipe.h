@@ -7,7 +7,10 @@ namespace org {
     namespace av {
       class Packet;
       class Frame;
-
+/**
+  * @TODO : remove the shared Ptr behavior
+  *
+*/
       class AVPipe
       {
         public:

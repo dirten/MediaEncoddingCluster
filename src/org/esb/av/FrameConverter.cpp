@@ -3,12 +3,15 @@
 #include "FrameConverter.h"
 #include "FrameFormat.h"
 #include "Frame.h"
+//#include "AVFilter.h"
 //#include "swscale.h"
 #include <iostream>
 #include "org/esb/lang/Exception.h"
+#include "org/esb/util/StringUtil.h"
 
 #define MAX_AUDIO_PACKET_SIZE (128 * 1024)
 using namespace std;
+using org::esb::util::StringUtil;
 namespace org {
   namespace esb {
     namespace av {
@@ -50,6 +53,22 @@ namespace org {
           if (!_audioCtx)
             LOGERROR("Could not initialize Audio Resample Context");
         }*/
+        if (false && dec->getCodecType() == AVMEDIA_TYPE_AUDIO && enc->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+          audio_filter=new AVFilter(AUDIO,"aresample=44100,aformat=sample_fmts=s16:channel_layouts=stereo");
+
+          audio_filter->setInputParameter("channel_layout",StringUtil::toString(_dec->getChannelLayout()));
+          audio_filter->setInputParameter("sample_rate",StringUtil::toString(_dec->getSampleRate()));
+          audio_filter->setInputParameter("sample_format", av_get_sample_fmt_name(_dec->getSampleFormat()));
+          audio_filter->setInputParameter("time_base", "1/"+StringUtil::toString(_dec->getSampleRate()));
+
+          audio_filter->setOutputParameter("channel_layout",StringUtil::toString(_enc->getChannelLayout()));
+          audio_filter->setOutputParameter("frame_size",StringUtil::toString(_enc->ctx->frame_size));
+          audio_filter->setOutputParameter("sample_format", av_get_sample_fmt_name(_enc->getSampleFormat()));
+          audio_filter->setOutputParameter("sample_rate",StringUtil::toString(_enc->getSampleRate()));
+
+          audio_filter->init();
+        }
+
         Rational r;
         r.num = dec->getFrameRate().den;
         r.den = dec->getFrameRate().num;
@@ -309,6 +328,10 @@ namespace org {
        * this resample the input Frame data into the output Frame data
        */
       void FrameConverter::convertAudio(Frame & in_frame, Frame & out_frame) {
+        //audio_filter->newFrame(new Frame(in_frame));
+        //audio_filter->newFrame(new Frame(in_frame));
+        //return;
+        //AVFilterType type=VIDEO;
         //out_frame=in_frame;
         //return;
         if(resampler==NULL){

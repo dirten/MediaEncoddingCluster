@@ -1,17 +1,260 @@
 #include "AVFilter.h"
+#include "org/esb/lang/Exception.h"
+#include "Frame.h"
+#include "org/esb/util/Log.h"
 namespace org {
   namespace esb {
     namespace av {
 
-      AVFilter::AVFilter()
+      AVFilter::AVFilter(AVFilterType type,std::string filter) : _type(type), _filter(filter)
       {
+      }
+
+      void AVFilter::init(){
+        if(_type==VIDEO){
+          initVideoSourceSink();
+        } else if(_type==AUDIO){
+          initAudioSourceSink();
+        }
+      }
+
+      void AVFilter::setInputParameter(std::string key, std::string value){
+        _input_params[key]=value;
+      }
+
+      void AVFilter::setOutputParameter(std::string key, std::string value)
+      {
+        _output_params[key]=value;
+      }
+
+      void AVFilter::initAudioSourceSink(){
+        char args[512];
+        int ret;
+        ::AVFilter *abuffersrc  = avfilter_get_by_name("abuffer");
+        ::AVFilter *abuffersink = avfilter_get_by_name("abuffersink");
+        AVFilterInOut *outputs = avfilter_inout_alloc();
+        AVFilterInOut *inputs  = avfilter_inout_alloc();
+
+        filter_graph = avfilter_graph_alloc();
+
+        if(_input_params.find("channel_layout")==_input_params.end()){
+          throw Exception("input channel_layout not set");
+        }
+        if(_input_params.find("sample_format")==_input_params.end()){
+          throw Exception("input sample_format not set");
+        }
+        if(_input_params.find("sample_rate")==_input_params.end()){
+          throw Exception("input sample_rate not set");
+        }
+        if(_input_params.find("time_base")==_input_params.end()){
+          throw Exception("input time_base not set");
+        }
+        std::map<std::string, std::string>::iterator it=_input_params.begin();
+        for(;it!=_input_params.end();it++){
+          LOGDEBUG("InputKey="<<(*it).first<<" value="<<(*it).second)
+        }
+
+        snprintf(args, sizeof(args),
+                 "time_base=%s:sample_rate=%d:sample_fmt=%s:channel_layout=%s",
+                 _input_params["time_base"].c_str(), atoi(_input_params["sample_rate"].c_str()),
+            _input_params["sample_format"].c_str(), _input_params["channel_layout"].c_str());
+
+        ret = avfilter_graph_create_filter(&buffersrc_ctx, abuffersrc, "in", args, NULL, filter_graph);
+        if (ret < 0) {
+          av_log(NULL, AV_LOG_ERROR, "Cannot create audio buffer source with arguments\n%s", args);
+          throw Exception(__FILE__, __LINE__,"Cannot create audio buffer source with arguments\n%s", args);
+        }
+        av_log(NULL, AV_LOG_INFO, "created audio buffer source with arguments\n%s", args);
+
+        if(_output_params.find("channel_layout")==_output_params.end()){
+          throw Exception(__FILE__, __LINE__,"output channel_layout not set");
+        }
+        if(_output_params.find("frame_size")==_output_params.end()){
+          throw Exception(__FILE__, __LINE__,"output frame_size not set");
+        }
+        if(_output_params.find("sample_format")==_output_params.end()){
+          throw Exception(__FILE__, __LINE__,"output sample_format not set");
+        }
+        if(_output_params.find("sample_rate")==_output_params.end()){
+          throw Exception(__FILE__, __LINE__,"output sample_rate not set");
+        }
+
+        it=_output_params.begin();
+        for(;it!=_output_params.end();it++){
+          LOGDEBUG("OutputKey="<<(*it).first<<" value="<<(*it).second)
+        }
+        //av_get_channel_layout(_output_params["channel_layout"].c_str());
+        int64_t ch_layout=av_get_channel_layout(_output_params["channel_layout"].c_str());
+        int frame_size=atoi(_output_params["frame_size"].c_str());
+        AVSampleFormat sample_format=av_get_sample_fmt(_output_params["sample_format"].c_str());
+        static const enum AVSampleFormat out_sample_fmts[] = { sample_format, AV_SAMPLE_FMT_NONE };
+        static const int64_t out_channel_layouts[] = { ch_layout, -1 };
+        //static const int64_t out_channel_counts[] = { 2, -1 };
+        static const int out_sample_rates[] = { atoi(_output_params["sample_rate"].c_str()), -1 };
+        /*
+        snprintf(args, sizeof(args),
+                 "channels=2:time_base=%s:sample_rate=%d:sample_fmt=%s:channel_layout=0x%"PRIx64,
+                 _input_params["time_base"].c_str(), atoi(_output_params["sample_rate"].c_str()),
+            _output_params["sample_format"].c_str(), atoll(_output_params["channel_layout"].c_str()));
+         */
+        /* buffer audio sink: to terminate the filter chain. */
+        av_log(NULL, AV_LOG_INFO, "try creating audio buffer sink\n");
+        ret = avfilter_graph_create_filter(&buffersink_ctx, abuffersink, "out",
+                                           NULL, NULL, filter_graph);
+        av_log(NULL, AV_LOG_INFO, "created audio buffer sink\n");
+        if (ret < 0) {
+          av_log(NULL, AV_LOG_ERROR, "Cannot create audio buffer sink with arguments\n%s", args);
+          throw Exception(__FILE__, __LINE__,"Cannot create audio buffer sink with arguments\n%s", args);
+        }
+
+        ret = av_opt_set_int_list(buffersink_ctx, "sample_fmts", out_sample_fmts, -1,
+                                  AV_OPT_SEARCH_CHILDREN);
+        if (ret < 0) {
+          av_log(NULL, AV_LOG_ERROR, "Cannot set output sample format\n");
+          throw Exception(__FILE__, __LINE__,"Cannot set output sample format\n");
+        }
+
+        ret = av_opt_set_int_list(buffersink_ctx, "channel_layouts", out_channel_layouts, -1,
+                                  AV_OPT_SEARCH_CHILDREN);
+        if (ret < 0) {
+          av_log(NULL, AV_LOG_ERROR, "Cannot set output channel layout\n");
+          throw Exception(__FILE__, __LINE__,"Cannot set output channel layout\n");
+        }
+        ret = av_opt_set_int_list(buffersink_ctx, "sample_rates", out_sample_rates, -1,
+                                  AV_OPT_SEARCH_CHILDREN);
+
+        if (ret < 0) {
+          av_log(NULL, AV_LOG_ERROR, "Cannot set output sample rate\n");
+          throw Exception(__FILE__, __LINE__,"Cannot set output sample rate\n");
+        }
+        /*
+        ret = av_opt_set_int_list(buffersink_ctx, "channel_counts", out_channel_counts, -1,
+                                  AV_OPT_SEARCH_CHILDREN);
+        if (ret < 0) {
+          av_log(NULL, AV_LOG_ERROR, "Cannot set output channel counts\n");
+          throw Exception(__FILE__, __LINE__,"Cannot set output channel counts\n");
+        }
+        */
+
+
+        /* Endpoints for the filter graph. */
+        outputs->name       = av_strdup("in");
+        outputs->filter_ctx = buffersrc_ctx;
+        outputs->pad_idx    = 0;
+        outputs->next       = NULL;
+
+        inputs->name       = av_strdup("out");
+        inputs->filter_ctx = buffersink_ctx;
+        inputs->pad_idx    = 0;
+        inputs->next       = NULL;
+        if ((ret = avfilter_graph_parse_ptr(filter_graph, _filter.c_str(), &inputs, &outputs, NULL)) < 0)
+          throw Exception("could not parse filter graph");
+        if ((ret = avfilter_graph_config(filter_graph, NULL)) < 0)
+          throw Exception("could not configure filter graph");
+
+        av_buffersink_set_frame_size(buffersink_ctx,frame_size);
+        //exit(0);
+      }
+
+      void AVFilter::initVideoSourceSink(){
+        char args[512];
+        int ret;
+        ::AVFilter *buffersrc  = avfilter_get_by_name("buffer");
+        ::AVFilter *buffersink = avfilter_get_by_name("buffersink");
+        AVFilterInOut *outputs = avfilter_inout_alloc();
+        AVFilterInOut *inputs  = avfilter_inout_alloc();
+        AVBufferSinkParams *buffersink_params;
+        filter_graph = avfilter_graph_alloc();
+
+        /*sanity input check*/
+        std::list<std::string>check_parameter;
+        check_parameter.push_back("height");
+        check_parameter.push_back("width");
+        check_parameter.push_back("pixel_format");
+        check_parameter.push_back("time_base");
+        check_parameter.push_back("sample_aspect_ratio");
+        sanityCheck(_input_params,check_parameter, "input");
+
+        /*sanity output check*/
+        check_parameter.clear();
+        check_parameter.push_back("pixel_format");
+        sanityCheck(_output_params,check_parameter, "output");
+
+
+        /* buffer video source: the decoded frames from the decoder will be inserted here. */
+        snprintf(args, sizeof(args),
+                 "video_size=%sx%s:pix_fmt=%s:time_base=%s:pixel_aspect=%s",
+                 _input_params["width"].c_str(), _input_params["height"].c_str(), _input_params["pixel_format"].c_str(),
+            _input_params["time_base"].c_str(),
+            _input_params["sample_aspect_ratio"].c_str());
+        ret = avfilter_graph_create_filter(&buffersrc_ctx, buffersrc, "in",
+                                           args, NULL, filter_graph);
+        if (ret < 0) {
+          throw Exception(__FILE__, __LINE__,"Cannot create video buffer source with arguments\n%s", args);
+        }
+
+        /* buffer video sink: to terminate the filter chain. */
+        buffersink_params = av_buffersink_params_alloc();
+        AVPixelFormat fmt=static_cast<AVPixelFormat>(atoi(_output_params["pixel_format"].c_str()));
+        enum AVPixelFormat pix_fmts[] = { fmt, AV_PIX_FMT_NONE };
+        buffersink_params->pixel_fmts = pix_fmts;
+        ret = avfilter_graph_create_filter(&buffersink_ctx, buffersink, "out",
+                                           NULL, buffersink_params, filter_graph);
+        av_free(buffersink_params);
+        if (ret < 0) {
+          throw Exception(__FILE__, __LINE__,"Cannot create video buffer sink with arguments\n%s", args);
+        }
+
+        /* Endpoints for the filter graph. */
+        outputs->name       = av_strdup("in");
+        outputs->filter_ctx = buffersrc_ctx;
+        outputs->pad_idx    = 0;
+        outputs->next       = NULL;
+
+        inputs->name       = av_strdup("out");
+        inputs->filter_ctx = buffersink_ctx;
+        inputs->pad_idx    = 0;
+        inputs->next       = NULL;
+        if ((ret = avfilter_graph_parse_ptr(filter_graph, _filter.c_str(), &inputs, &outputs, NULL)) < 0)
+          throw Exception(__FILE__, __LINE__,"could not parse filter graph\n");
+        if ((ret = avfilter_graph_config(filter_graph, NULL)) < 0)
+          throw Exception(__FILE__, __LINE__,"could not configure filter graph\n");
+      }
+
+      void AVFilter::sanityCheck( std::map<std::string, std::string> input_map,std::list<std::string> pList, std::string inout){
+        std::list<std::string>::iterator it=pList.begin();
+        for(;it!=pList.end();it++){
+          if(input_map.find(*it)==input_map.end()){
+            throw Exception(__FILE__, __LINE__,"%s %s not set", inout.c_str(), (*it).c_str());
+          }
+        }
       }
 
       void AVFilter::newFrame(Ptr<Frame> p)
       {
+        LOGDEBUG("filter in frame:"<<p->toString());
+        if (av_buffersrc_add_frame_flags(buffersrc_ctx, p->getAVFrame(), 0) < 0) {
+          throw Exception(__FILE__, __LINE__,"failed to push frame into filter chain");
+        }
+        //AVFrame *filt_frame = av_frame_alloc();
+        Ptr<Frame> out=new Frame();
+        /* pull filtered audio from the filtergraph */
+        while (1) {
+          //int ret = av_buffersink_get_frame_flags(buffersink_ctx, out->getAVFrame(),AV_BUFFERSINK_FLAG_PEEK);
+          int ret = av_buffersink_get_frame(buffersink_ctx, out->getAVFrame());
 
+          if(ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+            break;
+          //throw Exception(__FILE__, __LINE__,"could not get frame from buffer sink");
+          //if(ret < 0)
+          LOGDEBUG("filter out frame:"<<out->toString()<<" ret:"<<ret);
+          //if(filt_frame->nb_samples!=1152)
+          //  throw Exception(__FILE__, __LINE__,"samples size diffs");
+          pushFrame(out);
+          //av_frame_unref(filt_frame);
+        }
       }
 
+      }
     }
   }
-}

@@ -639,6 +639,7 @@ namespace org {
               LOGDEBUG((_mode == ENCODER ? "Encoder" : "Decoder")<<"Setting CodecDictionary Key:"<<t->key<<" val:"<<t->value);
           }
           ctx->channel_layout=AV_CH_LAYOUT_STEREO;
+          //ctx->refcounted_frames=1;
           if (avcodec_open2(ctx, _codec,&_dict) < 0) {
             LOGERROR("error in openning Codec (" << ctx->codec_id << ")");
           } else {
