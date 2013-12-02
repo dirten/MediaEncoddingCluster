@@ -144,7 +144,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
   char * data = new char[buffer_size];
   memset(data, 0, buffer_size);
   int frames = 1;
-  int ret = 0;
+  int ret = 0, got_output;
 
 
   /**
@@ -156,8 +156,13 @@ int Encoder::encodeVideo(AVFrame * inframe) {
     //if (inframe != NULL)
     //  inframe->pts = _last_dts;
     //    LOGDEBUG("org.esb.av.Encoder", frame.toString());
-    ret = avcodec_encode_video(ctx, (uint8_t*) data, buffer_size, inframe);
-    Packet pac(ret);
+    AVPacket pkt;
+    av_init_packet(&pkt);
+    pkt.data = NULL; // packet data will be allocated by the encoder
+    pkt.size = 0;
+    ret = avcodec_encode_video2(ctx, &pkt, inframe,&got_output);
+    //ret = avcodec_encode_video(ctx, (uint8_t*) data, buffer_size, inframe);
+    Packet pac(&pkt);
     if (ret < 0) {
       LOGERROR("Video Encoding failed")
     }
