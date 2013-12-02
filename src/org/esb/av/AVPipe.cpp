@@ -10,11 +10,18 @@ namespace org {
 
       }
 
-      void AVPipe::newPacket(Ptr<Packet> p){
+      void AVPipe::newPacket(Packet * p){
 
       }
 
-      void AVPipe::newFrame(Ptr<Frame> p){
+      void AVPipe::newFrame(Frame * p){
+
+      }
+      void AVPipe::newPacket(AVPacket * p){
+
+      }
+
+      void AVPipe::newFrame(AVFrame * p){
 
       }
 
@@ -22,14 +29,27 @@ namespace org {
         _targets.push_back(pipe);
       }
 
-      void AVPipe::pushPacket(Ptr<Packet> p){
+      void AVPipe::pushPacket(Packet * p){
         std::list<AVPipe *>::iterator it=_targets.begin();
         for(;it!=_targets.end();it++){
           (*it)->newPacket(p);
         }
       }
 
-      void AVPipe::pushFrame(Ptr<Frame> p){
+      void AVPipe::pushFrame(Frame * p){
+        std::list<AVPipe* >::iterator it=_targets.begin();
+        for(;it!=_targets.end();it++){
+          (*it)->newFrame(p);
+        }
+      }
+      void AVPipe::pushPacket(AVPacket * p){
+        std::list<AVPipe *>::iterator it=_targets.begin();
+        for(;it!=_targets.end();it++){
+          (*it)->newPacket(p);
+        }
+      }
+
+      void AVPipe::pushFrame(AVFrame * p){
         std::list<AVPipe* >::iterator it=_targets.begin();
         for(;it!=_targets.end();it++){
           (*it)->newFrame(p);

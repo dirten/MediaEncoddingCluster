@@ -66,7 +66,7 @@ PacketOutputStream::~PacketOutputStream() {
 }
 bool first_packet = true;
 
-void PacketOutputStream::newPacket(Ptr<Packet> p){
+void PacketOutputStream::newPacket(Packet * p){
   writePacket(*p);
 }
 

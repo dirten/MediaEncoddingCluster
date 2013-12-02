@@ -32,11 +32,7 @@
 #include "org/esb/lang/Ptr.h"
 #include "exports.h"
 #include "AVPipe.h"
-#ifdef WIN32
-#define DEPRICATED(func) __declspec(deprecated) func
-#else
-#define DEPRICATED(f) __attribute__((deprecated)) f
-#endif
+#include "Depricated.h"
 namespace org {
   namespace esb {
     namespace av {
@@ -51,8 +47,8 @@ namespace org {
         Decoder();
         ~Decoder();
         //                DEPRICATED(Frame decode(Packet & packet));
-        Frame * decode2(Packet & packet);
-        Frame decodeLast();
+        DEPRICATED(Frame * decode2(Packet & packet));
+        DEPRICATED(Frame decodeLast());
         //                void analyzePacket(Packet & packet);
         /*
                         template<class Archive>
@@ -62,17 +58,25 @@ namespace org {
          */
         //                DEPRICATED(Frame decodeVideo(Packet & packet));
         //                DEPRICATED(Frame decodeAudio(Packet & packet));
-        Frame * decodeVideo2(Packet & packet);
-        Frame * decodeAudio2(Packet & packet);
+        bool open();
         int64_t getLastTimeStamp();
-        void newPacket(Ptr<Packet>p);
+        void newPacket(Packet *p);
+        void newPacket(AVPacket *p);
         static std::string getStaticCodecName(CodecID codec_id);
         static CodecID getStaticCodecId(std::string codec_name);
 
       private:
+        DEPRICATED(Frame * decodeVideo2(Packet & packet));
+        DEPRICATED(Frame * decodeAudio2(Packet & packet));
+
+        void decode3(AVPacket * packet);
+        void decodeVideo3(AVPacket * packet);
+        void decodeAudio3(AVPacket * packet);
+
         int64_t _last_pts;
         int64_t _next_pts;
         Ptr<PixelFormatConverter> _pix_fmt_converter;
+        AVFrame *frame;
       };
     }
   }

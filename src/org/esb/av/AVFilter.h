@@ -15,7 +15,9 @@ namespace org {
       {
         public:
           AVFilter(AVFilterType type,std::string filter);
-          void newFrame(Ptr<Frame> p);
+          ~AVFilter();
+          void newFrame(Frame * p);
+          void newFrame(AVFrame * p);
           void setInputParameter(std::string key, std::string value);
           void setOutputParameter(std::string key, std::string value);
           void init();
@@ -30,6 +32,7 @@ namespace org {
           AVFilterContext *buffersink_ctx;
           AVFilterContext *buffersrc_ctx;
           AVFilterGraph *filter_graph;
+          AVFrame *filt_frame;
 
       };
 

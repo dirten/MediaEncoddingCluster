@@ -95,7 +95,7 @@ bool Encoder::open() {
   return result;
 }
 
-void Encoder::newFrame(Ptr<Frame> f){
+void Encoder::newFrame(Frame * f){
   encode(*f);
 }
 
@@ -215,7 +215,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
         delete tmpf;
       }
 
-      pushPacket(Ptr<Packet>(new Packet(pac)));
+      pushPacket(&pac);
       //pushPacket(pac);
 
       if (_pos != NULL) {
@@ -281,7 +281,7 @@ int Encoder::encodeAudio2(Frame & frame) {
   }
   _last_dts += pak->getDuration();
   LOGDEBUG("EncodeAudio2:"<<pak->toString());
-  pushPacket(pak);
+  pushPacket(pak.get());
 
   if (_pos != NULL)
     _pos->writePacket(*pak);

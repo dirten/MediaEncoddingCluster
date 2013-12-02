@@ -23,7 +23,7 @@ namespace org {
         //int writePacket(Packet * packet);
         void setEncoder(Codec & code);
         void setEncoder(Codec & code, int stream_id);
-        void newPacket(Ptr<Packet>p);
+        void newPacket(Packet * p);
     std::list<AVStream*> getStreamList();
         bool init();
         int writePacket(Packet & packet);

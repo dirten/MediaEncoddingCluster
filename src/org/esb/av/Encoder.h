@@ -63,7 +63,7 @@ namespace org {
                 int64_t getSamplesBufferd();
                 void setPassLogfile(std::string);
                 std::string getPassLogfile();
-                void newFrame(Ptr<Frame>);
+                void newFrame(Frame*);
 
             private:
                 int encodeVideo(Frame & f);

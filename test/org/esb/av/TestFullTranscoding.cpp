@@ -199,7 +199,7 @@ int main(int argc, char** argv) {
 
   /*main loop to encode the packets*/
   Packet *packet;
-  for (int i = 0; i < 2500 || true; i++) {
+  for (int i = 0; i < 2000 /*|| true*/; i++) {
     //reading a packet from the Stream
     if ((packet=pis.readPacket()) ==NULL )break; //when no more packets available(EOF) then it return <0
     boost::shared_ptr<Packet> p(packet);
@@ -207,7 +207,7 @@ int main(int argc, char** argv) {
     if (_sdata.count(idx) == 0)continue;
 
     /*simply pushing the packet into the decoder to process the complete chain*/
-    _sdata[idx].dec->newPacket(p);
+    _sdata[idx].dec->newPacket(p->getAVPacket());
     continue;
 
 
@@ -265,14 +265,17 @@ cleanup:
   pos.close();
   fos.close();
 
+  pis.close();
+  fis.close();
   map<int, StreamData>::iterator streams = _sdata.begin();
   for (; streams != _sdata.end(); streams++) {
     (*streams).second.enc->close();
-    (*streams).second.dec->close();
+    //(*streams).second.dec->close();
     delete (*streams).second.conv;
+    delete (*streams).second.filter;
     delete (*streams).second.enc;
     //delete (*streams).second.enc;
-    delete (*streams).second.dec;
+    //delete (*streams).second.dec;
 
 
   }

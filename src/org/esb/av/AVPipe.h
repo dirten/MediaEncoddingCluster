@@ -1,6 +1,8 @@
 #ifndef AVPIPE_H
 #define AVPIPE_H
 #include "org/esb/lang/Ptr.h"
+#include "AV.h"
+#include "Depricated.h"
 #include <list>
 namespace org {
   namespace esb {
@@ -19,11 +21,15 @@ namespace org {
           void addTarget(AVPipe * pipe);
 
         protected:
-          void pushPacket(Ptr<Packet> p);
-          virtual void newPacket(Ptr<Packet> p);
-          void pushFrame(Ptr<Frame> p);
-          virtual void newFrame(Ptr<Frame> p);
+          DEPRICATED(void pushPacket(Packet * p));
+          DEPRICATED(virtual void newPacket(Packet * p));
+          DEPRICATED(void pushFrame(Frame * p));
+          DEPRICATED(virtual void newFrame(Frame * p));
 
+          void pushPacket(AVPacket * p);
+          virtual void newPacket(AVPacket * p);
+          void pushFrame(AVFrame * p);
+          virtual void newFrame(AVFrame * p);
         private:
           std::list< AVPipe * > _targets;
       };

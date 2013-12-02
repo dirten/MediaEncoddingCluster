@@ -182,6 +182,7 @@ Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
  */
 
 Frame::~Frame() {
+  LOGDEBUG("try Delete Frame:" << framePtr.use_count() << " : " << this <<":"<<_allocated<<":"<<(_buffer!=NULL))
   //cout << "try Delete Frame:" << framePtr.use_count() << " : " << this <<":"<<_allocated<<":"<<(_buffer!=NULL)<< endl;
   if (_allocated && _buffer!=NULL) {
     if (framePtr.use_count() == 1) {
