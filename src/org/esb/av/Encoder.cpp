@@ -162,12 +162,20 @@ int Encoder::encodeVideo2(AVFrame * frame) {
     exit(1);
   }
   if (got_output) {
-    printf("Write frame  (size=%5d)\n", pkt.size);
+    calculateTimestamp(&pkt);
+    //printf("Write frame  (size=%5d)\n", pkt.size);
     pushPacket(&pkt);
   }
-
 }
 
+void Encoder::calculateTimestamp(AVPacket * packet){
+  if (ctx->coded_frame) {
+    if (ctx->coded_frame->key_frame) {
+      packet->flags |= AV_PKT_FLAG_KEY;
+    }
+    packet->pts = ctx->coded_frame->pts;
+  }
+}
 
 /**
  * @TODO: duplicate or drop frames in case of framerate conversion

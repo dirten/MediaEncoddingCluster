@@ -242,10 +242,10 @@ namespace org {
       }
 
       void AVFilter::newFrame(AVFrame * p){
-        LOGDEBUG("filterframe:"<<p);
+        LOGDEBUG("input filterframe:"<<dumpAVFrame(p));
 
-        p=av_frame_clone(p);
-        if (av_buffersrc_add_frame_flags(buffersrc_ctx, p, 0) < 0) {
+        //p=av_frame_clone(p);
+        if (av_buffersrc_add_frame_flags(buffersrc_ctx, p, AV_BUFFERSRC_FLAG_KEEP_REF) < 0) {
         //if (av_buffersrc_add_frame_flags(buffersrc_ctx, p, 0) < 0) {
           throw Exception(__FILE__, __LINE__,"failed to push frame into filter chain");
         }
@@ -266,10 +266,11 @@ namespace org {
           //LOGDEBUG("filter out frame:"<<out->toString()<<" ret:"<<ret);
           //if(filt_frame->nb_samples!=1152)
           //  throw Exception(__FILE__, __LINE__,"samples size diffs");
+          LOGDEBUG("output filterframe:"<<dumpAVFrame(p));
           pushFrame(filt_frame);
           av_frame_unref(filt_frame);
-          av_frame_unref(p);
-          av_frame_free(&p);
+          //av_frame_unref(p);
+          //av_frame_free(&p);
           //delete out;
         }
       }

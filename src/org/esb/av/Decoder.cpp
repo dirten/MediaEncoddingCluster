@@ -137,7 +137,7 @@ void Decoder::decodeVideo3(AVPacket * packet){
     exit(1);
   }
   if (got_frame) {
-    LOGDEBUG("push video frame")
+    LOGDEBUG("push video frame:"<<dumpAVFrame(frame))
     pushFrame(frame);
   }
 }
@@ -151,6 +151,7 @@ void Decoder::decodeAudio3(AVPacket * packet){
     exit(1);
   }
   if (got_frame) {
+    LOGDEBUG("push audio frame:"<<dumpAVFrame(frame))
     pushFrame(frame);
   }
 }

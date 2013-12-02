@@ -4,6 +4,47 @@
 #include <iostream>
 using namespace std;
 using namespace org::esb::av;
+namespace org{
+  namespace esb{
+    namespace av{
+      std::string dumpAVFrame(AVFrame * frame){
+        std::ostringstream oss;
+        oss << "F :Pts:" << frame->pts << ":PakPts:" << frame->pkt_pts<< ":PakDts:" << frame->pkt_dts << ":Dur:" << frame->pkt_duration;
+        switch (frame->pict_type) {
+          case AV_PICTURE_TYPE_B:
+            oss << ("B");
+            break;
+          case AV_PICTURE_TYPE_I:
+            oss << ("I");
+            break;
+          case AV_PICTURE_TYPE_P:
+            oss << ("P");
+            break;
+          case AV_PICTURE_TYPE_S:
+            oss << ("S");
+            break;
+          case AV_PICTURE_TYPE_SI:
+            oss << ("SI");
+            break;
+          case AV_PICTURE_TYPE_SP:
+            oss << ("SP");
+            break;
+          case AV_PICTURE_TYPE_BI:
+            oss << ("BI");
+            break;
+          default:
+            oss << "U=" << frame->pict_type;
+            break;
+
+        }
+
+        return std::string(oss.str());
+
+      }
+
+    }
+  }
+}
 
 Frame::Frame() {
   //    cout << "Create Frame()"<<endl;
