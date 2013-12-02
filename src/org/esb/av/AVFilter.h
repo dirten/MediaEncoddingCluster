@@ -15,6 +15,7 @@ namespace org {
       {
         public:
           AVFilter(AVFilterType type,std::string filter);
+          ~AVFilter();
           void newFrame(Ptr<Frame> p);
           void setInputParameter(std::string key, std::string value);
           void setOutputParameter(std::string key, std::string value);

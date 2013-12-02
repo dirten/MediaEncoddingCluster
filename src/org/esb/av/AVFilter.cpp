@@ -10,6 +10,10 @@ namespace org {
       {
       }
 
+      AVFilter::~AVFilter(){
+        avfilter_graph_free(&filter_graph);
+      }
+
       void AVFilter::init(){
         if(_type==VIDEO){
           initVideoSourceSink();
@@ -55,9 +59,9 @@ namespace org {
         }
 
         snprintf(args, sizeof(args),
-                 "time_base=%s:sample_rate=%d:sample_fmt=%s:channel_layout=%s",
-                 _input_params["time_base"].c_str(), atoi(_input_params["sample_rate"].c_str()),
-            _input_params["sample_format"].c_str(), _input_params["channel_layout"].c_str());
+        "time_base=%s:sample_rate=%d:sample_fmt=%s:channel_layout=%s",
+        _input_params["time_base"].c_str(), atoi(_input_params["sample_rate"].c_str()),
+        _input_params["sample_format"].c_str(), _input_params["channel_layout"].c_str());
 
         ret = avfilter_graph_create_filter(&buffersrc_ctx, abuffersrc, "in", args, NULL, filter_graph);
         if (ret < 0) {
@@ -100,7 +104,7 @@ namespace org {
         /* buffer audio sink: to terminate the filter chain. */
         av_log(NULL, AV_LOG_INFO, "try creating audio buffer sink\n");
         ret = avfilter_graph_create_filter(&buffersink_ctx, abuffersink, "out",
-                                           NULL, NULL, filter_graph);
+        NULL, NULL, filter_graph);
         av_log(NULL, AV_LOG_INFO, "created audio buffer sink\n");
         if (ret < 0) {
           av_log(NULL, AV_LOG_ERROR, "Cannot create audio buffer sink with arguments\n%s", args);
@@ -108,20 +112,20 @@ namespace org {
         }
 
         ret = av_opt_set_int_list(buffersink_ctx, "sample_fmts", out_sample_fmts, -1,
-                                  AV_OPT_SEARCH_CHILDREN);
+        AV_OPT_SEARCH_CHILDREN);
         if (ret < 0) {
           av_log(NULL, AV_LOG_ERROR, "Cannot set output sample format\n");
           throw Exception(__FILE__, __LINE__,"Cannot set output sample format\n");
         }
 
         ret = av_opt_set_int_list(buffersink_ctx, "channel_layouts", out_channel_layouts, -1,
-                                  AV_OPT_SEARCH_CHILDREN);
+        AV_OPT_SEARCH_CHILDREN);
         if (ret < 0) {
           av_log(NULL, AV_LOG_ERROR, "Cannot set output channel layout\n");
           throw Exception(__FILE__, __LINE__,"Cannot set output channel layout\n");
         }
         ret = av_opt_set_int_list(buffersink_ctx, "sample_rates", out_sample_rates, -1,
-                                  AV_OPT_SEARCH_CHILDREN);
+        AV_OPT_SEARCH_CHILDREN);
 
         if (ret < 0) {
           av_log(NULL, AV_LOG_ERROR, "Cannot set output sample rate\n");
@@ -183,12 +187,12 @@ namespace org {
 
         /* buffer video source: the decoded frames from the decoder will be inserted here. */
         snprintf(args, sizeof(args),
-                 "video_size=%sx%s:pix_fmt=%s:time_base=%s:pixel_aspect=%s",
-                 _input_params["width"].c_str(), _input_params["height"].c_str(), _input_params["pixel_format"].c_str(),
-            _input_params["time_base"].c_str(),
-            _input_params["sample_aspect_ratio"].c_str());
+        "video_size=%sx%s:pix_fmt=%s:time_base=%s:pixel_aspect=%s",
+        _input_params["width"].c_str(), _input_params["height"].c_str(), _input_params["pixel_format"].c_str(),
+        _input_params["time_base"].c_str(),
+        _input_params["sample_aspect_ratio"].c_str());
         ret = avfilter_graph_create_filter(&buffersrc_ctx, buffersrc, "in",
-                                           args, NULL, filter_graph);
+        args, NULL, filter_graph);
         if (ret < 0) {
           throw Exception(__FILE__, __LINE__,"Cannot create video buffer source with arguments\n%s", args);
         }
@@ -199,7 +203,7 @@ namespace org {
         enum AVPixelFormat pix_fmts[] = { fmt, AV_PIX_FMT_NONE };
         buffersink_params->pixel_fmts = pix_fmts;
         ret = avfilter_graph_create_filter(&buffersink_ctx, buffersink, "out",
-                                           NULL, buffersink_params, filter_graph);
+        NULL, buffersink_params, filter_graph);
         av_free(buffersink_params);
         if (ret < 0) {
           throw Exception(__FILE__, __LINE__,"Cannot create video buffer sink with arguments\n%s", args);
@@ -253,12 +257,12 @@ namespace org {
           //if(filt_frame->nb_samples!=1152)
           //  throw Exception(__FILE__, __LINE__,"samples size diffs");
           pushFrame(out);
-          av_frame_unref(out->getAVFrame());
-          av_frame_unref(frame);
-          av_frame_free(&frame);
         }
-      }
+        av_frame_unref(out->getAVFrame());
+        av_frame_unref(frame);
+        av_frame_free(&frame);
 
       }
     }
   }
+}

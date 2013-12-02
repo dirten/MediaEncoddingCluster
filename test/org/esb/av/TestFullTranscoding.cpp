@@ -199,7 +199,7 @@ int main(int argc, char** argv) {
 
   /*main loop to encode the packets*/
   Packet *packet;
-  for (int i = 0; i < 500 /*|| true*/; i++) {
+  for (int i = 0; i < 5000 /*|| true*/; i++) {
     //reading a packet from the Stream
     if ((packet=pis.readPacket()) ==NULL )break; //when no more packets available(EOF) then it return <0
     boost::shared_ptr<Packet> p(packet);
@@ -250,6 +250,7 @@ int main(int argc, char** argv) {
     //    delete p;
 
   }
+  /*
   map<int, StreamData>::iterator it = _sdata.begin();
   for (; it != _sdata.end(); it++) {
     StreamData s = (*it).second;
@@ -258,7 +259,7 @@ int main(int argc, char** argv) {
         s.more_frames = false;
       }
     }
-  }
+  }*/
   //int data_size=0;
 
 cleanup:
@@ -270,6 +271,7 @@ cleanup:
     (*streams).second.enc->close();
     (*streams).second.dec->close();
     delete (*streams).second.conv;
+    delete (*streams).second.filter;
     delete (*streams).second.enc;
     //delete (*streams).second.enc;
     delete (*streams).second.dec;
