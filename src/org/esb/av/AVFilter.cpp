@@ -242,7 +242,8 @@ namespace org {
       }
 
       void AVFilter::newFrame(AVFrame * p){
-        //LOGDEBUG("filterframe:"<<p);
+        LOGDEBUG("filterframe:"<<p);
+
         p=av_frame_clone(p);
         if (av_buffersrc_add_frame_flags(buffersrc_ctx, p, 0) < 0) {
         //if (av_buffersrc_add_frame_flags(buffersrc_ctx, p, 0) < 0) {
@@ -257,6 +258,7 @@ namespace org {
           //int ret = av_buffersink_get_frame_flags(buffersink_ctx, out->getAVFrame(),AV_BUFFERSINK_FLAG_PEEK);
           //return;
           int ret = av_buffersink_get_frame(buffersink_ctx, filt_frame);
+          //LOGDEBUG(""<<p<<"ret:"<<ret)
           if(ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
             break;
           //throw Exception(__FILE__, __LINE__,"could not get frame from buffer sink");

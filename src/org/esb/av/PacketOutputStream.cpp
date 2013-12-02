@@ -69,15 +69,22 @@ bool first_packet = true;
 void PacketOutputStream::newPacket(Packet * p){
   writePacket(*p);
 }
+void PacketOutputStream::newPacket(AVPacket * p){
+  writePacket(p);
+}
 
 int PacketOutputStream::writePacket(Packet & packet) {
+  writePacket(packet.getAVPacket());
+}
+
+int PacketOutputStream::writePacket(AVPacket * packet) {
   if (!_isInitialized) {
     if (first_packet)
       LOGERROR("PacketOutputStream not initialized!!! You must call init() before using writePacket(Packet & packet)");
     return -1;
   }
-  if (streams.size() <= packet.getStreamIndex()) {
-    LOGERROR("there is no stream associated to packet.stream_index #" << packet.getStreamIndex());
+  if (streams.size() <= packet->stream_index) {
+    LOGERROR("there is no stream associated to packet.stream_index #" << packet->stream_index);
     return -1;
   }
 
@@ -126,9 +133,11 @@ int PacketOutputStream::writePacket(Packet & packet) {
     logdebug("CodecType unknown");
   }*/
   //LOGDEBUG(packet.toString());
-  AVStream *stream = _fmtCtx->streams[packet.getStreamIndex()];
-  packet.setDuration(av_rescale_q(packet.getDuration(), packet.getTimeBase(), stream->time_base));
-  packet.setPts(av_rescale_q(packet.getPts(), packet.getTimeBase(), stream->time_base));
+  AVStream *stream = _fmtCtx->streams[packet->stream_index];
+  if(packet->duration==0)
+    packet->duration=1;
+  packet->duration=av_rescale_q(packet->duration, stream->codec->time_base, stream->time_base);
+  packet->pts=av_rescale_q(packet->pts, stream->codec->time_base, stream->time_base);
   //packet.setDts(av_rescale_q(packet.getDts(), packet.getTimeBase(), stream->time_base));
 
 
@@ -136,7 +145,7 @@ int PacketOutputStream::writePacket(Packet & packet) {
   //  streamDts[packet.getStreamIndex()]+=dur;
   //  packet.packet->pts=AV_NOPTS_VALUE;
   //  packet.setDuration(0);
-  packet.setDts(AV_NOPTS_VALUE);
+  packet->dts=AV_NOPTS_VALUE;
   //packet.setDts(0);
   //  packet.setPts(streamDts[packet.getStreamIndex()]);
 
@@ -144,7 +153,7 @@ int PacketOutputStream::writePacket(Packet & packet) {
   //  compute_pkt_fields2(_fmtCtx->streams[packet.getStreamIndex()], packet.packet);
   //  logdebug(packet.toString());
   //uint8_t dur = static_cast<uint8_t>((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den))/frame.getTimeBase().num;
-  if (false && first_packet && packet.getStreamIndex() == 0) {
+  if (false && first_packet && packet->stream_index == 0) {
     //    logdebug("writing first packet");
     first_packet = false;
     AVPacket p;
@@ -158,15 +167,16 @@ int PacketOutputStream::writePacket(Packet & packet) {
     //    if (result != 0)logdebug("av_interleaved_write_frame Result:" << result);
   }
   //int result =_fmtCtx->oformat->write_packet(_fmtCtx,packet.packet);
-  LOGDEBUG("write packet to stream"+packet.toString());
-  int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
-  if (_fmtCtx->streams[packet.getStreamIndex()]->codec->codec_type == AVMEDIA_TYPE_VIDEO && _stats_fos) {
+  LOGDEBUG("write packet to stream"<<packet);
+  int result = av_interleaved_write_frame(_fmtCtx, packet);
+  /*
+  if (_fmtCtx->streams[packet->stream_index]->codec->codec_type == AVMEDIA_TYPE_VIDEO && _stats_fos) {
     _stats_fos->write(StringUtil::toString(packet._quality) + ":" + StringUtil::toString(packet.packet->size) + ",");
-  }
+  }*/
   //  int result = av_write_frame(_fmtCtx, packet.packet);
   if (result != 0) {
     LOGERROR("av_interleaved_write_frame Result:" << result);
-    LOGERROR(packet.toString());
+    LOGERROR(packet);
   }
   //LOGDEBUG(packet.toString());
   first_packet = false;

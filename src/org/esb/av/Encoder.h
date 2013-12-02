@@ -53,6 +53,7 @@ namespace org {
                 ~Encoder();
                 virtual bool open();
                 int encode(Frame & f);
+                int encode(AVFrame * f);
                 int encode();
                 char * getStatistics();
                 void setStatistics(char *);
@@ -64,12 +65,16 @@ namespace org {
                 void setPassLogfile(std::string);
                 std::string getPassLogfile();
                 void newFrame(Frame*);
+                void newFrame(AVFrame*);
 
             private:
                 int encodeVideo(Frame & f);
                 int encodeVideo(AVFrame *);
+                int encodeVideo2(AVFrame *);
                 int encodeAudio(Frame & f);
                 int encodeAudio2(Frame & f);
+                int encodeAudio2(AVFrame * frame);
+                void calculateTimestamp(AVPacket * packet);
                 void writeStatistics(std::string data);
                 std::string readStatistics();
                 //        AVFifoBuffer *fifo;

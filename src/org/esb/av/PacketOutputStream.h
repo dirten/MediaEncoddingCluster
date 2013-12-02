@@ -24,9 +24,11 @@ namespace org {
         void setEncoder(Codec & code);
         void setEncoder(Codec & code, int stream_id);
         void newPacket(Packet * p);
+        void newPacket(AVPacket * p);
     std::list<AVStream*> getStreamList();
         bool init();
         int writePacket(Packet & packet);
+        int writePacket(AVPacket * packet);
         void write(char * buffer, int length);
         void write(vector<unsigned char>&buffer);
         void flush();

@@ -95,8 +95,26 @@ bool Encoder::open() {
   return result;
 }
 
+void Encoder::newFrame(AVFrame*frame){
+  encode(frame);
+}
+
 void Encoder::newFrame(Frame * f){
   encode(*f);
+}
+
+int Encoder::encode(AVFrame * frame) {
+  if (ctx->codec_type == AVMEDIA_TYPE_VIDEO) {
+    LOGDEBUG("Encode Video");
+    return encodeVideo2(frame);
+  }
+  if (ctx->codec_type == AVMEDIA_TYPE_AUDIO) {
+    LOGDEBUG("Encode Audio");
+    return encodeAudio2(frame);
+  }
+  LOGERROR("Encoder does not support type:" << ctx->codec_type);
+  return -1;
+
 }
 
 int Encoder::encode(Frame & frame) {
@@ -130,6 +148,27 @@ int Encoder::encode() {
   return encodeVideo(NULL);
 }
 
+int Encoder::encodeVideo2(AVFrame * frame) {
+  AVPacket pkt;
+  int ret, got_output;
+  av_init_packet(&pkt);
+  pkt.data = NULL; // packet data will be allocated by the encoder
+  pkt.size = 0;
+
+  /* encode the image */
+  ret = avcodec_encode_video2(ctx, &pkt, frame, &got_output);
+  if (ret < 0) {
+    fprintf(stderr, "Error encoding frame\n");
+    exit(1);
+  }
+  if (got_output) {
+    printf("Write frame  (size=%5d)\n", pkt.size);
+    pushPacket(&pkt);
+  }
+
+}
+
+
 /**
  * @TODO: duplicate or drop frames in case of framerate conversion
  * when frame rate will be downscaled, then frames must be dropped
@@ -145,7 +184,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
   memset(data, 0, buffer_size);
   int frames = 1;
   int ret = 0;
-
+  _frames=1;
 
   /**
    * calculating the differences between timestamps to duplicate or drop frames
@@ -177,6 +216,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
           pac.packet->flags |= AV_PKT_FLAG_KEY;
         }
         pac.packet->pts = ctx->coded_frame->pts;
+        //pac.packet->dts = ctx->coded_frame->pts;
         pac.setPtsTimeStamp(TimeStamp(ctx->coded_frame->pts,ctx->time_base));
         pac._pict_type=ctx->coded_frame->pict_type;
       }
@@ -258,16 +298,21 @@ void Encoder::setOutputStream(PacketOutputStream * pos) {
 void Encoder::setSink(Sink * sink) {
   _sink = sink;
 }
+
 int Encoder::encodeAudio2(Frame & frame) {
- // LOGDEBUG("EncodeAudio2:"<<frame.toString());
+  return encodeAudio2(frame.getAVFrame());
+}
+
+int Encoder::encodeAudio2(AVFrame * frame) {
+  // LOGDEBUG("EncodeAudio2:"<<frame.toString());
   Ptr<Packet> pak=new Packet();
   int got_packet;
   int out_size = avcodec_encode_audio2(
-          ctx,
-          pak->getAVPacket(),
-          frame.getAVFrame(),
-          &got_packet
-          );
+  ctx,
+  pak->getAVPacket(),
+  frame,
+  &got_packet
+  );
 
   pak->setTimeBase(ctx->time_base);
   pak->setDuration(ctx->frame_size);
@@ -282,11 +327,7 @@ int Encoder::encodeAudio2(Frame & frame) {
   _last_dts += pak->getDuration();
   LOGDEBUG("EncodeAudio2:"<<pak->toString());
   pushPacket(pak.get());
-
-  if (_pos != NULL)
-    _pos->writePacket(*pak);
-  if (_sink != NULL)
-    _sink->write(pak.get());
+  return out_size;
 }
 
 
@@ -295,7 +336,7 @@ int Encoder::encodeAudio(Frame & frame) {
   LOGDEBUG(frame.toString());
   int osize = av_get_bits_per_sample_fmt(ctx->sample_fmt) / 8;
   LOGDEBUG("bits per sample format:" << osize << " fmt:" << ctx->sample_fmt)
-          int audio_out_size = (4 * 192 * 1024);
+  int audio_out_size = (4 * 192 * 1024);
   uint8_t * audio_out = static_cast<uint8_t*> (av_malloc(audio_out_size));
   //uint8_t * audio_out = new uint8_t[audio_out_size];//static_cast<uint8_t*> (av_malloc(audio_out_size));
 
@@ -323,11 +364,11 @@ int Encoder::encodeAudio(Frame & frame) {
       //    uint64_t dur = static_cast<uint64_t> ((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) 1) / ((float) frame.getTimeBase().num));
       LOGDEBUG("FrameBytes:" << frame_bytes << ":Channels:" << ctx->channels << ":osize:" << osize << ":sample_rate:" << ctx->sample_rate << "time_base_den:" << ctx->time_base.den);
       int out_size = avcodec_encode_audio(
-              ctx,
-              audio_out,
-              audio_out_size,
-              (short*) audio_buf
-              );
+      ctx,
+      audio_out,
+      audio_out_size,
+      (short*) audio_buf
+      );
       if (out_size < 0) {
         LOGERROR("Error Encoding audio Frame");
       }

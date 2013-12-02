@@ -137,6 +137,7 @@ void Decoder::decodeVideo3(AVPacket * packet){
     exit(1);
   }
   if (got_frame) {
+    LOGDEBUG("push video frame")
     pushFrame(frame);
   }
 }

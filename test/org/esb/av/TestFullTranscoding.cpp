@@ -199,7 +199,7 @@ int main(int argc, char** argv) {
 
   /*main loop to encode the packets*/
   Packet *packet;
-  for (int i = 0; i < 2000 /*|| true*/; i++) {
+  for (int i = 0; i < 8000 /*|| true*/; i++) {
     //reading a packet from the Stream
     if ((packet=pis.readPacket()) ==NULL )break; //when no more packets available(EOF) then it return <0
     boost::shared_ptr<Packet> p(packet);
