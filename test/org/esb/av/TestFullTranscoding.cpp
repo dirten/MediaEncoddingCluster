@@ -98,7 +98,7 @@ int main(int argc, char** argv) {
       _sdata[i].enc->setCodecOption("flags","+psnr");
       AVRational ar;
       ar.num = 1;
-      ar.den = 25;
+      ar.den = 24;
       _sdata[i].enc->setTimeBase(ar);
       _sdata[i].enc->setBitRate(1500000);
 
@@ -138,8 +138,10 @@ int main(int argc, char** argv) {
       _sdata[i].filter=new org::esb::av::AVFilter(AUDIO,"aresample=48000,aformat=sample_fmts=s16:channel_layouts=stereo");
 
       char buf[512];
-      av_get_channel_layout_string(buf, sizeof(buf), _sdata[i].enc->getChannels(), _sdata[i].enc->getChannelLayout());
-      _sdata[i].filter->setInputParameter("channel_layout",buf);
+      av_get_channel_layout_string(buf, sizeof(buf), _sdata[i].enc->getChannels(), _sdata[i].dec->getChannelLayout());
+      int64_t ch_layout=_sdata[i].dec->getChannelLayout();
+      //_sdata[i].filter->setInputParameter("channel_layout",buf);
+      _sdata[i].filter->setInputParameter("channel_layout",StringUtil::toString(ch_layout));
       _sdata[i].filter->setInputParameter("sample_rate",StringUtil::toString(_sdata[i].dec->getSampleRate()));
       _sdata[i].filter->setInputParameter("sample_format", av_get_sample_fmt_name(_sdata[i].dec->getSampleFormat()));
       _sdata[i].filter->setInputParameter("time_base", "1/"+StringUtil::toString(fis.getStreamInfo(i)->getTimeBase().den));
@@ -199,7 +201,7 @@ int main(int argc, char** argv) {
 
   /*main loop to encode the packets*/
   Packet *packet;
-  for (int i = 0; i < 5000 /*|| true*/; i++) {
+  for (int i = 0; i < 5000 || true; i++) {
     //reading a packet from the Stream
     if ((packet=pis.readPacket()) ==NULL )break; //when no more packets available(EOF) then it return <0
     boost::shared_ptr<Packet> p(packet);

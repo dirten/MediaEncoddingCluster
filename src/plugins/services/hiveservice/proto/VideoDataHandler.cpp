@@ -16,8 +16,8 @@
 #include "org/esb/signal/Message.h"
 #include "org/esb/signal/Messenger.h"
 #include "plugins/services/partitionservice/PartitionManager.h"
-#include "org/esb/mq/QueueConnection.h"
-#include "org/esb/mq/ObjectMessage.h"
+//#include "org/esb/mq/QueueConnection.h"
+//#include "org/esb/mq/ObjectMessage.h"
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/config/config.h"
 #include <map>
@@ -37,7 +37,7 @@ using org::esb::io::FileInputStream;
 
 class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
   private:
-    classlogger("org.esb.hive.protocol.DataHandler")
+    classlogger("org.esb.hive.protocol.VideoDataHandler")
     db::HiveDb _db;
     InputStream * _is;
     OutputStream * _os;
@@ -55,9 +55,9 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
     boost::asio::ip::tcp::endpoint _ep;
     bool shutdown;
     static std::map<std::string, boost::asio::ip::tcp::endpoint> _label_ep_map;
-    Ptr<org::esb::mq::QueueConnection> con;
-    Ptr<safmq::MessageQueue> read_q;
-    Ptr<safmq::MessageQueue> write_q;
+    //Ptr<org::esb::mq::QueueConnection> con;
+    //Ptr<safmq::MessageQueue> read_q;
+    //Ptr<safmq::MessageQueue> write_q;
     Ptr<db::ProcessUnit> _current_unit;
 
 
@@ -86,9 +86,9 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
       _own_id += ":";
       _own_id += StringUtil::toString(e.port());
       shutdown = false;
-      con=new org::esb::mq::QueueConnection("localhost", 20202);
-      read_q=con->getMessageQueue("read_q");
-      write_q=con->getMessageQueue("write_q");
+      //con=new org::esb::mq::QueueConnection("localhost", 20202);
+      //read_q=con->getMessageQueue("read_q");
+      //write_q=con->getMessageQueue("write_q");
 
       LOGDEBUG("endpoint:" << e);
     }

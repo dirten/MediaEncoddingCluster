@@ -18,11 +18,11 @@ extern "C" {
 #include <libswresample/swresample.h>
 #include <libavfilter/avfilter.h>
 #include <libavfilter/avfilter.h>
-#include <libavformat/avformat.h>
 #include <libavfilter/avfiltergraph.h>
 #include <libavfilter/avcodec.h>
 #include <libavfilter/buffersink.h>
 #include <libavfilter/buffersrc.h>
+#include <inttypes.h>
 typedef AVCodecID CodecID;
 #ifdef	__cplusplus
 }

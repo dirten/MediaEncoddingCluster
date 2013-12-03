@@ -2,6 +2,8 @@
 #include "org/esb/lang/Exception.h"
 #include "Frame.h"
 #include "org/esb/util/Log.h"
+
+
 namespace org {
   namespace esb {
     namespace av {
@@ -59,9 +61,9 @@ namespace org {
         }
 
         snprintf(args, sizeof(args),
-        "time_base=%s:sample_rate=%d:sample_fmt=%s:channel_layout=%s",
+        "time_base=%s:sample_rate=%d:sample_fmt=%s:channel_layout=0x%llx",
         _input_params["time_base"].c_str(), atoi(_input_params["sample_rate"].c_str()),
-        _input_params["sample_format"].c_str(), _input_params["channel_layout"].c_str());
+        _input_params["sample_format"].c_str(), atoll(_input_params["channel_layout"].c_str()));
 
         ret = avfilter_graph_create_filter(&buffersrc_ctx, abuffersrc, "in", args, NULL, filter_graph);
         if (ret < 0) {
