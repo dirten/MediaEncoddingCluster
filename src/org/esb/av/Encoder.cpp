@@ -157,18 +157,16 @@ int Encoder::encodeVideo(AVFrame * inframe) {
     //  inframe->pts = _last_dts;
     //    LOGDEBUG("org.esb.av.Encoder", frame.toString());
     if(false){
-    AVPacket pkt;
-    av_init_packet(&pkt);
-    pkt.data = NULL; // packet data will be allocated by the encoder
-    pkt.size = 0;
-    ret = avcodec_encode_video2(ctx, &pkt, inframe,&got_output);
+    Ptr<Packet> pacInt=new Packet();
+    Packet pac=*pacInt.get();
+    ret = avcodec_encode_video2(ctx, pac.getAVPacket(), inframe, &got_output);
   }
     ret = avcodec_encode_video(ctx, (uint8_t*) data, buffer_size, inframe);
     Packet pac(ret);
     if (ret < 0) {
       LOGERROR("Video Encoding failed")
     }
-    if (ret > 0) {
+    if (ret >= 0) {
       LOGDEBUG("Frame encoded");
       if (ctx->coded_frame && ctx->coded_frame->quality > 0){
         LOGDEBUG("EnCodedFrameQuality:" << ctx->coded_frame->quality / (float) FF_QP2LAMBDA);
@@ -222,8 +220,8 @@ int Encoder::encodeVideo(AVFrame * inframe) {
         delete tmpf;
       }
 
-      pushPacket(Ptr<Packet>(new Packet(pac)));
-      //pushPacket(pac);
+      //pushPacket(Ptr<Packet>(new Packet(pac)));
+      //pushPacket(pacInt);
 
       if (_pos != NULL) {
         _pos->writePacket(pac);
