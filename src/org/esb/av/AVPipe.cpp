@@ -10,12 +10,12 @@ namespace org {
 
       }
 
-      void AVPipe::newPacket(Ptr<Packet> p){
-
+      bool AVPipe::newPacket(Ptr<Packet> p){
+        return false;
       }
 
-      void AVPipe::newFrame(Ptr<Frame> p){
-
+      bool AVPipe::newFrame(Ptr<Frame> p){
+        return false;
       }
 
       void AVPipe::addTarget(AVPipe * pipe){

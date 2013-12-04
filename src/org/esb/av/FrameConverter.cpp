@@ -100,7 +100,7 @@ namespace org {
         }
       }
 
-      void FrameConverter::newFrame(Ptr<Frame> f){
+      bool FrameConverter::newFrame(Ptr<Frame> f){
         Frame * trg_frame = NULL;
         if (_dec->getCodecType() == AVMEDIA_TYPE_VIDEO)
           trg_frame = new Frame(
@@ -112,6 +112,7 @@ namespace org {
         convert(*f, *trg_frame);
         pushFrame(trg_frame);
         //delete trg_frame;
+        return true;
       }
 
       void FrameConverter::convert(Frame & in_frame, Frame & out_frame) {

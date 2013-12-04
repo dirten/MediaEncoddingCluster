@@ -101,7 +101,7 @@ Frame Decoder::decodeLast() {
 
 }
 
-void Decoder::newPacket(Ptr<Packet> p){
+bool Decoder::newPacket(Ptr<Packet> p){
   Frame * frame=decode2(*p);
   delete frame;
 }

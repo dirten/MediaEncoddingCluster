@@ -73,6 +73,7 @@ namespace org {
         if (!(_fmt->flags & AVFMT_NOFILE) && _status == OPENED) {
           LOGINFO("closing format context");
           result=avio_close(_fmtCtx->pb)==0;
+          //avformat_free_context(_fmtCtx);
           int nb_streams = _fmtCtx->nb_streams;
           for (int a = 0; a < nb_streams; a++) {
             //av_free(_fmtCtx->streams[a]);

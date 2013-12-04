@@ -19,7 +19,9 @@ IF(MINGW)
   SET(USER_CMAKE_CONFIG "-DCMAKE_TOOLCHAIN_FILE=${PROJECT_SOURCE_DIR}/cmake/Toolchain-mingw32.cmake")
   SET(FFMPEG_LIB_DIR bin)
 ENDIF(MINGW)
-
+IF(DEBUG)
+  SET(USER_FFMPEG_CONFIG "--disable-optimizations --disable-asm" )
+ENDIF(DEBUG)
 
 ExternalProject_Add(yasm
 URL http://www.tortall.net/projects/yasm/releases/yasm-1.2.0.tar.gz
@@ -115,7 +117,8 @@ ExternalProject_Add(ffmpeg
 DEPENDS lame x264 libogg libtheora speex libvorbis libvpx
 #URL http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
 URL http://ffmpeg.org/releases/ffmpeg-2.1.tar.gz
-CONFIGURE_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && <SOURCE_DIR>/configure --prefix=${BUILD_DIR} ${LINKER_ARGS_STATIC} ${LINKER_ARGS_SHARED} ${USER_FFMPEG_CONFIG} --enable-incompatible-libav-abi --extra-cflags=${EXTRA_CFLAGS} --extra-ldflags=${EXTRA_LD_FLAGS} --enable-libx264 --enable-libmp3lame --enable-libvorbis --enable-libtheora --enable-libvpx --disable-devices --extra-cflags=-fno-common --disable-stripping --disable-zlib --enable-gpl --enable-pic
+CONFIGURE_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && <SOURCE_DIR>/configure --prefix=${BUILD_DIR} ${LINKER_ARGS_STATIC} ${LINKER_ARGS_SHARED} ${USER_FFMPEG_CONFIG} --enable-incompatible-libav-abi --extra-cflags=${EXTRA_CFLAGS} --extra-ldflags=${EXTRA_LD_FLAGS} --enable-libx264 --enable-libmp3lame --enable-libvorbis --enable-libtheora --enable-libvpx --disable-devices --extra-cflags=-fno-common --disable-stripping --disable-zlib --enable-gpl --enable-pic --disable-optimizations --disable-asm
+#--disable-stripping
 BUILD_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && make
 BUILD_IN_SOURCE 1
 )

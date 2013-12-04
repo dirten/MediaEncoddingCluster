@@ -20,11 +20,11 @@ namespace org {
 
         protected:
           void pushPacket(Ptr<Packet> p);
-          virtual void newPacket(Ptr<Packet> p);
           void pushFrame(Ptr<Frame> p);
-          virtual void newFrame(Ptr<Frame> p);
 
         private:
+          virtual bool newPacket(Ptr<Packet> p);
+          virtual bool newFrame(Ptr<Frame> p);
           std::list< AVPipe * > _targets;
       };
     }

@@ -13,6 +13,8 @@ namespace org {
       }
 
       AVFilter::~AVFilter(){
+        avfilter_free(buffersink_ctx);
+        avfilter_free(buffersrc_ctx);
         avfilter_graph_free(&filter_graph);
       }
 
@@ -236,7 +238,7 @@ namespace org {
         }
       }
 
-      void AVFilter::newFrame(Ptr<Frame> p)
+      bool AVFilter::newFrame(Ptr<Frame> p)
       {
         LOGDEBUG("filter in frame:"<<p->toString());
         //av_frame_clone()
@@ -263,7 +265,7 @@ namespace org {
         av_frame_unref(out->getAVFrame());
         av_frame_unref(frame);
         av_frame_free(&frame);
-
+        return true;
       }
     }
   }

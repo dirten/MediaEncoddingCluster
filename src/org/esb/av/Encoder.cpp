@@ -95,8 +95,9 @@ bool Encoder::open() {
   return result;
 }
 
-void Encoder::newFrame(Ptr<Frame> f){
+bool Encoder::newFrame(Ptr<Frame> f){
   encode(*f);
+
 }
 
 int Encoder::encode(Frame & frame) {
@@ -123,6 +124,24 @@ int Encoder::encode(Frame & frame) {
   }
   LOGERROR("Encoder does not support type:" << ctx->codec_type);
   return -1;
+}
+
+int Encoder::encodeVideo(Frame & frame) {
+  //LOGDEBUG(frame.toString());
+  if (false && !_pix_fmt_converter) {
+    _input_format.width = ctx->width;
+    _input_format.height = ctx->height;
+    _input_format.pixel_format = STD_PIX_FMT;
+    Format out = _input_format;
+    out.pixel_format = ctx->pix_fmt;
+    _pix_fmt_converter = new PixelFormatConverter(_input_format, out);
+    _pix_fmt_converter->open();
+  }
+  //Ptr<Frame> tmp_frame = new Frame(ctx->pix_fmt, ctx->width, ctx->height);
+  //_pix_fmt_converter->process(frame,*tmp_frame);
+  LOGDEBUG(frame.toString());
+  return encodeVideo2(frame.getAVFrame());
+  //  return encodeVideo(frame.getAVFrame());
 }
 
 int Encoder::encode() {
@@ -220,7 +239,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
         delete tmpf;
       }
 
-      //pushPacket(Ptr<Packet>(new Packet(pac)));
+      pushPacket(Ptr<Packet>(new Packet(pac)));
       //pushPacket(pacInt);
 
       if (_pos != NULL) {
@@ -237,24 +256,102 @@ int Encoder::encodeVideo(AVFrame * inframe) {
 
   return ret;
 }
+int Encoder::encodeVideo2(AVFrame * inframe) {
+  //  LOGTRACEMETHOD("org.esb.av.Encoder", "encode Video");
+  //  int buffer_size = 1024 * 256;
+  //int size = ctx->width * ctx->height;
+  //const int buffer_size = FFMAX(1024 * 256, 6 * size + 200);
 
-int Encoder::encodeVideo(Frame & frame) {
-  //LOGDEBUG(frame.toString());
-  if (false && !_pix_fmt_converter) {
-    _input_format.width = ctx->width;
-    _input_format.height = ctx->height;
-    _input_format.pixel_format = STD_PIX_FMT;
-    Format out = _input_format;
-    out.pixel_format = ctx->pix_fmt;
-    _pix_fmt_converter = new PixelFormatConverter(_input_format, out);
-    _pix_fmt_converter->open();
-  }
-  //Ptr<Frame> tmp_frame = new Frame(ctx->pix_fmt, ctx->width, ctx->height);
-  //_pix_fmt_converter->process(frame,*tmp_frame);
-  LOGDEBUG(frame.toString());
-  return encodeVideo(frame.getAVFrame());
-  //  return encodeVideo(frame.getAVFrame());
+  //char * data = new char[buffer_size];
+  //memset(data, 0, buffer_size);
+  //int frames = 1;
+  int ret = 0, got_output;
+  _frames=1;
+
+  /**
+   * calculating the differences between timestamps to duplicate or drop frames
+   * when delta < 1.0 then drop a frame
+   * when delta > 1.0 then duplicate a frame
+   */
+  //for (int i = 0; i < _frames; i++) {
+    //if (inframe != NULL)
+    //  inframe->pts = _last_dts;
+    //    LOGDEBUG("org.esb.av.Encoder", frame.toString());
+    Ptr<Packet> pacInt=new Packet();
+    Packet *pac=pacInt.get();
+    ret = avcodec_encode_video2(ctx, pac->getAVPacket(), inframe, &got_output);
+    //ret = avcodec_encode_video(ctx, (uint8_t*) data, buffer_size, inframe);
+    //Packet pac(ret);
+    if (ret < 0) {
+      LOGERROR("Video Encoding failed")
+    }
+    if (ret >= 0) {
+      LOGDEBUG("Frame encoded");
+      if (ctx->coded_frame && ctx->coded_frame->quality > 0){
+        LOGDEBUG("EnCodedFrameQuality:" << ctx->coded_frame->quality / (float) FF_QP2LAMBDA);
+        pac->_quality=ctx->coded_frame->quality / (float) FF_QP2LAMBDA;
+      }
+      if (ctx->stats_out)
+        LOGDEBUG("stats available:" << ctx->stats_out);
+      //memcpy(pac.packet->data, data, ret);
+      //pac.packet->size = ret;
+      //pac.packet->stream_index = _stream_index;
+      if (ctx->coded_frame) {
+        if (ctx->coded_frame->key_frame) {
+          pac->packet->flags |= AV_PKT_FLAG_KEY;
+        }
+        pac->packet->pts = ctx->coded_frame->pts;
+        pac->setPtsTimeStamp(TimeStamp(ctx->coded_frame->pts,ctx->time_base));
+        pac->_pict_type=ctx->coded_frame->pict_type;
+      }
+#ifdef USE_TIME_BASE_Q
+      pac->setTimeBase(AV_TIME_BASE_Q);
+      pac->setDuration(_last_duration);
+#else
+      pac->setTimeBase(ctx->time_base);
+      if (_last_duration > 0 && _last_time_base.num > 0 && _last_time_base.den > 0) {
+        pac->setDuration(av_rescale_q(_last_duration, _last_time_base, ctx->time_base));
+      } else {
+        LOGERROR("frame has no duration and no timebase, could not recalculate the duration of the encoded packet!!!");
+      }
+      //pac.setDuration(ctx->ticks_per_frame);
+#endif
+
+      pac->packet->dts = _last_dts;
+      pac->setDtsTimeStamp(TimeStamp(_last_dts, ctx->time_base));
+      LOGDEBUG(pac->toString());
+      if (ctx->flags & CODEC_FLAG_PSNR) {
+        LOGDEBUG("ERROR0========" << ctx->coded_frame->error[0]);
+        LOGDEBUG("ERROR1========" << ctx->coded_frame->error[1]);
+        LOGDEBUG("ERROR2========" << ctx->coded_frame->error[2]);
+        LOGDEBUG("ERROR3========" << ctx->coded_frame->error[3]);
+      }
+      LOGDEBUG("PSNR=========" << ((double) ctx->coded_frame->error[0]) / ((double) ctx->width * ctx->height * 255.0 * 255.0));
+      /**
+       * calculate the psnr here
+       */
+      if (_refDecoder) {
+        Frame * tmpf = _refDecoder->decode2(*pac);
+        if (tmpf->isFinished()) {
+          LOGDEBUG("Reference Frame Decoded:" << tmpf->toString());
+          processPsnr(_actualFrame, tmpf);
+        }
+        delete tmpf;
+      }
+
+      //pushPacket(Ptr<Packet>(new Packet(pac)));
+      pushPacket(pacInt);
+
+    }
+    if (_last_duration > 0 && _last_time_base.num > 0 && _last_time_base.den > 0)
+      _last_dts += av_rescale_q(_last_duration, _last_time_base, ctx->time_base);
+  //}
+  //delete [] data;
+
+
+  return ret;
 }
+
 
 void Encoder::setOutputStream(PacketOutputStream * pos) {
   _pos = pos;

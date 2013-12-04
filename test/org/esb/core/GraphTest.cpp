@@ -14,6 +14,7 @@
 #include "org/esb/util/Log.h"
 #include "org/esb/util/Foreach.h"
 #include "org/esb/core/PluginRegistry.h"
+#include "org/esb/core/PluginContext.h"
 #include "org/esb/hive/Environment.h"
 #include "org/esb/hive/HiveClient.h"
 #include "org/esb/io/File.h"
@@ -106,6 +107,7 @@ int main(int argc, char** argv) {
   std::list<Ptr<Graph::Element> > list;
 
   foreach(GraphParser::ElementMap::value_type & element, el) {
+    element.second->task->getContext()->set<std::string>("uuid","0815");
     list.push_back(element.second);
   }
 

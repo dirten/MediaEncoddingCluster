@@ -57,7 +57,7 @@ namespace org {
                 void setGopSize(int);
                 void setDeinterlace(bool);
                 void setKeepAspectRatio(bool);
-                void newFrame(Ptr<Frame>);
+                bool newFrame(Ptr<Frame>);
             private:
                 void convertVideo(Frame & input, Frame & out);
                 void convertAudio(Frame & input, Frame & out);

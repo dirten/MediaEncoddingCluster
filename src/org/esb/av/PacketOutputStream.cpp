@@ -66,7 +66,7 @@ PacketOutputStream::~PacketOutputStream() {
 }
 bool first_packet = true;
 
-void PacketOutputStream::newPacket(Ptr<Packet> p){
+bool PacketOutputStream::newPacket(Ptr<Packet> p){
   writePacket(*p);
 }
 
@@ -192,6 +192,11 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
   streams.push_back(st);
   /*freeing allocated codec from av_new_stream
    because we will using our own codec context*/
+  avcodec_close(st->codec);
+  /*
+  if (st->codec->priv_size > 0 ) {
+    av_freep(&st->codec->priv_data);
+  }*/
   av_free(st->codec);
   st->codec = encoder.ctx;
   //st->time_base = encoder.ctx->time_base;

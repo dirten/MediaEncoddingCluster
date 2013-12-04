@@ -42,6 +42,11 @@ namespace org {
               parseTask(task);
             }
           } else {
+            /*
+             * @TODO:remove exception, switch allways to return status code (except constructure)
+             *aaaaargh, neverever throw exception in constructor
+             *
+             */
             throw GraphException("no tasks are defined in the graph");
           }
 
@@ -54,12 +59,22 @@ namespace org {
               parseLink(link);
             }
           } else {
+            /*
+             * @TODO:remove exception, switch allways to return status code (except constructure)
+             *aaaaargh, neverever throw exception in constructor
+             *
+             */
             throw GraphException("no links are defined in the graph");
           }
           return;
           verifyLinks();
           verifyCycle();
         } else {
+          /*
+           * @TODO:remove exception, switch allways to return status code (except con/destructor)
+           *aaaaargh, neverever throw exception in constructor
+           *
+           */
           throw GraphException("no valid json");
         }
         //        } catch (std::exception & ex) {
@@ -111,6 +126,9 @@ namespace org {
             }
           }
         } else {
+          /*
+           * @TODO:remove exception, switch allways to return status code (except con/destructor)
+           */
           throw GraphException("no tasks are defined in the graph");
         }
 
@@ -126,9 +144,15 @@ namespace org {
 
       void GraphParser::parseTask(JSONNode& node) {
         if (!node.contains("name")) {
+          /*
+           * @TODO:remove exception, switch allways to return status code (except con/destructor)
+           */
           throw GraphException("task is not named");
         } else {
           if (!node.contains("uid")) {
+            /*
+             * @TODO:remove exception, switch allways to return status code (except con/destructor)
+             */
             throw GraphException("no uid for element");
           }
           if (node.contains("name") && node["name"].as_string() == "InputTask") {
@@ -138,6 +162,9 @@ namespace org {
           /*first create an empty named task to resolve the required parameter for it*/
           Ptr<org::esb::core::Task>task = org::esb::core::PluginRegistry::getInstance()->createTask(node["name"].as_string(), std::map<std::string, std::string > ());
           if (!task) {
+            /*
+             * @TODO:remove exception, switch allways to return status code (except con/destructor)
+             */
             throw GraphException(std::string("could not find a definition for task with name ").append(node["name"].as_string()));
           } else {
             try {
@@ -200,10 +227,19 @@ namespace org {
               elements[node["uid"].as_string()]->id = node["uid"].as_string();
               LOGDEBUG("Task Found: " << node["name"].as_string());
             } catch (org::esb::core::TaskException & ex) {
+              /*
+               * @TODO:remove exception, switch allways to return status code (except con/destructor)
+               */
               throw GraphException(ex.displayText(), node["uid"].as_string());
             } catch (std::exception & ex) {
+              /*
+               * @TODO:remove exception, switch allways to return status code (except con/destructor)
+               */
               throw GraphException(ex.what(), node["uid"].as_string());
             } catch (...) {
+              /*
+               * @TODO:remove exception, switch allways to return status code (except con/destructor)
+               */
               throw GraphException("unknown error", node["uid"].as_string());
             }
 
@@ -228,21 +264,36 @@ namespace org {
                     src_element->addChild(sink_element);
                     sink_element->addParent(src_element);
                   } else {
+                    /*
+                     * @TODO:remove exception, switch allways to return status code (except con/destructor)
+                     */
                     throw GraphException(std::string("target node does not exist in node list:").append(" source->").append(node["uid"].as_string()).append(" target->").append(node["linksTo"].at(a).as_string()));
                   }
                 }
                 }else{
+                  /*
+                   * @TODO:remove exception, switch allways to return status code (except con/destructor)
+                   */
                   throw GraphException(std::string("node does not have an array in 'linksTo' Attribute:").append(src_element->id));
                 }
               } else {
+                /*
+                 * @TODO:remove exception, switch allways to return status code (except con/destructor)
+                 */
                 throw GraphException(std::string("node does not link to a target node:").append(src_element->id));
               }
             }
 
           } else {
+            /*
+             * @TODO:remove exception, switch allways to return status code (except con/destructor)
+             */
             throw GraphException("node could not be found in the list");
           }
         } else {
+          /*
+           * @TODO:remove exception, switch allways to return status code (except con/destructor)
+           */
           throw GraphException("link have no uid");
         }
 
@@ -253,21 +304,33 @@ namespace org {
         foreach(ElementMap::value_type & el, elements) {
           if (el.second->task->getPadTypes() & Task::SOURCE) {
             if (el.second->getParents().size() == 0) {
+              /*
+               * @TODO:remove exception, switch allways to return status code (except con/destructor)
+               */
               throw GraphException(std::string("no sources configured for Element:") + el.first);
             }
           }
           if (el.second->task->getPadTypes() & Task::SINK) {
             if (el.second->getChilds().size() == 0) {
+              /*
+               * @TODO:remove exception, switch allways to return status code (except con/destructor)
+               */
               throw GraphException(std::string("no sinks configured for Element:") + el.first);
             }
           }
           if (!(el.second->task->getPadTypes() & Task::SINK)) {
             if (el.second->getChilds().size() > 0) {
+              /*
+               * @TODO:remove exception, switch allways to return status code (except con/destructor)
+               */
               throw GraphException(std::string("Element have no sink pad:") + el.first);
             }
           }
           if (!(el.second->task->getPadTypes() & Task::SOURCE)) {
             if (el.second->getParents().size() > 0) {
+              /*
+               * @TODO:remove exception, switch allways to return status code (except con/destructor)
+               */
               throw GraphException(std::string("Element have no source pad:") + el.first);
             }
           }

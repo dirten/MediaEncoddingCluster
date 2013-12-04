@@ -440,6 +440,7 @@ namespace encodingtask {
     FileOutputStream outstream(&outputfile);
     outstream.write(data);
     outstream.close();
+    LOGDEBUG("written ProcessUnit to "<<outputfile.getFilePath())
 
     //litesql::Blob blob=litesql::Blob(data.c_str(),data.length());
     //pu.data=blob;

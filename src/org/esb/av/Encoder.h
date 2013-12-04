@@ -63,11 +63,12 @@ namespace org {
                 int64_t getSamplesBufferd();
                 void setPassLogfile(std::string);
                 std::string getPassLogfile();
-                void newFrame(Ptr<Frame>);
+                bool newFrame(Ptr<Frame>);
 
             private:
                 int encodeVideo(Frame & f);
                 int encodeVideo(AVFrame *);
+                int encodeVideo2(AVFrame * inframe);
                 int encodeAudio(Frame & f);
                 int encodeAudio2(Frame & f);
                 void writeStatistics(std::string data);

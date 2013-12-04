@@ -201,7 +201,8 @@ int main(int argc, char** argv) {
 
   /*main loop to encode the packets*/
   Packet *packet;
-  for (int i = 0; i < 5000 || true; i++) {
+  bool encode_whole_file=true;
+  for (int i = 0; i < 200 || encode_whole_file; i++) {
     //reading a packet from the Stream
     if ((packet=pis.readPacket()) ==NULL )break; //when no more packets available(EOF) then it return <0
     boost::shared_ptr<Packet> p(packet);
