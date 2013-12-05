@@ -181,6 +181,7 @@ void ProcessUnit::processInternal2() {
     filter->setOutputParameter("sample_format", av_get_sample_fmt_name(_encoder->getSampleFormat()));
     filter->setOutputParameter("frame_size",StringUtil::toString(_encoder->ctx->frame_size));
   }
+
   if(_decoder->getCodecType()==AVMEDIA_TYPE_VIDEO){
     filter=new org::esb::av::AVFilter(VIDEO,"scale=%width%:%height%");
 
@@ -197,9 +198,14 @@ void ProcessUnit::processInternal2() {
   }
 
   filter->init();
-  /*build up the trancoding chain*/
+
+  /*build up the transcoding chain*/
   _decoder->addTarget(filter);
   filter->addTarget(_encoder.get());
+  /*
+    * @TODO: need to add a packet sink here
+    *
+    */
 
   list<boost::shared_ptr<Packet> >::iterator it = _input_packets.begin();
 
