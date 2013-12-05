@@ -24,6 +24,7 @@ namespace org {
         } else if(_type==AUDIO){
           initAudioSourceSink();
         }
+        outFrame=Ptr<Frame>(new Frame());
       }
 
       void AVFilter::setInputParameter(std::string key, std::string value){
@@ -240,29 +241,29 @@ namespace org {
 
       bool AVFilter::newFrame(Ptr<Frame> p)
       {
-        LOGDEBUG("filter in frame:"<<p->toString());
+        //LOGDEBUG("filter in frame:"<<p->toString());
         //av_frame_clone()
         AVFrame * frame=av_frame_clone(p->getAVFrame());
         if (av_buffersrc_add_frame_flags(buffersrc_ctx, frame, 0) < 0) {
           throw Exception(__FILE__, __LINE__,"failed to push frame into filter chain");
         }
         //AVFrame *filt_frame = av_frame_alloc();
-        Ptr<Frame> out=new Frame();
+        //Ptr<Frame> out=new Frame();
         /* pull filtered audio from the filtergraph */
         while (1) {
           //int ret = av_buffersink_get_frame_flags(buffersink_ctx, out->getAVFrame(),AV_BUFFERSINK_FLAG_PEEK);
-          int ret = av_buffersink_get_frame(buffersink_ctx, out->getAVFrame());
+          int ret = av_buffersink_get_frame(buffersink_ctx, outFrame->getAVFrame());
 
           if(ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
             break;
           //throw Exception(__FILE__, __LINE__,"could not get frame from buffer sink");
           //if(ret < 0)
-          LOGDEBUG("filter out frame:"<<out->toString()<<" ret:"<<ret);
+          //LOGDEBUG("filter out frame:"<<outFrame->toString()<<" ret:"<<ret);
           //if(filt_frame->nb_samples!=1152)
           //  throw Exception(__FILE__, __LINE__,"samples size diffs");
-          pushFrame(out);
+          pushFrame(outFrame);
         }
-        av_frame_unref(out->getAVFrame());
+        av_frame_unref(outFrame->getAVFrame());
         av_frame_unref(frame);
         av_frame_free(&frame);
         return true;

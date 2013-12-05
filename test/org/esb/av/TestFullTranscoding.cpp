@@ -98,7 +98,7 @@ int main(int argc, char** argv) {
       _sdata[i].enc->setCodecOption("flags","+psnr");
       AVRational ar;
       ar.num = 1;
-      ar.den = 24;
+      ar.den = 25;
       _sdata[i].enc->setTimeBase(ar);
       _sdata[i].enc->setBitRate(1500000);
 
@@ -128,14 +128,14 @@ int main(int argc, char** argv) {
 
       _sdata[i].enc->setCodecId(CODEC_ID_MP2);
       _sdata[i].enc->setBitRate(128000);
-      _sdata[i].enc->setSampleRate(48000);
+      _sdata[i].enc->setSampleRate(44100);
       _sdata[i].enc->setChannels(2);
       _sdata[i].enc->setChannelLayout(AV_CH_LAYOUT_STEREO);
 
       //_sdata[i].enc->setSampleFormat(_sdata[i].dec->getSampleFormat());
 
 
-      _sdata[i].filter=new org::esb::av::AVFilter(AUDIO,"aresample=48000,aformat=sample_fmts=s16:channel_layouts=stereo");
+      _sdata[i].filter=new org::esb::av::AVFilter(AUDIO,"aresample=44100,aformat=sample_fmts=s16:channel_layouts=stereo");
 
       char buf[512];
       av_get_channel_layout_string(buf, sizeof(buf), _sdata[i].enc->getChannels(), _sdata[i].dec->getChannelLayout());

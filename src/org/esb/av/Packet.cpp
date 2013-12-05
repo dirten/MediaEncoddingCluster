@@ -44,8 +44,8 @@ Packet::Packet(AVPacket * p) {
     //    packetPtr->data = static_cast<uint8_t*>(av_malloc(p->size + FF_INPUT_BUFFER_PADDING_SIZE));
     //    memcpy(packetPtr->data, p->data, p->size);
     //    memset(packetPtr->data + packetPtr->size, 0, FF_INPUT_BUFFER_PADDING_SIZE);
-    packetPtr->data = p->data;
   }
+  packetPtr->data = p->data;
   packetPtr->destruct = av_destruct_packet;
   callDestruct = false;
   /**
@@ -291,5 +291,5 @@ std::string Packet::toString() {
       break;
   }
   oss << ":T=" << type;
-  return std::string(oss.str());
+  return oss.str();
 }

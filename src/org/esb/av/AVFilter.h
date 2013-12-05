@@ -31,6 +31,7 @@ namespace org {
           AVFilterContext *buffersink_ctx;
           AVFilterContext *buffersrc_ctx;
           AVFilterGraph *filter_graph;
+          Ptr<Frame> outFrame;
 
       };
 

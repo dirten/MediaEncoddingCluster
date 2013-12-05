@@ -63,7 +63,9 @@ namespace org {
         //                DEPRICATED(Frame decodeVideo(Packet & packet));
         //                DEPRICATED(Frame decodeAudio(Packet & packet));
         Frame * decodeVideo2(Packet & packet);
+        bool decodeVideo3(Packet & packet);
         Frame * decodeAudio2(Packet & packet);
+        bool decodeAudio3(Packet & packet);
         int64_t getLastTimeStamp();
         bool newPacket(Ptr<Packet>p);
         static std::string getStaticCodecName(CodecID codec_id);
@@ -73,6 +75,7 @@ namespace org {
         int64_t _last_pts;
         int64_t _next_pts;
         Ptr<PixelFormatConverter> _pix_fmt_converter;
+        Ptr<Frame> frame;
       };
     }
   }

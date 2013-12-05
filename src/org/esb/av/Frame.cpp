@@ -4,11 +4,16 @@
 #include <iostream>
 using namespace std;
 using namespace org::esb::av;
-
+void DeleteFrame(AVFrame* frame) {
+  avcodec_free_frame(&frame);
+  //av_frame_unref(frame);
+  //av_frame_free(&frame);
+  //av_free(frame);
+}
 Frame::Frame() {
   //    cout << "Create Frame()"<<endl;
   _isFinished = false;
-  framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
+  framePtr = boost::shared_ptr<AVFrame > (av_frame_alloc(), DeleteFrame);
   framePtr->quality = 100;
   framePtr->key_frame = 1;
   framePtr->pts = 0;
@@ -183,6 +188,10 @@ Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
 
 Frame::~Frame() {
   //cout << "try Delete Frame:" << framePtr.use_count() << " : " << this <<":"<<_allocated<<":"<<(_buffer!=NULL)<< endl;
+  if (framePtr.use_count() == 1) {
+    //AVFrame * frame=framePtr.get();
+    //avcodec_free_frame(&frame);
+  }
   if (_allocated && _buffer!=NULL) {
     if (framePtr.use_count() == 1) {
       //cout << "Delete Frame:" << framePtr.use_count() << " : " << this << endl;
@@ -444,7 +453,7 @@ std::string Frame::toString() {
 
   }
 
-  return std::string(oss.str());
+  return oss.str();
 }
 
 /*
