@@ -27,6 +27,9 @@
 #include "ProcessUnit.h"
 #include "org/esb/av/Frame.h"
 #include "org/esb/av/FrameFormat.h"
+#include "org/esb/av/Decoder.h"
+#include "org/esb/av/Encoder.h"
+#include "org/esb/av/AVFilter.h"
 
 #include "org/esb/av/Sink.h"
 
@@ -42,22 +45,22 @@ using namespace org::esb::av;
 bool toDebug = false;
 
 class PacketSink : public Sink {
-public:
+  public:
 
-  PacketSink() {
-  }
+    PacketSink() {
+    }
 
-  void write(void * p) {
-    Packet* pt = (Packet*) p;
-    boost::shared_ptr<Packet> pEnc(new Packet(*pt));
-    pkts.push_back(pEnc);
-  }
+    void write(void * p) {
+      Packet* pt = (Packet*) p;
+      boost::shared_ptr<Packet> pEnc(new Packet(*pt));
+      pkts.push_back(pEnc);
+    }
 
-  std::list<boost::shared_ptr<Packet> > getList() {
-    return pkts;
-  }
-private:
-  std::list<boost::shared_ptr<Packet> > pkts;
+    std::list<boost::shared_ptr<Packet> > getList() {
+      return pkts;
+    }
+  private:
+    std::list<boost::shared_ptr<Packet> > pkts;
 
 };
 
@@ -120,7 +123,7 @@ void ProcessUnit::process() {
     _encoder->setFlag(CODEC_FLAG_PASS1);
   }
 
-  processInternal();
+  processInternal2();
 
   if (hasProperty("2pass")) {
     LOGDEBUG("Performing Pass 2");
@@ -136,7 +139,7 @@ void ProcessUnit::process() {
     //_encoder->setCodecOption("g", org::esb::util::StringUtil::toString(_input_packets.size()));
     _encoder->setCodecOption("passlogfile", oss.str());
     _encoder->setFlag(CODEC_FLAG_PASS2);
-    processInternal();
+    processInternal2();
   }
   org::esb::io::File statsfile(oss.str());
   _end = microsec_clock::local_time();
@@ -149,6 +152,60 @@ void ProcessUnit::process() {
       _fps=_input_packets.size()/diff.total_seconds();
     else
       _fps=_input_packets.size();
+  }
+}
+
+void ProcessUnit::processInternal2() {
+  if (_decoder && !_decoder->open()) {
+    LOGERROR("fail to open the decoder (ProcessUnitID:" << _process_unit << " CodecID:" << _decoder->getCodecId() << ")");
+    return;
+  }
+
+  if (_encoder && !_encoder->open()) {
+    LOGERROR("fail to open the encoder (ProcessUnitID:" << _process_unit << "CodecID:" << _encoder->getCodecId() << ")");
+    return;
+  }
+
+  org::esb::av::AVFilter * filter=NULL;
+  if(_decoder->getCodecType()==AVMEDIA_TYPE_AUDIO){
+    filter=new org::esb::av::AVFilter(AUDIO,"aresample=%sample_rate%,aformat=sample_fmts=%sample_format%:channel_layouts=%channel_layout%");
+
+    filter->setInputParameter("channel_layout",StringUtil::toString(_decoder->getChannelLayout()));
+    filter->setInputParameter("sample_rate",StringUtil::toString(_decoder->getSampleRate()));
+    filter->setInputParameter("sample_format", av_get_sample_fmt_name(_decoder->getSampleFormat()));
+    filter->setInputParameter("time_base", "1/"+StringUtil::toString(_decoder->getTimeBase().den));
+
+    filter->setOutputParameter("channel_layout",StringUtil::toString(_encoder->getChannelLayout()));
+    filter->setOutputParameter("frame_size",StringUtil::toString(_encoder->ctx->frame_size));
+    filter->setOutputParameter("sample_rate",StringUtil::toString(_encoder->getSampleRate()));
+    filter->setOutputParameter("sample_format", av_get_sample_fmt_name(_encoder->getSampleFormat()));
+    filter->setOutputParameter("frame_size",StringUtil::toString(_encoder->ctx->frame_size));
+  }
+  if(_decoder->getCodecType()==AVMEDIA_TYPE_VIDEO){
+    filter=new org::esb::av::AVFilter(VIDEO,"scale=%width%:%height%");
+
+    filter->setInputParameter("width",StringUtil::toString(_decoder->getWidth()));
+    filter->setInputParameter("height",StringUtil::toString(_decoder->getHeight()));
+    filter->setInputParameter("pixel_format",StringUtil::toString(_decoder->getPixelFormat()));
+    filter->setInputParameter("time_base", StringUtil::toString(_decoder->getTimeBase().num)+"/"+StringUtil::toString(_decoder->getTimeBase().den));
+    filter->setInputParameter("sample_aspect_ratio", StringUtil::toString(_decoder->ctx->sample_aspect_ratio.num)+"/"+StringUtil::toString(_decoder->ctx->sample_aspect_ratio.den));
+
+    filter->setOutputParameter("width",StringUtil::toString(_encoder->getWidth()));
+    filter->setOutputParameter("height",StringUtil::toString(_encoder->getHeight()));
+    filter->setOutputParameter("pixel_format",StringUtil::toString(_encoder->getPixelFormat()));
+
+  }
+
+  filter->init();
+  /*build up the trancoding chain*/
+  _decoder->addTarget(filter);
+  filter->addTarget(_encoder.get());
+
+  list<boost::shared_ptr<Packet> >::iterator it = _input_packets.begin();
+
+  for (; it != _input_packets.end();it++) {
+    boost::shared_ptr<Packet> p = *it;
+    _decoder->newPacket(p);
   }
 }
 
@@ -278,7 +335,7 @@ void ProcessUnit::processInternal() {
      * @TODO: prepend silent audio bytes to prevent audio/video desync in distributed audio encoding
      * */
     if (false && _decoder->ctx->codec_type == AVMEDIA_TYPE_AUDIO &&
-            _discard_audio_bytes > 0) {
+    _discard_audio_bytes > 0) {
       size_t size = f->_size + _discard_audio_bytes;
       uint8_t * tmp_buf = (uint8_t*) av_malloc(size);
       memset(tmp_buf, 0, size);
@@ -330,7 +387,7 @@ void ProcessUnit::processInternal() {
     //      delete _converter;
     //    _converter=NULL;
 
-  }
+}
 
 boost::shared_ptr<Decoder> ProcessUnit::getDecoder() {
   return _decoder;

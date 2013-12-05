@@ -107,8 +107,8 @@ Frame Decoder::decodeLast() {
 }
 
 bool Decoder::newPacket(Ptr<Packet> p){
-  Frame * frame=decode2(*p);
-  delete frame;
+  return decode3(*p);
+  //delete frame;
 }
 
 Frame * Decoder::decode2(Packet & packet) {
@@ -116,15 +116,28 @@ Frame * Decoder::decode2(Packet & packet) {
     throw runtime_error("Codec not opened");
   packet.setStreamIndex(_stream_index);
   if (ctx->codec_type == AVMEDIA_TYPE_VIDEO){
-    decodeVideo3(packet);
-    return NULL;
     return decodeVideo2(packet);
   }
   if (ctx->codec_type == AVMEDIA_TYPE_AUDIO){
-    bool result=decodeAudio3(packet);
-    return NULL;
     return decodeAudio2(packet);
+  }
 
+  throw runtime_error("Packet is no type of Video or Audio");
+  //  return Frame ();
+}
+
+bool Decoder::decode3(Packet & packet) {
+  if (!_opened)
+    throw runtime_error("Codec not opened");
+  packet.setStreamIndex(_stream_index);
+  if (ctx->codec_type == AVMEDIA_TYPE_VIDEO){
+    bool result=decodeVideo3(packet);
+    return result;
+  }
+
+  if (ctx->codec_type == AVMEDIA_TYPE_AUDIO){
+    bool result=decodeAudio3(packet);
+    return result;
   }
 
   throw runtime_error("Packet is no type of Video or Audio");
@@ -186,7 +199,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
     _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), ctx->time_base);
 #endif
     LOGDEBUG("setting last pts to " << _last_pts << " ctxtb=" << ctx->time_base.num << "/" << ctx->time_base.den
-            << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
+    << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
   }
 
   LOGDEBUG("BytesDecoded:" << bytesDecoded);
@@ -195,9 +208,9 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   LOGDEBUG("RES " << ctx->coded_width << "/" << ctx->coded_height);
   AVRational display_aspect_ratio;
   av_reduce(&display_aspect_ratio.num, &display_aspect_ratio.den,
-          ctx->width * ctx->sample_aspect_ratio.num,
-          ctx->height * ctx->sample_aspect_ratio.den,
-          1024 * 1024);
+  ctx->width * ctx->sample_aspect_ratio.num,
+  ctx->height * ctx->sample_aspect_ratio.den,
+  1024 * 1024);
   LOGDEBUG("DAR " << display_aspect_ratio.num << "/" << display_aspect_ratio.den);
 
   if (bytesDecoded < 0) {
@@ -208,6 +221,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
    * the calling process of decode must ensure to check if the returning frame isFinished by calling the Method isFinished()
    */
   if (!_frameFinished) {
+    LOGDEBUG("frame not finished");
     return frame;
   }
   frame->setStorageAspectRatio(ctx->coded_width, ctx->coded_height);
@@ -257,7 +271,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   return frame;
 }
 bool Decoder::decodeVideo3(Packet & packet) {
-  LOGTRACEMETHOD("Decode Video");
+  //LOGTRACEMETHOD("Decode Video");
   if (false && !_pix_fmt_converter) {
     Format in;
     in.width = ctx->width;
@@ -283,12 +297,14 @@ bool Decoder::decodeVideo3(Packet & packet) {
   if (_frameFinished) {
 
     //_pix_fmt_converter->process(*tmp_frame, *frame);
+    /*
     if (ctx->coded_frame) {
+
       LOGDEBUG("DeCodedFrameQuality:" << ctx->coded_frame->quality);
       LOGDEBUG("Interlaced:" << ctx->coded_frame->interlaced_frame);
       LOGDEBUG("topfieldfirst:" << ctx->coded_frame->top_field_first);
-      //LOGDEBUG("PictureType:" << av_get_pict_type_char(ctx->coded_frame->pict_type));
-    }
+      LOGDEBUG("PictureType:" << av_get_pict_type_char(ctx->coded_frame->pict_type));
+    }*/
   }
   //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded
   if (false && _last_pts == AV_NOPTS_VALUE) {
@@ -298,19 +314,19 @@ bool Decoder::decodeVideo3(Packet & packet) {
     _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), ctx->time_base);
 #endif
     LOGDEBUG("setting last pts to " << _last_pts << " ctxtb=" << ctx->time_base.num << "/" << ctx->time_base.den
-            << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
+    << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
   }
 
-  LOGDEBUG("BytesDecoded:" << bytesDecoded);
+  //LOGDEBUG("BytesDecoded:" << bytesDecoded);
   frame->setPixelAspectRatio(ctx->sample_aspect_ratio);
-  LOGDEBUG("PAR " << ctx->sample_aspect_ratio.num << "/" << ctx->sample_aspect_ratio.den);
-  LOGDEBUG("RES " << ctx->coded_width << "/" << ctx->coded_height);
+  //LOGDEBUG("PAR " << ctx->sample_aspect_ratio.num << "/" << ctx->sample_aspect_ratio.den);
+  //LOGDEBUG("RES " << ctx->coded_width << "/" << ctx->coded_height);
   AVRational display_aspect_ratio;
   av_reduce(&display_aspect_ratio.num, &display_aspect_ratio.den,
-          ctx->width * ctx->sample_aspect_ratio.num,
-          ctx->height * ctx->sample_aspect_ratio.den,
-          1024 * 1024);
-  LOGDEBUG("DAR " << display_aspect_ratio.num << "/" << display_aspect_ratio.den);
+  ctx->width * ctx->sample_aspect_ratio.num,
+  ctx->height * ctx->sample_aspect_ratio.den,
+  1024 * 1024);
+  //LOGDEBUG("DAR " << display_aspect_ratio.num << "/" << display_aspect_ratio.den);
 
   if (bytesDecoded < 0) {
     LOGERROR("Error while decoding frame");
@@ -320,7 +336,7 @@ bool Decoder::decodeVideo3(Packet & packet) {
    * the calling process of decode must ensure to check if the returning frame isFinished by calling the Method isFinished()
    */
   if (!_frameFinished) {
-    return frame;
+    return false;
   }
   frame->setStorageAspectRatio(ctx->coded_width, ctx->coded_height);
   frame->setPixelAspectRatio(ctx->sample_aspect_ratio);
@@ -345,7 +361,7 @@ bool Decoder::decodeVideo3(Packet & packet) {
   AVRational ar;
   ar.num = _frame_rate.den;
   ar.den = _frame_rate.num; //* ctx->ticks_per_frame;
-  LOGDEBUG("ticks:" << ctx->ticks_per_frame);
+  //LOGDEBUG("ticks:" << ctx->ticks_per_frame);
   //  int64_t dur = av_rescale_q(ar.num , ar, ctx->time_base);
   frame->setTimeBase(ar);
   int64_t dur = 1;
@@ -392,7 +408,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
 #endif
 
     LOGDEBUG("setting last pts to " << _next_pts << " ctxtb=" << ctx->time_base.num << "/" << ctx->time_base.den
-            << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
+    << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
   }
   LOGDEBUG("DecodingLength:" << len << " PacketSize:" << packet.getSize() << "SampleSize:" << samples_size << "FrameSize:" << ctx->frame_size * ctx->channels);
   if (len < 0 /*||ctx->channels<=0||samples_size<=0*/) {
@@ -477,7 +493,7 @@ bool Decoder::decodeAudio3(Packet & packet) {
 #endif
 
     LOGDEBUG("setting last pts to " << _next_pts << " ctxtb=" << ctx->time_base.num << "/" << ctx->time_base.den
-            << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
+    << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
   }
   LOGDEBUG("DecodingLength:" << len << " PacketSize:" << packet.getSize() << "SampleSize:" << samples_size << "FrameSize:" << ctx->frame_size * ctx->channels);
   if (len < 0 /*||ctx->channels<=0||samples_size<=0*/) {

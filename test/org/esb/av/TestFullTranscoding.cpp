@@ -24,6 +24,7 @@
 #include "org/esb/av/AVFilter.h"
 
 #include "org/esb/util/StringUtil.h"
+//#include <thread>
 using namespace org::esb::av;
 //using org::esb::av::AVFilter;
 using org::esb::util::StringUtil;
@@ -68,7 +69,7 @@ int main(int argc, char** argv) {
   File f_out(trg.c_str());
   FormatOutputStream fos(&f_out);
   PacketOutputStream pos(&fos);
-
+  //std::thread t;
   /*Create and open the input and output Codecs*/
   int c = fis.getStreamCount();
   int s = 0;
@@ -98,13 +99,15 @@ int main(int argc, char** argv) {
       _sdata[i].enc->setCodecOption("flags","+psnr");
       AVRational ar;
       ar.num = 1;
-      ar.den = 25;
+      //ar.den = 25;
+      ar.den = _sdata[i].dec->getTimeBase().den/_sdata[i].dec->ctx->ticks_per_frame;
+
       _sdata[i].enc->setTimeBase(ar);
       _sdata[i].enc->setBitRate(1500000);
 
 
 
-      _sdata[i].filter=new org::esb::av::AVFilter(VIDEO,"scale=720:576");
+      _sdata[i].filter=new org::esb::av::AVFilter(VIDEO,"scale=%width%:%height%");
 
       //char buf[512];
       //av_get_channel_layout_string(buf, sizeof(buf), _sdata[i].enc->getChannels(), _sdata[i].enc->getChannelLayout());
@@ -114,6 +117,8 @@ int main(int argc, char** argv) {
       _sdata[i].filter->setInputParameter("time_base", StringUtil::toString(_sdata[i].dec->getTimeBase().num)+"/"+StringUtil::toString(_sdata[i].dec->getTimeBase().den));
       _sdata[i].filter->setInputParameter("sample_aspect_ratio", StringUtil::toString(_sdata[i].dec->ctx->sample_aspect_ratio.num)+"/"+StringUtil::toString(_sdata[i].dec->ctx->sample_aspect_ratio.den));
 
+      _sdata[i].filter->setOutputParameter("width",StringUtil::toString(_sdata[i].enc->getWidth()));
+      _sdata[i].filter->setOutputParameter("height",StringUtil::toString(_sdata[i].enc->getHeight()));
       _sdata[i].filter->setOutputParameter("pixel_format",StringUtil::toString(_sdata[i].enc->getPixelFormat()));
 
 
@@ -135,7 +140,7 @@ int main(int argc, char** argv) {
       //_sdata[i].enc->setSampleFormat(_sdata[i].dec->getSampleFormat());
 
 
-      _sdata[i].filter=new org::esb::av::AVFilter(AUDIO,"aresample=44100,aformat=sample_fmts=s16:channel_layouts=stereo");
+      _sdata[i].filter=new org::esb::av::AVFilter(AUDIO,"aresample=%sample_rate%,aformat=sample_fmts=%sample_format%:channel_layouts=%channel_layout%");
 
       char buf[512];
       av_get_channel_layout_string(buf, sizeof(buf), _sdata[i].enc->getChannels(), _sdata[i].dec->getChannelLayout());

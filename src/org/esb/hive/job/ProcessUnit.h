@@ -42,6 +42,7 @@
 #include <boost/serialization/shared_ptr.hpp>
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "org/esb/util/Log.h"
+#include "Deprecated.h"
 #include "../exports.h"
 using namespace std;
 using namespace org::esb::av;
@@ -127,7 +128,8 @@ namespace org {
                     }
                 private:
                   Frame * convertToRgb(Frame *);
-                  void processInternal();
+                  DEPRECATED(void processInternal();)
+                  void processInternal2();
                   void processPsnr(Frame * ref, Frame * cmp);
                   void decodeLastPacket(Packet * pac);
                   std::map<std::string, std::string> _properties;

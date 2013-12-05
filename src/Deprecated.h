@@ -1,13 +1,5 @@
-/* 
- * File:   Depricated.h
- * Author: jhoelscher
- *
- * Created on 17. November 2008, 12:18
- */
-
-#ifndef _DEPRICATED_H
-#define	_DEPRICATED_H
-
+#ifndef DEPRECATED_H
+#define DEPRECATED_H
 
 #ifdef __GNUC__
 #define DEPRECATED(func) func __attribute__ ((__deprecated__))
@@ -17,5 +9,6 @@
 #warning unknown compiler for depricated Macro
 #define DEPRECATED(func) func
 #endif
-#endif	/* _DEPRICATED_H */
+
+#endif
 

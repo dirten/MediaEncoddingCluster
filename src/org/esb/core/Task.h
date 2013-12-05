@@ -12,7 +12,7 @@
 #include "org/esb/lang/Ptr.h"
 #include "exports.h"
 #include "boost/function.hpp"
-#include "org/esb/util/Depricated.h"
+#include "Deprecated.h"
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/Codec.h"
 #ifdef ERROR

@@ -29,7 +29,7 @@ void test_process_video(int argc, char ** argv) {
   } else {
     src_file = argv[1];
   }
-  int stream_id = 0;
+  int stream_id = 1;
   if (argc == 3) {
     stream_id = atoi(argv[2]);
   }
@@ -53,20 +53,10 @@ void test_process_video(int argc, char ** argv) {
     FormatOutputStream fos(&outfile);
     PacketOutputStream pos(&fos);
 
-    AVCodecContext * c = fis.getFormatContext()->streams[stream_id]->codec;
-    boost::shared_ptr<Decoder> dec = boost::shared_ptr<Decoder>(new Decoder(c->codec_id));
-    LOGDEBUG("ChannelLayout:" << fis.getFormatContext()->streams[stream_id]->codec->channel_layout)
-    //  Decoder dec(c);
+    //AVCodecContext * c = fis.getFormatContext()->streams[stream_id]->codec;
+    boost::shared_ptr<Decoder> dec = boost::shared_ptr<Decoder>(new Decoder(fis.getAVStream(stream_id)));
 
-    //  dec.setChannels(c->channels);
-    dec->setChannels(2);
-    dec->setBitRate(c->bit_rate);
-    dec->setPixelFormat(c->pix_fmt);
-    dec->setTimeBase(c->time_base);
-    dec->setWidth(c->width);
-    dec->setHeight(c->height);
-    dec->ctx->request_channel_layout = 2;
-    //  dec.ctx->request_channels = 2;
+    //dec->setChannelLayout(AV_CH_LAYOUT_STEREO);
     dec->open();
     LOGDEBUG(dec->toString());
 
@@ -74,7 +64,7 @@ void test_process_video(int argc, char ** argv) {
 
 
     //  Encoder enc(CODEC_ID_MSMPEG4V1);
-    boost::shared_ptr<Encoder> enc = boost::shared_ptr<Encoder>(new Encoder(CODEC_ID_H264));
+    boost::shared_ptr<Encoder> enc = boost::shared_ptr<Encoder>(new Encoder(CODEC_ID_MPEG4));
     enc->setChannels(2);
     enc->setBitRate(1024000);
     //  enc.setSampleRate(44100);
@@ -86,7 +76,7 @@ void test_process_video(int argc, char ** argv) {
     enc->setTimeBase(ar);
     enc->setWidth(320);
     enc->setHeight(240);
-    //  enc.setFlag(CODEC_FLAG_GLOBAL_HEADER);
+    enc->setFlag(CODEC_FLAG_PSNR);
     //  enc.setPixelFormat(PIX_FMT_YUV420P);
     //  enc.ctx->bits_per_raw_sample=dec.ctx
     enc->open();
@@ -119,7 +109,7 @@ void test_process_video(int argc, char ** argv) {
 //    enc = NULL;
   }
 
-
+  LOGDEBUG("loading process unit from disk")
   if (true) {
     FileInputStream fiis("test.unit");
     ObjectInputStream oois(&fiis);
@@ -249,12 +239,12 @@ int main(int argc, char**argv) {
 
   Log::open("");
 
-  av_register_all();
-  avcodec_init();
-  avcodec_register_all();
+  //av_register_all();
+  //avcodec_init();
+  //avcodec_register_all();
 
   test_process_video(argc, argv);
-  test_process_audio(argv[1]);
+  //test_process_audio(argv[1]);
   Log::close();
 }
 

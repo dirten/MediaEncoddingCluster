@@ -32,11 +32,7 @@
 #include "org/esb/lang/Ptr.h"
 #include "exports.h"
 #include "AVPipe.h"
-#ifdef WIN32
-#define DEPRICATED(func) __declspec(deprecated) func
-#else
-#define DEPRICATED(f) __attribute__((deprecated)) f
-#endif
+#include "Deprecated.h"
 namespace org {
   namespace esb {
     namespace av {
@@ -50,28 +46,20 @@ namespace org {
         Decoder(AVStream * c);
         Decoder();
         ~Decoder();
-        //                DEPRICATED(Frame decode(Packet & packet));
-        Frame * decode2(Packet & packet);
-        Frame decodeLast();
-        //                void analyzePacket(Packet & packet);
-        /*
-                        template<class Archive>
-                        void serialize(Archive & ar, const unsigned int version) {
-                            ar & boost::serialization::base_object<Codec > (*this);
-                        }
-         */
-        //                DEPRICATED(Frame decodeVideo(Packet & packet));
-        //                DEPRICATED(Frame decodeAudio(Packet & packet));
-        Frame * decodeVideo2(Packet & packet);
-        bool decodeVideo3(Packet & packet);
-        Frame * decodeAudio2(Packet & packet);
-        bool decodeAudio3(Packet & packet);
+        DEPRECATED(Frame * decode2(Packet & packet));
+        DEPRECATED(Frame decodeLast());
         int64_t getLastTimeStamp();
         bool newPacket(Ptr<Packet>p);
         static std::string getStaticCodecName(CodecID codec_id);
         static CodecID getStaticCodecId(std::string codec_name);
 
       private:
+        bool decode3(Packet & packet);
+        DEPRECATED(Frame * decodeVideo2(Packet & packet));
+        bool decodeVideo3(Packet & packet);
+        DEPRECATED(Frame * decodeAudio2(Packet & packet));
+        bool decodeAudio3(Packet & packet);
+
         int64_t _last_pts;
         int64_t _next_pts;
         Ptr<PixelFormatConverter> _pix_fmt_converter;

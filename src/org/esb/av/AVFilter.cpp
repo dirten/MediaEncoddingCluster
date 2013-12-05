@@ -1,8 +1,10 @@
 #include "AVFilter.h"
 #include "org/esb/lang/Exception.h"
+#include "org/esb/util/StringUtil.h"
 #include "Frame.h"
 #include "org/esb/util/Log.h"
 
+using org::esb::util::StringUtil;
 
 namespace org {
   namespace esb {
@@ -88,9 +90,11 @@ namespace org {
           throw Exception(__FILE__, __LINE__,"output sample_rate not set");
         }
 
+        /*evaluate filter placeholder with parameter names from the output map*/
         it=_output_params.begin();
         for(;it!=_output_params.end();it++){
           LOGDEBUG("OutputKey="<<(*it).first<<" value="<<(*it).second)
+          _filter=StringUtil::replace(_filter,"%"+(*it).first+"%",(*it).second);
         }
         //av_get_channel_layout(_output_params["channel_layout"].c_str());
         int64_t ch_layout=av_get_channel_layout(_output_params["channel_layout"].c_str());
@@ -156,10 +160,15 @@ namespace org {
         inputs->filter_ctx = buffersink_ctx;
         inputs->pad_idx    = 0;
         inputs->next       = NULL;
-        if ((ret = avfilter_graph_parse_ptr(filter_graph, _filter.c_str(), &inputs, &outputs, NULL)) < 0)
+
+
+
+        if ((ret = avfilter_graph_parse_ptr(filter_graph, _filter.c_str(), &inputs, &outputs, NULL)) < 0){
           throw Exception("could not parse filter graph");
-        if ((ret = avfilter_graph_config(filter_graph, NULL)) < 0)
+        }
+        if ((ret = avfilter_graph_config(filter_graph, NULL)) < 0){
           throw Exception("could not configure filter graph");
+        }
 
         av_buffersink_set_frame_size(buffersink_ctx,frame_size);
         //exit(0);
@@ -202,6 +211,12 @@ namespace org {
           throw Exception(__FILE__, __LINE__,"Cannot create video buffer source with arguments\n%s", args);
         }
 
+        std::map<std::string, std::string>::iterator it=_output_params.begin();
+        for(;it!=_output_params.end();it++){
+          LOGDEBUG("OutputKey="<<(*it).first<<" value="<<(*it).second)
+          _filter=StringUtil::replace(_filter,"%"+(*it).first+"%",(*it).second);
+        }
+
         /* buffer video sink: to terminate the filter chain. */
         buffersink_params = av_buffersink_params_alloc();
         AVPixelFormat fmt=static_cast<AVPixelFormat>(atoi(_output_params["pixel_format"].c_str()));
@@ -224,49 +239,52 @@ namespace org {
         inputs->filter_ctx = buffersink_ctx;
         inputs->pad_idx    = 0;
         inputs->next       = NULL;
-        if ((ret = avfilter_graph_parse_ptr(filter_graph, _filter.c_str(), &inputs, &outputs, NULL)) < 0)
+
+        if ((ret = avfilter_graph_parse_ptr(filter_graph, _filter.c_str(), &inputs, &outputs, NULL)) < 0){
           throw Exception(__FILE__, __LINE__,"could not parse filter graph\n");
-        if ((ret = avfilter_graph_config(filter_graph, NULL)) < 0)
+        }
+        if ((ret = avfilter_graph_config(filter_graph, NULL)) < 0){
           throw Exception(__FILE__, __LINE__,"could not configure filter graph\n");
+        }
       }
 
-      void AVFilter::sanityCheck( std::map<std::string, std::string> input_map,std::list<std::string> pList, std::string inout){
+      bool AVFilter::sanityCheck( std::map<std::string, std::string> input_map,std::list<std::string> pList, std::string inout){
+        bool result=true;
         std::list<std::string>::iterator it=pList.begin();
         for(;it!=pList.end();it++){
           if(input_map.find(*it)==input_map.end()){
-            throw Exception(__FILE__, __LINE__,"%s %s not set", inout.c_str(), (*it).c_str());
+            result=false;
+            //throw Exception(__FILE__, __LINE__,"%s %s not set", inout.c_str(), (*it).c_str());
           }
         }
+        return result;
       }
 
       bool AVFilter::newFrame(Ptr<Frame> p)
       {
-        //LOGDEBUG("filter in frame:"<<p->toString());
-        //av_frame_clone()
+        bool result=false;
+        /**
+          * @TODO: have a look into this, why do i need to clone the frame for this operation
+          * on some video files it will crash when do not the clone operation
+          */
         AVFrame * frame=av_frame_clone(p->getAVFrame());
         if (av_buffersrc_add_frame_flags(buffersrc_ctx, frame, 0) < 0) {
           throw Exception(__FILE__, __LINE__,"failed to push frame into filter chain");
         }
-        //AVFrame *filt_frame = av_frame_alloc();
-        //Ptr<Frame> out=new Frame();
         /* pull filtered audio from the filtergraph */
         while (1) {
-          //int ret = av_buffersink_get_frame_flags(buffersink_ctx, out->getAVFrame(),AV_BUFFERSINK_FLAG_PEEK);
           int ret = av_buffersink_get_frame(buffersink_ctx, outFrame->getAVFrame());
-
-          if(ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+          /*when not enough data is available*/
+          if(ret == AVERROR(EAGAIN) || ret == AVERROR_EOF){
             break;
-          //throw Exception(__FILE__, __LINE__,"could not get frame from buffer sink");
-          //if(ret < 0)
-          //LOGDEBUG("filter out frame:"<<outFrame->toString()<<" ret:"<<ret);
-          //if(filt_frame->nb_samples!=1152)
-          //  throw Exception(__FILE__, __LINE__,"samples size diffs");
+          }
+          result=true;
           pushFrame(outFrame);
         }
         av_frame_unref(outFrame->getAVFrame());
         av_frame_unref(frame);
         av_frame_free(&frame);
-        return true;
+        return result;
       }
     }
   }

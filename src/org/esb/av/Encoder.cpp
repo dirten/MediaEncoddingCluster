@@ -286,16 +286,16 @@ int Encoder::encodeVideo2(AVFrame * inframe) {
       LOGERROR("Video Encoding failed")
     }
     if (ret >= 0) {
-      LOGDEBUG("Frame encoded");
+      //LOGDEBUG("Frame encoded");
       if (ctx->coded_frame && ctx->coded_frame->quality > 0){
-        LOGDEBUG("EnCodedFrameQuality:" << ctx->coded_frame->quality / (float) FF_QP2LAMBDA);
+        //LOGDEBUG("EnCodedFrameQuality:" << ctx->coded_frame->quality / (float) FF_QP2LAMBDA);
         pac->_quality=ctx->coded_frame->quality / (float) FF_QP2LAMBDA;
       }
-      if (ctx->stats_out)
-        LOGDEBUG("stats available:" << ctx->stats_out);
+      //if (ctx->stats_out)
+      //  LOGDEBUG("stats available:" << ctx->stats_out);
       //memcpy(pac.packet->data, data, ret);
       //pac.packet->size = ret;
-      //pac.packet->stream_index = _stream_index;
+      pac->packet->stream_index = _stream_index;
       if (ctx->coded_frame) {
         if (ctx->coded_frame->key_frame) {
           pac->packet->flags |= AV_PKT_FLAG_KEY;
@@ -321,12 +321,14 @@ int Encoder::encodeVideo2(AVFrame * inframe) {
       pac->setDtsTimeStamp(TimeStamp(_last_dts, ctx->time_base));
       LOGDEBUG(pac->toString());
       if (ctx->flags & CODEC_FLAG_PSNR) {
+        /*
         LOGDEBUG("ERROR0========" << ctx->coded_frame->error[0]);
         LOGDEBUG("ERROR1========" << ctx->coded_frame->error[1]);
         LOGDEBUG("ERROR2========" << ctx->coded_frame->error[2]);
         LOGDEBUG("ERROR3========" << ctx->coded_frame->error[3]);
+        */
       }
-      LOGDEBUG("PSNR=========" << ((double) ctx->coded_frame->error[0]) / ((double) ctx->width * ctx->height * 255.0 * 255.0));
+      //LOGDEBUG("PSNR=========" << ((double) ctx->coded_frame->error[0]) / ((double) ctx->width * ctx->height * 255.0 * 255.0));
       /**
        * calculate the psnr here
        */

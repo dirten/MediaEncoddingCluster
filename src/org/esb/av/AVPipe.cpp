@@ -9,6 +9,10 @@ namespace org {
       {
 
       }
+      AVPipe::~AVPipe()
+      {
+        _targets.clear();
+      }
 
       bool AVPipe::newPacket(Ptr<Packet> p){
         return false;
