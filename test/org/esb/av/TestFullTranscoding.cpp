@@ -99,8 +99,8 @@ int main(int argc, char** argv) {
       _sdata[i].enc->setCodecOption("flags","+psnr");
       AVRational ar;
       ar.num = 1;
-      //ar.den = 25;
-      ar.den = _sdata[i].dec->getTimeBase().den/_sdata[i].dec->ctx->ticks_per_frame;
+      ar.den = 25;
+      //ar.den = _sdata[i].dec->getTimeBase().den/_sdata[i].dec->ctx->ticks_per_frame;
 
       _sdata[i].enc->setTimeBase(ar);
       _sdata[i].enc->setBitRate(1500000);
@@ -258,16 +258,12 @@ int main(int argc, char** argv) {
     //    delete p;
 
   }
-  /*
+
   map<int, StreamData>::iterator it = _sdata.begin();
   for (; it != _sdata.end(); it++) {
     StreamData s = (*it).second;
-    while (s.more_frames) {
-      if (s.enc->encode() <= 0) {
-        s.more_frames = false;
-      }
-    }
-  }*/
+    while(s.dec->newPacket(new Packet()));
+  }
   //int data_size=0;
 
 cleanup:

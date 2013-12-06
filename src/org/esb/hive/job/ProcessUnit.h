@@ -128,7 +128,7 @@ namespace org {
                     }
                 private:
                   Frame * convertToRgb(Frame *);
-                  DEPRECATED(void processInternal();)
+                  DEPRECATED(void processInternal());
                   void processInternal2();
                   void processPsnr(Frame * ref, Frame * cmp);
                   void decodeLastPacket(Packet * pac);

@@ -45,8 +45,8 @@ namespace org {
           void addTarget(AVPipe * pipe);
 
         protected:
-          void pushPacket(Ptr<Packet> p);
-          void pushFrame(Ptr<Frame> p);
+          bool pushPacket(Ptr<Packet> p);
+          bool pushFrame(Ptr<Frame> p);
 
         private:
           virtual bool newPacket(Ptr<Packet> p);

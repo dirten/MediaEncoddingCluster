@@ -268,10 +268,13 @@ namespace org {
           * on some video files it will crash when do not the clone operation
           */
         AVFrame * frame=av_frame_clone(p->getAVFrame());
+        if(!frame){
+          LOGDEBUG("flush filter")
+        }
         if (av_buffersrc_add_frame_flags(buffersrc_ctx, frame, 0) < 0) {
           throw Exception(__FILE__, __LINE__,"failed to push frame into filter chain");
         }
-        /* pull filtered audio from the filtergraph */
+        /* pull filtered frames from the filtergraph */
         while (1) {
           int ret = av_buffersink_get_frame(buffersink_ctx, outFrame->getAVFrame());
           /*when not enough data is available*/
@@ -281,8 +284,13 @@ namespace org {
           result=true;
           pushFrame(outFrame);
         }
+        if(!result){
+          /*flushing next segment*/
+          result|=pushFrame(Ptr<Frame>());
+        }
         av_frame_unref(outFrame->getAVFrame());
-        av_frame_unref(frame);
+        if(frame)
+          av_frame_unref(frame);
         av_frame_free(&frame);
         return result;
       }

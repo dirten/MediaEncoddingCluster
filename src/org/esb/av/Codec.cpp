@@ -82,6 +82,7 @@ namespace org {
         //        ctx->codec = _codec;
         _opened = false;
         _pre_allocated = true;
+        emptyFrameIsEOF=false;
 
 
         //ctx->request_channels = 2;
@@ -137,6 +138,8 @@ namespace org {
         _bytes_discard = 0;
         _frame_rate.num = 0;
         _frame_rate.den = 0;
+        emptyFrameIsEOF=false;
+
         fifo = NULL;
       }
 
@@ -148,6 +151,8 @@ namespace org {
         _codec_resolved = false;
         _opened = false;
         _mode = mode;
+        emptyFrameIsEOF=false;
+
         setCodecOption("codec_name", data["codec_id"]);
         LOGDEBUG("Search for codec:"<<data["codec_id"]);
         ctx = avcodec_alloc_context();
@@ -188,6 +193,7 @@ namespace org {
       Codec::Codec(const Codec & cp)
       {
         _stream_index=-1;
+        emptyFrameIsEOF=false;
 
         _dict=NULL;
         _codec_resolved = false;
@@ -228,6 +234,7 @@ namespace org {
 
       Codec::Codec(std::string codec_name, int mode) {
         _stream_index=-1;
+        emptyFrameIsEOF=false;
 
         _dict=NULL;
         _codec_resolved = false;
@@ -251,6 +258,7 @@ namespace org {
 
       Codec::Codec(const CodecID codecId, int mode) {
         _stream_index=-1;
+        emptyFrameIsEOF=false;
 
         _dict=NULL;
         //        logdebug("Codec::Codec(const CodecID codecId=" << codecId << ", int mode=" << mode << ")");

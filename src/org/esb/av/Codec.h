@@ -239,6 +239,7 @@ class SampleFormat;*/
         Format _output_format;
         static const PixelFormat STD_PIX_FMT=PIX_FMT_YUV420P;
         int _stream_index;
+        bool emptyFrameIsEOF;
       private:
         void setParams();
         void setContextDefaults();

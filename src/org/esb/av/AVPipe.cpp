@@ -26,18 +26,22 @@ namespace org {
         _targets.push_back(pipe);
       }
 
-      void AVPipe::pushPacket(Ptr<Packet> p){
+      bool AVPipe::pushPacket(Ptr<Packet> p){
+        bool result=false;
         std::list<AVPipe *>::iterator it=_targets.begin();
         for(;it!=_targets.end();it++){
-          (*it)->newPacket(p);
+          result|=(*it)->newPacket(p);
         }
+        return result;
       }
 
-      void AVPipe::pushFrame(Ptr<Frame> p){
+      bool AVPipe::pushFrame(Ptr<Frame> p){
+        bool result=false;
         std::list<AVPipe* >::iterator it=_targets.begin();
         for(;it!=_targets.end();it++){
-          (*it)->newFrame(p);
+          result|=(*it)->newFrame(p);
         }
+        return result;
       }
     }
   }

@@ -177,11 +177,11 @@ void test_process_audio(char * file){
     boost::shared_ptr<Encoder> enc = boost::shared_ptr<Encoder>(new Encoder(CODEC_ID_VORBIS));
     enc->setChannels(2);
     enc->setBitRate(128000);
-    enc->setSampleRate(44100);
+    enc->setSampleRate(48000);
     enc->setSampleFormat(dec->getSampleFormat());
     AVRational ar;
     ar.num = 1;
-    ar.den = 44100;
+    ar.den = 48000;
     //	enc->setGopSize(20);
     enc->setTimeBase(ar);
     //    enc->setWidth(320);
@@ -223,6 +223,7 @@ void test_process_audio(char * file){
     ProcessUnit puin;
     oois.readObject(puin);
     puin.process();
+    std::cout<<"Ouput Packet size"<<puin._output_packets.size()<<std::endl;
 
     // u.process();
 
@@ -244,7 +245,7 @@ int main(int argc, char**argv) {
   //avcodec_register_all();
 
   test_process_video(argc, argv);
-  //test_process_audio(argv[1]);
+  test_process_audio(argv[1]);
   Log::close();
 }
 

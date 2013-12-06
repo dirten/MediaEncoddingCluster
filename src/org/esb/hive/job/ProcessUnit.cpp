@@ -32,6 +32,7 @@
 #include "org/esb/av/AVFilter.h"
 
 #include "org/esb/av/Sink.h"
+#include "org/esb/av/AVPipe.h"
 
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringUtil.h"
@@ -42,25 +43,33 @@
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
 
+using org::esb::av::AVPipe;
 bool toDebug = false;
 
-class PacketSink : public Sink {
-  public:
+class PacketSink : public Sink, public AVPipe {
+public:
 
-    PacketSink() {
-    }
+  PacketSink() {
+  }
 
-    void write(void * p) {
-      Packet* pt = (Packet*) p;
-      boost::shared_ptr<Packet> pEnc(new Packet(*pt));
-      pkts.push_back(pEnc);
-    }
+  bool newPacket(Ptr<Packet> p){
+    LOGDEBUG("push packet into sink")
+        pkts.push_back(p);
 
-    std::list<boost::shared_ptr<Packet> > getList() {
-      return pkts;
-    }
-  private:
-    std::list<boost::shared_ptr<Packet> > pkts;
+    return true;
+  }
+
+  void write(void * p) {
+    Packet* pt = (Packet*) p;
+    boost::shared_ptr<Packet> pEnc(new Packet(*pt));
+    pkts.push_back(pEnc);
+  }
+
+  std::list<boost::shared_ptr<Packet> > getList() {
+    return pkts;
+  }
+private:
+  std::list<boost::shared_ptr<Packet> > pkts;
 
 };
 
@@ -199,13 +208,12 @@ void ProcessUnit::processInternal2() {
 
   filter->init();
 
+  /*init the packet sink*/
+  Ptr<PacketSink> sink=new PacketSink();
   /*build up the transcoding chain*/
   _decoder->addTarget(filter);
   filter->addTarget(_encoder.get());
-  /*
-    * @TODO: need to add a packet sink here
-    *
-    */
+  _encoder->addTarget(sink.get());
 
   list<boost::shared_ptr<Packet> >::iterator it = _input_packets.begin();
 
@@ -213,6 +221,11 @@ void ProcessUnit::processInternal2() {
     boost::shared_ptr<Packet> p = *it;
     _decoder->newPacket(p);
   }
+
+  /*sending an empty packet is implicit a flush for the pipe*/
+  while(_decoder->newPacket(new Packet()));
+
+  _output_packets = sink->getList();
 }
 
 void ProcessUnit::processInternal() {
@@ -341,7 +354,7 @@ void ProcessUnit::processInternal() {
      * @TODO: prepend silent audio bytes to prevent audio/video desync in distributed audio encoding
      * */
     if (false && _decoder->ctx->codec_type == AVMEDIA_TYPE_AUDIO &&
-    _discard_audio_bytes > 0) {
+        _discard_audio_bytes > 0) {
       size_t size = f->_size + _discard_audio_bytes;
       uint8_t * tmp_buf = (uint8_t*) av_malloc(size);
       memset(tmp_buf, 0, size);
@@ -388,10 +401,10 @@ void ProcessUnit::processInternal() {
   _output_packets = sink.getList();
   if (_expected_frame_count != -1 && _output_packets.size() != _expected_frame_count)
     LOGWARN("PUID=" << _process_unit << " Expected Frame count diff from resulting Frame count: expected=" << _expected_frame_count << " got=" << _output_packets.size())
-    //  _encoder->close();
-    //  _decoder->close();
-    //      delete _converter;
-    //    _converter=NULL;
+        //  _encoder->close();
+        //  _decoder->close();
+        //      delete _converter;
+        //    _converter=NULL;
 
 }
 

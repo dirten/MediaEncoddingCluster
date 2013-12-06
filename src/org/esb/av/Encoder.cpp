@@ -96,8 +96,16 @@ bool Encoder::open() {
 }
 
 bool Encoder::newFrame(Ptr<Frame> f){
-  encode(*f);
-
+  if(f){
+    return encode(*f);
+  }else{
+    if(getCodecType() == AVMEDIA_TYPE_VIDEO){
+      return encode();
+    }else{
+      LOGDEBUG("flush audio")
+          return false;
+    }
+  }
 }
 
 int Encoder::encode(Frame & frame) {
@@ -146,7 +154,7 @@ int Encoder::encodeVideo(Frame & frame) {
 
 int Encoder::encode() {
   _frames = 1;
-  return encodeVideo(NULL);
+  return encodeVideo2(NULL);
 }
 
 /**
@@ -176,10 +184,10 @@ int Encoder::encodeVideo(AVFrame * inframe) {
     //  inframe->pts = _last_dts;
     //    LOGDEBUG("org.esb.av.Encoder", frame.toString());
     if(false){
-    Ptr<Packet> pacInt=new Packet();
-    Packet pac=*pacInt.get();
-    ret = avcodec_encode_video2(ctx, pac.getAVPacket(), inframe, &got_output);
-  }
+      Ptr<Packet> pacInt=new Packet();
+      Packet pac=*pacInt.get();
+      ret = avcodec_encode_video2(ctx, pac.getAVPacket(), inframe, &got_output);
+    }
     ret = avcodec_encode_video(ctx, (uint8_t*) data, buffer_size, inframe);
     Packet pac(ret);
     if (ret < 0) {
@@ -257,99 +265,71 @@ int Encoder::encodeVideo(AVFrame * inframe) {
   return ret;
 }
 int Encoder::encodeVideo2(AVFrame * inframe) {
-  //  LOGTRACEMETHOD("org.esb.av.Encoder", "encode Video");
-  //  int buffer_size = 1024 * 256;
-  //int size = ctx->width * ctx->height;
-  //const int buffer_size = FFMAX(1024 * 256, 6 * size + 200);
-
-  //char * data = new char[buffer_size];
-  //memset(data, 0, buffer_size);
-  //int frames = 1;
   int ret = 0, got_output;
   _frames=1;
 
-  /**
-   * calculating the differences between timestamps to duplicate or drop frames
-   * when delta < 1.0 then drop a frame
-   * when delta > 1.0 then duplicate a frame
-   */
-  //for (int i = 0; i < _frames; i++) {
-    //if (inframe != NULL)
-    //  inframe->pts = _last_dts;
-    //    LOGDEBUG("org.esb.av.Encoder", frame.toString());
-    Ptr<Packet> pacInt=new Packet();
-    Packet *pac=pacInt.get();
-    ret = avcodec_encode_video2(ctx, pac->getAVPacket(), inframe, &got_output);
-    //ret = avcodec_encode_video(ctx, (uint8_t*) data, buffer_size, inframe);
-    //Packet pac(ret);
-    if (ret < 0) {
-      LOGERROR("Video Encoding failed")
+  Ptr<Packet> pacInt=new Packet();
+  Packet *pac=pacInt.get();
+  ret = avcodec_encode_video2(ctx, pac->getAVPacket(), inframe, &got_output);
+
+  if (ret < 0) {
+    LOGERROR("Video Encoding failed in int Encoder::encodeVideo2(AVFrame * inframe) ")
+  }
+
+  if (ret >= 0) {
+
+    if (ctx->coded_frame && ctx->coded_frame->quality > 0){
+      pac->_quality=ctx->coded_frame->quality / (float) FF_QP2LAMBDA;
     }
-    if (ret >= 0) {
-      //LOGDEBUG("Frame encoded");
-      if (ctx->coded_frame && ctx->coded_frame->quality > 0){
-        //LOGDEBUG("EnCodedFrameQuality:" << ctx->coded_frame->quality / (float) FF_QP2LAMBDA);
-        pac->_quality=ctx->coded_frame->quality / (float) FF_QP2LAMBDA;
+
+    pac->packet->stream_index = _stream_index;
+    if (ctx->coded_frame) {
+      if (ctx->coded_frame->key_frame) {
+        pac->packet->flags |= AV_PKT_FLAG_KEY;
       }
-      //if (ctx->stats_out)
-      //  LOGDEBUG("stats available:" << ctx->stats_out);
-      //memcpy(pac.packet->data, data, ret);
-      //pac.packet->size = ret;
-      pac->packet->stream_index = _stream_index;
-      if (ctx->coded_frame) {
-        if (ctx->coded_frame->key_frame) {
-          pac->packet->flags |= AV_PKT_FLAG_KEY;
-        }
-        pac->packet->pts = ctx->coded_frame->pts;
-        pac->setPtsTimeStamp(TimeStamp(ctx->coded_frame->pts,ctx->time_base));
-        pac->_pict_type=ctx->coded_frame->pict_type;
-      }
+      pac->packet->pts = ctx->coded_frame->pts;
+      pac->setPtsTimeStamp(TimeStamp(ctx->coded_frame->pts,ctx->time_base));
+      pac->_pict_type=ctx->coded_frame->pict_type;
+    }
 #ifdef USE_TIME_BASE_Q
-      pac->setTimeBase(AV_TIME_BASE_Q);
-      pac->setDuration(_last_duration);
+    pac->setTimeBase(AV_TIME_BASE_Q);
+    pac->setDuration(_last_duration);
 #else
-      pac->setTimeBase(ctx->time_base);
-      if (_last_duration > 0 && _last_time_base.num > 0 && _last_time_base.den > 0) {
-        pac->setDuration(av_rescale_q(_last_duration, _last_time_base, ctx->time_base));
-      } else {
-        LOGERROR("frame has no duration and no timebase, could not recalculate the duration of the encoded packet!!!");
-      }
-      //pac.setDuration(ctx->ticks_per_frame);
+    pac->setTimeBase(ctx->time_base);
+    if (_last_duration > 0 && _last_time_base.num > 0 && _last_time_base.den > 0) {
+      pac->setDuration(av_rescale_q(_last_duration, _last_time_base, ctx->time_base));
+    } else {
+      LOGERROR("frame has no duration and no timebase, could not recalculate the duration of the encoded packet!!!");
+    }
 #endif
 
-      pac->packet->dts = _last_dts;
-      pac->setDtsTimeStamp(TimeStamp(_last_dts, ctx->time_base));
-      LOGDEBUG(pac->toString());
-      if (ctx->flags & CODEC_FLAG_PSNR) {
-        /*
-        LOGDEBUG("ERROR0========" << ctx->coded_frame->error[0]);
-        LOGDEBUG("ERROR1========" << ctx->coded_frame->error[1]);
-        LOGDEBUG("ERROR2========" << ctx->coded_frame->error[2]);
-        LOGDEBUG("ERROR3========" << ctx->coded_frame->error[3]);
-        */
-      }
-      //LOGDEBUG("PSNR=========" << ((double) ctx->coded_frame->error[0]) / ((double) ctx->width * ctx->height * 255.0 * 255.0));
-      /**
+    pac->packet->dts = _last_dts;
+    pac->setDtsTimeStamp(TimeStamp(_last_dts, ctx->time_base));
+    LOGDEBUG(pac->toString());
+
+    //LOGDEBUG("PSNR=========" << ((double) ctx->coded_frame->error[0]) / ((double) ctx->width * ctx->height * 255.0 * 255.0));
+    /**
        * calculate the psnr here
        */
-      if (_refDecoder) {
-        Frame * tmpf = _refDecoder->decode2(*pac);
-        if (tmpf->isFinished()) {
-          LOGDEBUG("Reference Frame Decoded:" << tmpf->toString());
-          processPsnr(_actualFrame, tmpf);
-        }
-        delete tmpf;
+    if (_refDecoder) {
+      Frame * tmpf = _refDecoder->decode2(*pac);
+      if (tmpf->isFinished()) {
+        LOGDEBUG("Reference Frame Decoded:" << tmpf->toString());
+        processPsnr(_actualFrame, tmpf);
       }
-
-      //pushPacket(Ptr<Packet>(new Packet(pac)));
-      pushPacket(pacInt);
-
+      delete tmpf;
     }
-    if (_last_duration > 0 && _last_time_base.num > 0 && _last_time_base.den > 0)
-      _last_dts += av_rescale_q(_last_duration, _last_time_base, ctx->time_base);
-  //}
-  //delete [] data;
 
+    //pushPacket(Ptr<Packet>(new Packet(pac)));
+    if(got_output){
+      pushPacket(pacInt);
+    }else{
+      /*@TODO: needed to flush packets here*/
+    }
+  }
+  if (_last_duration > 0 && _last_time_base.num > 0 && _last_time_base.den > 0){
+    _last_dts += av_rescale_q(_last_duration, _last_time_base, ctx->time_base);
+  }
 
   return ret;
 }
@@ -363,15 +343,15 @@ void Encoder::setSink(Sink * sink) {
   _sink = sink;
 }
 int Encoder::encodeAudio2(Frame & frame) {
- // LOGDEBUG("EncodeAudio2:"<<frame.toString());
+  // LOGDEBUG("EncodeAudio2:"<<frame.toString());
   Ptr<Packet> pak=new Packet();
   int got_packet;
   int out_size = avcodec_encode_audio2(
-          ctx,
-          pak->getAVPacket(),
-          frame.getAVFrame(),
-          &got_packet
-          );
+        ctx,
+        pak->getAVPacket(),
+        frame.getAVFrame(),
+        &got_packet
+        );
 
   pak->setTimeBase(ctx->time_base);
   pak->setDuration(ctx->frame_size);
@@ -399,7 +379,7 @@ int Encoder::encodeAudio(Frame & frame) {
   LOGDEBUG(frame.toString());
   int osize = av_get_bits_per_sample_fmt(ctx->sample_fmt) / 8;
   LOGDEBUG("bits per sample format:" << osize << " fmt:" << ctx->sample_fmt)
-          int audio_out_size = (4 * 192 * 1024);
+      int audio_out_size = (4 * 192 * 1024);
   uint8_t * audio_out = static_cast<uint8_t*> (av_malloc(audio_out_size));
   //uint8_t * audio_out = new uint8_t[audio_out_size];//static_cast<uint8_t*> (av_malloc(audio_out_size));
 
@@ -414,7 +394,7 @@ int Encoder::encodeAudio(Frame & frame) {
       //      fprintf(stderr, "av_fifo_realloc2() failed\n");
     }
     LOGDEBUG("fifo size:"<< av_fifo_size(fifo)<<" fifo space:"<<av_fifo_space(fifo))
-    int bytes=av_fifo_generic_write(fifo, frame._buffer, frame._size, NULL);
+        int bytes=av_fifo_generic_write(fifo, frame._buffer, frame._size, NULL);
     if(bytes<=0 && bytes!=frame._size){
       throw new Exception("fifo not correctly filles up -> buffer_size="+StringUtil::toString(frame._size)+" bytes reded from fifo="+StringUtil::toString(bytes));
     }
@@ -427,11 +407,11 @@ int Encoder::encodeAudio(Frame & frame) {
       //    uint64_t dur = static_cast<uint64_t> ((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) 1) / ((float) frame.getTimeBase().num));
       LOGDEBUG("FrameBytes:" << frame_bytes << ":Channels:" << ctx->channels << ":osize:" << osize << ":sample_rate:" << ctx->sample_rate << "time_base_den:" << ctx->time_base.den);
       int out_size = avcodec_encode_audio(
-              ctx,
-              audio_out,
-              audio_out_size,
-              (short*) audio_buf
-              );
+            ctx,
+            audio_out,
+            audio_out_size,
+            (short*) audio_buf
+            );
       if (out_size < 0) {
         LOGERROR("Error Encoding audio Frame");
       }
