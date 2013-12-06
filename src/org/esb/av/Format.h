@@ -7,6 +7,9 @@
 
 #ifndef FORMAT_H
 #define	FORMAT_H
+
+#include <map>
+
 #include "AV.h"
 #include "Rational.h"
 #include "exports.h"

@@ -26,6 +26,7 @@
  */
 #ifndef AVFILTER_H
 #define AVFILTER_H
+#include <map>
 
 #include "AVPipe.h"
 #include "AV.h"
@@ -38,7 +39,7 @@ namespace org {
       };
 
       class AVFilter: public AVPipe
-      {
+      {          
         public:
           AVFilter(AVFilterType type,std::string filter);
           ~AVFilter();

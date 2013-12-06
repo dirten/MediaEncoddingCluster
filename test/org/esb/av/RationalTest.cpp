@@ -5,9 +5,10 @@
  * Created on 29. August 2010, 17:02
  */
 
+#include <assert.h>
 #include <cstdlib>
-#include "org/esb/av/Rational.h"
 #include <iostream>
+#include "org/esb/av/Rational.h"
 using namespace std;
 using namespace org::esb::av;
 /*

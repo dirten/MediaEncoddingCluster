@@ -2,7 +2,7 @@
 #define ORG_ESB_AV_AV_H
 #pragma warning( disable : 4005 )
 #pragma warning( disable : 4244 )
-//#include "org/esb/util/Log.h"
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
@@ -27,7 +27,6 @@ typedef AVCodecID CodecID;
 #ifdef	__cplusplus
 }
 #endif
-#include "boost/thread/mutex.hpp"
 
 #undef USE_TIME_BASE_Q
 #endif

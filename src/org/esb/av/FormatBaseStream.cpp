@@ -7,7 +7,8 @@
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/util/Foreach.h"
-//extern URLProtocol test_protocol;
+#include "boost/thread/mutex.hpp"
+
 namespace org {
   namespace esb {
     namespace av {
