@@ -4,7 +4,7 @@
 #include "Codec.h"
 #include "FormatInputStream.h"
 #include "org/esb/io/InputStream.h"
-#include "introspec.h"
+#include "org/esb/lang/Introspec.h"
 #include <iostream>
 
 using namespace std;

@@ -42,7 +42,7 @@
 #include <boost/serialization/shared_ptr.hpp>
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "org/esb/util/Log.h"
-#include "Deprecated.h"
+#include "org/esb/lang/Deprecated.h"
 #include "../exports.h"
 using namespace std;
 using namespace org::esb::av;

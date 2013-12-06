@@ -9,7 +9,7 @@
 
 #include "PluginRegistry.h"
 #include "ServicePlugin.h"
-#include "introspec.h"
+#include "org/esb/lang/Introspec.h"
 #include "org/esb/core/HookPlugin.h"
 #include "org/esb/util/Foreach.h"
 #include "org/esb/util/StringUtil.h"

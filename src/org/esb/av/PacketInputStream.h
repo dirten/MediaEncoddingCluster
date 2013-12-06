@@ -1,12 +1,14 @@
 #ifndef ORG_ESB_AV_PACKETINPUTSTREAM_H
 #define ORG_ESB_AV_PACKETINPUTSTREAM_H
 #include <vector>
-#include "org/esb/io/InputStream.h"
 #include "FormatInputStream.h"
 #include "Packet.h"
 #include "Codec.h"
 #include "AVPipe.h"
 #include "exports.h"
+
+#include "org/esb/io/InputStream.h"
+
 using namespace org::esb::io;
 namespace org{
 namespace esb{

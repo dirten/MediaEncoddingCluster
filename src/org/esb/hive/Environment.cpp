@@ -13,15 +13,26 @@
 #include "org/esb/util/UUID.h"
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/libjson/libjson.h"
+
 namespace org {
   namespace esb {
     namespace hive {
+      std::map<std::string, std::string> Environment::_environmentMap;
 
       Environment::Environment() {
       }
 
       std::string Environment::get(std::string key, std::string def){
-        return std::string(getenv(key.c_str())!=NULL?getenv(key.c_str()):def);
+        if(_environmentMap.find(key)==_environmentMap.end()){
+          return getenv(key.c_str())!=NULL?getenv(key.c_str()):def;
+        }else{
+          return _environmentMap[key];
+        }
+      }
+
+      void Environment::set(std::string key, std::string value){
+        _environmentMap[key]=value;
+        config::Config::setProperty(key, value);
       }
 
       void Environment::build(int argc, char ** argv) {
@@ -40,21 +51,21 @@ namespace org {
         /*override the user path when this environment variable is set*/
         upath = get("MHIVE_DATA_PATH", upath);
 
-        config::Config::setProperty("hive.user_path", upath);
-        config::Config::setProperty("web.docroot", bpath + "/web");
-        config::Config::setProperty("hive.config_path", upath + "/conf");
-        config::Config::setProperty("hive.dump_path", upath + "/dmp");
-        config::Config::setProperty("hive.tmp_path", upath + "/tmp");
-        config::Config::setProperty("hive.data_path", upath + "/data");
-        config::Config::setProperty("preset.path", bpath + "/presets");
-        config::Config::setProperty("log.path", upath + "/logs");
-        config::Config::setProperty("db.url", "database=" + upath + "/data/hive.db");
+        set("hive.user_path", upath);
+        set("web.docroot", bpath + "/web");
+        set("hive.config_path", upath + "/conf");
+        set("hive.dump_path", upath + "/dmp");
+        set("hive.tmp_path", upath + "/tmp");
+        set("hive.data_path", upath + "/data");
+        set("preset.path", bpath + "/presets");
+        set("log.path", upath + "/logs");
+        set("db.url", "database=" + upath + "/data/hive.db");
 #ifdef __WIN32__
-        config::Config::setProperty("PATH", config::Config::get("PATH") + ";" + bpath + "/plugins");
+        set("PATH", get("PATH") + ";" + bpath + "/plugins");
 #elif defined __APPLE__
-        config::Config::setProperty("DYLD_LIBRARY_PATH", config::Config::get("DYLD_LIBRARY_PATH") + ":" + bpath + "/plugins");
+        set("DYLD_LIBRARY_PATH", get("DYLD_LIBRARY_PATH") + ":" + bpath + "/plugins");
 #elif defined __LINUX__
-        config::Config::setProperty("LD_LIBRARY_PATH", config::Config::get("LD_LIBRARY_PATH") + ":" + bpath + "/plugins");
+        set("LD_LIBRARY_PATH", get("LD_LIBRARY_PATH") + ":" + bpath + "/plugins");
 #else
         #error "plattform not supported"
 #endif
@@ -69,32 +80,32 @@ namespace org {
         //std::cout << "logpath"<<pa<<std::endl;
         //std::cout << "logpathenv" << getenv("log.path") << std::endl;
         //config::Config::setProperty("authentication", "true");
-        org::esb::io::File u2path(config::Config::get("hive.user_path"));
+        org::esb::io::File u2path(get("hive.user_path"));
         if (!u2path.exists())
           u2path.mkdir();
 
-        org::esb::io::File dpath(config::Config::get("hive.dump_path"));
+        org::esb::io::File dpath(get("hive.dump_path"));
         if (!dpath.exists())
           dpath.mkdir();
 
-        org::esb::io::File tpath(config::Config::get("hive.tmp_path"));
+        org::esb::io::File tpath(get("hive.tmp_path"));
         if (!tpath.exists())
           tpath.mkdir();
 
-        org::esb::io::File datadir(config::Config::get("hive.data_path"));
+        org::esb::io::File datadir(get("hive.data_path"));
         if (!datadir.exists())
           datadir.mkdir();
 
-        org::esb::io::File confdir(config::Config::get("hive.config_path"));
+        org::esb::io::File confdir(get("hive.config_path"));
         if (!confdir.exists())
           confdir.mkdir();
 
-        org::esb::io::File logdir(config::Config::get("log.path"));
+        org::esb::io::File logdir(get("log.path"));
         if (!logdir.exists())
           logdir.mkdir();
 
 
-        org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
+        org::esb::hive::DatabaseService::start(get("hive.base_path"));
         if (!DatabaseService::databaseExist()) {
           DatabaseService::createDatabase();
           DatabaseService::createTables();
@@ -102,7 +113,7 @@ namespace org {
           //DatabaseService::loadPresets();
           {
             db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
-            org::esb::io::File dir(config::Config::get("hive.base_path") + "/presets");
+            org::esb::io::File dir(get("hive.base_path") + "/presets");
             org::esb::io::FileList presets = dir.listFiles();
 
             foreach(org::esb::io::FileList::value_type p, presets) {
@@ -122,14 +133,14 @@ namespace org {
 
             std::map<std::string, std::string> conf;
             conf["hive.mode"] = "server";
-            conf["hive.port"] = config::Config::getProperty("hive.port"); //StringUtil::toString(vm["hiveport"].as<int> ());
-            conf["web.port"] = config::Config::getProperty("web.port"); //StringUtil::toString(vm["webport"].as<int> ());
+            conf["hive.port"] = get("hive.port"); //StringUtil::toString(vm["hiveport"].as<int> ());
+            conf["web.port"] = get("web.port"); //StringUtil::toString(vm["webport"].as<int> ());
 
             conf["hive.start"] = "true";
             conf["web.start"] = "true";
             conf["hive.autoscan"] = "true";
             conf["hive.scaninterval"] = "30";
-            std::string webroot = std::string(config::Config::getProperty("hive.base_path"));
+            std::string webroot = std::string(get("hive.base_path"));
             webroot.append("/web");
             conf["web.docroot"] = webroot;
 

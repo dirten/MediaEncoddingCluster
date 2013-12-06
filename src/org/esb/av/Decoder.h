@@ -29,10 +29,10 @@
 #include "Codec.h"
 #include "AV.h"
 #include "PixelFormatConverter.h"
-#include "org/esb/lang/Ptr.h"
 #include "exports.h"
 #include "AVPipe.h"
-#include "Deprecated.h"
+#include "org/esb/lang/Ptr.h"
+#include "org/esb/lang/Deprecated.h"
 namespace org {
   namespace esb {
     namespace av {

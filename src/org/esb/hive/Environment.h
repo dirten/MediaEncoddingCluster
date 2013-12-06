@@ -7,7 +7,9 @@
 
 #ifndef ENVIRONMENT_H
 #define	ENVIRONMENT_H
+#include <map>
 #include "exports.h"
+
 namespace org {
   namespace esb {
     namespace hive {
@@ -16,10 +18,11 @@ namespace org {
       public:
         static void build(int argc, char**argv);
         static std::string get(std::string key, std::string def="");
+        static void set(std::string key, std::string val);
       private:
         Environment();
         virtual ~Environment();
-
+        static std::map<std::string, std::string> _environmentMap;
       };
     }
   }

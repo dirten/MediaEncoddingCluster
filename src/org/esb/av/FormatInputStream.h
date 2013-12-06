@@ -1,30 +1,22 @@
 #ifndef ORG_ESB_AV_FORMATINPUTSTREAM_H
 #define ORG_ESB_AV_FORMATINPUTSTREAM_H
-#include "FormatBaseStream.h"
-#include "AVInputStream.h"
-#include "StreamInfo.h"
-#include "TimeStamp.h"
-#include "org/esb/io/InputStream.h"
-#include "org/esb/io/File.h"
-#include "org/esb/util/Log.h"
-
 #include <boost/thread.hpp>
 #include <vector>
 #include <map>
 
+#include "FormatBaseStream.h"
+#include "AVInputStream.h"
+#include "StreamInfo.h"
+#include "TimeStamp.h"
+
+
 #include "AV.h"
 #include "Decoder.h"
 #include "exports.h"
-#ifdef DEPRICATED
-  #undef DEPRICATED
-#endif
+#include "org/esb/io/InputStream.h"
+#include "org/esb/io/File.h"
+#include "org/esb/util/Log.h"
 
-#ifdef WIN32
-#define DEPRICATED __declspec(deprecated)
-#else
-#define DEPRICATED __attribute__((deprecated))
-#endif
-//extern "C" AVStream;
 using namespace org::esb::io;
 namespace org {
   namespace esb {
@@ -32,7 +24,7 @@ namespace org {
       //	    	logger("hive.av")
 
       class AV_EXPORT FormatInputStream : public FormatBaseStream, public InputStream {
-        classlogger("org.esb.av.FormatInputStream");
+        classlogger("org.esb.av.FormatInputStream")
 
       public:
         FormatInputStream(File * source);
