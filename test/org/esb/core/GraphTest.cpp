@@ -20,9 +20,9 @@
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/config/config.h"
-#include "org/esb/mq/QueueConnection.h"
-#include "org/esb/mq/QueueMessageListener.h"
-#include "org/esb/mq/ObjectMessage.h"
+//#include "org/esb/mq/QueueConnection.h"
+//#include "org/esb/mq/QueueMessageListener.h"
+//#include "org/esb/mq/ObjectMessage.h"
 
 #include "plugins/services/partitionservice/PartitionManager.h"
 #include "plugins/services/partitionservice/ProcessUnitCollector.h"

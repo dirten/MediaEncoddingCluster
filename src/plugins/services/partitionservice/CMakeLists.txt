@@ -11,6 +11,7 @@ add_library (partitionservice SHARED
 
 TARGET_LINK_LIBRARIES(partitionservice
   core
+  ${Boost_LIBRARIES}
 )
 
 #SET_TARGET_PROPERTIES( partitionservice PROPERTIES PREFIX "")

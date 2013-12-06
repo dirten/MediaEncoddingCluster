@@ -85,8 +85,8 @@ namespace org {
           _sock->connect();
 #ifdef USE_SAFMQ
 
-          _qis = new QueueInputStream(_host, 20202, "read_q");
-          _qos = new QueueOutputStream(_host, 20202, "write_q");
+          //_qis = new QueueInputStream(_host, 20202, "read_q");
+          //_qos = new QueueOutputStream(_host, 20202, "write_q");
           _ois = new org::esb::io::ObjectInputStream(_qis.get());
           _oos = new org::esb::io::ObjectOutputStream(_qos.get());
 #else

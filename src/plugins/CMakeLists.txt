@@ -6,7 +6,7 @@ include_directories (${SAFMQ_DIR}/include/lib)
 include_directories (${SAFMQ_DIR}/include/shared)
 
 LINK_DIRECTORIES(${LITESQL_DIR}/lib/static)
-LINK_DIRECTORIES(${SAFMQ_DIR}/lib)
+LINK_DIRECTORIES(${DEPS_LIB_DIR})
 
 add_subdirectory (services)
 add_subdirectory (hooks)

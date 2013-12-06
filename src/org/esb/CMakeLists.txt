@@ -129,7 +129,7 @@ add_subdirectory (core)
 add_subdirectory (libjson)
 add_subdirectory (av)
 add_subdirectory (lang)
-add_subdirectory (mq)
+#add_subdirectory (mq)
 #add_subdirectory (grid)
 #add_subdirectory (rpc)
 #add_subdirectory (api)
@@ -357,7 +357,15 @@ add_library (hive SHARED
 #  hive/ClientStream.cpp
 )
 
-TARGET_LINK_LIBRARIES(hive db net signal av lang json util  ${Boost_LIBRARIES} mq
+TARGET_LINK_LIBRARIES(hive
+  db
+  net
+  signal
+  av
+  lang
+  json
+  util
+  ${Boost_LIBRARIES}
 )
 
 INSTALL(TARGETS hive

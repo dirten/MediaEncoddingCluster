@@ -24,10 +24,12 @@
 #include "org/esb/av/AVFilter.h"
 
 #include "org/esb/util/StringUtil.h"
+#include "org/esb/hive/Environment.h"
 //#include <thread>
 using namespace org::esb::av;
 //using org::esb::av::AVFilter;
 using org::esb::util::StringUtil;
+using org::esb::hive::Environment;
 struct StreamData {
   Decoder * dec;
   Encoder * enc;
@@ -44,7 +46,9 @@ map<int, int> _smap;
  *
  */
 int main(int argc, char** argv) {
+  Environment::build(argc,argv);
   Log::open("");
+
   /*open the fixed test File or the file from command line input*/
   std::string src;
   std::string trg;

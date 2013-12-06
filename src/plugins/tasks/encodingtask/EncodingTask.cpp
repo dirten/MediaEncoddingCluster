@@ -67,7 +67,7 @@ namespace encodingtask {
     _filters = reader.getFilterList();
     _preset = reader.getPreset();
     _format = _preset["id"];
-    con=new org::esb::mq::QueueConnection("localhost", 20202);
+    //con=new org::esb::mq::QueueConnection("localhost", 20202);
 
     //Ptr<Task> itask=_sources.front();
     if (getContext()->contains("decoder")) {
@@ -115,8 +115,8 @@ namespace encodingtask {
 
         _packetizer[(*it).first] = StreamPacketizer(0, (*it).second);
         _spu[(*it).first]=StreamProcessUnitBuilder();
-        std::string qReadName=_task_uuid+"#read#"+StringUtil::toString( (*it).first );
-        std::string qWriteName=_task_uuid+"#write#"+StringUtil::toString( (*it).first );
+        //std::string qReadName=_task_uuid+"#read#"+StringUtil::toString( (*it).first );
+        //std::string qWriteName=_task_uuid+"#write#"+StringUtil::toString( (*it).first );
         /*creating queue for each stream*/
         /*
         if(!con->queueExist(qReadName)){
@@ -127,7 +127,8 @@ namespace encodingtask {
         }
         _queueMap[(*it).first]=con->getMessageQueue(qReadName);
         */
-        _queueMap[(*it).first]=con->getMessageQueue("read_q");
+        //_queueMap[(*it).first]=con->getMessageQueue("read_q");
+        /*
         db::Queue queue(*database);
         //queue.job.link(job);
         queue.outputname=qReadName;
@@ -140,7 +141,7 @@ namespace encodingtask {
           queue.qtype=db::Queue::Qtype::ONE2ONE;
         }
         queue.update();
-
+        */
       }
     } else {
       throw org::esb::core::TaskException("could not find decoder in Tasks PluginContext");
@@ -384,7 +385,7 @@ namespace encodingtask {
   }
 
   void EncodingTask::putToPartition(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast) {
-    org::esb::mq::ObjectMessage msg;
+    //org::esb::mq::ObjectMessage msg;
     unit->_sequence = _sequence_counter++;
     //std::cerr <<"Sequence="<<_sequence_counter<<std::endl;
     unit->setJobId(_task_uuid);
@@ -394,7 +395,7 @@ namespace encodingtask {
     partitionservice::PartitionManager::Type t = partitionservice::PartitionManager::TYPE_UNKNOWN;
     LOGDEBUG("CodecType:" << unit->_decoder->getCodecType());
     if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
-      msg.setLabel(_task_uuid+org::esb::util::StringUtil::toString(unit->_input_packets.front()->getStreamIndex()));
+      //msg.setLabel(_task_uuid+org::esb::util::StringUtil::toString(unit->_input_packets.front()->getStreamIndex()));
       t = partitionservice::PartitionManager::TYPE_AUDIO;
     } else if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
       t = partitionservice::PartitionManager::TYPE_VIDEO;

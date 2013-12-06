@@ -20,19 +20,25 @@ namespace org {
       Environment::Environment() {
       }
 
+      std::string Environment::get(std::string key, std::string def){
+        return std::string(getenv(key.c_str())!=NULL?getenv(key.c_str()):def);
+      }
+
       void Environment::build(int argc, char ** argv) {
         org::esb::io::File f(argv[0]);
         std::string bpath = org::esb::io::File(f.getParent()).getParent();
         
 #ifdef __WIN32__
-        std::string upath = config::Config::get("APPDATA") + "/mhive";
+        std::string upath = get("APPDATA") + "/mhive";
 #elif defined __APPLE__
-        std::string upath = config::Config::get("HOME") + "/.mhive";
+        std::string upath = get("HOME") + "/.mhive";
 #elif defined __LINUX__
-        std::string upath = config::Config::get("HOME") + "/.mhive";
+        std::string upath = get("HOME") + "/.mhive";
 #else
-        //#error "plattform not supported"
+        #error "plattform not supported"
 #endif
+        /*override the user path when this environment variable is set*/
+        upath = get("MHIVE_DATA_PATH", upath);
 
         config::Config::setProperty("hive.user_path", upath);
         config::Config::setProperty("web.docroot", bpath + "/web");
@@ -50,7 +56,7 @@ namespace org {
 #elif defined __LINUX__
         config::Config::setProperty("LD_LIBRARY_PATH", config::Config::get("LD_LIBRARY_PATH") + ":" + bpath + "/plugins");
 #else
-        //#error "plattform not supported"
+        #error "plattform not supported"
 #endif
         //LOGDEBUG("LIBRARY_PATH="<<config::Config::get("DYLD_LIBRARY_PATH"));
         /*

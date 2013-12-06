@@ -20,8 +20,6 @@
 #include "StreamProcessUnitBuilder.h"
 #include "org/esb/core/Task.h"
 #include "ProcessUnitList.h"
-#include "org/esb/mq/QueueConnection.h"
-#include "org/esb/mq/ObjectMessage.h"
 #include <boost/thread.hpp>
 #include <boost/thread/condition.hpp>
 
@@ -87,9 +85,9 @@ namespace encodingtask {
     ProcessUnitList _unit_list;
     std::map<int, Ptr<org::esb::av::Encoder> >_encs;
 
-    Ptr<org::esb::mq::QueueConnection> con;
-    Ptr<safmq::MessageQueue> read_q;
-    std::map<int, Ptr<safmq::MessageQueue> > _queueMap;
+    //Ptr<org::esb::mq::QueueConnection> con;
+    //Ptr<safmq::MessageQueue> read_q;
+    //std::map<int, Ptr<safmq::MessageQueue> > _queueMap;
 
     boost::shared_ptr<db::HiveDb> database;
     boost::condition finish_condition;

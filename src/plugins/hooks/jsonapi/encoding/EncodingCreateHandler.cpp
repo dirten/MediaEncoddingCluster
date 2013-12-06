@@ -9,7 +9,7 @@
 #include "../exports.h"
 #include "org/esb/util/UUID.h"
 #include "org/esb/config/config.h"
-#include "Log.h"
+#include "org/esb/util/Log.h"
 
 class JSONAPI_EXPORT EncodingCreateHandler : public org::esb::core::WebHookPlugin {
 

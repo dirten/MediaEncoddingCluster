@@ -21,8 +21,8 @@
 #include "org/esb/util/Log.h"
 
 #include "org/esb/lang/Ptr.h"
-#include "org/esb/io/QueueInputStream.h"
-#include "org/esb/io/QueueOutputStream.h"
+//#include "org/esb/io/QueueInputStream.h"
+//#include "org/esb/io/QueueOutputStream.h"
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/Encoder.h"
 #include "org/esb/av/FrameConverter.h"
@@ -56,8 +56,8 @@ namespace org {
                 std::string _host;
                 int _port;
 
-                Ptr<org::esb::io::QueueInputStream> _qis;
-                Ptr<org::esb::io::QueueOutputStream> _qos;
+                //Ptr<org::esb::io::QueueInputStream> _qis;
+                //Ptr<org::esb::io::QueueOutputStream> _qos;
                 Ptr<org::esb::io::ObjectInputStream> _ois;
                 Ptr<org::esb::io::ObjectOutputStream> _oos;
                 Ptr<org::esb::net::TcpSocket> _sock;

@@ -15,6 +15,7 @@ namespace org {
       class HIVE_EXPORT Environment {
       public:
         static void build(int argc, char**argv);
+        static std::string get(std::string key, std::string def="");
       private:
         Environment();
         virtual ~Environment();
