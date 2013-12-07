@@ -24,12 +24,11 @@
  *
  * ----------------------------------------------------------------------
  */
-#include "exports.h"
 #ifndef SHAREDOBJECTLOADER_H
 #define	SHAREDOBJECTLOADER_H
 #include <string>
-//#include "org/esb/util/Log.h"
 #include <boost/function.hpp>
+
 #if defined __LINUX__ || defined __APPLE__ 
 #include <dlfcn.h>
 #elif __WIN32__
@@ -37,6 +36,7 @@
 #endif
 
 #include "NotFoundException.h"
+#include "exports.h"
 
 namespace org {
   namespace esb {
@@ -66,24 +66,24 @@ namespace org {
           }
 #elif __WIN32__
 
-	//DLLPROC pFunc = NULL;
-	try
-	{
-		result =  GetProcAddress(hMod, name.c_str()); 
-	}
-	catch( std::exception &exc)
-	{
-		//getLogger().log( Logger::LOG_ERROR, "[WinDllCreator#createObjectFromDll] Error occurred during calling DLL entry method, %1", exc.what() );
-		result = NULL;
-	}
+          //DLLPROC pFunc = NULL;
+          try
+          {
+            result =  GetProcAddress(hMod, name.c_str());
+          }
+          catch( std::exception &exc)
+          {
+            //getLogger().log( Logger::LOG_ERROR, "[WinDllCreator#createObjectFromDll] Error occurred during calling DLL entry method, %1", exc.what() );
+            result = NULL;
+          }
 
-	if ( result == NULL )
-	{
+          if ( result == NULL )
+          {
             std::string message = std::string("Error occurred during loading SharedObject: ");
             throw NotFoundException(__FILE__,__LINE__,message);
-		//ObjectCreationException exc( "Error during loading object from DLL." );
-		//throw exc;
-	}	     
+            //ObjectCreationException exc( "Error during loading object from DLL." );
+            //throw exc;
+          }
 #else
 #error "no SharedObjectLoader for this plattform"
 #endif
@@ -93,14 +93,14 @@ namespace org {
 #if defined __LINUX__ || defined __APPLE__
         void *_lib_handle;
 #elif __WIN32__
-		 HMODULE hMod ;
+        HMODULE hMod ;
 #else
 #error "no SharedObjectLoader for this plattform"
 #endif
       };
+      }
     }
   }
-}
 
 #endif	/* SHAREDOBJECTLOADER_H */
 

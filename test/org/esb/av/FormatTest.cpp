@@ -6,6 +6,7 @@
  */
 
 #include <cstdlib>
+#include <string>
 #include "org/esb/av/Format.h"
 using namespace std;
 using namespace org::esb::av;

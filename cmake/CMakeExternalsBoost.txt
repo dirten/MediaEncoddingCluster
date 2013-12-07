@@ -18,8 +18,6 @@ ExternalProject_Add(boost
   #BUILD_COMMAND <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} --without-wave --without-context --without-graph link=static threading=multi address-model=32_64 install
   BUILD_IN_SOURCE 1
 )
-SET(BOOST_DIR "${BUILD_DIR}")
-SET(Boost_DATE_TIME_LIBRARY_DEBUG "libboost_date_time.a")
 
 IF(MINGW)
   ExternalProject_Add_Step(boost setup_user_config_mingw
@@ -28,3 +26,13 @@ IF(MINGW)
     DEPENDERS build
   )
 ENDIF(MINGW)
+
+SET(BOOST_DIR "${BUILD_DIR}")
+SET(Boost_DATE_TIME_LIBRARY_DEBUG "libboost_date_time.a")
+
+SET(Boost_LIBRARIES libboost_date_time.a libboost_system.a libboost_filesystem.a libboost_serialization.a libboost_program_options.a)
+if(WIN32)
+    SET(Boost_LIBRARIES ${Boost_LIBRARIES} libboost_thread_win32.a)
+ELSE(LINUX)
+    SET(Boost_LIBRARIES ${Boost_LIBRARIES} libboost_thread.a)
+ENDIF(WIN32)

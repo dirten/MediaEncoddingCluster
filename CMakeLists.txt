@@ -26,9 +26,12 @@ add_definitions(-DFF_API_CODEC_ID)
 
 IF(NOT WIN32)
   add_definitions(-fPIC)
+  set(CMAKE_CXX_FLAGS "-D_REENTRANT")
+  set(CMAKE_C_FLAGS "-D_REENTRANT")
 ENDIF(NOT WIN32)
 
 IF(WIN32)
+  add_definitions(-D_WIN32_WINNT=0x0501)
   ADD_DEFINITIONS(-DBOOST_USE_WINDOWS_H)
   SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wl,--allow-multiple-definition" )
   SET( CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_SHARED_LINKER_FLAGS}  -Wl,--allow-multiple-definition" )
@@ -47,44 +50,12 @@ if(APPLE)
   add_definitions(-ftemplate-depth=200)
 ENDIF(APPLE)
 
-if(WIN32)
-add_definitions(-D_WIN32_WINNT=0x0501)
-#add_definitions(/EHsc)
-MESSAGE("Build Windows 32")
-ENDIF(WIN32)
-
-if(MINGW)
-MESSAGE("Build Windows 32 mingw")
-ENDIF(MINGW)
-
-
-SET(USE_SAFMQ OFF)
-if(USE_SAFMQ)
-    add_definitions(-DUSE_SAFMQ)
-ENDIF(USE_SAFMQ)
-
-
-
-#SET(POCO_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Use poco in directory")
-#SET(LIBJSON_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
-#SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
-#SET(X264_DIR ${PROJECT_SOURCE_DIR}/target/dependency )
-#SET(BOOST_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
-#SET(BOOST_COMPILER gcc )
-#SET(BOOST_VERSION "1_35" CACHE STRING "Boost libraries version signature")
-#SET(SQLITE_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
-#SET(LOG4CPLUS_DIR ${PROJECT_SOURCE_DIR}/target/dependency )
-#SET(WT_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
-#SET(BREAKPAD_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 SET(SOCORRO_HOST localhost CACHE PATH "Socorro Host")
 SET(INSTALLBUILDER_EXE "/usr/bin/builder" CACHE PATH "Path to the Bitrock Installbuilder Executable")
-#SET(CURL_DIR ${PROJECT_SOURCE_DIR}/target/dependency )
 
-#SET(LIBRARY_DIR ${PROJECT_SOURCE_DIR}/target/dependency/lib)
-#SET(INCLUDE_DIR ${PROJECT_SOURCE_DIR}/target/dependency/include)
-IF(UNIX)
-    EXECUTE_PROCESS(COMMAND chmod +x ${PROJECT_SOURCE_DIR}/target/dependency/bin/protoc)
-ENDIF(UNIX)
+#IF(UNIX)
+#    EXECUTE_PROCESS(COMMAND chmod +x ${PROJECT_SOURCE_DIR}/target/dependency/bin/protoc)
+#ENDIF(UNIX)
 
 
 ENABLE_TESTING()
@@ -111,10 +82,11 @@ IF(BUILD_TESTING)
 ENDIF(BUILD_TESTING)
 
 IF(UNIX)
-set(CMAKE_CXX_FLAGS "-D_REENTRANT")
-set(CMAKE_C_FLAGS "-D_REENTRANT")
+  set(CMAKE_CXX_FLAGS "-D_REENTRANT")
+  set(CMAKE_C_FLAGS "-D_REENTRANT")
 ENDIF(UNIX)
-SET(USE_EMBEDDED_MYSQL ON)
+#SET(USE_EMBEDDED_MYSQL ON)
+
 #INCLUDE(cmake/HiveFindBoost.txt)
 
 #INCLUDE(FindBoost.cmake)
@@ -124,27 +96,27 @@ set(BOOST_ROOT ${BOOST_DIR})
 #set(Boost_COMPILER ${BOOST_COMPILER})
 #set(Boost_USE_STATIC_LIBS On)
 #find_package( Boost 1.44.0 COMPONENTS date_time program_options signals thread system filesystem serialization)
-SET(Boost_LIBRARIES libboost_date_time.a libboost_system.a libboost_filesystem.a libboost_serialization.a libboost_program_options.a)
-if(WIN32)
-    SET(Boost_LIBRARIES ${Boost_LIBRARIES} libboost_thread_win32.a)
-ELSE(LINUX)
-    SET(Boost_LIBRARIES ${Boost_LIBRARIES} libboost_thread.a)
-ENDIF(WIN32)
+#SET(Boost_LIBRARIES libboost_date_time.a libboost_system.a libboost_filesystem.a libboost_serialization.a libboost_program_options.a)
+#if(WIN32)
+#    SET(Boost_LIBRARIES ${Boost_LIBRARIES} libboost_thread_win32.a)
+#ELSE(LINUX)
+#    SET(Boost_LIBRARIES ${Boost_LIBRARIES} libboost_thread.a)
+#ENDIF(WIN32)
 
-if(Boost_FOUND)
-    MESSAGE("*** New Boost found" ${Boost_LIBRARIES})
+#if(Boost_FOUND)
+#    MESSAGE("*** New Boost found" ${Boost_LIBRARIES})
 #    MESSAGE("*** Boost Date Time found" ${BOOST_DATE_TIME_LIB})
-    set(BOOST_DT_LIB_MT ${BOOST_DT_LIB})
-endif()
+#    set(BOOST_DT_LIB_MT ${BOOST_DT_LIB})
+#endif()
 #MESSAGE("Boost Include Dir" ${BOOST_INCLUDE_DIRS})       
 
-INCLUDE(cmake/HiveFindSQLite.txt)
-INCLUDE(cmake/HiveFindCurl.txt)
-INCLUDE(cmake/HiveFindFFmpeg.txt)
-INCLUDE(cmake/HiveFindBreakpad.txt)
-INCLUDE(cmake/HiveFindProtobuf.txt)
-INCLUDE(cmake/HiveFindLibJson.txt)
-INCLUDE(cmake/HiveFindPoco.txt)
+#INCLUDE(cmake/HiveFindSQLite.txt)
+#INCLUDE(cmake/HiveFindCurl.txt)
+#INCLUDE(cmake/HiveFindFFmpeg.txt)
+#INCLUDE(cmake/HiveFindBreakpad.txt)
+#INCLUDE(cmake/HiveFindProtobuf.txt)
+#INCLUDE(cmake/HiveFindLibJson.txt)
+#INCLUDE(cmake/HiveFindPoco.txt)
 
 
 #add_custom_target(
@@ -230,49 +202,49 @@ set(CPACK_SOURCE_IGNORE_FILES
 # Find the libbz2, it is needed for ffmpeg when visible
 #
 ############################################################
-FIND_LIBRARY(LIBBZ2
-  NAMES
-    bz2
-  PATHS
-    /usr/lib
-  )
-IF(LIBBZ2)
-  SET(BZ2_LIB ${LIBBZ2})
-ENDIF(LIBBZ2)
+#FIND_LIBRARY(LIBBZ2
+#  NAMES
+#    bz2
+#  PATHS
+#    /usr/lib
+#  )
+#IF(LIBBZ2)
+#  SET(BZ2_LIB ${LIBBZ2})
+#ENDIF(LIBBZ2)
 ############################################################
 #
 # Find the libssl, if it is needed for wt when visible
 #
 ############################################################
-FIND_LIBRARY(LIBSSL
-  NAMES
-    ssl
-  PATHS
-    /usr/lib
-  )
-IF(LIBSSL)
-  SET(SSL_LIB ${LIBSSL})
-ENDIF(LIBSSL)
+#FIND_LIBRARY(LIBSSL
+#  NAMES
+#    ssl
+#  PATHS
+#    /usr/lib
+#  )
+#IF(LIBSSL)
+#  SET(SSL_LIB ${LIBSSL})
+#ENDIF(LIBSSL)
 ############################################################
 #
 # Find the libcrypto, if it is needed for wt when visible
 #
 ############################################################
-FIND_LIBRARY(LIBCRYPTO
-  NAMES
-    crypto
-  PATHS
-    /usr/lib
-  )
-IF(LIBCRYPTO)
-  SET(CRYPTO_LIB ${LIBCRYPTO})
-ENDIF(LIBCRYPTO)
+#FIND_LIBRARY(LIBCRYPTO
+#  NAMES
+#    crypto
+#  PATHS
+#    /usr/lib
+#  )
+#IF(LIBCRYPTO)
+#  SET(CRYPTO_LIB ${LIBCRYPTO})
+#ENDIF(LIBCRYPTO)
 ############################################################
 #
 # Setup build Defines
 #
 ############################################################
-SET(BUILD_SHARED_LIBS Off)
+#SET(BUILD_SHARED_LIBS Off)
 IF(UNIX)
   ADD_DEFINITIONS(-D__UNIX__)
   IF(APPLE)
@@ -287,10 +259,10 @@ ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 
 
 
-LINK_DIRECTORIES(${MYSQL_LIBRARY_PATH})
-LINK_DIRECTORIES(${WT_DIR}/lib)
+#LINK_DIRECTORIES(${MYSQL_LIBRARY_PATH})
+#LINK_DIRECTORIES(${WT_DIR}/lib)
 
-SET(BUILD_EMBEDDED_LIBS OFF CACHE STRING "Use Embedded Dependency Libraries")
+#SET(BUILD_EMBEDDED_LIBS OFF CACHE STRING "Use Embedded Dependency Libraries")
 #SET(USE_EMBEDDED_MYSQL ON CACHE STRING "Use Embedded Mysql")
 
 SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:$ORIGIN/../lib")
@@ -298,46 +270,6 @@ SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:$ORIGIN/../lib")
 
 
 
-# Build Embedded libraries in deps directory
-IF(BUILD_EMBEDDED_LIBS)
-  FILE(APPEND ${PROJECT_SOURCE_DIR}/deps/stage/boost.build "")
-  FILE(APPEND ${PROJECT_SOURCE_DIR}/deps/stage/wt.build "")
-  FILE(APPEND ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg.download "")
-  FILE(APPEND ${PROJECT_SOURCE_DIR}/deps/stage/x264.download "")
-  FILE(APPEND ${PROJECT_SOURCE_DIR}/deps/stage/mp3lame.download "")
-
-
-
-
-#  MESSAGE("** Downloading erlang runtime")
-#  FILE(DOWNLOAD http://erlang.org/download/otp_src_R13B.tar.gz bla/otp_src_R13B.tar.gz)
-
-  MESSAGE("** Building Embedded Libraries, that will take several time")
-
-  FILE(MAKE_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage)
-  FILE(APPEND ${PROJECT_SOURCE_DIR}/deps/stage/boost.build "")
-  FILE(APPEND ${PROJECT_SOURCE_DIR}/deps/stage/wt.build "")
-  FILE(APPEND ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg.build "")
-  FILE(APPEND ${PROJECT_SOURCE_DIR}/deps/stage/x264.build "")
-
-# setup to build embedded libraries
-  SET(BUILD_EMBEDDED_BOOST ON)
-  INCLUDE(${PROJECT_SOURCE_DIR}/deps/stage/boost.build)
-  SET(BUILD_EMBEDDED_WT ON)
-  INCLUDE(${PROJECT_SOURCE_DIR}/deps/stage/wt.build)
-  SET(BUILD_EMBEDDED_FFMPEG ON)
-  INCLUDE(${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg.build)
-  SET(BUILD_EMBEDDED_X264 ON)
-  INCLUDE(${PROJECT_SOURCE_DIR}/deps/stage/x264.build)
-
-# settings for the embedded Library Paths
-  SET(BOOST_DIR ${PROJECT_SOURCE_DIR}/deps/stage/boost)
-  SET(BOOST_COMPILER gcc41 )
-  SET(BOOST_VERSION "1_35" )
-#  SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg)
-  SET(WT_DIR ${PROJECT_SOURCE_DIR}/deps/stage/wt)
-  SET(X264_DIR ${PROJECT_SOURCE_DIR}/deps/stage/x264)
-ENDIF(BUILD_EMBEDDED_LIBS)
 
 
 
@@ -346,25 +278,6 @@ ENDIF(BUILD_EMBEDDED_LIBS)
 #INCLUDE(cmake/HiveBuildX264.txt)
 #INCLUDE(cmake/HiveBuildFfmpeg.txt)
 
-	
-
-
-
-
-IF(NOT BUILD_EMBEDDED_LIBS)
-#SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Use ffmpeg in directory")
-#SET(X264_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Use x264 codec in directory")
-SET(BOOST_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Boost installation path prefix")
-SET(BOOST_COMPILER gcc CACHE STRING "Boost libraries compiler signature")
-SET(BOOST_VERSION "1_35" CACHE STRING "Boost libraries version signature")
-SET(MYSQL_DIR ${USERLIB_ROOT} CACHE PATH "Mysql libraries")
-#SET(LOG4CPLUS_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Log4cplus libraries")
-#SET(WT_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "WebToolKit libraries")
-#SET(BREAKPAD_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Google Breakpad libraries")
-SET(SOCORRO_HOST localhost CACHE PATH "Socorro Host")
-SET(INSTALLBUILDER_EXE "/usr/bin/builder" CACHE PATH "Path to the Bitrock Installbuilder Executable")
-#SET(CURL_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Path to the Bitrock Installbuilder Executable")
-ENDIF(NOT BUILD_EMBEDDED_LIBS)
 
 
 #LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
@@ -373,8 +286,8 @@ ENDIF(NOT BUILD_EMBEDDED_LIBS)
 ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
 
 
-INCLUDE(cmake/HiveFindGloox.txt)
-INCLUDE(cmake/HiveFindZeromq.txt)
+#INCLUDE(cmake/HiveFindGloox.txt)
+#INCLUDE(cmake/HiveFindZeromq.txt)
 
 IF(WIN32)
 #  INSTALL(FILES "c:/vcredist_x86.exe" DESTINATION . )
@@ -388,37 +301,12 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/iss/mhive.xml.in ${PROJECT_SOURCE_DIR}/iss/
 SET(DEFAULT_DATABASE_HOST "127.0.0.1")
 SET(DEFAULT_DATABASE "sqlite3")
 
-INCLUDE_DIRECTORIES (${LITESQL_DIR}/include/litesql)
-
-#include_directories (${MYSQL_DIR}/include/litesql/litesql)
-
 add_subdirectory (src)
 add_subdirectory (test)
 
-#add_subdirectory (ice)
-#IF(BUILD_TESTING)
-#  IF(WIN32)
-#    SET( ENV{PATH} "$ENV{PATH}\;${MYSQL_DIR}/Embedded/DLL/release\;${FFMPEG_DIR}/bin" )
-#  ENDIF(WIN32)
-#  add_subdirectory (tests)
-#ENDIF(BUILD_TESTING)
-
-#add_custom_target(svnversion ALL
-#  COMMAND echo "define MHIVE_VERSION MHIVE_SVN_REVISION `svnversion ${PROJECT_SOURCE_DIR}`" > ${PROJECT_SOURCE_DIR}/version.h
-#)
-#INCLUDE(${MEC_SOURCE_DIR}/svnrevision)
-#add_dependencies(lang svnversion)
 SET(MHIVE_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${MINOR_PATCH_VERSION}-${SVN_VERSION})
 
-#CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_SOURCE_DIR}/config.h)
-
-
-#set(CPACK_COMPONENTS_ALL mhive libraries)
-
 INCLUDE(CPack)
-#add_custom_target(upload
-#  COMMAND ${CURL_CMD} -T ${PROJECT_SOURCE_DIR}/build/${CPACK_PACKAGE_FILE_NAME}-${CPACK_PACKAGE_VERSION}-Darwin.dmg -u${userid}:${pass} ftp://codergrid.de
-#)
 
 
 

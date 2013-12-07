@@ -1,7 +1,4 @@
-
 SET( COREAPI_VERSION 0.1.0 )
-
-
 
 SET(LIB_INSTALL_DIR lib)
 SET(PLUGIN_INSTALL_DIR plugin)
@@ -32,20 +29,11 @@ ELSE(APPLE)
 ENDIF(WIN32)
 
 
-#ADD_DEFINITIONS(-DBOOST_ALL_NO_LIB)
 ADD_DEFINITIONS(-D__STDC_LIMIT_MACROS)
 ADD_DEFINITIONS(-DPOCO_NO_AUTOMATIC_LIBS)
 ADD_DEFINITIONS(-DPOCO_STATIC)
 #ADD_DEFINITIONS("-Wl,--allow-multiple-definition")
 
-#add_definitions(/DBOOST_AUTO_LINK_NOMANGLE)
-#add_definitions(-DBOOST_LIB_DIAGNOSTIC)
-#add_definitions(/DBOOST_ALL_NO_LIB)
-add_definitions(-DCURL_STATICLIB)
-add_definitions(/DCURL_STATICLIB)
-#add_definitions(-m32)
-#add_definitions(-arch i386)
-#SET (CMAKE_EXE_LINKER_FLAGS "-arch i386")
 
 
 #add_subdirectory (go)
@@ -53,219 +41,19 @@ add_subdirectory (org)
 add_subdirectory (plugins)
 
 
-SET(BUILD_MHIVESERVICE Off)
-SET(BUILD_MHIVECLIENTAUDIO Off)
-SET(BUILD_MHIVECLIENTVIDEO Off)
-SET(BUILD_MHIVEQUEUE Off)
-SET(BUILD_MHIVEWRITER Off)
-SET(BUILD_MHIVEREADER Off)
-SET(BUILD_MHIVECLIENT Off)
-SET(BUILD_MHIVECORE Off)
-#include_directories (${BOOST_DIR}/include)
 include_directories (${MEC_SOURCE_DIR}/src)
-include_directories (${SAFMQ_DIR}/include/lib)
-include_directories (${SAFMQ_DIR}/include/shared)
-#include_directories (${MEC_SOURCE_DIR}/target/dependency/include/litesql)
+include_directories (${DEPS_INC_DIR})
+include_directories (${DEPS_INC_DIR}/litesql)
 
-include_directories (${WT_DIR}/include)
-include_directories (${WT_DIR})
-include_directories (${BOOST_INCLUDE_DIRS}/boost-1_36)
-
-include_directories (${MYSQL_INCLUDE_DIR})
-include_directories (${MYSQL_INCLUDE_DIR}/mysql)
-include_directories (${FFMPEG_INCLUDE_DIR})
-include_directories (${LOG4CPLUS_DIR}/include)
-include_directories (${AMQ_DIR}/include/activemq-cpp-3.8.1)
-
-#MESSAGE("**MYSQL_INCLUDE_DIR: " ${MYSQL_INCLUDE_DIR})
-
-include_directories (${BREAKPAD_INCLUDE_DIR})
+LINK_DIRECTORIES(${DEPS_LIB_DIR})
+LINK_DIRECTORIES(${DEPS_LIB_DIR}/static)
 
 
-LINK_DIRECTORIES(${BOOST_DIR}/lib)
-LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
-LINK_DIRECTORIES(${BREAKPAD_LIB_DIR})
-LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
-LINK_DIRECTORIES(${LITESQL_DIR}/lib/static)
-
-INCLUDE_DIRECTORIES (${POCO_INCLUDE_DIR})
-LINK_DIRECTORIES(${POCO_LIB_DIR})
-
-
-#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
-#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
-#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
-#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/lame/lib)
-#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
-#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
-
-##LINK_DIRECTORIES(${FFMPEG_DIR}/libavcodec)
-##LINK_DIRECTORIES(${FFMPEG_DIR}/libavutil)
-##LINK_DIRECTORIES(${FFMPEG_DIR}/libswscale)
-#LINK_DIRECTORIES(${X264_DIR}/lib)
-
-##LINK_DIRECTORIES(${MYSQL_DIR}/lib/debug)
-#LINK_DIRECTORIES(${MYSQL_LIB_DIR})
-
-#ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
 ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
-#ADD_DEFINITIONS(-O0)
-#ADD_DEFINITIONS(-g)
-#set(CMAKE_FIND_LIBRARY_PREFIXES lib)
-#set(CMAKE_FIND_LIBRARY_SUFFIXES .a)
-
-#FIND_LIBRARY(avc avcodec)
-
-#MESSAGE("** AVCODEC PATH: " ${AVCODEC_LIB})
-#MESSAGE("** BOOST_SERIAL_LIB_MT: " ${BOOST_SERIAL_LIB_MT})
-
 
 add_executable (mhive Main.cpp )
-#add_executable (mhiveconfig MHiveConfig.cpp)
-#target_link_libraries (mhiveconfig
-#    api
-#    )
 
-#SET_TARGET_PROPERTIES (mhive
-#  PROPERTIES BUILD_WITH_INSTALL_RPATH 1
-#               INSTALL_NAME_DIR "@executable_path/../lib"
-#	         )
-#add_executable (lemon lemon.c)
-
-IF(BUILD_MHIVESERVICE)
-    add_executable (mhiveservice HiveService.cpp)
-    
-    target_link_libraries (mhiveservice 
-  io 
-  lang 
-  api
-  util 
-  hive 
-  grid 
-)
-    INSTALL(TARGETS mhiveservice
-        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
-        #BUNDLE DESTINATION ${BIN_INSTALL_DIR}
-        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-
-ENDIF(BUILD_MHIVESERVICE)
-
-IF(BUILD_MHIVECLIENT)
-    add_executable (mhiveclient MhiveClient.cpp)
-    target_link_libraries (mhiveclient
-      hive
-      lang
-      av
-      util
-      signal
-      io
-      net
-    )
-    INSTALL(TARGETS mhiveclient
-        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
-        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-ENDIF(BUILD_MHIVECLIENT)
-
-IF(BUILD_MHIVECLIENTAUDIO)
-    add_executable (mhiveca HiveClientAudio.cpp)
-    target_link_libraries (mhiveca
-      hive
-      lang
-      av
-      util
-      signal
-      io
-      net
-    )
-    INSTALL(TARGETS mhiveca
-        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
-        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-ENDIF(BUILD_MHIVECLIENTAUDIO)
-IF(BUILD_MHIVECLIENTVIDEO)
-    add_executable (mhivecv HiveClientVideo.cpp)
-    target_link_libraries (mhivecv
-      hive
-      lang
-      av
-      util
-      signal
-      io
-      net
-    )
-    INSTALL(TARGETS mhivecv
-        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
-        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-ENDIF(BUILD_MHIVECLIENTVIDEO)
-
-IF(BUILD_MHIVEMASTER)
-    add_executable (mhivemaster MHiveMaster.cpp)
-    target_link_libraries (mhivemaster
-      lang
-      util
-      io
-      hive
-    )
-    INSTALL(TARGETS mhivemaster
-        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
-        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-ENDIF(BUILD_MHIVEMASTER)
-
-IF(BUILD_MHIVEGRIDNODE)
-    add_executable (mhivegridnode MHiveGridNode.cpp)
-    target_link_libraries (mhivegridnode
-      grid
-    )
-ENDIF(BUILD_MHIVEGRIDNODE)
-
-IF(BUILD_MHIVEQUEUE)
-    add_executable (mhivequeue MHiveQueue.cpp)
-    target_link_libraries (mhivequeue)
-    INSTALL(TARGETS mhivequeue
-        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
-        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-ENDIF(BUILD_MHIVEQUEUE)
-
-IF(BUILD_MHIVEREADER)
-    add_executable (mhivereader MHiveReader.cpp)
-    target_link_libraries (mhivereader lang esb util)
-    INSTALL(TARGETS mhivereader
-        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
-        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-ENDIF(BUILD_MHIVEREADER)
-
-IF(BUILD_MHIVEWRITER)
-    add_executable (mhivewriter MHiveWriter.cpp)
-    target_link_libraries (mhivewriter lang)
-    INSTALL(TARGETS mhivewriter
-        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
-        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-ENDIF(BUILD_MHIVEWRITER)
-
-IF(BUILD_MHIVECORE)
-    add_executable (mhivecore MHiveCore.cpp)
-    target_link_libraries (mhivecore lang core hive )
-    INSTALL(TARGETS mhivecore
-        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
-        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-ENDIF(BUILD_MHIVECORE)
-
-#SET_TARGET_PROPERTIES(mhive PROPERTIES INSTALL_RPATH lib)
-
-
-#FIND_LIBRARY(COCOA_LIBRARY COCOA)
-#MARK_AS_ADVANCED(COCOA_LIBRARY)
-#SET(EXTRA_LIBS crypto ${COCOA_LIBRARY})
-MESSAGE("Boost libs for mhive" ${Boost_LIBRARIES})
 target_link_libraries (mhive 
   ${POCO_LIB_FOUNDATION}
   ${Boost_LIBRARIES}
@@ -276,127 +64,49 @@ target_link_libraries (mhive
   signal 
   io 
   net
-#  rpc
   core
-  #core_http
-#  log4cplus
-#  PocoNet
 )
 IF(WIN32)
   IF(CMAKE_BUILD_TYPE MATCHES "debug")
     TARGET_LINK_LIBRARIES(mhive log4cplusd)
-    ELSE()
+  ELSE()
     TARGET_LINK_LIBRARIES(mhive log4cplus)
   ENDIF()
-
-#  target_link_libraries (mhive  
-#    wtd 
-#    wtextd
-#    wthttpd
-#    winmm
-#    "D:/google-breakpad/src/client/windows/Release/exception_handler.lib"
-#  )
-  
 ELSEIF(APPLE)
-#  target_link_libraries (mhive 
-#    x264 
-#    ${MYSQL_LIBRARY} 
-#    ${BZ2_LIB}
-#${COCOA_LIBRARY}
-#    crypto
-#    z 
-#    ssl 
-#    wthttp 
-#    wtext 
-#    wt 
-#    pthread 
-#    z 
-#    mp3lame 
-#    theora 
-#    vorbis 
-#    vorbisenc 
-#    xvidcore 
-#    ogg
-#  )
+
 ELSE(WIN32)
-  target_link_libraries (mhive 
-#  rt
-#    x264 
-#    ssl
-#    ${MYSQL_LIBRARY} 
-#    ${BZ2_LIB} 
-#    ssl
-#    dl
-#    crypt
-#    crypto
-#    pthread
-#    z 
-#    wthttp 
-#    wtext 
-#    wt 
-#    mp3lame 
-#    theora 
-#    vorbis 
-#    vorbisenc 
-#    xvidcore 
-#    ogg
-  )
+
 ENDIF(WIN32)
 
-
-#SET(CURL_CMD curl)
-#SET(ZIP_CMD gzip)
-#SET(MHIVE_DBGSYM mhive)
-#SET(DUMPSYM_CMD "${BREAKPAD_DIR}/bin/dump_syms")
-#IF(WIN32)
-#  SET(CURL_CMD "${PROJECT_SOURCE_DIR}/win32/curl.exe")
-#  SET(ZIP_CMD "${PROJECT_SOURCE_DIR}/win32/gzip.exe")
-#  SET(DUMPSYM_CMD "${PROJECT_SOURCE_DIR}/win32/dump_syms.exe")
-#  SET(MHIVE_DBGSYM mhive.pdb)
-#ENDIF(WIN32)
-
-
+# SymbolFile Generation for google-breakpad and socorro server
 add_custom_target(uploadsymbols
   COMMAND ${DUMPSYM_CMD} ${CMAKE_CURRENT_BINARY_DIR}/${MHIVE_DBGSYM} > ${CMAKE_CURRENT_BINARY_DIR}/mhive.sym
   COMMAND ${ZIP_CMD} -f ${CMAKE_CURRENT_BINARY_DIR}/mhive.sym
   COMMAND ${CURL_CMD} -F symupload=@${CMAKE_CURRENT_BINARY_DIR}/mhive.sym.gz -F system=linux http://codergrid.de/symupload.php
 )
-#add_custom_target(upload
-#  COMMAND ${CURL_CMD} -T ${PROJECT_SOURCE_DIR}/build/MediaEncodingCluster-${CPACK_PACKAGE_VERSION}-Darwin.dmg -u${userid}:${pass} ftp://codergrid.de
-#)
-MESSAGE("InstallBuilderExe $ENV{INSTALLBUILDER_EXE}")
+
+# installer creation
 add_custom_target(release
   COMMAND ${INSTALLBUILDER_EXE} build ${PROJECT_SOURCE_DIR}/iss/mhive.xml
 )
-
-
-
-
 
 INSTALL(TARGETS mhive
     RUNTIME DESTINATION ${BIN_INSTALL_DIR}
 #    COMPONENT mhive
 )
 
-#INSTALL(TARGETS mhiveconfig
-#    RUNTIME DESTINATION ${BIN_INSTALL_DIR}
-#    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-#    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
 INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/web/
-#INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/target/dependency/webui/
   DESTINATION ${WEB_INSTALL_DIR}
   USE_SOURCE_PERMISSIONS
   PATTERN ".svn" EXCLUDE
   PATTERN "www" EXCLUDE
 )
-#INSTALL(CODE "EXECUTE_PROCESS(COMMAND cp ${PROJECT_SOURCE_DIR}/LICENSE ${CMAKE_INSTALL_PREFIX}/LICENSE)")
+
 INSTALL(FILES ${PROJECT_SOURCE_DIR}/LICENSE
     DESTINATION .
     PERMISSIONS OWNER_EXECUTE OWNER_READ OWNER_WRITE
 )
-
-#INSTALL(CODE "EXECUTE_PROCESS(COMMAND ln -s ${PROJECT_SOURCE_DIR}/web ${CMAKE_INSTALL_PREFIX}/web)")
 
 INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/res/
   DESTINATION ${RES_INSTALL_DIR}
@@ -404,13 +114,8 @@ INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/res/
   PATTERN ".svn" EXCLUDE
   )
 
-#SET(MHIVE_BASE ${CMAKE_INSTALL_PREFIX})
-#CONFIGURE_FILE(${CMAKE_INSTALL_PREFIX}/res/logging.properties ${CMAKE_INSTALL_PREFIX}/res/logging.properties)
-#CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/mectl ${CMAKE_INSTALL_PREFIX}/bin/mectl.out)
-
 INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/presets/
   DESTINATION ${PRESETS_INSTALL_DIR}
-#  USE_SOURCE_PERMISSIONS
   PATTERN ".svn" EXCLUDE)
 
 IF(NOT WIN32)

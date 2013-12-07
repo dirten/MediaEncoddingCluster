@@ -51,4 +51,4 @@ public:
     ostr << result.write_formatted();
   }
 };
-REGISTER_WEB_HOOK("/api/v1/flow$", GET, GraphListHandler);
+REGISTER_WEB_HOOK("/api/v1/flow$", GET, GraphListHandler)

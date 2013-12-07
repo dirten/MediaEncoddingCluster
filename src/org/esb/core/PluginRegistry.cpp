@@ -1,7 +1,7 @@
 /* 
  * File:   PluginRegistry.cpp
  * Author: HoelscJ
- * 
+ *
  * Created on 29. August 2011, 14:46
  */
 
@@ -41,7 +41,6 @@ namespace org {
         if (_instance == NULL) {
           _instance = new PluginRegistry;
         }
-
         return _instance;
       }
 
@@ -81,7 +80,7 @@ namespace org {
         foreach(PluginMap::value_type s, _service_map) {
           //LOGDEBUG("ServiceName="<<s.first<<" type="<<((ServicePlugin*) s.second)->getServiceType());
           if (((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_SERVER ||
-                  ((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_ALL)
+              ((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_ALL)
             ((ServicePlugin*) s.second)->startService();
         }
       }
@@ -91,7 +90,7 @@ namespace org {
 
         foreach(PluginMap::value_type s, _service_map) {
           if (((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_CLIENT ||
-                  ((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_ALL)
+              ((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_ALL)
             ((ServicePlugin*) s.second)->startService();
         }
 
@@ -115,7 +114,6 @@ namespace org {
         _plug_map[name] = plugin;
       }
       
-
       void PluginRegistry::registerHookProvider(std::string name, HookProvider*plugin) {
         _hook_provider_map[name] = plugin;
       }
@@ -125,19 +123,16 @@ namespace org {
       }
 
       void PluginRegistry::registerWebHookFactory(std::string name, WebHookFactory *factory) {
+        LOGDEBUG("register WebHookPlugin " << name);
         _webhook_handler_factory->registerHandlerFactory(factory);
-        //_webhook_factories[name]=factory;
-        //_task_factories[name] = factory;
       }
 
       std::list<std::string> PluginRegistry::getTaskNameList() {
         std::list<std::string> result;
-
         foreach(TaskFactoryMap::value_type s, _task_factories) {
           result.push_back(s.first);
         }
         return result;
-
       }
 
       OptionsDescription PluginRegistry::getTaskOptionsDescription(std::string name) {
@@ -145,7 +140,6 @@ namespace org {
           return _task_factories[name]->getOptionsDescription();
         }
         return OptionsDescription();
-
       }
 
       /*
@@ -195,7 +189,6 @@ namespace org {
             result->getContext()->set<std::string>(value->long_name(), def);
           }
 
-          //result->getContext()->database = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
           typedef std::map<std::string, std::string> stringmap;
           foreach(stringmap::value_type config, cfg) {
             result->getContext()->env[config.first] = config.second;
@@ -214,7 +207,6 @@ namespace org {
           _plugin_data[s.first].name = s.first;
           _plugin_data[s.first].context = new PluginContext();
           _plugin_data[s.first].plugin = s.second;
-          //_plugin_data[s.first].context->database = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
 
           /*fill up PluginContext with Options*/
           OptionsDescription desc = s.second->getOptionsDescription();
@@ -262,40 +254,42 @@ namespace org {
       }
 
       void PluginRegistry::load(std::string file) {
-          //std::cout << "Plugin directory : "<<file<<std::endl;
         org::esb::io::File plugin_dir(file);
-
-        if (plugin_dir.isDirectory()) {
-
+        if(plugin_dir.isDirectory()) {
           org::esb::io::FileList plugin_list = plugin_dir.listFiles();
           plugin_list.sort(compare_webservice);
-
           foreach(Ptr<org::esb::io::File> f, plugin_list) {
-            if (f->isDirectory())
+            if (f->isDirectory()){
               load(f->getPath());
-            if (f->isFile())
-                loadFile(f->getPath());
+            }else{
+              loadFile(f->getPath());
+            }
           }
-        } else if (plugin_dir.isFile()) {
-
-          loadFile(plugin_dir.getPath());
+        }else{
+          //loadFile(f->getPath());
         }
-
       }
 
+      /**
+        * Loading the plugin from this path, plugins are self registering types through the following macro's
+        * REGISTER_WEB_HOOK(url,method,clazz)
+        * REGISTER_TASK(name,instance)
+        * REGISTER_SERVICE(name,type)
+        * REGISTER_HOOK(name,instance, function, prio) --- this is currently not used
+        */
       void PluginRegistry::loadFile(std::string file) {
-          if(strstr(file.c_str(),".dylib")>0||strstr(file.c_str(),".dll")>0||strstr(file.c_str(),".so")>0){
+        if(strstr(file.c_str(),".dylib")>0||strstr(file.c_str(),".dll")>0||strstr(file.c_str(),".so")>0){
           LOGDEBUG("loading plugins from " << file);
-        std::cout<<"loading plugins from "<<file<<std::endl;
+          std::cout<<"loading plugins from "<<file<<std::endl;
 
-        try {
-          org::esb::lang::SharedObjectLoader * loader = new org::esb::lang::SharedObjectLoader(file);
-          _shared_objects[file] = loader;
-        } catch (org::esb::lang::NotFoundException & ex) {
-          LOGERROR("failed loading plugin:"<<file);
-          LOGERROR(ex.what());
-        }
+          try {
+            org::esb::lang::SharedObjectLoader * loader = new org::esb::lang::SharedObjectLoader(file);
+            _shared_objects[file] = loader;
+          } catch (org::esb::lang::NotFoundException & ex) {
+            LOGERROR("failed loading plugin:"<<file);
+            LOGERROR(ex.what());
           }
+        }
       }
 
       PluginRegistry::~PluginRegistry() {
@@ -316,9 +310,6 @@ namespace org {
           delete row.second;
         }
       }
-    }
-    namespace api {
-      //    REGISTER_SERVICE("apiwebserver", ApiWebServer)
+      }
     }
   }
-}

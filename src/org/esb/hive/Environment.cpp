@@ -69,17 +69,7 @@ namespace org {
 #else
         #error "plattform not supported"
 #endif
-        //LOGDEBUG("LIBRARY_PATH="<<config::Config::get("DYLD_LIBRARY_PATH"));
-        /*
-          std::string logpath=std::string("log.path=").append(bpath).append("/logs");
-          char * pa=new char[logpath.length()+1];//const_cast<char*>(logpath.c_str());
 
-          memset(pa,0,logpath.length()+1);
-          memcpy(pa,logpath.c_str(),logpath.length());
-          putenv(pa);*/
-        //std::cout << "logpath"<<pa<<std::endl;
-        //std::cout << "logpathenv" << getenv("log.path") << std::endl;
-        //config::Config::setProperty("authentication", "true");
         org::esb::io::File u2path(get("hive.user_path"));
         if (!u2path.exists())
           u2path.mkdir();

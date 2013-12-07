@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
- *  File    : Hive.cpp
+ *  File    : Main.cpp
  *  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
  *  Purpose :
  *  Created : 2007, 12:30 by Jan Hölscher <jan.hoelscher@esblab.com>
@@ -16,6 +16,7 @@
  * ----------------------------------------------------------------------
  */
 #include "org/esb/av/AV.h"
+#include "org/esb/av/FormatBaseStream.h"
 
 #include "boost/program_options.hpp"
 #include "boost/asio.hpp"
@@ -48,14 +49,13 @@ namespace po = boost::program_options;
 
 
 int main(int argc, char * argv[]) {
-  org::esb::hive::Environment::build(argc,argv);
-
+  org::esb::hive::Environment::build(argc, argv);
+  org::esb::av::FormatBaseStream::initialize();
   try {
     po::options_description gen("General options");
     gen.add_options()
     ("help", "produce this message")
-    ("version", "Prints the Version")
-    ("plugindir", "which plugin directory to use");
+    ("version", "Prints the Version");
 
     po::options_description ser("Server options");
     ser.add_options()
@@ -71,8 +71,7 @@ int main(int argc, char * argv[]) {
     ("erlang", "")
     ("console,c", "")
     ("quiet", "")
-    ("docroot,d",po::value<std::string > (), "webserver document root")
-    ;
+    ("docroot,d", po::value<std::string > (), "webserver document root");
     po::options_description all("all");
 
     log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT(Environment::get("hive.config_path") + "/logging.properties"));
@@ -85,7 +84,7 @@ int main(int argc, char * argv[]) {
 
     all.add(gen).add(ser).add(cli);
 
-    std::string pluginDir=Environment::get(std::string("MHIVE_PLUGIN_DIR"),base_path+"/plugins");
+    std::string pluginDir = Environment::get("MHIVE_PLUGIN_DIR", base_path+"/plugins");
     org::esb::core::PluginRegistry::getInstance()->load(pluginDir);
 
 
@@ -99,8 +98,8 @@ int main(int argc, char * argv[]) {
     po::variables_map vm;
     try {
       po::store(po::parse_command_line(argc, argv, priv), vm);
-    } catch (std::exception & ex) {
-      //std::cout <<boost::diagnostic_information(ex)<<std::endl;
+    } catch(std::exception & ex) {
+      // std::cout <<boost::diagnostic_information(ex)<<std::endl;
       std::cout << ex.what() << "!!!" << std::endl << std::endl;
       std::cout << all << std::endl;
       exit(1);
@@ -120,8 +119,6 @@ int main(int argc, char * argv[]) {
       }
     }
     Environment::set("partition", "global");
-    //config::Config::setProperty("hive.port", StringUtil::toString(vm["hiveport"].as<int> ()));
-    //config::Config::setProperty("web.port", StringUtil::toString(vm["webport"].as<int> ()));
 
     if (vm.count("help") || argc == 1) {
       cout << all << "\n";
@@ -130,13 +127,13 @@ int main(int argc, char * argv[]) {
 
     org::esb::core::PluginRegistry::getInstance()->initPlugins();
     if (vm.count("loglevel")) {
-      Environment::set("loglevel", vm["loglevel"].as<string > ());
+      Environment::set("loglevel", vm["loglevel"].as<std::string> ());
     }
 
     if (!vm.count("quiet")) {
       std::cout << "" << std::endl;
       std::cout << "******************************************************************" << std::endl;
-      std::cout << "* MediaEncodingCluster, Copyright (C) 2000-2011   Jan Hoelscher  *" << std::endl;
+      std::cout << "* MediaEncodingCluster, Copyright (C) 2000-2014   Jan Hoelscher  *" << std::endl;
       std::cout << "*                                                                *" << std::endl;
       std::cout << "* This program is Licensed under the terms in the LICENSE file   *" << std::endl;
       std::cout << "*                                                                *" << std::endl;
@@ -190,7 +187,7 @@ int main(int argc, char * argv[]) {
     }
   } catch (Exception * e) {
     std::cerr << "error: " << e->what() << "\n";
-    return 1;
+    return -1;
   }
 
   org::esb::hive::DatabaseService::stop();
@@ -203,4 +200,5 @@ int main(int argc, char * argv[]) {
   //Log::close();
 
   return 0;
+
 }

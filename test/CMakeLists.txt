@@ -4,12 +4,9 @@ ADD_DEFINITIONS(-DMEC_SOURCE_DIR="${MEC_SOURCE_DIR}")
 
 
 include_directories (${MEC_SOURCE_DIR}/src)
-include_directories (${FFMPEG_INCLUDE_DIR})
-include_directories (${BOOST_INCLUDE_DIRS})
-include_directories (${LOG4CPLUS_DIR}/include)
-include_directories (${SAFMQ_DIR}/include/lib)
-include_directories (${SAFMQ_DIR}/include/shared)
-include_directories (${AMQ_DIR}/include/activemq-cpp-3.8.1)
+include_directories (${DEPS_INC_DIR})
+include_directories (${DEPS_INC_DIR}/litesql)
+
 
 #include_directories (${MEC_SOURCE_DIR}/test/fobs/dist/include)
 #INCLUDE_DIRECTORIES (${ERLANG_INTERFACE_DIR}/include)

@@ -1,12 +1,9 @@
-INCLUDE_DIRECTORIES (${FFMPEG_INCLUDE_DIR})
 INCLUDE_DIRECTORIES (${MEC_SOURCE_DIR}/src)
-INCLUDE_DIRECTORIES (${MEC_SOURCE_DIR}/target/dependency/include)
-INCLUDE_DIRECTORIES (${MEC_SOURCE_DIR}/target/dependency/include/litesql)
-include_directories (${SAFMQ_DIR}/include/lib)
-include_directories (${SAFMQ_DIR}/include/shared)
+include_directories (${DEPS_INC_DIR})
+include_directories (${DEPS_INC_DIR}/litesql)
 
-LINK_DIRECTORIES(${LITESQL_DIR}/lib/static)
 LINK_DIRECTORIES(${DEPS_LIB_DIR})
+LINK_DIRECTORIES(${DEPS_LIB_DIR}/static)
 
 add_subdirectory (services)
 add_subdirectory (hooks)

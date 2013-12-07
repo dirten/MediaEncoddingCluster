@@ -28,7 +28,9 @@ namespace org {
       class HookProvider;
       class Task;
       class WebHookHandlerFactory;
-      
+      /**
+        * @TODO: build this class thread save !!!
+        */
       class PluginRegistry {
         classlogger("org.esb.core.PluginRegistry")
       public:

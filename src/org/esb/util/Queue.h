@@ -19,7 +19,7 @@ namespace org {
     namespace util {
 
 
-      template<typename T, int MAXSIZE = 10 >
+      template<typename T, int MAXQUEUESIZE = 10 >
       class Queue {
         classlogger("org.esb.util.Queue");
       private:
@@ -79,7 +79,7 @@ namespace org {
           //LOGTRACE("after mutex");
           bool result = false;
           //bool first_item=_q.empty();
-          while (MAXSIZE!=0 && _q.size() >= MAXSIZE) {
+          while (MAXQUEUESIZE!=0 && _q.size() >= MAXQUEUESIZE) {
               //LOGDEBUG("Waiting in enqueuelock:"<<_q.size());
               enqueue_condition.wait(enqueue_lock);
               //LOGDEBUG("condition enqueuelock");

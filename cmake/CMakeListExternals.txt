@@ -18,4 +18,5 @@ INCLUDE(cmake/CMakeExternalsFFMpeg.txt)
 
 set(BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build")
 set(DEPS_LIB_DIR "${BUILD_DIR}/lib")
+set(DEPS_INC_DIR "${BUILD_DIR}/include")
 

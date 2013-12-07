@@ -189,8 +189,9 @@ namespace encodingtask {
     }*/
     partitionservice::PartitionManager::getInstance()->addCollector(boost::bind(&EncodingTask::collector, this, _1,_2));
     _unit_list.addCallback(boost::bind(&EncodingTask::unitListCallback, this, _1));
-    LOGDEBUG("starting progress observer")
-        boost::thread(boost::bind(&EncodingTask::observeProgress,this));
+    LOGDEBUG("starting progress observer");
+
+    boost::thread(boost::bind(&EncodingTask::observeProgress,this));
 
     setStatus(PREPARED);
   }
@@ -240,6 +241,7 @@ namespace encodingtask {
 
         /*next process unit ready*/
         int next_ready=litesql::select<db::ProcessUnit > (*database, db::ProcessUnit::Id==next_id && db::ProcessUnit::Recv > 1).count();
+
         if(next_ready){
           LOGDEBUG("pushing next id"+StringUtil::toString(next_id));
           db::ProcessUnit pu=litesql::select<db::ProcessUnit > (*database, db::ProcessUnit::Id==next_id).one();
@@ -251,7 +253,7 @@ namespace encodingtask {
           std::string d;
           int readed=inputstream.read(d);
           LOGDEBUG("bytes readed:"+StringUtil::toString(readed))
-          boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit;
+              boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit;
           try{
             Serializing::deserialize(unit, d);
             unit->_output_packets.sort(EncodingTask::ptsComparator);
@@ -332,7 +334,7 @@ namespace encodingtask {
   }
 
   void EncodingTask::pushBuffer(Ptr<Packet>p) {
-    if (!getStatus() == PREPARED) {
+    if (!(getStatus() == PREPARED)) {
       setStatusMessage(std::string("Task is not in PREPARED State"));
       throw org::esb::core::TaskException(getStatusMessage());
     }
@@ -443,13 +445,13 @@ namespace encodingtask {
     outstream.close();
     LOGDEBUG("written ProcessUnit to "<<outputfile.getFilePath())
 
-    //litesql::Blob blob=litesql::Blob(data.c_str(),data.length());
-    //pu.data=blob;
-    //std::ostringstream oss;
-    //oss << msg.getMessageID();
-    //pu.sendid=std::string(oss.str());
+        //litesql::Blob blob=litesql::Blob(data.c_str(),data.length());
+        //pu.data=blob;
+        //std::ostringstream oss;
+        //oss << msg.getMessageID();
+        //pu.sendid=std::string(oss.str());
 
-    pu.update();
+        pu.update();
     /*
     std::string d;
     litesql::Blob blob2=pu.data.value();
@@ -492,7 +494,7 @@ namespace encodingtask {
   void EncodingTask::putProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>) {
 
   }
-
+#if 0
   void EncodingTask::exportFile() {
     if (getStatus() == Task::ERROR) {
       LOGERROR("ExportTask have error");
@@ -622,7 +624,7 @@ namespace encodingtask {
     //setStatus(Task::DONE);
 
   }
-
+#endif
   bool EncodingTask::ptsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b) {
     return a->getPts() < b->getPts();
   }

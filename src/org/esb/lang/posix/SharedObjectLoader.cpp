@@ -39,7 +39,6 @@ namespace org {
         try {
           _lib_handle = dlopen(filename.c_str(), RTLD_LAZY);
         } catch (std::exception &exc) {
-          //LOGERROR("Error occurred during loading SharedObject: " << exc.what());
           _lib_handle = NULL;
         }
         if (!_lib_handle) {
@@ -47,26 +46,8 @@ namespace org {
           throw NotFoundException(__FILE__,__LINE__,message);
         }
       }
-      /*  
-      template<class T>
-    boost::function<T>
-       SharedObjectLoader::getFunctionHandle(std::string name) {
-        void * result = NULL;
-        try {
-          result = dlsym(_lib_handle, name.c_str());
-        } catch (std::exception & ex) {
-          result = NULL;
-          //LOGERROR("Error occurred during loading function :" << ex.what());
-        }
-        if (!result) {
-          std::string message = std::string("Error occurred during loading SharedObject: ") + dlerror();
-          throw NotFoundException(message);
-        }
-        return reinterpret_cast<T*>(result);//result;
-      }*/
 
       SharedObjectLoader::~SharedObjectLoader() {
-        //LOGDEBUG("SharedObjectLoader::~SharedObjectLoader():"<<_filename)
         if(dlclose(_lib_handle)){
           //LOGERROR("closing shared object : "<<_filename<<" : "<<dlerror());
         }else{
