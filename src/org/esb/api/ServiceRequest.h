@@ -24,9 +24,9 @@ namespace org {
         int read(string & str);
         int read(unsigned char * buffer, int length);
 
-        int read(vector<unsigned char>&buffer) {};
+        int read(vector<unsigned char>&buffer) {return -1;}
 
-        int read() {};
+        int read() {return -1;}
         long long int available(bool isBlocking = false);
       private:
         mg_connection *_conn;
