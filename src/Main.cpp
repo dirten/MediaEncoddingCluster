@@ -50,7 +50,6 @@ namespace po = boost::program_options;
 
 int main(int argc, char * argv[]) {
   org::esb::hive::Environment::build(argc, argv);
-  org::esb::av::FormatBaseStream::initialize();
   try {
     po::options_description gen("General options");
     gen.add_options()
@@ -79,6 +78,8 @@ int main(int argc, char * argv[]) {
     props.setProperty(LOG4CPLUS_TEXT("appender.MAIN.File"), LOG4CPLUS_TEXT(Environment::get("log.path") + "/mhive-debug.log"));
     props.setProperty(LOG4CPLUS_TEXT("appender.ERROR.File"), LOG4CPLUS_TEXT(Environment::get("log.path") + "/mhive-error.log"));
     config.configure();
+
+    org::esb::av::FormatBaseStream::initialize();
 
     string base_path = Environment::get("hive.base_path");
 
