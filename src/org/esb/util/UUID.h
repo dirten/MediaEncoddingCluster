@@ -8,7 +8,10 @@
 #ifndef UUID_H
 #define	UUID_H
 #include <string>
+#include <boost/uuid/uuid.hpp>
 #include "exports.h"
+
+
 namespace org {
   namespace esb {
     namespace util {
@@ -20,6 +23,7 @@ namespace org {
         operator std::string() const { return _uuid; }
       private:
         std::string _uuid;
+        boost::uuids::uuid mId;
       };
     }
   }
