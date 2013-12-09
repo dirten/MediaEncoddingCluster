@@ -177,9 +177,9 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   //  while (len > 0) {
   //    logdebug("Decode Packet");
   int bytesDecoded = 0;
-  if (ctx->codec_id > -1) {
+  //if (ctx->codec_id > -1) {
     bytesDecoded = avcodec_decode_video2(ctx, frame->getAVFrame(), &_frameFinished, packet.packet);
-  }
+  //}
   if (_frameFinished) {
 
     //_pix_fmt_converter->process(*tmp_frame, *frame);
@@ -570,7 +570,7 @@ std::string Decoder::getStaticCodecName(CodecID codec_id) {
   AVCodec *p = NULL;
   int a = 0;
   while ((p = av_codec_next(p))) {
-    if (p->decode && p->id != NULL&&p->id == codec_id) {
+    if (p->decode && p->id == codec_id) {
       result=p->name;
     }
   }
