@@ -1,7 +1,7 @@
 ############################################################
 #
 # Main Cmake file
-#
+# @TODO: need to clean up the build system!!!
 ############################################################
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
@@ -22,7 +22,9 @@ add_definitions(-DFF_API_AVCODEC_OPEN)
 add_definitions(-DFF_API_OLD_DECODE_AUDIO)
 add_definitions(-DFF_API_OLD_ENCODE_AUDIO)
 add_definitions(-DFF_API_CODEC_ID)
-#add_definitions(-Weffc++)
+add_definitions(-Weffc++)
+#add_definitions(-Wall)
+
 
 IF(NOT WIN32)
   add_definitions(-fPIC)
