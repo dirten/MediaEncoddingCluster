@@ -216,7 +216,7 @@ class SampleFormat;*/
           }
           //findCodec(_mode);
         };
-        BOOST_SERIALIZATION_SPLIT_MEMBER();
+        BOOST_SERIALIZATION_SPLIT_MEMBER()
 
         AVCodec * _codec;
         AVDictionary * _codec_opts;
