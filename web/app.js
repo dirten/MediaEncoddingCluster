@@ -1,14 +1,15 @@
-Ext.application({
-                    requires: ['Ext.container.Viewport'],
-                    name: 'MEC',
-                    autoCreateViewport:true,
-                    appFolder: 'app',
-                    controllers: [
-                        'Flows',
-                        'Formats',
-                        'ProfileController'
-                    ],
-                    /*
+Ext.application(
+        {
+            requires: ['Ext.container.Viewport'],
+            name: 'MEC',
+            autoCreateViewport:true,
+            appFolder: 'app',
+            controllers: [
+                'Flows',
+                'Formats',
+                'ProfileController'
+            ],
+            /*
                     views: [
                         'flow.List',
                         'format.List'
@@ -26,4 +27,5 @@ Ext.application({
 
                                    });
                     }*/
-                });
+        }
+        );
