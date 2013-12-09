@@ -257,16 +257,11 @@ namespace org {
         org::esb::io::File plugin_dir(file);
         if(plugin_dir.isDirectory()) {
           org::esb::io::FileList plugin_list = plugin_dir.listFiles();
-          plugin_list.sort(compare_webservice);
           foreach(Ptr<org::esb::io::File> f, plugin_list) {
-            if (f->isDirectory()){
-              load(f->getPath());
-            }else{
-              loadFile(f->getPath());
-            }
+            load(f->getPath());
           }
         }else{
-          //loadFile(f->getPath());
+          loadFile(file);
         }
       }
 
@@ -280,7 +275,7 @@ namespace org {
       void PluginRegistry::loadFile(std::string file) {
         if(strstr(file.c_str(),".dylib")>0||strstr(file.c_str(),".dll")>0||strstr(file.c_str(),".so")>0){
           LOGDEBUG("loading plugins from " << file);
-          std::cout<<"loading plugins from "<<file<<std::endl;
+          //std::cout<<"loading plugins from "<<file<<std::endl;
 
           try {
             org::esb::lang::SharedObjectLoader * loader = new org::esb::lang::SharedObjectLoader(file);
@@ -307,7 +302,8 @@ namespace org {
         }
 
         foreach(SharedObjectMap::value_type row, _shared_objects) {
-          delete row.second;
+          //delete row.second;
+          //row.second=NULL;
         }
       }
       }

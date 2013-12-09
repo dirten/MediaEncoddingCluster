@@ -22,7 +22,7 @@ add_definitions(-DFF_API_AVCODEC_OPEN)
 add_definitions(-DFF_API_OLD_DECODE_AUDIO)
 add_definitions(-DFF_API_OLD_ENCODE_AUDIO)
 add_definitions(-DFF_API_CODEC_ID)
-add_definitions(-Weffc++)
+#add_definitions(-Weffc++)
 #add_definitions(-Wall)
 
 

@@ -40,10 +40,15 @@ MESSAGE("PocoLinkLibarayUtil"  ${POCO_LIB_NET_UTIL})
 
 TARGET_LINK_LIBRARIES(core 
   ${POCO_LIB_NET}
-  ${POCO_LIB_NET_UTIL}
+  #${POCO_LIB_NET_UTIL}
   ${POCO_LIB_FOUNDATION}
+  #json
+  #db
+  #lang
+  #util
+  #io
   #${POCO_LIB_XML}
-  ${Boost_LIBRARIES}
+  #${Boost_LIBRARIES}
   #lang
   #io
   hive

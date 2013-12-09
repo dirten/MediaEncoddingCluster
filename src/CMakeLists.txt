@@ -55,8 +55,7 @@ ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 add_executable (mhive Main.cpp )
 
 target_link_libraries (mhive 
-  ${POCO_LIB_FOUNDATION}
-  ${Boost_LIBRARIES}
+  #${Boost_LIBRARIES}
   lang
   hive 
   av 
@@ -65,6 +64,8 @@ target_link_libraries (mhive
   io 
   net
   core
+  #${POCO_LIB_FOUNDATION}
+  #${POCO_LIB_FOUNDATION}
 )
 IF(WIN32)
   IF(CMAKE_BUILD_TYPE MATCHES "debug")
