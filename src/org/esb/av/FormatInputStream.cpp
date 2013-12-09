@@ -151,7 +151,7 @@ namespace org {
       /*closing the input file and delete all StreamInfo for that file*/
       void FormatInputStream::close() {
         if (_isValid&&formatCtx)
-          av_close_input_file(formatCtx);
+          avformat_close_input(&formatCtx);
         formatCtx=NULL;
         if (_stream_info_map.size() > 0) {
           map<int, StreamInfo*>::iterator it = _stream_info_map.begin();
