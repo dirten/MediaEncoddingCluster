@@ -22,7 +22,7 @@ using namespace org::esb::io;
 int main(int argc, char** argv) {
   Log::open("");
   std::string base_path=MEC_SOURCE_DIR;
-  std::string filename=base_path+"/test.dvd";
+  std::string filename=base_path+"/test-data/test.dvd";
   if(argc>1){
     filename=argv[1];
   }

@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
   std::string trg;
   if (argc == 1) {
     src = MEC_SOURCE_DIR;
-    src.append("/test.dvd");
+    src.append("/test-data/test.dvd");
     trg = MEC_SOURCE_DIR;
     trg.append("/test2.mp4");
   } else {

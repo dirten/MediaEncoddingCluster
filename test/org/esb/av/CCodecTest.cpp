@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
   if (argc == 1) {
     std::string basepath = MEC_SOURCE_DIR;
     std::string path = "file://";
-    file = path + basepath + "/test.dvd";
+    file = path + basepath + "/test-data/test.dvd";
   } else {
     file = argv[1];
   }

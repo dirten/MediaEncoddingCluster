@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
   std::string src;
   if (argc == 1) {
     src = MEC_SOURCE_DIR;
-    src.append("/test.dvd");
+    src.append("/test-data/test.dvd");
   } else {
     src = argv[1];
   }

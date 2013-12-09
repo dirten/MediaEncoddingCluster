@@ -58,7 +58,7 @@ void testDecodeRawVideo(){
   enc.encode(*frame);
   enc.encode(*frame);
   enc.encode(*frame);
-  return;
+  //return;
   org::esb::av::Decoder dec(CODEC_ID_RAWVIDEO);
   dec.setTimeBase(1, 25);
   dec.setWidth(320);
@@ -151,7 +151,7 @@ void testDecodeVideo(std::string filepath) {
  */
 void testDecodeAudio(){
   std::string filepath = MEC_SOURCE_DIR;
-    filepath.append("/test.dvd");
+    filepath.append("/test-data/test.dvd");
   org::esb::io::File file(filepath.c_str());
   org::esb::av::FormatInputStream fis(&file);
   int offset = 0;
@@ -243,7 +243,7 @@ int main(int argc, char** argv) {
   Log::open("");
   org::esb::av::FormatBaseStream::initialize();
   std::string filename=MEC_SOURCE_DIR;
-  filename.append("/test.dvd");
+  filename.append("/test-data/test.dvd");
   if(argc>1){
     filename=argv[1];
   }

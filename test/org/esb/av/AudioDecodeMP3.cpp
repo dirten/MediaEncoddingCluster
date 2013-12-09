@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
   std::string filepath;
   if (argc < 2) {
     filepath.append(MEC_SOURCE_DIR);
-    filepath.append("/test.dvd");
+    filepath.append("/test-data/test.dvd");
   } else {
     filepath.append("/");
     filepath.append(argv[1]);

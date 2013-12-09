@@ -1,11 +1,14 @@
-/* 
+/*
  * File:   BaseJSONApiTest.cpp
  * Author: HoelscJ
  *
  * Created on 6. Februar 2012, 14:56
  */
 
+
 #include <cstdlib>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include "org/esb/core/PluginRegistry.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/hive/Environment.h"
@@ -96,7 +99,7 @@ void test_file_list() {
 
 void test_mediafile() {
   std::string file = MEC_SOURCE_DIR;
-  file += "/test.dvd";
+  file += "/test-data/test.dvd";
   HTTPClientSession s(HOST, PORT);
   HTTPRequest request(HTTPRequest::HTTP_GET, std::string("/api/v1/media/").append(file));
   s.sendRequest(request);
@@ -134,6 +137,7 @@ void test_mediafile() {
   assert(node["data"]["streams"].at(1).contains("bitrate"));
   assert(node["data"]["streams"].at(1).contains("samplerate"));
   assert(node["data"]["streams"].at(1).contains("channels"));
+
 }
 
 /*

@@ -3,6 +3,7 @@
 include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${FFMPEG_DIR}/include)
 include_directories (${MEC_SOURCE_DIR}/src)
+include_directories (${GTEST_DIR}/include)
 include_directories (${XUGGLE}/include)
 #include_directories (/usr/include/gstreamer-0.10)
 #include_directories (/usr/include/glib-2.0/)
@@ -14,6 +15,8 @@ include_directories (${XUGGLE}/include)
 
 MESSAGE("FFMPeg dir "${FFMPEG_DIR}/lib)
 LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
+LINK_DIRECTORIES(${GTEST_DIR})
+
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
@@ -22,6 +25,10 @@ LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
 #LINK_DIRECTORIES    (${XUGGLE}/lib)
 
+add_executable (GTestAV
+  GTestAV.cpp
+  GTestDecoder.cpp
+)
 add_executable (TestPacket TestPacket.cpp)
 add_executable (TestSerializePacket TestSerializePacket.cpp)
 add_executable (TestDeSerializePacket TestDeSerializePacket.cpp)
@@ -58,6 +65,7 @@ add_executable (AVDictionaryTest AVDictionaryTest.cpp)
 add_executable (ResampleTest ResampleTest.cpp)
 add_executable (PacketInputStreamTest PacketInputStreamTest.cpp)
 
+target_link_libraries (GTestAV gtest pthread av)
 target_link_libraries (TestPacket av)
 #target_link_libraries (TestFfmpeg av io util lang avcodec)
 target_link_libraries (TestSerializePacket io av util lang ${BOOST_SERIAL_LIB_MT} )
@@ -115,11 +123,11 @@ ADD_TEST(av.PacketOutputStreamTest ${EXECUTABLE_OUTPUT_PATH}/TestPacketOutputStr
 #@TODO: reenable this when redisign plugin structure
 #ADD_TEST(av.ProcessAudioPacketTest ${EXECUTABLE_OUTPUT_PATH}/TestProcessAudioPacket)
 ADD_TEST(av.FullTranscodingTest ${EXECUTABLE_OUTPUT_PATH}/TestFullTranscoding)
-ADD_TEST(av.FullTranscodingDVD2AVITest ${EXECUTABLE_OUTPUT_PATH}/TestFullTranscoding ${MEC_SOURCE_DIR}/test.dvd ${MEC_SOURCE_DIR}/test.avi)
+ADD_TEST(av.FullTranscodingDVD2AVITest ${EXECUTABLE_OUTPUT_PATH}/TestFullTranscoding ${MEC_SOURCE_DIR}/test-data/test.dvd ${MEC_SOURCE_DIR}/test.avi)
 #ADD_TEST(av.Pass1Test ${EXECUTABLE_OUTPUT_PATH}/TestPass1)
 ADD_TEST(av.DecoderTest ${EXECUTABLE_OUTPUT_PATH}/TestDecoder)
 ADD_TEST(av.EncoderTest ${EXECUTABLE_OUTPUT_PATH}/TestEncoder)
-ADD_TEST(av.FrameConverterTest ${EXECUTABLE_OUTPUT_PATH}/TestFrameConverter ${MEC_SOURCE_DIR}/test.dvd)
+ADD_TEST(av.FrameConverterTest ${EXECUTABLE_OUTPUT_PATH}/TestFrameConverter ${MEC_SOURCE_DIR}/test-data/test.dvd)
 ADD_TEST(av.FrameTest ${EXECUTABLE_OUTPUT_PATH}/TestFrame)
 ADD_TEST(av.AudioDecodeMP3Test ${EXECUTABLE_OUTPUT_PATH}/AudioDecodeMP3)
 ADD_TEST(av.MediaLocatorTest ${EXECUTABLE_OUTPUT_PATH}/MediaLocatorTest)
