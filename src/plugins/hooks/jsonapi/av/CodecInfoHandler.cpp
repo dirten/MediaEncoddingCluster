@@ -21,6 +21,7 @@ class JSONAPI_EXPORT CodecInfoHandler : public org::esb::core::WebHookPlugin {
             break;
         }
       }
+
       if(p){
         JSONNode cnode(JSON_NODE);
         cnode.set_name("data");
@@ -35,7 +36,7 @@ class JSONAPI_EXPORT CodecInfoHandler : public org::esb::core::WebHookPlugin {
         AVClass *clazz =const_cast<AVClass*> (p->priv_class);
         option=clazz->option;
         pnode.push_back(JSONNode("",option->name));
-        while (option = av_opt_next(clazz, option)) {
+        while ((option = av_opt_next(clazz, option))) {
           if (option->offset > 0) {
             //int len = 1000;
             //char data[1000];
@@ -44,8 +45,8 @@ class JSONAPI_EXPORT CodecInfoHandler : public org::esb::core::WebHookPlugin {
           }
         }
         option = NULL;
-        const AVClass * cls=avcodec_get_class();
-        while ((option = av_next_option(&cls, option))){
+        AVClass * cls=const_cast<AVClass*>( avcodec_get_class());
+        while ((option = av_opt_next(&cls, option))){
           if (option->offset > 0) {
             pnode.push_back(JSONNode("",option->name));
           }
