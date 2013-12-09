@@ -267,6 +267,7 @@ namespace org {
         _mode = mode;
         _opened = false;
         ctx = avcodec_alloc_context();
+        //return;
         ctx->codec_id = codecId;
         if (codecId>-1) {
           findCodec(mode);
@@ -350,7 +351,7 @@ namespace org {
         ctx->sample_fmt = AV_SAMPLE_FMT_NONE;
         ctx->channels = 0;
         ctx->channel_layout=AV_CH_LAYOUT_STEREO;
-          //        ctx->idct_algo = FF_IDCT_AUTO;
+        //        ctx->idct_algo = FF_IDCT_AUTO;
         //        ctx->skip_idct = AVDISCARD_DEFAULT;
         //        ctx->error_recognition = FF_ER_CAREFUL;
         //        ctx->error_concealment = 3;
@@ -694,7 +695,7 @@ namespace org {
           }
           //          LOGDEBUG( "recently fifo size:" << av_fifo_size(fifo));
           //if (fifo)
-            //av_fifo_free(fifo);
+          //av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);
         } else {
           LOGDEBUG("Codec not closed, because it was not opened:" << ctx <<"("<<this<<")");
