@@ -26,7 +26,7 @@
  */
 
 #include "../SharedObjectLoader.h"
-#include "../NotFoundException.h"
+#include "../Exception.h"
 //#include "org/esb/util/Log.h"
 #include <dlfcn.h>
 namespace org {
@@ -43,7 +43,7 @@ namespace org {
         }
         if (!_lib_handle) {
           std::string message = std::string("Error occurred during loading SharedObject: ") + dlerror();
-          throw NotFoundException(__FILE__,__LINE__,message);
+          throw Exception(__FILE__,__LINE__,message);
         }
       }
 
