@@ -6,6 +6,9 @@ Ext.define('MEC.model.Audio', {
                            { name:'ab', type:'auto' },
                            { name:'ar', type:'auto' }
                        ],
-               belongsTo:'Profile'
+               belongsTo:'Profile',
+               proxy: {
+                   type: 'memory'
+               }
 
            });

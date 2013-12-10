@@ -57,7 +57,7 @@ Ext.define('MEC.view.Viewport', {
                                        xtype: 'recentlyplayedscroller',
                                        height: 250
                                    }, {
-                                       xtype: 'songinfo',
+                                       xtype: 'profilelist',
                                        flex: 1
                                    }]
                            }]

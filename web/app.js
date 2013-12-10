@@ -5,10 +5,10 @@ Ext.application(
             autoCreateViewport:true,
             appFolder: 'app',
             controllers: [
-                'Flows',
-                'Formats',
-                'ProfileController'
-            ],
+                             'Flows',
+                             'Formats',
+                             'ProfileController'
+                         ],
             /*
                     views: [
                         'flow.List',

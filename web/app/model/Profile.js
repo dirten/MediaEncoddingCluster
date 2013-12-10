@@ -6,9 +6,15 @@ Ext.define('MEC.model.Profile', {
                            { name:'format', type:'auto' },
                            { name:'video', type:'auto' },
                            /*{ name:'audio', type:'auto' },*/
-                           /*{ name:'audio.id', mapping:'audio.id'}*/
+                           /*{ name:'audio.id', mapping:'audio.id'},
+                           { name:'audio.ar', mapping:'audio.ar'}*/
                        ],
-               belongsTo:'Audio',
+               hasOne: {
+                   model: 'MEC.model.Audio',
+                   associationKey: 'audio',
+                   getterName: 'getAudio'
+               },
+
                proxy: {
                    type: 'rest',
                    url: 'api/v1/profile',

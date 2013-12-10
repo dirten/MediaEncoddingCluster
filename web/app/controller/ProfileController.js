@@ -31,14 +31,18 @@ Ext.define('MEC.controller.ProfileController', {
                                                            //var view2=this.getProfileEdit();
                                                            var view = Ext.widget('profileedit');
                                                            //var view = Ext.widget('profiletop');
-                                                           console.log(profile.audio());
-                                                           console.log(view);
-                                                           console.log(view.down('form'));
+                                                           console.log(profile);
+                                                           console.log(profile.getAudio());
+                                                           //console.log(view);
+                                                           //console.log(view.down('form'));
                                                            //profile.data['audioid']=profile.data.audio.id;
                                                            //profile.set('audio.id','data');
                                                            //console.log(profile.getData());
                                                            //profile.getData().audio
                                                            view.down('form').loadRecord(profile);
+                                                           //var view = Ext.widget('audiopanel');
+                                                           view.down('form').loadRecord(profile.getAudio());
+                                                           //view.down('form').loadRecord(profile.get('audio'));
                                                            //view.loadRecord(profile);
                                                            //view.getForm().loadRecord(profile);
                                                            //view.down('form').setValue('audio','bla');

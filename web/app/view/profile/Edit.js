@@ -1,14 +1,14 @@
 Ext.define('MEC.view.template.Edit', {
-    extend: 'Ext.XTemplate',
+               extend: 'Ext.XTemplate',
 
-    constructor: function (config) {
-        this.callParent(['<div style="padding-left: 20px;">',
-                                    '<div style="width:100%;float:left;position:relative">{label}bla fasel</div>',
-                                    '<img src="{icon}" style="float:left;position:relative;width:20px;right:20px;margin-left:-100%;height:20px;" />',
-                                  '</div>']
-                                  );
-    }
-}) ;
+               constructor: function (config) {
+                                this.callParent(['<div style="padding-left: 20px;">',
+                                                 '<div style="width:100%;float:left;position:relative">{label}bla fasel</div>',
+                                                 '<img src="{icon}" style="float:left;position:relative;width:20px;right:20px;margin-left:-100%;height:20px;" />',
+                                                 '</div>']
+                                                );
+                            }
+           }) ;
 
 Ext.define('MEC.view.profile.Edit', {
                extend: 'Ext.window.Window',
@@ -56,11 +56,19 @@ Ext.define('MEC.view.profile.Edit', {
                                               items:[
                                                         {
                                                             title:'first',
+                                                            alias:'widget.audiopanel',
                                                             items:[
                                                                       {
                                                                           xtype: 'textfield',
                                                                           fieldLabel:'bla',
-                                                                          name:'audio.id'
+                                                                          name:'id'
+
+
+                                                                      },
+                                                                      {
+                                                                          xtype: 'textfield',
+                                                                          fieldLabel:'bla',
+                                                                          name:'ar'
 
 
                                                                       }
@@ -73,7 +81,7 @@ Ext.define('MEC.view.profile.Edit', {
                                                                        xtype:'panel',
                                                                        html:Ext.create('Ext.XTemplate', 'first {firstName} last{lastName}').apply({firstName:'jon'})
 
-                                                            }]
+                                                                   }]
                                                         }
 
                                                     ]

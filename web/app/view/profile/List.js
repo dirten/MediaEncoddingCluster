@@ -4,7 +4,7 @@ Ext.define('MEC.view.profile.List' ,{
 
                title: 'All Profiles',
                store : 'ProfileStore',
-               hideHeaders:true,
+               hideHeaders:false,
                initComponent: function() {
 
                    this.columns = [

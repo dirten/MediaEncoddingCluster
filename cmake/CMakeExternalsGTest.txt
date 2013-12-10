@@ -1,0 +1,15 @@
+
+set(BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build")
+
+IF(MINGW)
+  SET(USER_CONFIG "--host=x86_64-w64-mingw32")
+ENDIF(MINGW)
+
+ExternalProject_Add(gtestdep
+URL http://googletest.googlecode.com/files/gtest-1.7.0.zip
+#CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --disable-static --enable-shared --with-pic ${USER_CONFIG}
+INSTALL_COMMAND true
+BUILD_IN_SOURCE 1
+)
+SET(GTEST_DIR "${CMAKE_CURRENT_BINARY_DIR}/gtestdep-prefix/src/gtestdep")
+
