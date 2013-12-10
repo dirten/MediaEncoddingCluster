@@ -17,8 +17,7 @@ namespace org {
     namespace util {
 
       PUUID::PUUID():
-      mId(),
-      _uuid(boost::lexical_cast<std::string > (mId))
+      _uuid(boost::lexical_cast<std::string > (boost::uuids::random_generator()()))
       {
 
       }

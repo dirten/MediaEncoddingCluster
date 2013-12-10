@@ -21,7 +21,9 @@ int main(int argc, char **argv) {
   } else {
     src = argv[1];
   }
-  int stream_index = 0;
+
+  /*@TODO: finding first decodable stream here*/
+  int stream_index = 1;
   if (argc == 3) {
     stream_index = atoi(argv[2]);
   }

@@ -25,10 +25,10 @@ LINK_DIRECTORIES(${GTEST_DIR})
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
 #LINK_DIRECTORIES    (${XUGGLE}/lib)
 
-add_executable (GTestAV
-  GTestAV.cpp
-  GTestDecoder.cpp
-)
+#add_executable (GTestAV
+#  GTestAV.cpp
+#  GTestDecoder.cpp
+#)
 add_executable (TestPacket TestPacket.cpp)
 add_executable (TestSerializePacket TestSerializePacket.cpp)
 add_executable (TestDeSerializePacket TestDeSerializePacket.cpp)
@@ -65,7 +65,7 @@ add_executable (AVDictionaryTest AVDictionaryTest.cpp)
 add_executable (ResampleTest ResampleTest.cpp)
 add_executable (PacketInputStreamTest PacketInputStreamTest.cpp)
 
-target_link_libraries (GTestAV gtest pthread av)
+#target_link_libraries (GTestAV gtest pthread av)
 target_link_libraries (TestPacket av)
 #target_link_libraries (TestFfmpeg av io util lang avcodec)
 target_link_libraries (TestSerializePacket io av util lang ${BOOST_SERIAL_LIB_MT} )

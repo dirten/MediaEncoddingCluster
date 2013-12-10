@@ -23,7 +23,6 @@ namespace org {
         operator std::string() const { return _uuid; }
       private:
         std::string _uuid;
-        boost::uuids::uuid mId;
       };
     }
   }
