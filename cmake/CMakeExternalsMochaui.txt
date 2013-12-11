@@ -8,7 +8,7 @@ GIT_REPOSITORY https://github.com/mui/mochaui.git
 CONFIGURE_COMMAND cd <SOURCE_DIR> && git checkout develop
 BUILD_COMMAND true
 CMAKE_COMMAND true
-INSTALL_COMMAND cp -r <SOURCE_DIR>/Source ${PROJECT_SOURCE_DIR}/web && cp -r <SOURCE_DIR>/Demo ${PROJECT_SOURCE_DIR}/web
+INSTALL_COMMAND cp -r <SOURCE_DIR>/Source ${PROJECT_SOURCE_DIR}/web && cp -r <SOURCE_DIR>/Demo/scripts ${PROJECT_SOURCE_DIR}/web/scripts
 #INSTALL_COMMAND cp -r <SOURCE_DIR>/src ${PROJECT_SOURCE_DIR}/web && cp -r <SOURCE_DIR>/demo ${PROJECT_SOURCE_DIR}/web
 #URL http://github.com/mui/mochaui/archive/develop.zip
 #PATCH_COMMAND cp ${PROJECT_SOURCE_DIR}/src/patch/safmq-CMakeLists.txt <SOURCE_DIR>/CMakeLists.txt

@@ -1,0 +1,64 @@
+
+<script>
+var container = MUI.get('mainPanel').el.content;//Demo.getDemoContainer(node, false, true, 507, 320);
+var dataGrid;
+
+var gridButtonClick = function(button){
+        console.log(dataGrid);
+          MUI.create({
+               control:'MUI.Window',
+               id: 'ajaxpage',
+               title:'Edit Profile',
+               content: {url:'/pages/ProfileForm.html'},
+               width: 600,
+               height: 440
+           });
+         };
+
+var accordionFunction = function(obj){
+    obj.parent.set('html', '<div style="padding:5px"> Row ' + obj.row + '<br/><br/>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </div>');
+};
+        dataGrid=new MUI.Grid({
+               control:'MUI.Grid',
+               id: 'profileGrid',
+               container: container,
+               columns: [
+                            {
+                                header: "Name",
+                                name: 'name',
+                                dataType:'string',
+                                width:400
+                            },
+                            {
+                                header: "Uuid",
+                                name: 'uuid',
+                                dataType:'string',
+                                width:400
+                            }
+                        ],
+               buttons : [
+                             {name: 'Add', cssClass: 'add', 'click': gridButtonClick},
+                             {name: 'Delete', cssClass: 'delete', 'click': gridButtonClick},
+                             {name: 'Edit', cssClass: 'edit', 'click': gridButtonClick}
+                         ],
+
+               content:{
+                   url:"/api/v1/profile",
+                   loadMethod: 'json',
+                   paging: {
+                       pageSize:10,
+                       page:1
+                   }
+               },
+
+               showHeader: true,
+               sortHeader: true,
+               alternateRows: true,
+               resizeColumns: true,
+               multipleSelection:false
+           });
+
+           //console.log(dataGrid);
+           //MUI.get('profileGrid').addEvent('dblclick', gridButtonClick);
+          //dataGrid.addEvent('dblclick', gridButtonClick);
+</script>
