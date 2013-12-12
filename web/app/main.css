@@ -48,3 +48,19 @@
     position: relative;
     left: -1px;
 }
+.even {
+  background: #EEE;
+}
+
+th.underline{
+  border-bottom-style:solid;
+  border-bottom-width:1px;
+}
+tr:hover {
+  background: #CCC;
+}
+
+label {
+ display: inline-block;
+ width: 250px;
+}

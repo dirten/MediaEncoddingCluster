@@ -1,56 +1,19 @@
 
 <script>
-var container = MUI.get('mainPanel').el.content;//Demo.getDemoContainer(node, false, true, 507, 320);
-
-var gridButtonClick = function(button){
-    alert(button);
-};
-
-var accordionFunction = function(obj){
-    obj.parent.set('html', '<div style="padding:5px"> Row ' + obj.row + '<br/><br/>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </div>');
-};
-
-var dataGrid=MUI.create({
-               control: 'MUI.Grid',
-               'id': 'profileGrid',
-               container: container,
-
-               columns: [
-                            {
-                                header: "Name",
-                                name: 'flowname',
-                                dataType:'string',
-                                width:400
-                            },
-                            {
-                                header: "Uuid",
-                                name: 'id',
-                                dataType:'string',
-                                width:400
-                            }
-                        ],
-                        //onDblClick:gridButtonClick,
-               buttons : [
-                             {name: 'Add', cssClass: 'add', 'click': gridButtonClick},
-                             {name: 'Delete', cssClass: 'delete', 'click': gridButtonClick},
-                             //{separator: true},
-                             {name: 'Edit', cssClass: 'duplicate', 'click': gridButtonClick}
-                         ],
-
-               content:{
-                   url:"/api/v1/encoding",
-                   loadMethod: 'json',
-                   paging: {
-                       pageSize:10,
-                       page:1
-                   }
-               },
-
-               showHeader: true,
-               sortHeader: false,
-               alternateRows: true,
-               resizeColumns: true,
-               multipleSelection:false
-           });
-//dataGrid.addEvent('dblclick', gridButtonClick);
+$.getJSON( "/api/v1/encoding", function( data ) {
+  var i=0;
+  $.each( data.data, function( key, val ) {
+  var even_odd=++i%2==0?'even':'odd';
+  $("#list_encoding").append('<tr class="'+even_odd+'"><td>'+val.flowname+'</td><td>'+val.id+'</td></tr>');
+  });
+});
 </script>
+<table width="800" border=0>
+<thead>
+<tr>
+  <th class="underline" style="width:400px">Name</th>
+  <th class="underline" style="width:400px">Uuid</th>
+</tr>
+</thead>
+<tbody id="list_encoding"/>
+</table>

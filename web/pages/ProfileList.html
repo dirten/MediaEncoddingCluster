@@ -1,64 +1,50 @@
+<table width="800" border=0>
+<thead >
+<tr style="border:solid 2px; border-color:black">
+  <th class="underline" style="width:400px">Name</th>
+  <th class="underline" style="width:400px">Uuid</th>
+</tr>
+</thead>
+<tbody id="list_profile"/>
+</table>
+<div id="dialog-form" title="Edit Profile"></div>
 
 <script>
-var container = MUI.get('mainPanel').el.content;//Demo.getDemoContainer(node, false, true, 507, 320);
-var dataGrid;
+var profileId=0;
+$(function() {
 
-var gridButtonClick = function(button){
-        console.log(dataGrid);
-          MUI.create({
-               control:'MUI.Window',
-               id: 'ajaxpage',
-               title:'Edit Profile',
-               content: {url:'/pages/ProfileForm.html'},
-               width: 600,
-               height: 440
-           });
-         };
+  $.getJSON( "/api/v1/profile", function( data ) {
+    var i=0;
+    $.each( data.data, function( key, val ) {
+      var even_odd=++i%2==0?'even':'odd';
+      $("#list_profile").append('<tr class="'+even_odd+' clickable" data="'+val.uuid+'"><td>'+val.name+'</td><td>'+val.uuid+'</td></tr>');
+    });
 
-var accordionFunction = function(obj){
-    obj.parent.set('html', '<div style="padding:5px"> Row ' + obj.row + '<br/><br/>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </div>');
-};
-        dataGrid=new MUI.Grid({
-               control:'MUI.Grid',
-               id: 'profileGrid',
-               container: container,
-               columns: [
-                            {
-                                header: "Name",
-                                name: 'name',
-                                dataType:'string',
-                                width:400
-                            },
-                            {
-                                header: "Uuid",
-                                name: 'uuid',
-                                dataType:'string',
-                                width:400
-                            }
-                        ],
-               buttons : [
-                             {name: 'Add', cssClass: 'add', 'click': gridButtonClick},
-                             {name: 'Delete', cssClass: 'delete', 'click': gridButtonClick},
-                             {name: 'Edit', cssClass: 'edit', 'click': gridButtonClick}
-                         ],
+    $(".clickable").click(function() {
+    profileId=this.getAttribute("data");
+    console.log(profileId);
+      $("#dialog-form").load('pages/ProfileForm.html?uid=1', function() {
+        $("#dialog-form").dialog("open");
+      });
+    });
+  });
 
-               content:{
-                   url:"/api/v1/profile",
-                   loadMethod: 'json',
-                   paging: {
-                       pageSize:10,
-                       page:1
-                   }
-               },
+  $("#dialog-form").dialog({
+    autoOpen: false,
+    height: 600,
+    width: 800,
+    modal: true,
+    buttons: {
+            "Save": function() {
+            },
+            Cancel: function() {
+              $( this ).dialog( "close" );
+            }
+          },
+          close: function() {
+            //allFields.val( "" ).removeClass( "ui-state-error" );
+          }
+    });
+});
 
-               showHeader: true,
-               sortHeader: true,
-               alternateRows: true,
-               resizeColumns: true,
-               multipleSelection:false
-           });
-
-           //console.log(dataGrid);
-           //MUI.get('profileGrid').addEvent('dblclick', gridButtonClick);
-          //dataGrid.addEvent('dblclick', gridButtonClick);
 </script>
