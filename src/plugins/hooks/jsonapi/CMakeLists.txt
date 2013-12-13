@@ -54,6 +54,7 @@ add_library (jsonapi SHARED
   encoding/EncodingDeleteHandler.cpp
   encoding/EncodingRestartHandler.cpp
   encoding/EncodingStatusHandler.cpp
+  encoding/EncodingUploadHandler.cpp
 
 #API Handling the Watchfolder Requests
   watchfolder/WatchfolderCreateHandler.cpp

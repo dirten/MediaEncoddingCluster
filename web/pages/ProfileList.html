@@ -1,3 +1,4 @@
+<button id="new_profile">create a new Profile</button>
 <table width="800" border=0>
 <thead >
 <tr style="border:solid 2px; border-color:black">
@@ -11,8 +12,18 @@
 
 <script>
 var profileId=0;
-$(function() {
+$( "#new_profile" )
+      .button()
+      .click(function( event ) {
+      profileId=0;
+      $("#dialog-form").load('pages/ProfileForm.html', function() {
+        $("#dialog-form").dialog("open");
+      });
 
+      });
+
+function loadList() {
+  $("#list_profile").empty();
   $.getJSON( "/api/v1/profile", function( data ) {
     var i=0;
     $.each( data.data, function( key, val ) {
@@ -21,14 +32,15 @@ $(function() {
     });
 
     $(".clickable").click(function() {
-    profileId=this.getAttribute("data");
-    console.log(profileId);
-      $("#dialog-form").load('pages/ProfileForm.html?uid=1', function() {
+      profileId=this.getAttribute("data");
+      //console.log(profileId);
+      $("#dialog-form").load('pages/ProfileForm.html', function() {
         $("#dialog-form").dialog("open");
       });
     });
   });
-
+  }
+  loadList();
   $("#dialog-form").dialog({
     autoOpen: false,
     height: 600,
@@ -36,6 +48,23 @@ $(function() {
     modal: true,
     buttons: {
             "Save": function() {
+              console.log(profile_data);
+                $.ajax({
+                   url: "/api/v1/profile/"+(profileId==0?"":profileId),
+                   data:JSON.stringify(profile_data),
+                   type: (profileId==0?'POST':'PUT'),
+                   dataType: "json",
+                   success: function( data ) {
+                    console.log("speichern erfolgreich")
+                    console.log(data);
+                    loadList();
+                    $("#dialog-form").dialog( "close" );
+                      //alert( "Data Saved: " + data );
+                   },
+                   error: function (xhr, ajaxOptions, thrownError) {
+                     console.log("error on save:"+xhr.status+"->"+thrownError);
+                   }
+                });
             },
             Cancel: function() {
               $( this ).dialog( "close" );
@@ -45,6 +74,6 @@ $(function() {
             //allFields.val( "" ).removeClass( "ui-state-error" );
           }
     });
-});
+
 
 </script>

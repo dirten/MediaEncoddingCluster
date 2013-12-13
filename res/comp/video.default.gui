@@ -1,0 +1,10 @@
+{"gui":{
+	"groups":[
+	    {"id":"video_general_settings", "title":"General Settings", "tab":"general"}
+	    ],
+	"options":[
+	    {"id":"id", "type":"string","title":"Codec","group":"video_general_settings","unit":"","control":{"type":"VideoCodecBox", "default":""}}
+	]
+    }
+}
+

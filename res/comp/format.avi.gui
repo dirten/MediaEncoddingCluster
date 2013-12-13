@@ -1,49 +1,30 @@
-<?xml version="1.0"?>
-<guis>
-  <gui>
-    <codecs>
-      <codec id="msmpeg4"/>
-      <codec id="wmv1"/>
-      <codec id="wmv2"/>
-      <codec id="libxvid"/>
-      <codec id="libx264"/>
-    </codecs>
-    <options>
-      <!--Groups-->
-      <optiongroup id="general_settings" title="General settings"/>
-      <optiongroup id="metadata_settings" title="Metadata"/>
-      <!--Keyframe settings-->
-      <option id="fileExtension" type="string" default="avi" title="File Extension" optionGroupId="general_settings">
-        <control type="ComboBox"></control>
-        <list>
-          <item title="avi" value="avi"/>
-        </list>
-      </option>
-      <option id="title" title="Title" optionGroupId="metadata_settings">
-        <control type="TextBox"></control>
-      </option>
-      <option id="author" title="Author" optionGroupId="metadata_settings">
-        <control type="TextBox"></control>
-      </option>
-      <option id="copyright" title="Copyright" optionGroupId="metadata_settings">
-        <control type="TextBox"></control>
-      </option>
-      <option id="comment" title="Comment" optionGroupId="metadata_settings">
-        <control type="TextBox"></control>
-      </option>
-      <option id="album" title="Album" optionGroupId="metadata_settings">
-        <control type="TextBox"></control>
-      </option>
-      <option id="year" title="year" optionGroupId="metadata_settings">
-        <control type="TextBox"></control>
-      </option>
-      <option id="track" title="Track" optionGroupId="metadata_settings">
-        <control type="TextBox"></control>
-      </option>
-      <option id="genre" title="Genre" optionGroupId="metadata_settings">
-        <control type="TextBox"></control>
-      </option>
+{"gui":{
+	"groups":[
+	    {"id":"general_settings", "title":"General Settings", "tab":"general"},
+	    {"id":"meta_settings", "title":"Metadata Settings", "tab":"general"}
+	    ],
+	"options":[
+	    {"id":"ext", "type":"string","title":"File Extension","group":"general_settings","unit":"",
+		"control":{
+		    "type":"ComboBox",
+		    "default":"asf",
+		    "items":[
+			  {"key":"Asf","value":"asf"},
+			  {"key":"Wmv","value":"wmv"},
+			  {"key":"Wma","value":"wma"}
+		    ]
+		}
+	    },
 
-    </options>
-  </gui>
-</guis>
+	    {"id":"title", "type":"string","title":"Title","group":"meta_settings","unit":""},
+	    {"id":"author", "type":"string","title":"Author","group":"meta_settings","unit":""},
+	    {"id":"copyright", "type":"string","title":"Copyright","group":"meta_settings","unit":""},
+	    {"id":"comment", "type":"string","title":"Commecnt","group":"meta_settings","unit":""},
+	    {"id":"album", "type":"string","title":"Album","group":"meta_settings","unit":""},
+	    {"id":"year", "type":"string","title":"Year","group":"meta_settings","unit":""},
+	    {"id":"track", "type":"string","title":"Track","group":"meta_settings","unit":""},
+	    {"id":"genre", "type":"string","title":"Genre","group":"meta_settings","unit":""}
+	]
+  }
+}
+

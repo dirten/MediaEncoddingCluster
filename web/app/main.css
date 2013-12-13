@@ -59,8 +59,13 @@ th.underline{
 tr:hover {
   background: #CCC;
 }
-
+input.text {
+  width: 400px;
+}
 label {
  display: inline-block;
- width: 250px;
+ width: 200px;
+}
+.clickable {
+  cursor:hand;
 }

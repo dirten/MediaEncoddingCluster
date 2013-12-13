@@ -1,12 +1,20 @@
-<?xml version="1.0"?>
-<guis>
-  <gui>
-    <options>
-      <option id="nooption" title="" default="There are currently no Options to set for this Output Format with the GUI.<br/>
-    		It is allways possible to set the Codec through the preset file!<br/>
-    		have a look at <a href='http://codergrid.de/trac/wiki/How%20to%20write%20a%20Preset%20File' target='_blank'>How to write a Preset File</a>">
-        <control type="Label"></control>
-      </option>
-    </options>
-  </gui>
-</guis>
+{"gui":{
+	"groups":[
+	    {"id":"general_settings", "title":"General Settings", "tab":"general"},
+	    {"id":"meta_settings", "title":"Metadata Settings", "tab":"general"}
+	    ],
+
+	"options":[
+	    {"id":"id", "type":"string","title":"Format","group":"general_settings","unit":"","control":{"type":"FormatBox", "default":""}},
+	    {"id":"title", "type":"string","title":"Title","group":"meta_settings","unit":"","control":{"type":"TextBox", "default":""}},
+	    {"id":"author", "type":"string","title":"Author","group":"meta_settings","unit":"","control":{"type":"TextBox", "default":""}},
+	    {"id":"copyright", "type":"string","title":"Copyright","group":"meta_settings","unit":"","control":{"type":"TextBox", "default":""}},
+	    {"id":"comment", "type":"string","title":"Commecnt","group":"meta_settings","unit":"","control":{"type":"TextBox", "default":""}},
+	    {"id":"album", "type":"string","title":"Album","group":"meta_settings","unit":"","control":{"type":"TextBox", "default":""}},
+	    {"id":"year", "type":"string","title":"Year","group":"meta_settings","unit":"","control":{"type":"TextBox", "default":""}},
+	    {"id":"track", "type":"string","title":"Track","group":"meta_settings","unit":"","control":{"type":"TextBox", "default":""}},
+	    {"id":"genre", "type":"string","title":"Genre","group":"meta_settings","unit":"","control":{"type":"TextBox", "default":""}}
+	]
+  }
+}
+

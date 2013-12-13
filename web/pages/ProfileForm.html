@@ -1,31 +1,63 @@
 <script>
+  var profile_data;
+  var prev_video_codec;
+  var prev_audio_codec;
+  var prev_ui_id = [];
 
   $('#profile_tabs').tabs();
+
+  function loadFormAndBind(formname, data){
+    console.log(data);
+
+    $('#'+formname).empty();
+    /*load format form*/
+    $.getJSON( "/ui/res/comp/"+formname+"."+data.id+".gui", function( form ) {
+      buildForm(formname,form);
+      if(data.id=="default"){
+        data.id=prev_ui_id[formname];
+      }
+      bindFormData(formname, data);
+      $('#'+formname+' >> #id').change(function() {
+        loadFormAndBind(formname,data);
+      });
+    }).fail(function(jqxhr, textStatus, error) {
+      prev_ui_id[formname]=data.id;
+      data.id="default";
+      loadFormAndBind(formname,data);
+    })
+  }
+
   $.getJSON( "/api/v1/profile/"+profileId, function( data ) {
-    $.getJSON( "/ui/res/comp/encoder.video."+data.data.video.id+".gui", function( form ) {
-      buildForm("video",form);
-
-    }).done(function() {
-
-    })
-    .fail(function(jqxhr, textStatus, error) {
-      var err = textStatus + ", " + error;
-      console.log( "Request Failed: " + err );
-    })
-    .always(function() {
-      console.log( "complete" );
+    profile_data=data.data;
+  }).fail(function(jqxhr, textStatus, error) {
+    profile_data={
+      format:{id:"default"},
+      video:{id:"default"},
+      audio:{id:"default"}
+    };
+  }).always(function() {
+    $('#profile > #name').val(profile_data.name);
+    $('#profile > #uuid').val(profile_data.uuid);
+    $('#profile > #name').change(function() {
+      profile_data.name=$('#profile > #name').val();
     });
+    $('#profile > #uuid').change(function() {
+      profile_data.uuid=$('#profile > #uuid').val();
+    });
+    loadFormAndBind("format", profile_data.format);
+    loadFormAndBind("video", profile_data.video);
+    loadFormAndBind("audio", profile_data.audio);
   });
 </script>
 
 <form id="ProfileForm" name="ProfileForm">
-<fieldset><legend>General</legend>
+  <fieldset id="profile"><legend>General</legend>
     <label for="name">Name</label>
     <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all"></br>
     <label for="uuid">Id</label>
-    <input type="text" name="uuid" id="uuid" value="" class="text ui-widget-content ui-corner-all"></br>
+    <input type="text" name="uuid" id="uuid" value="" class="text ui-widget-content ui-corner-all" readonly></br>
   </fieldset>
-<div id="profile_tabs" >
+  <div id="profile_tabs" >
     <ul>
       <li>
           <a href="#format">Format</a>
@@ -37,35 +69,11 @@
           <a href="#audio">Audio</a>
       </li>
     </ul>
-    <div id="format">
-    <fieldset>
-        <label for="name">Name</label>
-        <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all"></br>
-        <label for="email">Email</label>
-        <input type="text" name="email" id="email" value="" class="text ui-widget-content ui-corner-all"></br>
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all"></br>
-      </fieldset>
-      </div>
-      <div id="video"/>
 
-      <div id="audio">
-        <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
-        <p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p>
-      </div>
+    <div id="format"/>
+
+    <div id="video"/>
+
+    <div id="audio"/>
 </div>
 </form>
-<!--
-<form id="ProfileForm" name="ProfileForm">
-
-  <p>
-    <input type="text" id="focusTest" name="focusTest" class="input">
-    </p>
-
-  <select id="selectTest" name="selectTest" onchange="">
-    <option>1</option>
-    <option>2</option>
-  </select>
-
-</form>
--->

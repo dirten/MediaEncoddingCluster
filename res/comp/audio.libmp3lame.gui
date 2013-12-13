@@ -15,7 +15,7 @@
 		    ]
 		  }
 	    },
-	    {"id":"ar", "type":"string","title":"Sample Rate","group":"audio_rate_settings","unit":"",
+	    {"id":"ab", "type":"string","title":"Sample Rate","group":"audio_rate_settings","unit":"",
 		"control":{
 		    "type":"ComboBox",
 		    "default":"128000",
@@ -32,7 +32,7 @@
 		    ]
 		  }
 	    },
-	    {"id":"ab", "type":"string","title":"Bit Rate","group":"audio_rate_settings","unit":"",
+	    {"id":"ar", "type":"string","title":"Bit Rate","group":"audio_rate_settings","unit":"",
 		"control":{
 		    "type":"ComboBox",
 		    "default":"44100",
