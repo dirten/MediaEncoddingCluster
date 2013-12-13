@@ -11,7 +11,7 @@
 
     $('#'+formname).empty();
     /*load format form*/
-    $.getJSON( "/ui/res/comp/"+formname+"."+data.id+".gui", function( form ) {
+    $.getJSON( "/ui/comp/"+formname+"."+data.id+".gui", function( form ) {
       buildForm(formname,form);
       if(data.id=="default"){
         data.id=prev_ui_id[formname];

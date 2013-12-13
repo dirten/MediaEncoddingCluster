@@ -199,7 +199,7 @@ namespace org {
         boost::mutex dequeue_mutex;
         boost::mutex enqueue_mutex;
         std::string _directory;
-        Queue<std::string,0> _uuid_q;
+        Queue<std::string> _uuid_q;
       public:
         FileQueue(std::string dirname){
           _directory=dirname;

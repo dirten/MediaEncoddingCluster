@@ -3,11 +3,61 @@
 $.getJSON( "/api/v1/encoding", function( data ) {
   var i=0;
   $.each( data.data, function( key, val ) {
-  var even_odd=++i%2==0?'even':'odd';
-  $("#list_encoding").append('<tr class="'+even_odd+'"><td>'+val.flowname+'</td><td>'+val.id+'</td></tr>');
+    var even_odd=++i%2==0?'even':'odd';
+    $("#list_encoding").append('<tr class="'+even_odd+'"><td>'+val.flowname+'</td><td>'+val.id+'</td></tr>');
   });
 });
+
+$( "#new_encoding" )
+.button()
+.click( function( event ) {
+  profileId=0;
+  createDialog();
+
+  $("#dialog-form-encoding").load('pages/EncodingForm.html', function() {
+    $("#dialog-form-encoding").dialog("open");
+  });
+});
+
+function createDialog(){
+  $("#dialog-form-encoding").dialog({
+    autoOpen: false,
+    height: 300,
+    width: 800,
+    modal: true,
+    closeOnEscape: false,
+    buttons: [
+            {
+                id: "button-start",
+                text: "Start",
+                click: function() {
+                    //$(this).dialog("close");
+                }
+            },
+            {
+                  id: "button-cancel",
+                  text: "Close",
+                  click: function() {
+                  $(this).dialog("close");
+                  $(this).dialog("destroy");
+                  }
+              }
+
+    ],
+    close: function() {
+      //allFields.val( "" ).removeClass( "ui-state-error" );
+    }
+  });
+  $( "#dialog-form-encoding" ).on( "dialogclose", function( event, ui ) {
+  //$(this).dialog("destroy");
+    console.log("dialog closed");
+  } );
+ }
+
 </script>
+<button id="new_encoding">
+  create a new Encoding
+</button>
 <table width="800" border=0>
 <thead>
 <tr>
@@ -17,3 +67,4 @@ $.getJSON( "/api/v1/encoding", function( data ) {
 </thead>
 <tbody id="list_encoding"/>
 </table>
+<div id="dialog-form-encoding" title="Create Encoding">

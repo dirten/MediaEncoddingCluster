@@ -48,6 +48,11 @@
     position: relative;
     left: -1px;
 }
+
+.ui-dialog-titlebar-close {
+  visibility: hidden;
+}
+
 .even {
   background: #EEE;
 }

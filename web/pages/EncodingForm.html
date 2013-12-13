@@ -1,0 +1,67 @@
+<form id="EncodingForm" name="EncodingForm" >
+  <fieldset id="encoding"><legend>General</legend>
+    <label for="name">Profile</label>
+    <select name="profile" id="profile_selector">
+    </select>
+    <label for="filename">File</label>
+    <input type="file" name="filename" id="filename" value="" class="text ui-widget-content ui-corner-all" readonly ></br>
+    <label for="target">Target</label>
+    <input type="file" name="target" id="target" webkitdirectory directory value="" class="text ui-widget-content ui-corner-all" readonly></br>
+  </fieldset>
+</form>
+<div id="progress">
+    <div class="bar" style="width: 0%;"></div>
+</div>
+<script>
+var encoding_data={};
+$.getJSON( "/api/v1/profile", function( data ) {
+  console.log(data.data.length);
+  $.each( data.data, function( key, val ) {
+    console.log(val);
+    $("#profile_selector").append('<option value="'+val.uuid+'">'+val.name+'</option>');
+  });
+  if(data.data.length>0){
+    encoding_data.profile_id=data.data[0].uuid;
+    $("#EncodingForm").attr("action","/api/v1/encoding/"+encoding_data.profile_id);
+    //data-url="server/php/"
+  }
+});
+
+$('#profile_selector').change(function() {
+  encoding_data.profile_id=$('#profile_selector').val();
+});
+
+$('#filename').change(function() {
+  encoding_data.filename=$('#filename');
+});
+
+$('#target').change(function() {
+  encoding_data.target=$('#target').val();
+});
+
+$('#button-start').button("disable");
+
+$('#filename').fileupload({
+    dataType: 'json',
+    add: function (e, data) {
+      $('#button-start').button("enable");
+      $('#button-start').click(function(){
+        //data.context = $('<p/>').text('Uploading...').replaceAll($(this));
+        $('#button-start').button("disable");
+        data.submit();
+      })
+      console.log("add");
+      console.log(data);
+    },
+    done: function (e, data) {
+        console.log(data);
+        $("#dialog-form-encoding").dialog("close");
+        $("#dialog-form-encoding").dialog("destroy");
+    },
+    progressall: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+          console.log(progress);
+        }
+});
+</script>
+

@@ -31,22 +31,24 @@ public:
       LOGDEBUG("Param-Name" << params.get("name", "(unnamed)"));
       LOGDEBUG("Param-FileName" << params.get("filename", "(unnamed)"));
     }
+    if (header.has("Content-Length")) {
+      LOGDEBUG("Content-Length");
+    }
     Poco::CountingInputStream cistr(stream);
     Poco::NullOutputStream noss;
-    Poco::StreamCopier::copyStream(cistr, noss);
-    _length=cistr.chars();
+    _length=Poco::StreamCopier::copyStream64(cistr, noss,8192*10);
   }
 
   std::string getData() {
     return _data;
   }
-  int getLength(){
+  uint64_t getLength(){
     return _length;
   }
 
 private:
   std::string _data;
-  int _length;
+  uint64_t _length;
 };
 class JSONAPI_EXPORT EncodingUploadHandler : public org::esb::core::WebHookPlugin {
 
@@ -63,7 +65,7 @@ class JSONAPI_EXPORT EncodingUploadHandler : public org::esb::core::WebHookPlugi
 
       res.setChunkedTransferEncoding(true);
       res.setContentType("text/plain");
-      LOGDEBUG("file size="<<partHandler.getLength())
+      LOGDEBUG("file size="<<partHandler.getLength());
       std::ostream& ostr = res.send();
       ostr << result.write_formatted();
     }
