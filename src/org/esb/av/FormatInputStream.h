@@ -1,6 +1,7 @@
 #ifndef ORG_ESB_AV_FORMATINPUTSTREAM_H
 #define ORG_ESB_AV_FORMATINPUTSTREAM_H
 #include <boost/thread.hpp>
+#include <istream>
 #include <vector>
 #include <map>
 
@@ -29,6 +30,7 @@ namespace org {
       public:
         FormatInputStream(File * source);
         FormatInputStream(std::string );
+        FormatInputStream(std::istream &str);
         ~FormatInputStream();
         //                DEPRICATED(AVFormatContext * getFormatContext());
         AVFormatContext * getFormatContext();

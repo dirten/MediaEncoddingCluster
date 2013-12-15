@@ -182,9 +182,11 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
         /*reading process units from the file system for delivery*/
         std::string base = org::esb::config::Config::get("hive.data_path");
         org::esb::io::File inputfile(base + "/"+unit.jobid+"/"+ unit.sendid);
-        FileInputStream inputstream(&inputfile);
         std::string d;
-        inputstream.read(d);
+        if(inputfile.isFile()){
+          FileInputStream inputstream(&inputfile);
+          inputstream.read(d);
+        }
         /*
         litesql::Blob blob2=unit.data.value();
         d.reserve(blob2.length());

@@ -20,6 +20,8 @@
 #include "org/esb/util/Log.h"
 #include "org/esb/util/Foreach.h"
 #include "org/esb/util/StringUtil.h"
+
+#include "org/esb/hive/Environment.h"
 /*
  * 
  */
@@ -136,12 +138,12 @@ void execute(char * infile, char * outfile) {
   //ProcessUnit pu;
   boost::shared_ptr<ProcessUnit> pu;
   ois.readObject(pu);
-  pu->_encoder->setCodecOption("multipass", "1");
-  pu->_encoder->reset();
-  pu->_decoder->reset();
+  //pu->_encoder->setCodecOption("multipass", "1");
+  //pu->_encoder->reset();
+  //pu->_decoder->reset();
   pu->process();
   delete pu->_converter;
-
+  LOGDEBUG("output packets"<<pu->_output_packets.size())
   FileOutputStream fos(outfile);
   ObjectOutputStream oos(&fos);
   oos.writeObject(pu);
@@ -287,6 +289,7 @@ int main(int argc, char** argv) {
     help();
     exit(0);
   }
+  org::esb::hive::Environment::build(argc, argv);
   std::string logconfigpath = MEC_SOURCE_DIR;
   logconfigpath.append("/res");
   //  Log::open(logconfigpath);

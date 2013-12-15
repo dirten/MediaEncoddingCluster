@@ -57,6 +57,8 @@ $('#filename').fileupload({
         console.log(data);
         $("#dialog-form-encoding").dialog("close");
         $("#dialog-form-encoding").dialog("destroy");
+        createDialog();
+
     },
     progressall: function (e, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);

@@ -70,6 +70,7 @@ namespace org {
           int getProcessedStepCount();
           virtual ~Graph();
           void cancel();
+          std::list<Ptr<Graph::Element> > getElements();
         private:
           //friend class jobexecutor::Service;
 

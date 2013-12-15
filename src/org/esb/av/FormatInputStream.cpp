@@ -13,6 +13,13 @@ namespace org {
     namespace av {
       boost::mutex FormatInputStream::file_open_mutex;
 
+      static int readFunction(void* opaque, uint8_t* buf, int buf_size) {
+          std::istream & me = *reinterpret_cast<std::istream*>(opaque);
+          me.read(reinterpret_cast<char*>(buf), buf_size);
+          //LOGDEBUG("read buffer:"<<buf_size)
+          return me.gcount();
+      }
+
       FormatInputStream::FormatInputStream(File * source) {
         //_file_object=NULL;
         init(source->getPath());
@@ -22,9 +29,35 @@ namespace org {
         //_file_object=NULL;
         init(source);
       }
-      
+
+      FormatInputStream::FormatInputStream(std::istream  & stream){
+        unsigned char * buffer = reinterpret_cast<unsigned char*>(av_malloc(8192));
+        AVIOContext * avioContext= avio_alloc_context(buffer, 8192, 0, reinterpret_cast<void*>(static_cast<std::istream*>(&stream)), &readFunction, nullptr, nullptr);
+
+        //AVFormatContext * avFormat = avformat_alloc_context();
+        formatCtx = avformat_alloc_context();
+        //auto avFormatPtr = avFormat;
+        formatCtx->pb = avioContext;
+        if (avformat_open_input(&formatCtx, "dummyFilename", NULL, NULL) != 0) {
+          LOGERROR("could not open stream data");
+
+        }
+        LOGINFO("find stream info from stream ");
+        if (avformat_find_stream_info(formatCtx,NULL) < 0) {
+          LOGERROR("no StreamInfo from stream ");
+          return;
+        }
+        if (formatCtx->iformat->flags & AVFMT_TS_DISCONT) {
+          LOGDEBUG("TS DISCONT");
+        }
+        _isValid = true;
+
+
+        //avformat_open_input(&avFormat, "dummyFilename", nullptr, nullptr);
+      }
+
       void FormatInputStream::init(std::string source) {
-	//boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
+        //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         LOGINFO("opening InputFile: " << source);
         //_file_object=new org::esb::io::File(source);
 
@@ -32,19 +65,21 @@ namespace org {
         _sourceFile = source;
 
         formatCtx = avformat_alloc_context();
-//        formatCtx->flags |= AVFMT_FLAG_GENPTS;
-//        formatCtx->flags |= AVFMT_FLAG_NONBLOCK;
+        //        formatCtx->flags |= AVFMT_FLAG_GENPTS;
+        //        formatCtx->flags |= AVFMT_FLAG_NONBLOCK;
         //        AVInputFormat*iformat = av_find_input_format("mpegts");
         //formatCtx->debug=5;
         //std::string filename = _sourceFile->getPath();
-		{
-	        
+        {
 
-        if (avformat_open_input(&formatCtx, _sourceFile.c_str(), NULL, NULL) != 0) {
-          LOGERROR("could not open " << _sourceFile);
-          return;
+
+          if (avformat_open_input(&formatCtx, _sourceFile.c_str(), NULL, NULL) != 0) {
+            LOGERROR("could not open " << _sourceFile);
+            return;
+          }
+
         }
-		}
+
 
         LOGINFO("find stream info: " << source);
         if (avformat_find_stream_info(formatCtx,NULL) < 0) {
@@ -95,7 +130,7 @@ namespace org {
 
       FormatInputStream::~FormatInputStream() {
         LOGDEBUG("FormatInputStream::~FormatInputStream()")
-        close();
+            close();
         //delete _file_object;
       }
 
@@ -123,7 +158,7 @@ namespace org {
       long long int FormatInputStream::available(bool withBlocking) {
         return 0;
       }
-  /*
+      /*
       long long int FormatInputStream::getFileSize() {
         return -1;//_file_object->length();//formatCtx->file_size;
       }
@@ -158,13 +193,13 @@ namespace org {
           for (; it != _stream_info_map.end(); it++) {
             if((*it).second)
               delete (*it).second;
-//            (*it).second=NULL;
+            //            (*it).second=NULL;
           }
           _stream_info_map.clear();
         }
       }
+      }
     }
   }
-}
 
 

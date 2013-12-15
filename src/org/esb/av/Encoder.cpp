@@ -268,7 +268,7 @@ int Encoder::encodeVideo2(AVFrame * inframe) {
   int ret = 0, got_output;
   _frames=1;
 
-  Ptr<Packet> pacInt=new Packet();
+  Ptr<Packet> pacInt=Ptr<Packet>(new Packet());
   Packet *pac=pacInt.get();
   ret = avcodec_encode_video2(ctx, pac->getAVPacket(), inframe, &got_output);
 
@@ -322,6 +322,7 @@ int Encoder::encodeVideo2(AVFrame * inframe) {
 
     //pushPacket(Ptr<Packet>(new Packet(pac)));
     if(got_output){
+      LOGDEBUG("push packet"<<pacInt->toString());
       pushPacket(pacInt);
     }else{
       /*@TODO: needed to flush packets here*/

@@ -74,8 +74,8 @@ namespace plugin {
   org::esb::core::OptionsDescription OutputTask::getOptionsDescription() {
     org::esb::core::OptionsDescription result("uploadtask");
     result.add_options()
-        ("uploadtask.src", boost::program_options::value<std::string > ()->required(), "Upload task file source")
-        ("uploadtask.trg", boost::program_options::value<std::string > ()->required(), "Upload task file target")
+        //("uploadtask.src", boost::program_options::value<std::string > ()->required(), "Upload task file source")
+        //("uploadtask.trg", boost::program_options::value<std::string > ()->required(), "Upload task file target")
         ("data", boost::program_options::value<std::string > ()->default_value(""), "");
     return result;
   }

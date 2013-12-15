@@ -39,6 +39,10 @@ namespace org {
         test.push_back(JSONNode("test", "bla"));
       }
 
+      std::list<Ptr<Graph::Element> > Graph::getElements(){
+        return elements;
+      }
+
       Graph::~Graph() {
 
       }
@@ -145,13 +149,14 @@ namespace org {
             }
           }
         } catch (org::esb::core::TaskException & ex) {
+          LOGERROR("running task : "<<ex.what())
           status_list.back()->message = "";
           status_list.back()->exception = ex.displayText();
           status_list.back()->status = org::esb::core::Task::ERROR;
           if (statusObserver)
             statusObserver(this);
           haserror = true;
-          //throw GraphException(ex.displayText(), e->id);
+          throw GraphException(ex.displayText(), e->id);
         }
       }
 

@@ -65,6 +65,7 @@ TARGET_LINK_LIBRARIES(jsonapi
   core
   json
   av
+  streamsource
   ${POCO_LIB_NET}
   ${POCO_LIB_FOUNDATION}
 

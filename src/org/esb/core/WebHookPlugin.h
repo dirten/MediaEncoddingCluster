@@ -22,7 +22,7 @@ namespace org {
         //virtual void handle(org::esb::core::http::HTTPServerRequest& request, org::esb::core::http::HTTPServerResponse& response) = 0;
 
         virtual ~WebHookPlugin() {
-        };
+        }
       private:
 
       };

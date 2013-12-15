@@ -46,23 +46,17 @@ using namespace org::esb::av;
 using org::esb::av::AVPipe;
 bool toDebug = false;
 
-class PacketSink : public Sink, public AVPipe {
+class PacketSink : public AVPipe {
 public:
 
   PacketSink() {
   }
 
   bool newPacket(Ptr<Packet> p){
-    LOGDEBUG("push packet into sink")
-        pkts.push_back(p);
+    LOGDEBUG("push packet into sink");
+    pkts.push_back(p);
 
     return true;
-  }
-
-  void write(void * p) {
-    Packet* pt = (Packet*) p;
-    boost::shared_ptr<Packet> pEnc(new Packet(*pt));
-    pkts.push_back(pEnc);
   }
 
   std::list<boost::shared_ptr<Packet> > getList() {
@@ -115,7 +109,7 @@ std::string ProcessUnit::getJobId() {
 void ProcessUnit::process() {
   std::ostringstream oss;
   _start = microsec_clock::local_time();
-  if (_encoder->getCodecOption("multipass") == "1" || _encoder->getCodecOption("multipass") == "true") {
+  if (false && _encoder->getCodecOption("multipass") == "1" || _encoder->getCodecOption("multipass") == "true") {
     LOGDEBUG("Two Pass Enabled");
     setProperty("2pass", "true");
     oss << org::esb::config::Config::get("hive.tmp_path");
@@ -209,11 +203,12 @@ void ProcessUnit::processInternal2() {
   filter->init();
 
   /*init the packet sink*/
-  Ptr<PacketSink> sink=new PacketSink();
+  PacketSink * sink=new PacketSink();
+
   /*build up the transcoding chain*/
   _decoder->addTarget(filter);
   filter->addTarget(_encoder.get());
-  _encoder->addTarget(sink.get());
+  //_encoder->addTarget(sink);
 
   list<boost::shared_ptr<Packet> >::iterator it = _input_packets.begin();
 
@@ -221,192 +216,13 @@ void ProcessUnit::processInternal2() {
     boost::shared_ptr<Packet> p = *it;
     _decoder->newPacket(p);
   }
-
+  LOGDEBUG("flush");
   /*sending an empty packet is implicit a flush for the pipe*/
   while(_decoder->newPacket(new Packet()));
 
   _output_packets = sink->getList();
 }
 
-void ProcessUnit::processInternal() {
-
-  LOGTRACEMETHOD("ProcessUnit");
-  LOGDEBUG("CompensateBase" << _frameRateCompensateBase);
-  int insize = 0, outsize = 0;
-
-  if (_decoder != NULL)
-    if (!_decoder->open()) {
-      LOGERROR("fail to open the decoder (ProcessUnitID:" << _process_unit << " CodecID:" << _decoder->getCodecId() << ")");
-      return;
-    }
-  if (_encoder != NULL)
-    if (!_encoder->open()) {
-      LOGERROR("fail to open the encoder (ProcessUnitID:" << _process_unit << "CodecID:" << _encoder->getCodecId() << ")");
-      return;
-    }
-  /*creating a frame converter*/
-  if (_converter == NULL)
-    _converter = new FrameConverter(_decoder.get(), _encoder.get());
-  _converter->setFrameRateCompensateBase(_frameRateCompensateBase);
-  _converter->setGopSize(_gop_size);
-  _converter->setDeinterlace(_deinterlace > 0);
-  _converter->setKeepAspectRatio(_keep_aspect_ratio > 0);
-
-  LOGTRACE("Codex openned");
-  LOGTRACE(_decoder->toString());
-  LOGTRACE(_encoder->toString());
-  /*creating a packetsink for storing the encoded Packetsf from the encoder*/
-  PacketSink sink;
-  _encoder->setSink(&sink);
-  _encoder->setOutputStream(NULL);
-
-  /*configure the reference decoder to compute the psnr for video mages*/
-  if (false && _encoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
-    std::map<std::string, std::string>opt = _encoder->getCodecOptions();
-    _refdecoder = boost::shared_ptr<Decoder > (new Decoder(_encoder->getCodecId()));
-    std::map<std::string, std::string>::iterator opit = opt.begin();
-    _refdecoder->setWidth(_encoder->getWidth());
-    _refdecoder->setHeight(_encoder->getHeight());
-    _refdecoder->setPixelFormat(_encoder->getPixelFormat());
-
-    for (; opit != opt.end(); opit++) {
-      if ((*opit).first != "extradata" || (*opit).first != "extradata_size")
-        _refdecoder->setCodecOption((*opit).first, (*opit).second);
-    }
-    LOGDEBUG("EncoderExtrdataSize:" << _encoder->ctx->extradata_size);
-    LOGDEBUG("RefDecoderExtrdataSize:" << _refdecoder->ctx->extradata_size);
-    //std::cout << _encoder->ctx->extradata;
-    _refdecoder->ctx->extradata = static_cast<uint8_t*> (av_malloc(_encoder->ctx->extradata_size));
-    memcpy(_refdecoder->ctx->extradata, _encoder->ctx->extradata, _encoder->ctx->extradata_size);
-    //_refdecoder->ctx->extradata[0] = 2;
-    //_refdecoder->ctx->extradata_size=0;
-    _refdecoder->open();
-  }
-  //  FrameConverter conv(_decoder, _encoder);
-
-  list<boost::shared_ptr<Packet> >::iterator it;
-
-  /*i dont know if we need this in the Future*/
-  //  multiset<boost::shared_ptr<Frame>, PtsComparator > pts_list;
-  //  multiset<boost::shared_ptr<Packet>, PtsPacketComparator > pts_packets;
-  int64_t last_pts = -1;
-  bool compute_delayed_frames = false;
-  int stream_index = -1;
-  int loop_count = 0;
-  /*loop over each Packet received */
-  it = _input_packets.begin();
-  for (; it != _input_packets.end() || compute_delayed_frames;) {
-    LOGDEBUG("Loop:" << ++loop_count);
-    /*get the Packet Pointer from the list*/
-    boost::shared_ptr<Packet> p;
-    /**
-     * special handling for delayed packets from the decoder
-     * @TODO: redesign needed for a simpler maintenance
-     */
-    if (!compute_delayed_frames) {
-      p = *it;
-      stream_index = p->getStreamIndex();
-      it++;
-    } else {
-      LOGDEBUG("delayed frame");
-      p = boost::shared_ptr<Packet > (new Packet());
-      p->setTimeBase(_input_packets.front()->getTimeBase());
-      p->setDuration(_input_packets.front()->getDuration());
-      p->setStreamIndex(stream_index);
-    }
-    /*sum the packet sizes for later output*/
-    insize += p->packet->size;
-    LOGTRACE("Inputpacket:" << p->toString());
-    p->toString();
-    /*Decoding the Packet into a Frame*/
-    Frame * tmp = _decoder->decode2(*p);
-
-    LOGTRACE("Frame Decoded:" << tmp->toString());
-    /*when frame not finished, then it is nothing todo, continue with the next packet*/
-    if (!tmp->isFinished()) {
-      delete tmp;
-      compute_delayed_frames = false;
-      continue;
-    }
-
-
-    if (_decoder->getCodecId() != CODEC_ID_MPEG2VIDEO && it == _input_packets.end()) {
-      LOGDEBUG("setting compute_delayed_frames=true");
-      compute_delayed_frames = true;
-    }
-    //      LOGTRACE("org.esb.hive.job.ProcessUnit","Frame Buffer > 0");
-
-    /*target frame for conversion*/
-    Frame * f = NULL;
-    /*allocation frame data for specified type*/
-    if (_decoder->ctx->codec_type == AVMEDIA_TYPE_VIDEO)
-      f = new Frame(_encoder->getInputFormat().pixel_format, _encoder->getWidth(), _encoder->getHeight());
-    if (_decoder->ctx->codec_type == AVMEDIA_TYPE_AUDIO)
-      f = new Frame();
-    LOGTRACE("try Frame Convert");
-    /*converting the source frame to target frame*/
-    _converter->convert(*tmp, *f);
-    //this could be usefull when one pass encoding on x264,
-    //because the first encoded frames are very poor
-    //if(false&&loop_count<5)
-    //    f->getAVFrame()->pict_type=AV_PICTURE_TYPE_I;
-    /**
-     * @TODO: prepend silent audio bytes to prevent audio/video desync in distributed audio encoding
-     * */
-    if (false && _decoder->ctx->codec_type == AVMEDIA_TYPE_AUDIO &&
-        _discard_audio_bytes > 0) {
-      size_t size = f->_size + _discard_audio_bytes;
-      uint8_t * tmp_buf = (uint8_t*) av_malloc(size);
-      memset(tmp_buf, 0, size);
-      memcpy(tmp_buf + _discard_audio_bytes, f->_buffer, f->_size);
-      av_free(f->_buffer);
-      f->_buffer = tmp_buf;
-      f->_size = size;
-      _discard_audio_bytes = 0;
-    }
-
-    LOGDEBUG("Frame Converted" << f->toString());
-
-    /*encode the frame into a packet*/
-    /*NOTE: the encoder write Packets to the PacketSink, because some codecs duplicates frames*/
-
-    /**
-     * @TODO: simply it is better to calculate the psnr in the encoder!!!
-     */
-
-    int ret = _encoder->encode(*f);
-    LOGDEBUG("Frame Encoded");
-    //LOGDEBUG("Stats="<<_encoder->ctx->stats_out);
-    if (false && _encoder->getCodecType() == AVMEDIA_TYPE_VIDEO && sink.getList().size() > 0) {
-      boost::shared_ptr<Packet>enc_packet = sink.getList().back();
-      Frame * tmpf = _refdecoder->decode2(*enc_packet.get());
-      if (tmpf->isFinished()) {
-        LOGDEBUG("Reference Frame Decoded!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
-        processPsnr(f, tmpf);
-      }
-      delete tmpf;
-    }
-    delete tmp;
-    delete f;
-    outsize += ret;
-  }
-  /*now process the delayed Frames from the encoder*/
-  LOGTRACE("Encode Packet delay");
-  bool have_more_frames = _encoder->getCodecType() == AVMEDIA_TYPE_VIDEO;
-  while (have_more_frames) {
-    if (_encoder->encode() <= 0) {
-      have_more_frames = 0;
-    }
-  }
-  _output_packets = sink.getList();
-  if (_expected_frame_count != -1 && _output_packets.size() != _expected_frame_count)
-    LOGWARN("PUID=" << _process_unit << " Expected Frame count diff from resulting Frame count: expected=" << _expected_frame_count << " got=" << _output_packets.size())
-        //  _encoder->close();
-        //  _decoder->close();
-        //      delete _converter;
-        //    _converter=NULL;
-
-}
 
 boost::shared_ptr<Decoder> ProcessUnit::getDecoder() {
   return _decoder;
