@@ -44,13 +44,13 @@ namespace org {
           virtual ~AVPipe();
           void addTarget(AVPipe * pipe);
 
-        protected:
+        //protected:
           bool pushPacket(Ptr<Packet> p);
           bool pushFrame(Ptr<Frame> p);
 
         private:
-          virtual bool newPacket(Ptr<Packet> p);
-          virtual bool newFrame(Ptr<Frame> p);
+          virtual bool newPacket(Ptr<Packet> p)=0;
+          virtual bool newFrame(Ptr<Frame> p)=0;
           std::list< AVPipe * > _targets;
       };
     }

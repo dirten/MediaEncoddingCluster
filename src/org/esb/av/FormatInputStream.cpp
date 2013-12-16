@@ -32,7 +32,7 @@ namespace org {
 
       FormatInputStream::FormatInputStream(std::istream  & stream){
         unsigned char * buffer = reinterpret_cast<unsigned char*>(av_malloc(8192));
-        AVIOContext * avioContext= avio_alloc_context(buffer, 8192, 0, reinterpret_cast<void*>(static_cast<std::istream*>(&stream)), &readFunction, nullptr, nullptr);
+        AVIOContext * avioContext= avio_alloc_context(buffer, 8192, 0, reinterpret_cast<void*>(static_cast<std::istream*>(&stream)), &readFunction, NULL, NULL);
 
         //AVFormatContext * avFormat = avformat_alloc_context();
         formatCtx = avformat_alloc_context();

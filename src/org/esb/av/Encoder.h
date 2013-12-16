@@ -43,7 +43,7 @@ namespace org {
         namespace av {
             class Packet;
 
-            class AV_EXPORT Encoder : public Codec, public AVPipe {
+            class AV_EXPORT Encoder :  public AVPipe, public Codec{
               classlogger("org.esb.av.Encoder")
             public:
                 Encoder(CodecID id);
@@ -64,6 +64,7 @@ namespace org {
                 void setPassLogfile(std::string);
                 std::string getPassLogfile();
                 bool newFrame(Ptr<Frame>);
+                bool newPacket(Ptr<Packet>){}
 
             private:
                 int encodeVideo(Frame & f);

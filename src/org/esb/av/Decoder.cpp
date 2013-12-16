@@ -286,7 +286,7 @@ bool Decoder::decodeVideo3(Packet & packet) {
   //Frame * frame = new Frame(ctx->pix_fmt, ctx->width, ctx->height);
   int _frameFinished = 0;
   int len = packet.packet->size;
-  LOGDEBUG(packet.toString());
+  LOGDEBUG("decode input video packet:"<<packet.toString());
 
   //  while (len > 0) {
   //    logdebug("Decode Packet");
@@ -331,6 +331,9 @@ bool Decoder::decodeVideo3(Packet & packet) {
   if (bytesDecoded < 0) {
     LOGERROR("Error while decoding frame");
   }
+  if(packet.packet->size==0)
+    emptyFrameIsEOF=true;
+
   /**
    * if frame is not finished, returns the blank frame
    * the calling process of decode must ensure to check if the returning frame isFinished by calling the Method isFinished()
@@ -343,7 +346,6 @@ bool Decoder::decodeVideo3(Packet & packet) {
     /*eof not reached, continue cosuming packets*/
     return true;
   }
-  emptyFrameIsEOF=true;
   frame->setStorageAspectRatio(ctx->coded_width, ctx->coded_height);
   frame->setPixelAspectRatio(ctx->sample_aspect_ratio);
   frame->setDisplayAspectRatio(display_aspect_ratio);
@@ -386,9 +388,9 @@ bool Decoder::decodeVideo3(Packet & packet) {
 
   frame->pos = 0;
   frame->_type = AVMEDIA_TYPE_VIDEO;
-  LOGDEBUG(frame->toString());
-  pushFrame(frame);
-  return true;
+  LOGDEBUG("Push Video Frame from decoder:"<<frame->toString());
+  return pushFrame(frame);
+  //return true;
 }
 
 Frame * Decoder::decodeAudio2(Packet & packet) {
@@ -478,7 +480,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
 }
 
 bool Decoder::decodeAudio3(Packet & packet) {
-  LOGDEBUG(packet.toString());
+  LOGDEBUG("audio decoder input:"<<packet.toString());
   int samples_size = 0;//AVCODEC_MAX_AUDIO_FRAME_SIZE;
   //int bps = av_get_bits_per_sample_fmt(ctx->sample_fmt) >> 3;
   int bps = av_get_bytes_per_sample(ctx->sample_fmt);
@@ -551,7 +553,8 @@ bool Decoder::decodeAudio3(Packet & packet) {
   frame->channels = ctx->channels;
   frame->sample_rate = ctx->sample_rate;
   //frame->dumpHex();
-  LOGDEBUG(frame->toString());
+  LOGDEBUG("Push Audio Frame from decoder:"<<frame->toString());
+  //LOGDEBUG(frame->toString());
   //  frame->dumpHex();
   return pushFrame(frame);
 

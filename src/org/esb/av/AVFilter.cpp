@@ -69,6 +69,9 @@ namespace org {
         "time_base=%s:sample_rate=%d:sample_fmt=%s:channel_layout=0x%llx",
         _input_params["time_base"].c_str(), atoi(_input_params["sample_rate"].c_str()),
         _input_params["sample_format"].c_str(), atoll(_input_params["channel_layout"].c_str()));
+        //buffersrc_ctx->thread_type=0;
+        filter_graph->thread_type=0;
+        filter_graph->nb_threads=1;
 
         ret = avfilter_graph_create_filter(&buffersrc_ctx, abuffersrc, "in", args, NULL, filter_graph);
         if (ret < 0) {
@@ -112,6 +115,10 @@ namespace org {
          */
         /* buffer audio sink: to terminate the filter chain. */
         av_log(NULL, AV_LOG_INFO, "try creating audio buffer sink\n");
+
+        filter_graph->thread_type=0;
+        filter_graph->nb_threads=1;
+
         ret = avfilter_graph_create_filter(&buffersink_ctx, abuffersink, "out",
         NULL, NULL, filter_graph);
         av_log(NULL, AV_LOG_INFO, "created audio buffer sink\n");
@@ -171,6 +178,8 @@ namespace org {
         }
 
         av_buffersink_set_frame_size(buffersink_ctx,frame_size);
+        avfilter_inout_free(&inputs);
+        avfilter_inout_free(&outputs);
         //exit(0);
       }
 
@@ -205,6 +214,10 @@ namespace org {
         _input_params["width"].c_str(), _input_params["height"].c_str(), _input_params["pixel_format"].c_str(),
         _input_params["time_base"].c_str(),
         _input_params["sample_aspect_ratio"].c_str());
+
+        filter_graph->thread_type=0;
+        filter_graph->nb_threads=1;
+
         ret = avfilter_graph_create_filter(&buffersrc_ctx, buffersrc, "in",
         args, NULL, filter_graph);
         if (ret < 0) {
@@ -222,6 +235,12 @@ namespace org {
         AVPixelFormat fmt=static_cast<AVPixelFormat>(atoi(_output_params["pixel_format"].c_str()));
         enum AVPixelFormat pix_fmts[] = { fmt, AV_PIX_FMT_NONE };
         buffersink_params->pixel_fmts = pix_fmts;
+
+        //buffersrc_ctx->thread_type=0;
+        filter_graph->thread_type=0;
+        filter_graph->nb_threads=1;
+
+
         ret = avfilter_graph_create_filter(&buffersink_ctx, buffersink, "out",
         NULL, buffersink_params, filter_graph);
         av_free(buffersink_params);
@@ -246,6 +265,8 @@ namespace org {
         if ((ret = avfilter_graph_config(filter_graph, NULL)) < 0){
           throw Exception(__FILE__, __LINE__,"could not configure filter graph\n");
         }
+        avfilter_inout_free(&inputs);
+        avfilter_inout_free(&outputs);
       }
 
       bool AVFilter::sanityCheck( std::map<std::string, std::string> input_map,std::list<std::string> pList, std::string inout){
@@ -282,10 +303,12 @@ namespace org {
             break;
           }
           result=true;
+          LOGDEBUG("push new frame from filter")
           pushFrame(outFrame);
         }
-        if(!result){
+        if(!result && !frame){
           /*flushing next segment*/
+          LOGDEBUG("push empty frame from filter")
           result|=pushFrame(Ptr<Frame>());
         }
         av_frame_unref(outFrame->getAVFrame());

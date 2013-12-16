@@ -13,14 +13,14 @@ namespace org {
       {
         _targets.clear();
       }
-
+      /*
       bool AVPipe::newPacket(Ptr<Packet> p){
         return false;
       }
 
       bool AVPipe::newFrame(Ptr<Frame> p){
         return false;
-      }
+      }*/
 
       void AVPipe::addTarget(AVPipe * pipe){
         _targets.push_back(pipe);

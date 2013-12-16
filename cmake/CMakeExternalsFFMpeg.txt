@@ -20,7 +20,7 @@ IF(MINGW)
   SET(FFMPEG_LIB_DIR bin)
 ENDIF(MINGW)
 IF(DEBUG)
-  #SET(USER_FFMPEG_CONFIG "--disable-optimizations --disable-asm" )
+  SET(USER_FFMPEG_CONFIG "--disable-optimizations --disable-asm" )
 ENDIF(DEBUG)
 
 ExternalProject_Add(yasm

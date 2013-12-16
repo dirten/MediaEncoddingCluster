@@ -46,12 +46,12 @@ using namespace org::esb::av;
 using org::esb::av::AVPipe;
 bool toDebug = false;
 
-class PacketSink : public AVPipe {
+class MyPacketSink : public AVPipe {
 public:
 
-  PacketSink() {
+    MyPacketSink():AVPipe() {
   }
-
+  bool newFrame(Ptr<Frame>){return false;}
   bool newPacket(Ptr<Packet> p){
     LOGDEBUG("push packet into sink");
     pkts.push_back(p);
@@ -203,12 +203,13 @@ void ProcessUnit::processInternal2() {
   filter->init();
 
   /*init the packet sink*/
-  PacketSink * sink=new PacketSink();
+  MyPacketSink * sink=new MyPacketSink();
+
 
   /*build up the transcoding chain*/
   _decoder->addTarget(filter);
   filter->addTarget(_encoder.get());
-  //_encoder->addTarget(sink);
+  _encoder->addTarget(sink);
 
   list<boost::shared_ptr<Packet> >::iterator it = _input_packets.begin();
 

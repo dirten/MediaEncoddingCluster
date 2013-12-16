@@ -71,14 +71,14 @@ public:
       }
     }
     graph.run();
-
+    /*
     PacketInputStream pis(&fis);
     org::esb::av::Packet * packet;
     while((packet = pis.readPacket()) != NULL){
       //LOGDEBUG("Packet received");
       delete packet;
     }
-
+    */
   }
 
   std::string getData() {

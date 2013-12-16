@@ -103,7 +103,7 @@ bool Encoder::newFrame(Ptr<Frame> f){
       return encode();
     }else{
       LOGDEBUG("flush audio")
-          return false;
+      return false;
     }
   }
 }
@@ -322,8 +322,9 @@ int Encoder::encodeVideo2(AVFrame * inframe) {
 
     //pushPacket(Ptr<Packet>(new Packet(pac)));
     if(got_output){
-      LOGDEBUG("push packet"<<pacInt->toString());
-      pushPacket(pacInt);
+      LOGDEBUG("push packet:"<<pacInt->toString());
+      //pushPacket(Ptr<Packet>(new Packet()));
+      return pushPacket(pacInt);
     }else{
       /*@TODO: needed to flush packets here*/
     }
@@ -366,7 +367,7 @@ int Encoder::encodeAudio2(Frame & frame) {
   }
   _last_dts += pak->getDuration();
   LOGDEBUG("EncodeAudio2:"<<pak->toString());
-  pushPacket(pak);
+  return pushPacket(pak);
 
   if (_pos != NULL)
     _pos->writePacket(*pak);

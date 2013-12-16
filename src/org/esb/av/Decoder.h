@@ -50,6 +50,7 @@ namespace org {
         DEPRECATED(Frame decodeLast());
         int64_t getLastTimeStamp();
         bool newPacket(Ptr<Packet>p);
+         bool newFrame(Ptr<Frame>){}
         static std::string getStaticCodecName(CodecID codec_id);
         static CodecID getStaticCodecId(std::string codec_name);
 

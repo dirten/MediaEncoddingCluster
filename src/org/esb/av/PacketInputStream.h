@@ -27,6 +27,8 @@ class AV_EXPORT PacketInputStream: public InputStream, public AVPipe{
         uint64_t getDuration();
         Codec * getCodec();
         void skip(long packets);
+        bool newFrame(Ptr<Frame>){}
+        bool newPacket(Ptr<Packet>){}
     private:
         AVFormatContext * _formatCtx;
         Codec * _codec2;

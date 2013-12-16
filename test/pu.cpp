@@ -166,6 +166,7 @@ void view_packet_data(Packet * p) {
   int64_t indts = 0;
   AVRational intb;
   int64_t indur = 0;
+  int64_t size=0;
   memset(&intb, 0, sizeof (intb));
   bool isKey = false;
   if (p != NULL) {
@@ -175,6 +176,7 @@ void view_packet_data(Packet * p) {
     intb = p->getTimeBase();
     indur = p->getDuration();
     isKey = p->isKeyFrame();
+    size = p->packetPtr->size;
   }
   printf("%3d|", idx);
   printf("%20lld|", inpts);
@@ -183,6 +185,7 @@ void view_packet_data(Packet * p) {
   printf("%6d/", intb.den);
   printf("%6d", indur);
   printf("%1s", isKey ? "x" : " ");
+  printf("%6d", size);
 
 }
 
