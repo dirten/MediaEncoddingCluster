@@ -191,7 +191,7 @@ namespace encodingtask {
     _unit_list.addCallback(boost::bind(&EncodingTask::unitListCallback, this, _1));
     LOGDEBUG("starting progress observer");
 
-    boost::thread(boost::bind(&EncodingTask::observeProgress,this));
+    //boost::thread(boost::bind(&EncodingTask::observeProgress,this));
 
     setStatus(PREPARED);
   }
@@ -374,10 +374,10 @@ namespace encodingtask {
       }
       flushed=true;
       /*needs to wait here for completition*/
-      LOGDEBUG("waiting for encoding finished");
-      boost::mutex::scoped_lock finish_lock(finish_mutex);
-      finish_condition.wait(finish_lock);
-      LOGDEBUG("encoding finished");
+      //LOGDEBUG("waiting for encoding finished");
+      //boost::mutex::scoped_lock finish_lock(finish_mutex);
+      //finish_condition.wait(finish_lock);
+      LOGDEBUG("PU distribution finished");
     }
   }
 

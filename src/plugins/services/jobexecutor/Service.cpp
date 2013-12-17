@@ -43,6 +43,7 @@ namespace jobexecutor {
   }
 
   void Service::startService() {
+    return;
     /*clean up interrupted encodings*/
     LOGDEBUG("looking for aborted encodings");
     litesql::DataSource<db::Job> source = litesql::select<db::Job > (*getContext()->database, db::Job::Status == db::Job::Status::Processing).orderBy(db::Job::Id, false);

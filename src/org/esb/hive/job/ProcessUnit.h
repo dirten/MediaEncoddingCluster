@@ -81,6 +81,7 @@ namespace org {
                     boost::shared_ptr<Decoder> _2passdecoder;
                     boost::shared_ptr<Encoder> _2passencoder;
                     boost::shared_ptr<Decoder> _refdecoder;
+                    Ptr<Decoder> _testdecoder;
 //                    Codec * codec;
                     FrameConverter * _converter;
                     int _source_stream;

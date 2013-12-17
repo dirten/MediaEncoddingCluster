@@ -60,6 +60,19 @@
         <field name="metagenre" type="integer"/>
     </object>
 
+    <object name="OutputFile">
+        <field name="filename" type="string"/>
+        <field name="path" type="string"/>
+        <field name="jobid" type="string"/>
+        <field name="outfiledata" type="string"/>
+        <field name="status" type="string">
+          <value name="Waiting" value="WAITING"/>
+          <value name="Processing" value="PROCESSING"/>
+          <value name="Error" value="ERROR"/>
+          <value name="Completed" value="COMPLETED"/>
+        </field>
+    </object>
+
     <relation>
         <relate object="MediaFile" handle="project"/>
         <relate object="Project" handle="mediafiles"/>

@@ -286,7 +286,7 @@ namespace org {
         bool result=false;
         /**
           * @TODO: have a look into this, why do i need to clone the frame for this operation
-          * on some video files it will crash when do not the clone operation
+          * on some video files it will crash when i do not clone
           */
         AVFrame * frame=av_frame_clone(p->getAVFrame());
         if(!frame){

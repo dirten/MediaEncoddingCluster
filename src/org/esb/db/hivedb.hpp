@@ -6,6 +6,7 @@ class Project;
 class Filter;
 class FilterParameter;
 class MediaFile;
+class OutputFile;
 class ProfileGroup;
 class Profile;
 class Preset;
@@ -957,6 +958,73 @@ public:
     std::auto_ptr<MediaFile> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, MediaFile o);
+class OutputFile : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    class StatusType : public litesql::FieldType {
+    public:
+        static const std::string Waiting;
+        static const std::string Processing;
+        static const std::string Error;
+        static const std::string Completed;
+        StatusType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
+    };
+    class Status {
+    public:
+        static const std::string Waiting;
+        static const std::string Processing;
+        static const std::string Error;
+        static const std::string Completed;
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType Filename;
+    litesql::Field<std::string> filename;
+    static const litesql::FieldType Path;
+    litesql::Field<std::string> path;
+    static const litesql::FieldType Jobid;
+    litesql::Field<std::string> jobid;
+    static const litesql::FieldType Outfiledata;
+    litesql::Field<std::string> outfiledata;
+protected:
+    static std::vector < std::pair< std::string, std::string > > status_values;
+public:
+    static const OutputFile::StatusType Status;
+    litesql::Field<std::string> status;
+    static void initValues();
+protected:
+    void defaults();
+public:
+    OutputFile(const litesql::Database& db);
+    OutputFile(const litesql::Database& db, const litesql::Record& rec);
+    OutputFile(const OutputFile& obj);
+    const OutputFile& operator=(const OutputFile& obj);
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<OutputFile> upcast();
+    std::auto_ptr<OutputFile> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, OutputFile o);
 class ProfileGroup : public litesql::Persistent {
 public:
     class Own {

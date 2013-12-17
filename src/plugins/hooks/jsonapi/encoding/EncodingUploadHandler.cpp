@@ -124,28 +124,42 @@ public:
       JSONNode graph(JSON_NODE);
       JSONNode tasks(JSON_ARRAY);
       tasks.set_name("tasks");
+
+      std::string uuid=org::esb::util::PUUID();
+
+      std::string outfile="/tmp/"+uuid+".mp4";
       tasks.push_back(createInfilenode());
-      tasks.push_back(createOutfilenode("/tmp/test.mp4"));
+      tasks.push_back(createOutfilenode(outfile));
       tasks.push_back(createProfilenode(id,preset.data));
 
       graph.push_back(tasks);
       graph.push_back(JSONNode("uuid",org::esb::util::PUUID()));
       graph.push_back(JSONNode("name","bla fasel"));
-      LOGDEBUG("default graph"<<graph.write_formatted());
+      //LOGDEBUG("default graph"<<graph.write_formatted());
 
       org::esb::core::GraphParser graphparser(graph.write_formatted());
       org::esb::core::GraphParser::ElementMap & el = graphparser.getElementMap();
       std::list<Ptr<org::esb::core::Graph::Element> > list;
-      std::string uuid=org::esb::util::PUUID();
       foreach(org::esb::core::GraphParser::ElementMap::value_type & element, el) {
         element.second->task->getContext()->set<std::string>("uuid",uuid);
         list.push_back(element.second);
       }
       org::esb::core::Graph graphobj=org::esb::core::Graph(list, uuid);
 
+      /*create a job entry here*/
+
+      db::Job job(_db);
+      job.uuid=uuid;
+      job.outfile=outfile;
+      job.update();
+
+
+
 
       EncodingUploadPartHandler partHandler(graphobj);
       Poco::Net::HTMLForm form(req, req.stream(), partHandler);
+      job.status=db::Job::Status::Exporting;
+      job.update();
     }else{
       res.setStatusAndReason(Poco::Net::HTTPServerResponse::HTTP_NOT_FOUND,"Profile not found");
     }

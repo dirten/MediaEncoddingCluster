@@ -19,8 +19,18 @@
 #include "org/esb/io/File.h"
 #include "org/esb/lang/Exception.h"
 
+#include "org/esb/util/Serializing.h"
+#include "org/esb/io/StringOutputStream.h"
+#include "org/esb/io/ObjectOutputStream.h"
+#include "org/esb/db/hivedb.hpp"
+
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/shared_ptr.hpp>
+
 using org::esb::io::File;
 using org::esb::lang::Exception;
+using org::esb::util::Serializing;
+
 
 namespace plugin {
 
@@ -55,14 +65,34 @@ namespace plugin {
       }
     }
 
+
+    /*serializing encoder*/
+    std::map<int, Ptr<org::esb::av::Encoder> > encoder_map=getContext()->getProperty<std::map<int, Ptr<org::esb::av::Encoder> > >("encoder");
+    std::map<int, boost::shared_ptr<org::esb::av::Encoder> > encoder_map_copy;
+    std::map<int, Ptr<org::esb::av::Encoder> >::iterator it = encoder_map.begin();
+    for (int a=0; it != encoder_map.end(); it++,a++) {
+      encoder_map_copy[a]=(*it).second;
+    }
+
+    std::string encdata=Serializing::serialize(encoder_map_copy);
+    boost::shared_ptr<db::HiveDb> database=getContext()->database;
+
+    db::OutputFile oFile(*database);
+    oFile.jobid=getContext()->get<std::string > ("uuid");
+    oFile.path=_trguristr;
+    oFile.outfiledata=encdata;
+    oFile.status=db::OutputFile::Status::Waiting;
+    oFile.update();
+
+    return;
     /*openning file outputstream*/
     File outfile(_trguristr);
    _fos=new FormatOutputStream(&outfile, outfile.getExtension().c_str());
     _pos=new PacketOutputStream(_fos.get());
 
     /*adding the encoder for the streams*/
-    std::map<int, Ptr<org::esb::av::Encoder> > encoder_map=getContext()->getProperty<std::map<int, Ptr<org::esb::av::Encoder> > >("encoder");
-    std::map<int, Ptr<org::esb::av::Encoder> >::iterator it = encoder_map.begin();
+    //std::map<int, Ptr<org::esb::av::Encoder> > encoder_map=getContext()->getProperty<std::map<int, Ptr<org::esb::av::Encoder> > >("encoder");
+    //std::map<int, Ptr<org::esb::av::Encoder> >::iterator it = encoder_map.begin();
     for (int a=0; it != encoder_map.end(); it++,a++) {
       _pos->setEncoder(*(*it).second,a);
     }
@@ -85,6 +115,7 @@ namespace plugin {
   }
 
   void OutputTask::pushBuffer(Ptr<org::esb::av::Packet>p){
+    return;
     LOGDEBUG("OutputTask pushbuffer");
     _pos->writePacket(*p);
   }
