@@ -38,6 +38,7 @@ namespace org {
         formatCtx = avformat_alloc_context();
         //auto avFormatPtr = avFormat;
         formatCtx->pb = avioContext;
+        formatCtx->flags|=AVFMT_FLAG_CUSTOM_IO;
         if (avformat_open_input(&formatCtx, "dummyFilename", NULL, NULL) != 0) {
           LOGERROR("could not open stream data");
 

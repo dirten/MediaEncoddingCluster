@@ -64,7 +64,7 @@ namespace org {
                 void setPassLogfile(std::string);
                 std::string getPassLogfile();
                 bool newFrame(Ptr<Frame>);
-                bool newPacket(Ptr<Packet>){}
+                bool newPacket(Ptr<Packet>){return false;}
 
             private:
                 int encodeVideo(Frame & f);

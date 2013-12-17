@@ -44,7 +44,7 @@ namespace org {
           AVFilter(AVFilterType type,std::string filter);
           ~AVFilter();
           bool newFrame(Ptr<Frame> p);
-          bool newPacket(Ptr<Packet>){}
+          bool newPacket(Ptr<Packet>){return false;}
           void setInputParameter(std::string key, std::string value);
           void setOutputParameter(std::string key, std::string value);
           void init();

@@ -350,7 +350,7 @@ namespace org {
         ctx->sample_rate = 0;
         ctx->sample_fmt = AV_SAMPLE_FMT_NONE;
         ctx->channels = 0;
-        ctx->channel_layout=AV_CH_LAYOUT_STEREO;
+        //ctx->channel_layout=AV_CH_LAYOUT_STEREO;
         //        ctx->idct_algo = FF_IDCT_AUTO;
         //        ctx->skip_idct = AVDISCARD_DEFAULT;
         //        ctx->error_recognition = FF_ER_CAREFUL;
@@ -647,7 +647,8 @@ namespace org {
             while ((t = av_dict_get(_dict, "", t, AV_DICT_IGNORE_SUFFIX)))
               LOGDEBUG((_mode == ENCODER ? "Encoder" : "Decoder")<<"Setting CodecDictionary Key:"<<t->key<<" val:"<<t->value);
           }
-          ctx->channel_layout=AV_CH_LAYOUT_STEREO;
+          //ctx->channel_layout=AV_CH_LAYOUT_STEREO;
+          LOGDEBUG("channel bfore open:"<<ctx->channels);
           //ctx->refcounted_frames=1;
           if (avcodec_open2(ctx, _codec,&_dict) < 0) {
             LOGERROR("error in openning Codec (" << ctx->codec_id << ")");
@@ -658,6 +659,7 @@ namespace org {
             fifo = av_fifo_alloc(1024);
             _opened = true;
           }
+          LOGDEBUG("channel after open:"<<ctx->channels);
           AVDictionaryEntry *t = NULL;
           while ((t = av_dict_get(_dict, "", t, AV_DICT_IGNORE_SUFFIX)))
             LOGDEBUG((_mode == ENCODER ? "Encoder" : "Decoder")<<"Invalid CodecDictionary Key:"<<t->key<<" val:"<<t->value);
@@ -683,7 +685,7 @@ namespace org {
       void Codec::close() {
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
 
-        if (true || _opened) {
+        if (_opened) {
           LOGDEBUG(((_mode == ENCODER) ? "Encoder" : "Decoder")<<" Codec::close(" << this << ")");
           //LOGINFO("Closing codec ("<<ctx->codec_id<<")");
           if (ctx) {

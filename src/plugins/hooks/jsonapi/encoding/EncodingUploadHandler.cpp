@@ -62,12 +62,20 @@ public:
       LOGDEBUG("Content-Length");
     }
     LOGDEBUG("Graph elements:"<< graph.getElements().size());
-    FormatInputStream fis(stream);
+
+    /**
+      * @TODO: remember memleak here, need to be fixed as soon as possible
+      * need to be cleaned up after the graph has been destroyed
+      * because the graph need to be close the decoder first, after that
+      * the InputStream could save destroyed
+      */
+    FormatInputStream * fis=new FormatInputStream(stream);
+
     foreach(Ptr<Graph::Element> el, graph.getElements()) {
       if (el->getParents().size() == 0) {
         LOGDEBUG("Element:"<<el->name);
         StreamSource * source=static_cast<StreamSource*>(el->task.get());
-        source->setSource(&fis);
+        source->setSource(fis);
       }
     }
     graph.run();

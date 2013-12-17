@@ -24,7 +24,7 @@ namespace org {
         void setEncoder(Codec & code);
         void setEncoder(Codec & code, int stream_id);
         bool newPacket(Ptr<Packet>p);
-         bool newFrame(Ptr<Frame>){}
+         bool newFrame(Ptr<Frame>){return false;}
     std::list<AVStream*> getStreamList();
         bool init();
         int writePacket(Packet & packet);

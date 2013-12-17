@@ -58,7 +58,7 @@ namespace org {
                 void setDeinterlace(bool);
                 void setKeepAspectRatio(bool);
                 bool newFrame(Ptr<Frame>);
-                bool newPacket(Ptr<Packet>){}
+                bool newPacket(Ptr<Packet>){return false;}
             private:
                 void convertVideo(Frame & input, Frame & out);
                 void convertAudio(Frame & input, Frame & out);

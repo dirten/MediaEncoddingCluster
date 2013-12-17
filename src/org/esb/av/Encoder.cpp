@@ -71,6 +71,7 @@ Encoder::~Encoder() {
 }
 
 bool Encoder::open() {
+  ctx->channel_layout=AV_CH_LAYOUT_STEREO;
   bool result = Codec::open();
   if (false && result && getCodecType() == AVMEDIA_TYPE_VIDEO && (ctx->flags & CODEC_FLAG_PSNR)) {
     /*initialize the refDecoder*/

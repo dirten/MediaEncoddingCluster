@@ -134,6 +134,7 @@ namespace org {
               try {
                 processUnit(unit);
               } catch (std::exception & ex) {
+                std::cout << "failed process unit:"<<unit->uuid<<std::endl;
                 LOGERROR("processUnit(unit):" << ex.what());
               }
               /**
@@ -184,7 +185,7 @@ namespace org {
           //delete unit;
           return;
         }
-        if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+        if (false&&unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
           LOGDEBUG("special handling audio")
           if (_swap_codec_list.find(unit->_source_stream) == _swap_codec_list.end()) {
             _swap_codec_list[unit->_source_stream] = false;
@@ -206,7 +207,7 @@ namespace org {
           LOGDEBUG("no audio codec");
         }
         unit->process();
-        if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+        if (false&&unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
           if (_swap_codec_list[unit->_source_stream]) {
             LOGDEBUG("swap back to hold the data");
             _decoder_list[unit->_source_stream] = unit->_decoder;
@@ -214,7 +215,7 @@ namespace org {
             _converter_list[unit->_target_stream] = unit->_converter;
           }
         }
-        if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+        if (false&&unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
 
           if (unit->_last_process_unit) {
             LOGDEBUG("Last ProcessUnit for Audio received, clear out");
