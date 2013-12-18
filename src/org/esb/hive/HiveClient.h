@@ -51,6 +51,7 @@ namespace org {
                 void onMessage(org::esb::signal::Message&);
                 void processUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit);
             private:
+                boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit;
                 bool _toHalt;
                 bool _running;
                 std::string _host;

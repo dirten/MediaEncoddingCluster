@@ -284,6 +284,7 @@ namespace org {
       bool AVFilter::newFrame(Ptr<Frame> p)
       {
         bool result=false;
+
         /**
           * @TODO: have a look into this, why do i need to clone the frame for this operation
           * on some video files it will crash when i do not clone

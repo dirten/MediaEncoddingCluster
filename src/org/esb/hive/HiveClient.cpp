@@ -114,7 +114,7 @@ namespace org {
           } else {
             while (!_toHalt) {
               char * text = const_cast<char*> ("get process_unit");
-              boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit; // = new org::esb::hive::job::ProcessUnit();
+               // = new org::esb::hive::job::ProcessUnit();
 
               try {
                 LOGDEBUG("send command :"+std::string(text))
@@ -151,7 +151,7 @@ namespace org {
                 LOGERROR("Connection to Server lost!!!" << ex.what());
                 _sock->close();
               }
-
+              unit.reset();
               /*
               delete unit->_decoder;
               unit->_decoder = NULL;

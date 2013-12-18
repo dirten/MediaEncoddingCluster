@@ -41,6 +41,8 @@
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/util/UUID.h"
 
+#include "Poco/Process.h"
+
 using org::esb::hive::Environment;
 using org::esb::signal::Messenger;
 using org::esb::util::StringUtil;
@@ -50,27 +52,29 @@ namespace po = boost::program_options;
 
 int main(int argc, char * argv[]) {
   org::esb::hive::Environment::build(argc, argv);
+  bool start_master=true;
   try {
     po::options_description gen("General options");
     gen.add_options()
-    ("help", "produce this message")
-    ("version", "Prints the Version");
+        ("help", "produce this message")
+        ("version", "Prints the Version");
 
     po::options_description ser("Server options");
     ser.add_options()
-    ("run,r", "start the Hive as Console Process");
+        ("run,r", "start the Hive as Console Process");
 
     po::options_description cli("Client options");
 
     cli.add_options()
-    ("client,i", "start the Hive Client");
+        ("client,i", "start the Hive Client");
 
     po::options_description priv("");
     priv.add_options()
-    ("erlang", "")
-    ("console,c", "")
-    ("quiet", "")
-    ("docroot,d", po::value<std::string > (), "webserver document root");
+        ("process,p", "")
+        ("erlang", "")
+        ("console,c", "")
+        ("quiet", "")
+        ("docroot,d", po::value<std::string > (), "webserver document root");
     po::options_description all("all");
 
     log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT(Environment::get("hive.config_path") + "/logging.properties"));
@@ -131,7 +135,7 @@ int main(int argc, char * argv[]) {
       Environment::set("loglevel", vm["loglevel"].as<std::string> ());
     }
 
-    if (!vm.count("quiet")) {
+    if (!vm.count("quiet") && !vm.count("process")) {
       std::cout << "" << std::endl;
       std::cout << "******************************************************************" << std::endl;
       std::cout << "* MediaEncodingCluster, Copyright (C) 2000-2014   Jan Hoelscher  *" << std::endl;
@@ -150,18 +154,34 @@ int main(int argc, char * argv[]) {
       std::cout << vm["docroot"].as<std::string>()<<std::endl;
     }
 
+    if(vm.count("process")){
+      start_master=false;
+    }
+
     if (vm.count("run")) {
       LOGDEBUG("start mhive server");
+      if(start_master){
+        while(true){
+          std::string cmd=Environment::get("hive.exec_path")+"/mhive";
+          LOGDEBUG("as master:"<<cmd);
+          std::vector<std::string> args;
+          args.push_back("-r");
+          args.push_back("-p");
+          args.push_back("--docroot="+vm["docroot"].as<std::string>());
+          Poco::ProcessHandle handle=Poco::Process::launch(cmd, args);
+          handle.wait();
+        }
+      }else{
+        LOGDEBUG("as sub process");
+        Environment::set("mode", "server");
 
-      Environment::set("mode", "server");
+        org::esb::core::PluginRegistry::getInstance()->startServerServices();
 
-      org::esb::core::PluginRegistry::getInstance()->startServerServices();
-
-      std::cout << "Press ctrl & c to stop the program" << std::endl;
-      org::esb::lang::CtrlCHitWaiter::wait();
-      std::cout << "\rshutdown app, this will take a minute!" << std::endl;
-      org::esb::core::PluginRegistry::getInstance()->stopServices();
-
+        std::cout << "Press ctrl & c to stop the program" << std::endl;
+        org::esb::lang::CtrlCHitWaiter::wait();
+        std::cout << "\rshutdown app, this will take a minute!" << std::endl;
+        org::esb::core::PluginRegistry::getInstance()->stopServices();
+      }
     }
 
     if (vm.count("client")) {
@@ -171,11 +191,22 @@ int main(int argc, char * argv[]) {
       props.setProperty(LOG4CPLUS_TEXT("appender.ERROR.File"), LOG4CPLUS_TEXT(Environment::get("log.path") + "/mhive-client-error.log"));
       config.configure();
 
-      Environment::set("mode", "client");
-      org::esb::core::PluginRegistry::getInstance()->startClientServices();
-      org::esb::lang::CtrlCHitWaiter::wait();
-      org::esb::core::PluginRegistry::getInstance()->stopServices();
-
+      if(start_master){
+        while(true){
+          std::string cmd=Environment::get("hive.exec_path")+"/mhive";
+          LOGDEBUG("as master:"<<cmd);
+          std::vector<std::string> args;
+          args.push_back("-i");
+          args.push_back("-p");
+          Poco::ProcessHandle handle=Poco::Process::launch(cmd, args);
+          handle.wait();
+        }
+      }else{
+        Environment::set("mode", "client");
+        org::esb::core::PluginRegistry::getInstance()->startClientServices();
+        org::esb::lang::CtrlCHitWaiter::wait();
+        org::esb::core::PluginRegistry::getInstance()->stopServices();
+      }
     }
 
     if (vm.count("version")) {
@@ -198,8 +229,8 @@ int main(int argc, char * argv[]) {
   //CodecFactory::free();
   Messenger::free();
   LOGINFO("MHive is not running anymore!!!")
-  //Log::close();
+      //Log::close();
 
-  return 0;
+      return 0;
 
 }

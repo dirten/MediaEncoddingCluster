@@ -52,6 +52,7 @@ namespace org {
         upath = get("MHIVE_DATA_PATH", upath);
 
         set("hive.user_path", upath);
+        set("hive.exec_path", f.getFilePath());
         set("web.docroot", bpath + "/web");
         set("hive.config_path", upath + "/conf");
         set("hive.dump_path", upath + "/dmp");

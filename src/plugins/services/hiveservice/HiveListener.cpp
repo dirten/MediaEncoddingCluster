@@ -100,7 +100,7 @@ namespace org {
                   go(ProtocolServer::run, protoServer);
                 } else {
                   LOGERROR("Client was not accepted, maybe server was closed!");
-                  break;
+                  //break;
                 }
             } catch (exception & ex) {
               LOGERROR("Exception in Main:" <<ex.what());

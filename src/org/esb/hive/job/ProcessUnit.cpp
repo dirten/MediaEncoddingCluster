@@ -203,13 +203,13 @@ void ProcessUnit::processInternal2() {
   filter->init();
 
   /*init the packet sink*/
-  MyPacketSink * sink=new MyPacketSink();
+  MyPacketSink sink;//=new MyPacketSink();
 
 
   /*build up the transcoding chain*/
   _decoder->addTarget(filter);
   filter->addTarget(_encoder.get());
-  _encoder->addTarget(sink);
+  _encoder->addTarget(&sink);
 
   list<boost::shared_ptr<Packet> >::iterator it = _input_packets.begin();
 
@@ -221,7 +221,7 @@ void ProcessUnit::processInternal2() {
   /*sending an empty packet is implicit a flush for the pipe*/
   while(_decoder->newPacket(new Packet()));
 
-  _output_packets = sink->getList();
+  _output_packets = sink.getList();
 }
 
 
