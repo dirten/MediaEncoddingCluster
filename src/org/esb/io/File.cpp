@@ -72,7 +72,11 @@ bool File::exists() {
 }
 
 bool File::deleteFile() {
-  fs::remove(_full_path);
+  if(isFile()){
+    fs::remove(_full_path);
+  }else if(isDirectory()){
+    fs::remove_all(_full_path);
+  }
   return !fs::exists(_full_path);
 }
 

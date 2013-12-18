@@ -158,7 +158,7 @@ int PacketOutputStream::writePacket(Packet & packet) {
     //    if (result != 0)logdebug("av_interleaved_write_frame Result:" << result);
   }
   //int result =_fmtCtx->oformat->write_packet(_fmtCtx,packet.packet);
-  LOGDEBUG("write packet to stream"+packet.toString());
+  //LOGDEBUG("write packet to stream"+packet.toString());
   int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
   if (_fmtCtx->streams[packet.getStreamIndex()]->codec->codec_type == AVMEDIA_TYPE_VIDEO && _stats_fos) {
     _stats_fos->write(StringUtil::toString(packet._quality) + ":" + StringUtil::toString(packet.packet->size) + ",");

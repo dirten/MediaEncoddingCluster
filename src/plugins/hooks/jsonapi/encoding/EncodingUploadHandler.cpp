@@ -133,8 +133,8 @@ public:
       tasks.push_back(createProfilenode(id,preset.data));
 
       graph.push_back(tasks);
-      graph.push_back(JSONNode("uuid",org::esb::util::PUUID()));
-      graph.push_back(JSONNode("name","bla fasel"));
+      graph.push_back(JSONNode("uuid",id));
+      //graph.push_back(JSONNode("name","bla fasel"));
       //LOGDEBUG("default graph"<<graph.write_formatted());
 
       org::esb::core::GraphParser graphparser(graph.write_formatted());
@@ -151,6 +151,7 @@ public:
       db::Job job(_db);
       job.uuid=uuid;
       job.outfile=outfile;
+      job.graph=graph.write_formatted();
       job.update();
 
 

@@ -36,6 +36,7 @@
 //#include <boost/thread.hpp>
 //#include <boost/bind.hpp>
 //#include "org/esb/lang/Runnable.h"
+#include "org/esb/db/hivedb.hpp"
 #include <list>
 
 using namespace org::esb::lang;
@@ -69,6 +70,17 @@ namespace org {
       }
 
       void HiveListener::startService() {
+        litesql::DataSource<db::ProcessUnit> source = litesql::select<db::ProcessUnit> (*getContext()->database, db::ProcessUnit::Send>1 && db::ProcessUnit::Recv==1);
+        litesql::Cursor<db::ProcessUnit> cur=source.cursor();
+        for (;cur.rowsLeft(); cur++){
+          db::ProcessUnit out=(*cur);
+          LOGDEBUG("aborted ProcessUnit found, restart it:"<<out)
+          out.send=1;
+          out.update();
+          LOGDEBUG("changed to:"<<out)
+        }
+
+
         boost::thread(boost::bind(&HiveListener::startListener, this));
         LOGDEBUG("Hive Listener running on port:" << getContext()->getEnvironment<std::string > ("hiveserver.port"));
         is_running = true;

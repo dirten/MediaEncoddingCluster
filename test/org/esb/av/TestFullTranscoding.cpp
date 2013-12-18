@@ -31,12 +31,12 @@ using namespace org::esb::av;
 using org::esb::util::StringUtil;
 using org::esb::hive::Environment;
 struct StreamData {
-  Decoder * dec;
-  Encoder * enc;
-  FrameConverter * conv;
-  org::esb::av::AVFilter * filter;
-  int64_t start_dts;
-  bool more_frames;
+    Decoder * dec;
+    Encoder * enc;
+    FrameConverter * conv;
+    org::esb::av::AVFilter * filter;
+    int64_t start_dts;
+    bool more_frames;
 };
 
 map<int, StreamData> _sdata;
@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
   bool video = false, audio = false;
   for (int i = 0; i < c; i++) {
     if (fis.getStreamInfo(i)->getCodecType() != AVMEDIA_TYPE_VIDEO &&
-        fis.getStreamInfo(i)->getCodecType() != AVMEDIA_TYPE_AUDIO) continue;
+    fis.getStreamInfo(i)->getCodecType() != AVMEDIA_TYPE_AUDIO) continue;
     //if(i!=4&&i!=1)continue;
     if (audio && video)continue;
     fis.dumpFormat();
@@ -95,10 +95,10 @@ int main(int argc, char** argv) {
       video = true;
       _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
       //_sdata[i].enc->setCodecId(CODEC_ID_THEORA);
-      _sdata[i].enc->setWidth(720);
-      _sdata[i].enc->setHeight(576);
-      //      _sdata[i].enc->setWidth(320);
-      //      _sdata[i].enc->setHeight(240);
+      //_sdata[i].enc->setWidth(720);
+      //_sdata[i].enc->setHeight(576);
+      _sdata[i].enc->setWidth(320);
+      _sdata[i].enc->setHeight(240);
       _sdata[i].enc->setGopSize(200);
       _sdata[i].enc->setCodecOption("flags","+psnr");
       AVRational ar;
@@ -111,7 +111,8 @@ int main(int argc, char** argv) {
 
 
 
-      _sdata[i].filter=new org::esb::av::AVFilter(VIDEO,"scale=%width%:%height%");
+      //_sdata[i].filter=new org::esb::av::AVFilter(VIDEO,"scale=%width%:%height%,fps=fps=25");
+      _sdata[i].filter=new org::esb::av::AVFilter(VIDEO,"scale=%width%:%height%,fps=fps=25");
 
       //char buf[512];
       //av_get_channel_layout_string(buf, sizeof(buf), _sdata[i].enc->getChannels(), _sdata[i].enc->getChannelLayout());
@@ -210,7 +211,7 @@ int main(int argc, char** argv) {
 
   /*main loop to encode the packets*/
   Packet *packet;
-  bool encode_whole_file=false;
+  bool encode_whole_file=true;
   for (int i = 0; i < 100 || encode_whole_file; i++) {
     //reading a packet from the Stream
     if ((packet=pis.readPacket()) ==NULL )break; //when no more packets available(EOF) then it return <0
@@ -240,9 +241,9 @@ int main(int argc, char** argv) {
     Frame * trg_frame = NULL;
     if (_sdata[idx].dec->getCodecType() == AVMEDIA_TYPE_VIDEO)
       trg_frame = new Frame(
-            _sdata[idx].enc->getInputFormat().pixel_format,
-            _sdata[idx].enc->getWidth(),
-            _sdata[idx].enc->getHeight());
+      _sdata[idx].enc->getInputFormat().pixel_format,
+      _sdata[idx].enc->getWidth(),
+      _sdata[idx].enc->getHeight());
     if (_sdata[idx].dec->getCodecType() == AVMEDIA_TYPE_AUDIO)
       trg_frame = new Frame();
 

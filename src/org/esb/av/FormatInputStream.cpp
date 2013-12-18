@@ -36,6 +36,8 @@ namespace org {
 
         //AVFormatContext * avFormat = avformat_alloc_context();
         formatCtx = avformat_alloc_context();
+        formatCtx->max_analyze_duration=2147483647;//+=10000000;
+        formatCtx->probesize=2147483647;//+=10000000;
         //auto avFormatPtr = avFormat;
         formatCtx->pb = avioContext;
         formatCtx->flags|=AVFMT_FLAG_CUSTOM_IO;
@@ -43,17 +45,18 @@ namespace org {
           LOGERROR("could not open stream data");
 
         }
-        LOGINFO("find stream info from stream ");
-        if (avformat_find_stream_info(formatCtx,NULL) < 0) {
-          LOGERROR("no StreamInfo from stream ");
-          return;
+        LOGINFO("find stream info from stream with analyze duratin of "<<formatCtx->max_analyze_duration<<" and probesize of"<<formatCtx->probesize);
+        int search_stream_info=3;
+        for(int a=search_stream_info;a>0;a--){
+          if (avformat_find_stream_info(formatCtx,NULL) < 0) {
+            LOGERROR("no StreamInfo from stream with anaylze_duration of:"<<formatCtx->max_analyze_duration);
+            formatCtx->max_analyze_duration+=1000000;
+            //return;
+          }else{
+            _isValid = true;
+            break;
+          }
         }
-        if (formatCtx->iformat->flags & AVFMT_TS_DISCONT) {
-          LOGDEBUG("TS DISCONT");
-        }
-        _isValid = true;
-
-
         //avformat_open_input(&avFormat, "dummyFilename", nullptr, nullptr);
       }
 

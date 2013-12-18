@@ -121,8 +121,21 @@ namespace plugin {
       //}
       org::esb::lang::Thread::sleep2(1 * 1000);
     }
+    /*mark completed*/
     _outputfile.status=db::OutputFile::Status::Completed;
     _outputfile.update();
+
+    /*cleanup files*/
+    if(_outputfile.jobid.value().length()>0){ //not to delete accidentally "data directory"
+      std::string base = org::esb::config::Config::get("hive.data_path");
+      if(base.length()>0){                    //not to delete accidentally "root directory"
+        org::esb::io::File job_dir(base + "/"+_outputfile.jobid);
+        if(job_dir.isDirectory()){
+          job_dir.deleteFile();
+        }
+      }
+    }
+
     LOGDEBUG("finishing output ")
   }
   bool Writer::ptsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b) {

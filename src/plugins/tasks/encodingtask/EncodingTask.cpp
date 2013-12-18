@@ -85,8 +85,8 @@ namespace encodingtask {
             _codecs["video"]["height"] = org::esb::util::StringUtil::toString(tmp[(*it).first]->getHeight());
             LOGDEBUG("setting video size from input to : " << _codecs["video"]["width"] << "*" << _codecs["video"]["height"]);
           }
-
-          if (_codecs["video"].count("time_base") == 0 || _codecs["video"]["time_base"].length() == 0) {
+          /*allways setting time base from input until fps rescale has a clean implementation*/
+          if (true || _codecs["video"].count("time_base") == 0 || _codecs["video"]["time_base"].length() == 0) {
             std::ostringstream oss;
             oss << tmp[(*it).first]->getFrameRate().den << "/" << tmp[(*it).first]->getFrameRate().num;
             _codecs["video"]["time_base"] = oss.str();

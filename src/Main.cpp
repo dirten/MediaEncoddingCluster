@@ -51,6 +51,7 @@ namespace po = boost::program_options;
 
 
 int main(int argc, char * argv[]) {
+  std::cout <<"arg0 length:"<<strlen(argv[0])<<std::endl;
   org::esb::hive::Environment::build(argc, argv);
   bool start_master=true;
   try {
