@@ -64,8 +64,8 @@ int main(int argc, char** argv) {
 
 
   /*opening the input file and Packet Input Stream*/
-  File f(src.c_str());
-  FormatInputStream fis(&f);
+  //File f(src.c_str());
+  FormatInputStream fis(src);
   PacketInputStream pis(&fis, true, true);
 
 
@@ -103,16 +103,16 @@ int main(int argc, char** argv) {
       _sdata[i].enc->setCodecOption("flags","+psnr");
       AVRational ar;
       ar.num = 1;
-      ar.den = 25;
+      ar.den = 15;
       //ar.den = _sdata[i].dec->getTimeBase().den/_sdata[i].dec->ctx->ticks_per_frame;
 
-      _sdata[i].enc->setTimeBase(ar);
+      _sdata[i].enc->setTimeBase(_sdata[i].dec->getTimeBase());
       _sdata[i].enc->setBitRate(1500000);
 
 
 
       //_sdata[i].filter=new org::esb::av::AVFilter(VIDEO,"scale=%width%:%height%,fps=fps=25");
-      _sdata[i].filter=new org::esb::av::AVFilter(VIDEO,"scale=%width%:%height%,fps=fps=25");
+      _sdata[i].filter=new org::esb::av::AVFilter(VIDEO,"scale=%width%:%height%");
 
       //char buf[512];
       //av_get_channel_layout_string(buf, sizeof(buf), _sdata[i].enc->getChannels(), _sdata[i].enc->getChannelLayout());
@@ -125,6 +125,7 @@ int main(int argc, char** argv) {
       _sdata[i].filter->setOutputParameter("width",StringUtil::toString(_sdata[i].enc->getWidth()));
       _sdata[i].filter->setOutputParameter("height",StringUtil::toString(_sdata[i].enc->getHeight()));
       _sdata[i].filter->setOutputParameter("pixel_format",StringUtil::toString(_sdata[i].enc->getPixelFormat()));
+      //_sdata[i].filter->setOutputParameter("pixel_format",StringUtil::toString(0));
 
 
 
@@ -148,8 +149,9 @@ int main(int argc, char** argv) {
       _sdata[i].filter=new org::esb::av::AVFilter(AUDIO,"aresample=%sample_rate%,aformat=sample_fmts=%sample_format%:channel_layouts=%channel_layout%");
 
       char buf[512];
-      av_get_channel_layout_string(buf, sizeof(buf), _sdata[i].enc->getChannels(), _sdata[i].dec->getChannelLayout());
+      av_get_channel_layout_string(buf, sizeof(buf), _sdata[i].dec->getChannels(), _sdata[i].dec->getChannelLayout());
       int64_t ch_layout=_sdata[i].dec->getChannelLayout();
+      LOGDEBUG("ChannelLayout : "<<ch_layout<<" channels : "<<_sdata[i].dec->getChannels())
       //_sdata[i].filter->setInputParameter("channel_layout",buf);
       _sdata[i].filter->setInputParameter("channel_layout",StringUtil::toString(ch_layout));
       _sdata[i].filter->setInputParameter("sample_rate",StringUtil::toString(_sdata[i].dec->getSampleRate()));

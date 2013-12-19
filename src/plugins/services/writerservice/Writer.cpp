@@ -131,7 +131,9 @@ namespace plugin {
       if(base.length()>0){                    //not to delete accidentally "root directory"
         org::esb::io::File job_dir(base + "/"+_outputfile.jobid);
         if(job_dir.isDirectory()){
-          job_dir.deleteFile();
+
+          //job_dir.deleteFile();
+
         }
       }
     }

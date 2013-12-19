@@ -143,7 +143,9 @@ ELSEIF(APPLE)
       ${FFMPEG_DIR}/lib/libavdevice.dylib
       ${FFMPEG_DIR}/lib/libavformat.dylib
       ${FFMPEG_DIR}/lib/libavutil.dylib
+      ${FFMPEG_DIR}/lib/libfilter.dylib
       ${FFMPEG_DIR}/lib/libswscale.dylib
+      ${FFMPEG_DIR}/lib/libswresample.dylib
     DESTINATION ${LIB_INSTALL_DIR}
 #    COMPONENT libraries
   )
@@ -176,13 +178,21 @@ ELSEIF(APPLE)
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change libmhive-util.dylib @executable_path/../lib/libmhive-util.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libmhive-signal.dylib)")
 
 ELSE(APPLE)
+INSTALL(DIRECTORY ${FFMPEG_DIR}/lib/
+  DESTINATION ${LIB_INSTALL_DIR}
+  FILES_MATCHING PATTERN "*.so*"
+  PATTERN ".svn" EXCLUDE
+)
+
   INSTALL(FILES
-      ${FFMPEG_DIR}/lib/libavcodec.so.54
-      ${FFMPEG_DIR}/lib/libavdevice.so.53
-      ${FFMPEG_DIR}/lib/libavformat.so.54
-      ${FFMPEG_DIR}/lib/libavutil.so.51
+      ${FFMPEG_DIR}/lib/libavcodec.so.55
+      ${FFMPEG_DIR}/lib/libavdevice.so.55
+      ${FFMPEG_DIR}/lib/libavformat.so.55
+      ${FFMPEG_DIR}/lib/libavutil.so.52
+      ${FFMPEG_DIR}/lib/libavfilter.so.3
 #      ${FFMPEG_DIR}/lib/libavcore.so
       ${FFMPEG_DIR}/lib/libswscale.so.2
+      ${FFMPEG_DIR}/lib/libswresample.so.0
 #      ${FFMPEG_DIR}/lib/libPocoNet.so.11
 #      ${FFMPEG_DIR}/lib/libPocoFoundation.so.11
     DESTINATION ${LIB_INSTALL_DIR}

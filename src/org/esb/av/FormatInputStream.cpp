@@ -14,10 +14,12 @@ namespace org {
       boost::mutex FormatInputStream::file_open_mutex;
 
       static int readFunction(void* opaque, uint8_t* buf, int buf_size) {
+        streamsize result=0;
           std::istream & me = *reinterpret_cast<std::istream*>(opaque);
           me.read(reinterpret_cast<char*>(buf), buf_size);
-          //LOGDEBUG("read buffer:"<<buf_size)
-          return me.gcount();
+          result=me.gcount();
+          LOGDEBUG("read buffer with size :"<<buf_size<<" bytes readed from stream : "<<result)
+          return result;
       }
 
       FormatInputStream::FormatInputStream(File * source) {
@@ -31,17 +33,27 @@ namespace org {
       }
 
       FormatInputStream::FormatInputStream(std::istream  & stream){
-        unsigned char * buffer = reinterpret_cast<unsigned char*>(av_malloc(8192));
-        AVIOContext * avioContext= avio_alloc_context(buffer, 8192, 0, reinterpret_cast<void*>(static_cast<std::istream*>(&stream)), &readFunction, NULL, NULL);
+        const int bufSize= 128 * 1024;
+        unsigned char * buffer = reinterpret_cast<unsigned char*>(av_malloc(bufSize + FF_INPUT_BUFFER_PADDING_SIZE));
+        AVIOContext * avioContext= avio_alloc_context(buffer, bufSize, 0, reinterpret_cast<void*>(static_cast<std::istream*>(&stream)), &readFunction, NULL, NULL);
 
         //AVFormatContext * avFormat = avformat_alloc_context();
         formatCtx = avformat_alloc_context();
-        formatCtx->max_analyze_duration=2147483647;//+=10000000;
-        formatCtx->probesize=2147483647;//+=10000000;
+        //formatCtx->max_analyze_duration=2147483647;//+=10000000;
+        //formatCtx->probesize=2147483647;//+=10000000;
         //auto avFormatPtr = avFormat;
         formatCtx->pb = avioContext;
+        /*
+        AVProbeData probeData;
+        probeData.buf = buffer;
+        probeData.buf_size = ulReadBytes;
+        probeData.filename = "";
+        formatCtx->iformat= av_probe_input_format(&probeData, 1);
+        */
+        //formatCtx->iformat->flags|=AVFMT_NOFILE;
+
         formatCtx->flags|=AVFMT_FLAG_CUSTOM_IO;
-        if (avformat_open_input(&formatCtx, "dummyFilename", NULL, NULL) != 0) {
+        if (avformat_open_input(&formatCtx, NULL, NULL, NULL) != 0) {
           LOGERROR("could not open stream data");
 
         }
@@ -49,6 +61,7 @@ namespace org {
         int search_stream_info=3;
         for(int a=search_stream_info;a>0;a--){
           if (avformat_find_stream_info(formatCtx,NULL) < 0) {
+          //if (av_find_stream_info(formatCtx) < 0) {
             LOGERROR("no StreamInfo from stream with anaylze_duration of:"<<formatCtx->max_analyze_duration);
             formatCtx->max_analyze_duration+=1000000;
             //return;

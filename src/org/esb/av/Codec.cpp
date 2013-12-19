@@ -801,6 +801,9 @@ namespace org {
       }
 
       int64_t Codec::getChannelLayout(){
+        if(!ctx->channel_layout){
+          ctx->channel_layout=av_get_default_channel_layout(ctx->channels);
+        }
         return ctx->channel_layout;
       }
       void Codec::setChannelLayout(int64_t l){

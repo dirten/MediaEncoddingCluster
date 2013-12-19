@@ -218,11 +218,13 @@ namespace org {
         filter_graph->thread_type=0;
         filter_graph->nb_threads=1;
 
+
         ret = avfilter_graph_create_filter(&buffersrc_ctx, buffersrc, "in",
         args, NULL, filter_graph);
         if (ret < 0) {
           throw Exception(__FILE__, __LINE__,"Cannot create video buffer source with arguments\n%s", args);
         }
+        av_log(NULL, AV_LOG_INFO, "created video buffer source with arguments\n%s", args);
 
         std::map<std::string, std::string>::iterator it=_output_params.begin();
         for(;it!=_output_params.end();it++){
