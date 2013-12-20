@@ -21,12 +21,14 @@
 #include "Poco/Net/HTTPStreamFactory.h"
 #include "Poco/Net/FTPStreamFactory.h"
 #include "WebHookHandlerFactory.h"
+#include "org/esb/hive/Environment.h"
+
 #include <string.h>
 //#include "org/esb/api/ApiWebServer.h"
 namespace org {
   namespace esb {
     namespace core {
-
+      using org::esb::hive::Environment;
       bool compare_webservice(Ptr<org::esb::io::File> first, Ptr<org::esb::io::File> second) {
         //LOGDEBUG("Compare="<<first->getPath());
         if (first->getPath().find("webservice") != std::string::npos) {
@@ -73,14 +75,14 @@ namespace org {
 
       void CORE_EXPORT PluginRegistry::startServerServices() {
         typedef std::map<std::string, Plugin*> PluginMap;
-        server=new org::esb::core::http::Server(4000);
+        server=new org::esb::core::http::Server(atoi(Environment::get("webport").c_str()));
         server->setRequestHandlerFactory(_webhook_handler_factory);
         server->start();
 
         foreach(PluginMap::value_type s, _service_map) {
           //LOGDEBUG("ServiceName="<<s.first<<" type="<<((ServicePlugin*) s.second)->getServiceType());
           if (((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_SERVER ||
-              ((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_ALL)
+          ((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_ALL)
             ((ServicePlugin*) s.second)->startService();
         }
       }
@@ -90,7 +92,7 @@ namespace org {
 
         foreach(PluginMap::value_type s, _service_map) {
           if (((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_CLIENT ||
-              ((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_ALL)
+          ((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_ALL)
             ((ServicePlugin*) s.second)->startService();
         }
 
@@ -304,6 +306,6 @@ namespace org {
           //row.second=NULL;
         }
       }
-      }
     }
   }
+}

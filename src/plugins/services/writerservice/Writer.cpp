@@ -132,7 +132,7 @@ namespace plugin {
         org::esb::io::File job_dir(base + "/"+_outputfile.jobid);
         if(job_dir.isDirectory()){
 
-          //job_dir.deleteFile();
+          job_dir.deleteFile();
 
         }
       }

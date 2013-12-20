@@ -51,7 +51,7 @@ namespace po = boost::program_options;
 
 
 int main(int argc, char * argv[]) {
-  std::cout <<"arg0 length:"<<strlen(argv[0])<<std::endl;
+
   org::esb::hive::Environment::build(argc, argv);
   bool start_master=true;
   try {
@@ -62,7 +62,8 @@ int main(int argc, char * argv[]) {
 
     po::options_description ser("Server options");
     ser.add_options()
-        ("run,r", "start the Hive as Console Process");
+    ("run,r", "start the Hive as Console Process")
+    ("webport,w", po::value<std::string > (), "Port number for the webservice");
 
     po::options_description cli("Client options");
 
@@ -135,6 +136,9 @@ int main(int argc, char * argv[]) {
     if (vm.count("loglevel")) {
       Environment::set("loglevel", vm["loglevel"].as<std::string> ());
     }
+    if (vm.count("webport")) {
+      Environment::set("webport", vm["webport"].as<std::string> ());
+    }
 
     if (!vm.count("quiet") && !vm.count("process")) {
       std::cout << "" << std::endl;
@@ -152,7 +156,6 @@ int main(int argc, char * argv[]) {
 
     if(vm.count("docroot")){
       Environment::set("web.docroot", vm["docroot"].as<std::string>());
-      std::cout << vm["docroot"].as<std::string>()<<std::endl;
     }
 
     if(vm.count("process")){

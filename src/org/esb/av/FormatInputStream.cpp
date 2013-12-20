@@ -2,12 +2,15 @@
 #include "org/esb/io/File.h"
 #include "org/esb/lang/Exception.h"
 
+#include "org/esb/util/StringTokenizer.h"
 #include <iostream>
 //#include <boost/cast.hpp>
 using namespace std;
 
 using namespace org::esb::io;
 using namespace org::esb::lang;
+
+using org::esb::util::StringTokenizer;
 namespace org {
   namespace esb {
     namespace av {
@@ -18,7 +21,7 @@ namespace org {
           std::istream & me = *reinterpret_cast<std::istream*>(opaque);
           me.read(reinterpret_cast<char*>(buf), buf_size);
           result=me.gcount();
-          LOGDEBUG("read buffer with size :"<<buf_size<<" bytes readed from stream : "<<result)
+          //LOGDEBUG("read buffer with size :"<<buf_size<<" bytes readed from stream : "<<result)
           return result;
       }
 
@@ -34,6 +37,7 @@ namespace org {
 
       FormatInputStream::FormatInputStream(std::istream  & stream){
         const int bufSize= 128 * 1024;
+        const int probeBufSize= 2 * 1024;
         unsigned char * buffer = reinterpret_cast<unsigned char*>(av_malloc(bufSize + FF_INPUT_BUFFER_PADDING_SIZE));
         AVIOContext * avioContext= avio_alloc_context(buffer, bufSize, 0, reinterpret_cast<void*>(static_cast<std::istream*>(&stream)), &readFunction, NULL, NULL);
 
@@ -43,6 +47,7 @@ namespace org {
         //formatCtx->probesize=2147483647;//+=10000000;
         //auto avFormatPtr = avFormat;
         formatCtx->pb = avioContext;
+
         /*
         AVProbeData probeData;
         probeData.buf = buffer;
@@ -50,9 +55,10 @@ namespace org {
         probeData.filename = "";
         formatCtx->iformat= av_probe_input_format(&probeData, 1);
         */
+        //formatCtx->iformat= getInputFormat("mp4");
         //formatCtx->iformat->flags|=AVFMT_NOFILE;
 
-        formatCtx->flags|=AVFMT_FLAG_CUSTOM_IO;
+        formatCtx->flags=AVFMT_FLAG_CUSTOM_IO;
         if (avformat_open_input(&formatCtx, NULL, NULL, NULL) != 0) {
           LOGERROR("could not open stream data");
 
@@ -215,6 +221,21 @@ namespace org {
           _stream_info_map.clear();
         }
       }
+
+      AVInputFormat*  FormatInputStream::getInputFormat(std::string name) {
+        AVInputFormat *fmt = NULL;
+        while ((fmt = av_iformat_next(fmt))) {
+          StringTokenizer tok(fmt->name,",");
+          while(tok.hasMoreTokens()){
+            std::string fmt_name=tok.nextToken();
+            if(name==fmt_name){
+              return fmt;
+            }
+          }
+        }
+        return NULL;
+      }
+
       }
     }
   }

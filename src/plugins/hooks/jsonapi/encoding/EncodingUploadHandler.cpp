@@ -5,6 +5,7 @@
 #include "org/esb/io/File.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/util/Foreach.h"
+#include "org/esb/util/StringTokenizer.h"
 #include "Poco/Net/PartHandler.h"
 #include "Poco/Net/HTMLForm.h"
 #include "Poco/CountingStream.h"
@@ -26,6 +27,7 @@
 #include "org/esb/lang/Thread.h"
 
 #include "org/esb/av/FormatInputStream.h"
+#include "org/esb/av/FormatOutputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/av/Packet.h"
 
@@ -38,11 +40,15 @@
 
 
 using org::esb::av::FormatInputStream;
+using org::esb::av::FormatOutputStream;
 using org::esb::av::PacketInputStream;
 using org::esb::av::Packet;
 using org::esb::core::Graph;
+using org::esb::util::StringTokenizer;
 
 using plugin::StreamSource;
+
+
 class EncodingUploadPartHandler : public Poco::Net::PartHandler {
 
 public:
@@ -121,16 +127,24 @@ public:
       LOGDEBUG("preset found");
 
       db::Preset preset = s.one();
+      JSONNode profile=createProfilenode(id,preset.data);
       JSONNode graph(JSON_NODE);
       JSONNode tasks(JSON_ARRAY);
       tasks.set_name("tasks");
 
       std::string uuid=org::esb::util::PUUID();
 
-      std::string outfile="/tmp/"+uuid+".mp4";
+      std::string format_id=profile["data"]["format"]["id"].as_string();
+      AVOutputFormat * oformat=FormatOutputStream::getOutputFormat(format_id);
+      StringTokenizer tok(oformat->extensions,",");
+      std::string ext;
+      if(tok.hasMoreTokens())
+        ext=tok.nextToken();
+
+      std::string outfile="/tmp/"+uuid+"."+ext;
       tasks.push_back(createInfilenode());
       tasks.push_back(createOutfilenode(outfile));
-      tasks.push_back(createProfilenode(id,preset.data));
+      tasks.push_back(profile);
 
       graph.push_back(tasks);
       graph.push_back(JSONNode("uuid",id));

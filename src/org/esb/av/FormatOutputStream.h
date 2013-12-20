@@ -25,7 +25,8 @@ namespace org {
                 bool close();
                 void addPacketStream(PacketOutputStream & stream, Encoder & encoder);
                 void dumpFormat();
-                static OutputFormatList getOutputFormats();
+                static std::list<AVOutputFormat* > getOutputFormats();
+                static AVOutputFormat * getOutputFormat(std::string name);
                 //		private:
                 friend class PacketOutputStream;
                 AVFormatContext * _fmtCtx;

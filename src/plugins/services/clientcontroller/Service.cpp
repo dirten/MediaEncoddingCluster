@@ -64,6 +64,9 @@ namespace clientcontroller {
   }
 
   void Service::startClientNodes(std::string host, int port) {
+    /*when clients allready running, no other clients will be started*/
+    if(_client_list.size()>0)return;
+
     int count = getContext()->getEnvironment<int>("clientcontroller.count");
     for (int a = 0; a < count; a++) {
       Ptr<org::esb::hive::HiveClient>c = new org::esb::hive::HiveClient(host, port);

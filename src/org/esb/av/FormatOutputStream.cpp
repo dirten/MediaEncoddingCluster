@@ -51,13 +51,13 @@ namespace org {
       }
 
       void FormatOutputStream::write(char * buffer, int length) {
-      };
+      }
 
       void FormatOutputStream::write(vector<unsigned char>&buffer) {
-      };
+      }
 
       void FormatOutputStream::write(char * buffer) {
-      };
+      }
 
       void FormatOutputStream::open() {
         /*  if (!(_fmt->flags & AVFMT_NOFILE)) {
@@ -83,17 +83,24 @@ namespace org {
         }
         //	av_close_input_file(_fmtCtx);
         return result;
-      };
+      }
 
-      OutputFormatList FormatOutputStream::getOutputFormats() {
-
+      std::list<AVOutputFormat*>  FormatOutputStream::getOutputFormats() {
+        std::list<AVOutputFormat*> result;
         AVOutputFormat *ofmt = NULL;
-        int a = 0;
         while ((ofmt = av_oformat_next(ofmt))) {
-//          v_format->addItem(ofmt->long_name);
-          a++;
+          result.push_back(ofmt);
         }
-        return OutputFormatList();
+        return result;
+      }
+
+      AVOutputFormat*  FormatOutputStream::getOutputFormat(std::string name) {
+        AVOutputFormat *fmt = NULL;
+        while ((fmt = av_oformat_next(fmt))) {
+          if (name.compare(fmt->name)==0)
+            return fmt;
+        }
+        return NULL;
       }
     }
   }

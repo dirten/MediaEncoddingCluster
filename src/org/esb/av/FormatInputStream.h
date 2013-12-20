@@ -51,6 +51,8 @@ namespace org {
         int selectedStream;
         StreamInfo * getStreamInfo(int idx);
         void init(std::string filename);
+        static AVInputFormat * getInputFormat(std::string name);
+
       private:
         std::string _sourceFile;
         //org::esb::io::File * _file_object;

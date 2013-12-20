@@ -31,6 +31,7 @@ namespace org {
         Server::~Server() {
           delete _httpserver;
           _httpserver=NULL;
+
           delete _socket;
           _socket=NULL;
         }

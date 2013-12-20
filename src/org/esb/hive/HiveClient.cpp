@@ -51,19 +51,20 @@ namespace org {
         if (msg.getProperty<std::string > ("hiveclient") == "start") {
           LOGDEBUG("start message received")
           _t = boost::thread(boost::bind(&HiveClient::start, this));
-          _running = true;
         } else
-          if (msg.getProperty<std::string > ("hiveclient") == "stop") {
-            LOGDEBUG("stop message received")
-            stop();
+        if (msg.getProperty<std::string > ("hiveclient") == "stop") {
+          LOGDEBUG("stop message received")
+          stop();
         }
       }
 
       void HiveClient::start() {
-        _toHalt = false;
-        _running = true;
-        connect();
-        process();
+        if(!_running){
+          _toHalt = false;
+          _running = true;
+          connect();
+          process();
+        }
       }
 
       void HiveClient::stop() {
@@ -93,9 +94,9 @@ namespace org {
           _ois = new org::esb::io::ObjectInputStream(_sock->getInputStream());
           _oos = new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
 #endif
-          std::string cmd = JOIN_PARTITION;
-          _sock->getOutputStream()->write(cmd);
-          _oos->writeObject(org::esb::config::Config::get("partition"));
+          //std::string cmd = JOIN_PARTITION;
+          //_sock->getOutputStream()->write(cmd);
+          //_oos->writeObject(org::esb::config::Config::get("partition"));
           LOGINFO("Server " << _host << " connected!!!");
           std::cout << "Processor connected to Server " << _host << ":" << _port << std::endl;
         } catch (exception & ex) {
@@ -114,7 +115,7 @@ namespace org {
           } else {
             while (!_toHalt) {
               char * text = const_cast<char*> ("get process_unit");
-               // = new org::esb::hive::job::ProcessUnit();
+              // = new org::esb::hive::job::ProcessUnit();
 
               try {
                 LOGDEBUG("send command :"+std::string(text))
