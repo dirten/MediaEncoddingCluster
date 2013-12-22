@@ -24,7 +24,7 @@ using namespace std;
 using namespace Poco;
 using namespace Poco::Net;
 #define HOST "localhost"
-#define PORT 8080
+#define PORT 4000
 
 JSONNode getJson(std::string data) {
   return libjson::parse(data);
@@ -147,6 +147,7 @@ int main(int argc, char** argv) {
   org::esb::config::Config::setProperty("HOME",".");
   org::esb::config::Config::setProperty("APPDATA",".");
   org::esb::hive::Environment::build(argc, argv);
+  org::esb::hive::Environment::set("webport","4000");
   Log::open();
   org::esb::av::FormatBaseStream::initialize();
   org::esb::core::PluginRegistry::getInstance()->load(ENCODINGTASK_PLUGIN);

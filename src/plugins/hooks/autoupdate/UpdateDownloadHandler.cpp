@@ -27,7 +27,7 @@ void UpdateDownloadHandler::handle(org::esb::core::http::HTTPServerRequest&req, 
     res.setStatus(res.HTTP_OK);
     res.setChunkedTransferEncoding(true);
     res.set("Content-Disposition","update");
-    std::ifstream ifs (update_path_str, std::ifstream::in);
+    std::ifstream ifs (update_path_str.c_str(), std::ifstream::in);
     std::ostream& ostr = res.send();
     StreamCopier::copyStream64(ifs, ostr);
   }else{
