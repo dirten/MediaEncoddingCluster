@@ -289,6 +289,7 @@ cleanup:
 
 
   }
+  Environment::close();
   //  Log::close();
   return (EXIT_SUCCESS);
 }
