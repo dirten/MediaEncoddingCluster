@@ -17,6 +17,7 @@ add_library (json
     JSON_Base64.cpp
     internalJSONNode.cpp
     libjson.cpp
+    JSONResult.cpp
 )
 
 

@@ -2,6 +2,7 @@
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/core/WebHookPlugin.h"
 #include "org/esb/libjson/libjson.h"
+#include "org/esb/libjson/JSONResult.h"
 #include "org/esb/io/File.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/util/Foreach.h"
@@ -18,7 +19,6 @@
 
 #include "Poco/RegularExpression.h"
 #include "Poco/String.h"
-#include "../JSONResult.h"
 #include "../exports.h"
 #include "org/esb/util/UUID.h"
 #include "org/esb/config/config.h"
@@ -75,7 +75,7 @@ public:
       * because the graph need to be close the decoder first, after that
       * the InputStream could save destroyed
       */
-    FormatInputStream * fis=new FormatInputStream(stream);
+    fis=new FormatInputStream(stream);
 
     foreach(Ptr<Graph::Element> el, graph.getElements()) {
       if (el->getParents().size() == 0) {
@@ -85,6 +85,7 @@ public:
       }
     }
     graph.run();
+    //delete fis;
     /*
     PacketInputStream pis(&fis);
     org::esb::av::Packet * packet;
@@ -93,6 +94,10 @@ public:
       delete packet;
     }
     */
+  }
+
+  ~EncodingUploadPartHandler(){
+    //delete fis;
   }
 
   std::string getData() {
@@ -106,9 +111,11 @@ private:
   std::string _data;
   uint64_t _length;
   org::esb::core::Graph & graph;
+  FormatInputStream * fis;
 };
-class JSONAPI_EXPORT EncodingUploadHandler : public org::esb::core::WebHookPlugin {
 
+class JSONAPI_EXPORT EncodingUploadHandler : public org::esb::core::WebHookPlugin {
+org::esb::core::Graph * graphobj;
   db::HiveDb _db;
 public:
   EncodingUploadHandler() : _db(db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"))){
@@ -116,6 +123,8 @@ public:
   }
   ~EncodingUploadHandler(){
     //pipe.close();
+    //delete graphobj;
+
     LOGDEBUG("~EncodingUploadHandler()");
   }
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
@@ -158,7 +167,9 @@ public:
         element.second->task->getContext()->set<std::string>("uuid",uuid);
         list.push_back(element.second);
       }
-      org::esb::core::Graph graphobj=org::esb::core::Graph(list, uuid);
+
+
+     org::esb::core::Graph graphobj = org::esb::core::Graph(list, uuid);
 
       /*create a job entry here*/
 
@@ -169,12 +180,13 @@ public:
       job.update();
 
 
+       //release this scope before the graph will be freed
+        EncodingUploadPartHandler partHandler(graphobj);
+        Poco::Net::HTMLForm form(req, req.stream(), partHandler);
 
-
-      EncodingUploadPartHandler partHandler(graphobj);
-      Poco::Net::HTMLForm form(req, req.stream(), partHandler);
       job.status=db::Job::Status::Exporting;
       job.update();
+      //delete graphobj;
     }else{
       res.setStatusAndReason(Poco::Net::HTTPServerResponse::HTTP_NOT_FOUND,"Profile not found");
     }
@@ -183,6 +195,7 @@ public:
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();
   }
+
 private:
   JSONNode createInfilenode(){
     JSONNode result;

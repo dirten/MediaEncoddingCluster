@@ -629,7 +629,8 @@ namespace org {
             setTimeBase(1, atoi(t->value));
           }else{
             LOGERROR("no sample_rate found for audio codec");
-          }        }
+          }
+        }
         if (_codec && _codec->type == AVMEDIA_TYPE_VIDEO) {
           if (_frame_rate.num == 0 && _frame_rate.den == 0) {
             _frame_rate.num = ctx->time_base.den;
@@ -656,7 +657,7 @@ namespace org {
             std::string codec_mode = (_mode == ENCODER) ? "Encoder" : "Decoder";
             LOGDEBUG(codec_mode << " opened:" << ctx->codec_id<<"("<<this<<")");
             LOGDEBUG("CodecThreadCount="<<ctx->thread_count);
-            fifo = av_fifo_alloc(1024);
+            //fifo = av_fifo_alloc(1024);
             _opened = true;
           }
           LOGDEBUG("channel after open:"<<ctx->channels);
@@ -685,7 +686,7 @@ namespace org {
       void Codec::close() {
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
 
-        if (true ||_opened) {
+        if (_opened && avcodec_is_open(ctx)) {
           LOGDEBUG(((_mode == ENCODER) ? "Encoder" : "Decoder")<<" Codec::close(" << this << ")");
           //LOGINFO("Closing codec ("<<ctx->codec_id<<")");
           if (ctx) {

@@ -63,7 +63,7 @@ int main(int argc, char * argv[]) {
     po::options_description ser("Server options");
     ser.add_options()
     ("run,r", "start the Hive as Console Process")
-    ("webport,w", po::value<std::string > (), "Port number for the webservice");
+    ("webport,w", po::value<std::string > ()->default_value("8080"), "Port number for the webservice");
 
     po::options_description cli("Client options");
 
@@ -168,10 +168,10 @@ int main(int argc, char * argv[]) {
         while(true){
           std::string cmd=Environment::get("hive.exec_path")+"/mhive";
           LOGDEBUG("as master:"<<cmd);
-          std::vector<std::string> args;
-          args.push_back("-r");
+          std::vector<std::string> args=Environment::getArguments();
+          //args.push_back("-r");
           args.push_back("-p");
-          args.push_back("--docroot="+vm["docroot"].as<std::string>());
+          //args.push_back("--docroot="+vm["docroot"].as<std::string>());
           Poco::ProcessHandle handle=Poco::Process::launch(cmd, args);
           handle.wait();
         }
@@ -199,8 +199,8 @@ int main(int argc, char * argv[]) {
         while(true){
           std::string cmd=Environment::get("hive.exec_path")+"/mhive";
           LOGDEBUG("as master:"<<cmd);
-          std::vector<std::string> args;
-          args.push_back("-i");
+          std::vector<std::string> args=Environment::getArguments();
+          //args.push_back("-i");
           args.push_back("-p");
           Poco::ProcessHandle handle=Poco::Process::launch(cmd, args);
           handle.wait();

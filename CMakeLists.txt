@@ -7,6 +7,17 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 project (MEC)
 
+############################################################
+#
+# Setup the version for MHive
+#
+############################################################
+SET(MAJOR_VERSION 0)
+SET(MINOR_VERSION 5)
+SET(PATCH_VERSION 1)
+SET(MINOR_PATCH_VERSION 0)
+SET(REV ${SVN_VERSION})
+
 
 INCLUDE(cmake/CMakeListExternals.txt)
 
@@ -129,16 +140,6 @@ set(BOOST_ROOT ${BOOST_DIR})
 #INCLUDE(svn_revision.txt)
 
 
-############################################################
-#
-# Setup the version for MHive
-#
-############################################################
-SET(MAJOR_VERSION 0)
-SET(MINOR_VERSION 0)
-SET(PATCH_VERSION 5)
-SET(MINOR_PATCH_VERSION 0)
-SET(REV ${SVN_VERSION})
 
 
 ############################################################
@@ -183,8 +184,8 @@ ELSEIF(APPLE)
   SET(CPACK_BUNDLE_NAME "MediaEncodingCluster")
   SET(CPACK_BUNDLE_ICON "${PROJECT_SOURCE_DIR}/test.icns")
   #SET(CPACK_POSTFLIGHT_SCRIPT ${PROJECT_SOURCE_DIR}/install.osx)
-  SET(CPACK_GENERATOR "Bundle" )
-  #SET(CPACK_GENERATOR "PackageMaker" )
+  #SET(CPACK_GENERATOR "Bundle" )
+  SET(CPACK_GENERATOR "TGZ" )
 ELSE(WIN32)
   SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jan Hoelscher")
   SET(CPACK_GENERATOR "DEB;STGZ" )

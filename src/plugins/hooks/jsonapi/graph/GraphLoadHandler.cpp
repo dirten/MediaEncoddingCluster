@@ -1,6 +1,6 @@
 #include "org/esb/core/WebHookPlugin.h"
 #include "org/esb/libjson/libjson.h"
-#include "../JSONResult.h"
+#include "org/esb/libjson/JSONResult.h"
 
 #include "../exports.h"
 #include "org/esb/util/Log.h"

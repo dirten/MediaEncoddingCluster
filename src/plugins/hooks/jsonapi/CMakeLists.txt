@@ -13,7 +13,7 @@ ADD_DEFINITIONS(-DJSONAPI_BUILD_SHARED)
 
 add_library (jsonapi SHARED
 #  ProcessHandler.cpp
-  JSONResult.cpp
+#  JSONResult.cpp
 #  JSONHandler.cpp
 #  FileHandler.cpp
   PresetVerifier.cpp

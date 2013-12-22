@@ -2,6 +2,7 @@
 #include "org/esb/core/WebHookPlugin.h"
 #include "org/esb/core/GraphParser.h"
 #include "org/esb/libjson/libjson.h"
+#include "org/esb/libjson/JSONResult.h"
 #include "org/esb/config/config.h"
 #include "org/esb/util/UUID.h"
 #include "org/esb/util/Foreach.h"
@@ -16,7 +17,6 @@
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/io/FileInputStream.h"
-#include "../JSONResult.h"
 
 #include "../exports.h"
 

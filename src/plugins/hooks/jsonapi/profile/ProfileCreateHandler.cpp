@@ -1,6 +1,7 @@
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/core/WebHookPlugin.h"
 #include "org/esb/libjson/libjson.h"
+#include "org/esb/libjson/JSONResult.h"
 #include "Poco/Net/PartHandler.h"
 #include "Poco/Net/HTMLForm.h"
 #include "Poco/CountingStream.h"
@@ -10,7 +11,6 @@
 #include "org/esb/util/Foreach.h"
 #include "org/esb/util/UUID.h"
 #include "org/esb/util/StringUtil.h"
-#include "../JSONResult.h"
 #include "../PresetVerifier.h"
 #include "../exports.h"
 

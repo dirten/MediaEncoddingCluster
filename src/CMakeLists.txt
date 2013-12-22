@@ -137,13 +137,19 @@ IF(WIN32)
     DESTINATION ${LIB_INSTALL_DIR}
     )
 ELSEIF(APPLE)
+  INSTALL(DIRECTORY ${FFMPEG_DIR}/lib/
+    DESTINATION ${LIB_INSTALL_DIR}
+    FILES_MATCHING PATTERN "*.dylib*"
+    PATTERN ".svn" EXCLUDE
+  )
+
   INSTALL(FILES
       ${FFMPEG_DIR}/lib/libavcodec.dylib
 #      ${FFMPEG_DIR}/lib/libavcore.dylib
       ${FFMPEG_DIR}/lib/libavdevice.dylib
       ${FFMPEG_DIR}/lib/libavformat.dylib
       ${FFMPEG_DIR}/lib/libavutil.dylib
-      ${FFMPEG_DIR}/lib/libfilter.dylib
+      ${FFMPEG_DIR}/lib/libavfilter.dylib
       ${FFMPEG_DIR}/lib/libswscale.dylib
       ${FFMPEG_DIR}/lib/libswresample.dylib
     DESTINATION ${LIB_INSTALL_DIR}

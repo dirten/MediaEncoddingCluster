@@ -198,9 +198,9 @@ int main(int argc, char** argv) {
       _sdata[i].dec->addTarget(_sdata[i].conv);
       _sdata[i].conv->addTarget(_sdata[i].enc);
     }
-    _sdata[i].enc->addTarget(&pos);
+    //_sdata[i].enc->addTarget(&pos);
 
-    pos.setEncoder(*_sdata[i].enc, _sdata[i].enc->getStreamIndex());
+    //pos.setEncoder(*_sdata[i].enc, _sdata[i].enc->getStreamIndex());
     //_sdata[i].enc->setOutputStream(&pos);
     LOGDEBUG(_sdata[i].enc->toString());
     LOGDEBUG(_sdata[i].dec->toString());

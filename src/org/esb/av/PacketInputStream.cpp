@@ -70,6 +70,7 @@ PacketInputStream::PacketInputStream(InputStream * is, bool trunc, bool calc) {
 }
 
 PacketInputStream::~PacketInputStream() {
+  av_free_packet(_avpacket);
   av_free(_avpacket);
   if (_readFrom == 1) {
     //        if(_packet.data!=NULL)

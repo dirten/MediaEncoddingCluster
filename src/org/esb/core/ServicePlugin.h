@@ -28,7 +28,7 @@ namespace org {
         virtual ServiceType getServiceType(){
           return SERVICE_TYPE_ALL;
         }
-        virtual ~ServicePlugin(){};
+        virtual ~ServicePlugin(){}
       private:
 
       };

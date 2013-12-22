@@ -18,8 +18,13 @@ namespace org {
   namespace esb {
     namespace hive {
       std::map<std::string, std::string> Environment::_environmentMap;
+      std::vector<std::string> Environment::_argumentMap;
 
       Environment::Environment() {
+      }
+
+      std::vector<std::string> Environment::getArguments(){
+        return _argumentMap;
       }
 
       std::string Environment::get(std::string key, std::string def){
@@ -36,6 +41,10 @@ namespace org {
       }
 
       void Environment::build(int argc, char ** argv) {
+        for(int a = 0;a<argc;a++){
+          std::string arg=argv[a];
+          _argumentMap.push_back(arg);
+        }
         org::esb::io::File f(argv[0]);
         std::string bpath = org::esb::io::File(f.getParent()).getParent();
         
@@ -56,6 +65,7 @@ namespace org {
         set("hive.exec_path", f.getFilePath());
         set("web.docroot", bpath + "/web");
         set("hive.config_path", upath + "/conf");
+        set("hive.update_path", upath + "/update");
         set("hive.dump_path", upath + "/dmp");
         set("hive.tmp_path", upath + "/tmp");
         set("hive.data_path", upath + "/data");
@@ -91,6 +101,10 @@ namespace org {
         org::esb::io::File confdir(get("hive.config_path"));
         if (!confdir.exists())
           confdir.mkdir();
+
+        org::esb::io::File updatedir(get("hive.update_path"));
+        if (!updatedir.exists())
+          updatedir.mkdir();
 
         org::esb::io::File logdir(get("log.path"));
         if (!logdir.exists())

@@ -21,6 +21,11 @@ Packet::Packet() {
   _quality=0;
 
 }
+void internal_free_packet(AVPacket * p){
+  av_free_packet(p);
+  delete p;
+  p=NULL;
+}
 
 /**
  * constructor to build an internal Packet directly from an AVPacket
@@ -28,7 +33,9 @@ Packet::Packet() {
 Packet::Packet(AVPacket * p) {
   //cout << "Packet::Packet(AVPacket * p)"<<endl;
 
-  packetPtr = boost::shared_ptr<AVPacket > (new AVPacket());
+  //packetPtr = boost::shared_ptr<AVPacket > (new AVPacket());
+  packetPtr = boost::shared_ptr<AVPacket > (new AVPacket(), internal_free_packet);
+  av_init_packet(packetPtr.get());
   packetPtr->pts = p->pts;
   packetPtr->dts = p->dts;
   packetPtr->pos = p->pos;
@@ -40,12 +47,16 @@ Packet::Packet(AVPacket * p) {
   packetPtr->stream_index = p->stream_index;
   _pict_type = 0;
   _quality=0;
-  if (av_dup_packet(p) == 0) {
+
+  //if (av_dup_packet(p) == 0) {
+    if (av_copy_packet( packetPtr.get(), p) == 0) {
+
     //    packetPtr->data = static_cast<uint8_t*>(av_malloc(p->size + FF_INPUT_BUFFER_PADDING_SIZE));
     //    memcpy(packetPtr->data, p->data, p->size);
     //    memset(packetPtr->data + packetPtr->size, 0, FF_INPUT_BUFFER_PADDING_SIZE);
   }
-  packetPtr->data = p->data;
+    av_free_packet(p);
+  //packetPtr->data = p->data;
   packetPtr->destruct = av_destruct_packet;
   callDestruct = false;
   /**
@@ -152,9 +163,9 @@ Packet::~Packet() {
   if (callDestruct) {
     if (packet->data)
       delete [] packet->data;
-  } else
+  } else{
     av_free_packet(packet);
-
+  }
   packet->data = NULL;
   //    delete packet;
   //    packet=0;

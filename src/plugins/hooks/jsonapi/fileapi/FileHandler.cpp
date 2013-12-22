@@ -1,5 +1,6 @@
 #include "org/esb/core/WebHookPlugin.h"
 #include "org/esb/libjson/libjson.h"
+#include "org/esb/libjson/JSONResult.h"
 #include "Poco/Net/PartHandler.h"
 #include "Poco/Net/HTMLForm.h"
 #include "Poco/CountingStream.h"
@@ -9,7 +10,6 @@
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/util/UUID.h"
 #include "org/esb/util/Foreach.h"
-#include "../JSONResult.h"
 
 #include "../exports.h"
 #include <boost/filesystem/operations.hpp>
@@ -124,7 +124,7 @@ public:
   }
 
 };
-REGISTER_WEB_HOOK("/api/v1/file/?([\\w-/:]+)", GET, FileHandler);
+REGISTER_WEB_HOOK("/api/v1/file/?([\\w-/:\.]+)", GET, FileHandler);
 
 
 

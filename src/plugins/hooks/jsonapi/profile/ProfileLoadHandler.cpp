@@ -1,10 +1,10 @@
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/core/WebHookPlugin.h"
 #include "org/esb/libjson/libjson.h"
+#include "org/esb/libjson/JSONResult.h"
 #include "org/esb/io/File.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/util/Foreach.h"
-#include "../JSONResult.h"
 #include "../exports.h"
 
 class JSONAPI_EXPORT ProfileLoadHandler : public org::esb::core::WebHookPlugin {

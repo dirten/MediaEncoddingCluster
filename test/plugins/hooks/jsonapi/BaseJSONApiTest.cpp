@@ -24,7 +24,7 @@ using namespace std;
 using namespace Poco;
 using namespace Poco::Net;
 #define HOST "localhost"
-#define PORT 4000
+#define PORT 8080
 
 JSONNode getJson(std::string data) {
   return libjson::parse(data);
