@@ -664,6 +664,7 @@ namespace org {
           AVDictionaryEntry *t = NULL;
           while ((t = av_dict_get(_dict, "", t, AV_DICT_IGNORE_SUFFIX)))
             LOGDEBUG((_mode == ENCODER ? "Encoder" : "Decoder")<<"Invalid CodecDictionary Key:"<<t->key<<" val:"<<t->value);
+          av_dict_free(&_dict);
           //av_dict_set(dst, t->key, t->value, flags);
         } catch (...) {
           LOGERROR("Exception while openning Codec (" << ctx->codec_id << ")");

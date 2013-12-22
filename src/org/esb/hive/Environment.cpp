@@ -26,6 +26,7 @@ namespace org {
       void Environment::close() {
         _environmentMap.clear();
         _argumentMap.clear();
+	org::esb::config::Config::close();
       }
 
       std::vector<std::string> Environment::getArguments(){
