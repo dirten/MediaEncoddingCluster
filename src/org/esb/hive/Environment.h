@@ -21,6 +21,7 @@ namespace org {
         static std::string get(std::string key, std::string def="");
         static void set(std::string key, std::string val);
         static std::vector<std::string> getArguments();
+        static void close();
       private:
         Environment();
         virtual ~Environment();

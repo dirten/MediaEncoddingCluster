@@ -23,6 +23,11 @@ namespace org {
       Environment::Environment() {
       }
 
+      void Environment::close() {
+        _environmentMap.clear();
+        _argumentMap.clear();
+      }
+
       std::vector<std::string> Environment::getArguments(){
         return _argumentMap;
       }
