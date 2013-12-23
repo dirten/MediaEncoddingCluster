@@ -124,7 +124,7 @@ public:
   }
 
 };
-REGISTER_WEB_HOOK("/api/v1/file/?([\\w-/:\.]+)", GET, FileHandler);
+REGISTER_WEB_HOOK("/api/v1/file/?([\\w-/:\\.]+)", GET, FileHandler)
 
 
 
