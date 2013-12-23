@@ -492,6 +492,8 @@ bool Decoder::decodeAudio3(Packet & packet) {
   //uint8_t *outbuf = static_cast<uint8_t*> (av_malloc(samples_size));
   //int len = avcodec_decode_audio3(ctx, (short *) outbuf, &samples_size, packet.packet);
   int len = avcodec_decode_audio4(ctx, frame->getAVFrame(), &samples_size, packet.packet);
+  if(packet.packet->size==0)
+    emptyFrameIsEOF=true;
 
   //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded
   if (_next_pts == AV_NOPTS_VALUE) {
@@ -515,6 +517,8 @@ bool Decoder::decodeAudio3(Packet & packet) {
     frame->setFinished(true);
   } else {
     frame->setFinished(false);
+    if(emptyFrameIsEOF)
+      return pushFrame(new Frame());
   }
   //size -= len;
 
@@ -560,9 +564,10 @@ bool Decoder::decodeAudio3(Packet & packet) {
   LOGDEBUG("Push Audio Frame from decoder:"<<frame->toString());
   //LOGDEBUG(frame->toString());
   //  frame->dumpHex();
-  return pushFrame(frame);
+  if(samples_size>0 && len>0)
+    return pushFrame(frame);
 
-  //return true;
+  return !emptyFrameIsEOF;
 }
 
 /**
