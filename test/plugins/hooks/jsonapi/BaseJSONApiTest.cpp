@@ -216,8 +216,8 @@ int main(int argc, char** argv) {
   //test_profile_delete_fail();
   test_upload_encoding();
   org::esb::core::PluginRegistry::getInstance()->stopServices();
-  org::esb::core::PluginRegistry::close();
-  org::esb::config::Config::close();
+  //org::esb::core::PluginRegistry::close();
+  //org::esb::config::Config::close();
   return 0;
 }
 
