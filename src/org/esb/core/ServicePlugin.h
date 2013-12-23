@@ -43,7 +43,7 @@ namespace org {
 	                        Register##type() \
 	                        { \
                                 element##type=new type(); \
-	                        org::esb::core::PluginRegistry::getInstance()->registerService(std::string(name), element##type); \
+                          org::esb::core::PluginRegistry::getInstance()->registerService(std::string(name), element##type); \
 	                        } \
                                 ~Register##type(){ \
                                 delete element##type; \

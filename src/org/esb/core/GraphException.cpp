@@ -14,6 +14,10 @@ namespace org {
         _element=el;
       }
 
+      GraphException::GraphException( const char* file, const int lineNumber, const std::string msg):org::esb::lang::Exception(file, lineNumber, msg, NULL){
+
+      }
+
       GraphException::~GraphException() throw() {
       }
       const char * GraphException::what()throw(){

@@ -47,7 +47,7 @@ namespace org {
              *aaaaargh, neverever throw exception in constructor
              *
              */
-            throw GraphException("no tasks are defined in the graph");
+            throw GraphException(__FILE__,__LINE__,"no tasks are defined in the graph");
           }
 
           /*parsing links from graph*/
@@ -64,7 +64,7 @@ namespace org {
              *aaaaargh, neverever throw exception in constructor
              *
              */
-            throw GraphException("no links are defined in the graph");
+            throw GraphException(__FILE__,__LINE__,"no links are defined in the graph");
           }
           return;
           verifyLinks();
@@ -75,7 +75,7 @@ namespace org {
            *aaaaargh, neverever throw exception in constructor
            *
            */
-          throw GraphException("no valid json");
+          throw GraphException(__FILE__,__LINE__,"no valid json");
         }
         //        } catch (std::exception & ex) {
         //    	    LOGERROR(ex.what());
@@ -147,13 +147,13 @@ namespace org {
           /*
            * @TODO:remove exception, switch allways to return status code (except con/destructor)
            */
-          throw GraphException("task is not named");
+          throw GraphException(__FILE__,__LINE__,"task is not named");
         } else {
           if (!node.contains("uid")) {
             /*
              * @TODO:remove exception, switch allways to return status code (except con/destructor)
              */
-            throw GraphException("no uid for element");
+            throw GraphException(__FILE__,__LINE__,"no uid for element");
           }
           if (node.contains("name") && node["name"].as_string() == "InputTask") {
             if (node.contains("data") && node["data"].contains("infile"))
@@ -165,7 +165,7 @@ namespace org {
             /*
              * @TODO:remove exception, switch allways to return status code (except con/destructor)
              */
-            throw GraphException(std::string("could not find a definition for task with name ").append(node["name"].as_string()));
+            throw GraphException(__FILE__,__LINE__,std::string("could not find a definition for task with name ").append(node["name"].as_string()));
           } else {
             try {
               org::esb::core::OptionsDescription desc = task->getOptionsDescription();
@@ -230,7 +230,7 @@ namespace org {
               /*
                * @TODO:remove exception, switch allways to return status code (except con/destructor)
                */
-              throw GraphException(ex.displayText(), node["uid"].as_string());
+              throw GraphException(__FILE__,__LINE__,ex.displayText());
             } catch (std::exception & ex) {
               /*
                * @TODO:remove exception, switch allways to return status code (except con/destructor)

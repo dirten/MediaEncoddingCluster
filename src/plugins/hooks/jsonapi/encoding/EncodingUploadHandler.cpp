@@ -159,16 +159,16 @@ public:
       graph.push_back(JSONNode("uuid",id));
       //graph.push_back(JSONNode("name","bla fasel"));
       //LOGDEBUG("default graph"<<graph.write_formatted());
+      try{
 
       org::esb::core::GraphParser graphparser(graph.write_formatted());
+      LOGDEBUG("here")
       org::esb::core::GraphParser::ElementMap & el = graphparser.getElementMap();
       std::list<Ptr<org::esb::core::Graph::Element> > list;
       foreach(org::esb::core::GraphParser::ElementMap::value_type & element, el) {
         element.second->task->getContext()->set<std::string>("uuid",uuid);
         list.push_back(element.second);
       }
-
-
      org::esb::core::Graph graphobj = org::esb::core::Graph(list, uuid);
 
       /*create a job entry here*/
@@ -186,8 +186,13 @@ public:
 
       job.status=db::Job::Status::Exporting;
       job.update();
+      }catch(std::exception & ex){
+        LOGERROR("exception catched:"<<ex.what());
+      }
+
       //delete graphobj;
     }else{
+      result.setStatus("failed","Profile not found");
       res.setStatusAndReason(Poco::Net::HTTPServerResponse::HTTP_NOT_FOUND,"Profile not found");
     }
     res.setChunkedTransferEncoding(true);

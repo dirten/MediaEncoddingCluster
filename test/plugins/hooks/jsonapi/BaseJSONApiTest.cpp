@@ -16,8 +16,12 @@
 #include "org/esb/av/FormatBaseStream.h"
 #include "Poco/Net/HTTPClientSession.h"
 #include "Poco/Net/HTTPRequest.h"
+#include "Poco/Net/HTMLForm.h"
 #include "Poco/Net/HTTPResponse.h"
+#include "Poco/Net/FilePartSource.h"
 #include "Poco/StreamCopier.h"
+#include "Poco/CountingStream.h"
+#include "Poco/Process.h"
 
 #include "org/esb/libjson/libjson.h"
 using namespace std;
@@ -102,6 +106,7 @@ void test_mediafile() {
   file += "/test-data/test.dvd";
   HTTPClientSession s(HOST, PORT);
   HTTPRequest request(HTTPRequest::HTTP_GET, std::string("/api/v1/media/").append(file));
+
   s.sendRequest(request);
 
   HTTPResponse response;
@@ -139,6 +144,42 @@ void test_mediafile() {
   assert(node["data"]["streams"].at(1).contains("channels"));
 
 }
+void test_upload_encoding(){
+  std::string file = MEC_SOURCE_DIR;
+  file += "/test-data/test.dvd";
+  /*
+  std::vector<std::string> args;
+  args.push_back("-F file=@"+file+"");
+  args.push_back(std::string("http://localhost:4000/api/v1/encoding/").append(created_profile_uuid));
+  Poco::ProcessHandle handle=Poco::Process::launch("curl", args);
+  handle.wait();
+  Thread::sleep(2000);
+  */
+
+  HTTPClientSession s(HOST, PORT);
+  HTTPRequest request(HTTPRequest::HTTP_POST, std::string("/api/v1/encoding/").append(created_profile_uuid));
+
+  HTMLForm form(HTMLForm::ENCODING_MULTIPART);
+
+  FilePartSource * source= new FilePartSource(file);
+  form.addPart("file", source);
+  form.add("filename","bla");
+
+  form.prepareSubmit(request);
+  CountingOutputStream _cos(s.sendRequest(request));
+
+  //std::ostream& send = s.sendRequest(request);
+  form.write(_cos);
+
+  LOGDEBUG("data written:"<<_cos.chars())
+  HTTPResponse response;
+  std::istream& rs = s.receiveResponse(response);
+  std::string data;
+  StreamCopier::copyToString(rs, data);
+  LOGDEBUG("response:"<<data);
+
+
+}
 
 /*
  * 
@@ -156,6 +197,9 @@ int main(int argc, char** argv) {
   org::esb::core::PluginRegistry::getInstance()->load(EXECUTABLETASK_PLUGIN);
   org::esb::core::PluginRegistry::getInstance()->load(UPLOADTASK_PLUGIN);
   org::esb::core::PluginRegistry::getInstance()->load(JSONAPI_PLUGIN);
+  org::esb::core::PluginRegistry::getInstance()->load(STREAMTASK_PLUGIN);
+  org::esb::core::PluginRegistry::getInstance()->load(OUTPUTTASK_PLUGIN);
+
   org::esb::core::PluginRegistry::getInstance()->initPlugins();
   org::esb::core::PluginRegistry::getInstance()->startServerServices();
   test_format_list();
@@ -168,8 +212,9 @@ int main(int argc, char** argv) {
   test_profile_list();
   test_profile_view();
 
-  test_profile_delete();
-  test_profile_delete_fail();
+  //test_profile_delete();
+  //test_profile_delete_fail();
+  test_upload_encoding();
   org::esb::core::PluginRegistry::getInstance()->stopServices();
   org::esb::core::PluginRegistry::close();
   org::esb::config::Config::close();

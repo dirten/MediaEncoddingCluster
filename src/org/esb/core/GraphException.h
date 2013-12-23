@@ -18,7 +18,7 @@ namespace org {
       class CORE_EXPORT GraphException:public org::esb::lang::Exception {
       public:
         GraphException(std::string, std::string el="");
-        //GraphException(const char* file, const int lineNumber,const std::string msg, ...);
+        GraphException(const char* file, const int lineNumber,const std::string msg);
         virtual ~GraphException() throw();
         std::string getElementId();
         const char * what()throw();
