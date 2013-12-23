@@ -26,16 +26,10 @@
  */
 #include "HiveListener.h"
 #include "ProtocolServer.h"
-//#include "org/esb/config/config.h"
 #include "org/esb/net/TcpSocket.h"
-//#include "org/esb/net/TcpServerSocket.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/util/Log.h"
-//#include "org/esb/signal/Messenger.h"
 #include "org/esb/core/PluginContext.h"
-//#include <boost/thread.hpp>
-//#include <boost/bind.hpp>
-//#include "org/esb/lang/Runnable.h"
 #include "org/esb/db/hivedb.hpp"
 #include <list>
 

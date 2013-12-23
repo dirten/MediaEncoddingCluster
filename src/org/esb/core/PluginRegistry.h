@@ -31,59 +31,59 @@ namespace org {
       /**
         * @TODO: build this class thread save !!!
         */
-      class PluginRegistry {
-        classlogger("org.esb.core.PluginRegistry")
-      public:
-        static CORE_EXPORT PluginRegistry * getInstance();
-        static CORE_EXPORT void close();
-        void CORE_EXPORT registerPlugin(std::string, Plugin*);
-        void CORE_EXPORT registerService(std::string, ServicePlugin*);
-        void CORE_EXPORT registerHookPlugin(std::string, HookPlugin*);
-        void CORE_EXPORT registerHookProvider(std::string, HookProvider*);
-        //void CORE_EXPORT registerTaskFactory(std::string,Ptr<TaskFactory>);
-        void CORE_EXPORT registerTaskFactory(std::string,TaskFactory*);
-        void CORE_EXPORT registerWebHookFactory(std::string name, WebHookFactory *factory);
-        void CORE_EXPORT startServerServices();
-        void CORE_EXPORT startClientServices();
-        void CORE_EXPORT stopServices();
-        void CORE_EXPORT load(std::string);
-        void CORE_EXPORT initPlugins();
-        
-        OptionsDescription CORE_EXPORT getOptionsDescription(std::string);
-        std::list<std::string> CORE_EXPORT getPluginNameList();
+      class CORE_EXPORT PluginRegistry {
+          classlogger("org.esb.core.PluginRegistry")
+          public:
+          static  PluginRegistry * getInstance();
+          static void close();
+          void registerPlugin(std::string, Plugin*);
+          void registerService(std::string, ServicePlugin*);
+          void registerHookPlugin(std::string, HookPlugin*);
+          void registerHookProvider(std::string, HookProvider*);
+          //void CORE_EXPORT registerTaskFactory(std::string,Ptr<TaskFactory>);
+          void registerTaskFactory(std::string,TaskFactory*);
+          void registerWebHookFactory(std::string name, WebHookFactory *factory);
+          void startServerServices();
+          void startClientServices();
+          void stopServices();
+          void load(std::string);
+          void initPlugins();
 
-        std::list<std::string> CORE_EXPORT getTaskNameList();
-        OptionsDescription CORE_EXPORT getTaskOptionsDescription(std::string);
-        std::string CORE_EXPORT getConfigData(std::string key);
-        Ptr<Task> CORE_EXPORT createTask(std::string name,std::map<std::string,std::string> cfg);
-        
-      private:
-        PluginRegistry();
-        virtual ~PluginRegistry();
-        static PluginRegistry * _instance;
-        void loadFile(std::string);
-        WebHookHandlerFactory * _webhook_handler_factory;
-        struct PluginData{
-          std::string name;
-          Plugin * plugin;
-          PluginContext * context;
-        };
+          OptionsDescription getOptionsDescription(std::string);
+          std::list<std::string> getPluginNameList();
 
-        std::map<std::string, Plugin*> _plug_map;
-        std::map<std::string, ServicePlugin*> _service_map;
-        std::map<std::string, HookProvider*> _hook_provider_map;
-        std::map<std::string, HookPlugin*> _hook_map;
-        std::map<std::string, org::esb::lang::SharedObjectLoader*> _shared_objects;
-        std::map<std::string,PluginData> _plugin_data;
-        //std::map<std::string,Ptr<TaskFactory> > _task_factories;
-        typedef std::map<std::string,TaskFactory *> TaskFactoryMap;
-        //typedef std::map<std::string,WebHookFactory *> WebHookFactoryMap;
+          std::list<std::string> getTaskNameList();
+          OptionsDescription getTaskOptionsDescription(std::string);
+          std::string getConfigData(std::string key);
+          Ptr<Task> createTask(std::string name,std::map<std::string,std::string> cfg);
 
-        TaskFactoryMap _task_factories;
-        //WebHookFactoryMap _webhook_factories;
+        private:
+          PluginRegistry();
+          virtual ~PluginRegistry();
+          static PluginRegistry * _instance;
+          void loadFile(std::string);
+          WebHookHandlerFactory * _webhook_handler_factory;
+          struct PluginData{
+              std::string name;
+              Plugin * plugin;
+              PluginContext * context;
+          };
 
-        std::map<std::string,std::string> _config_data;
-        org::esb::core::http::Server * server;
+          std::map<std::string, Plugin*> _plug_map;
+          std::map<std::string, ServicePlugin*> _service_map;
+          std::map<std::string, HookProvider*> _hook_provider_map;
+          std::map<std::string, HookPlugin*> _hook_map;
+          std::map<std::string, org::esb::lang::SharedObjectLoader*> _shared_objects;
+          std::map<std::string,PluginData> _plugin_data;
+          //std::map<std::string,Ptr<TaskFactory> > _task_factories;
+          typedef std::map<std::string,TaskFactory *> TaskFactoryMap;
+          //typedef std::map<std::string,WebHookFactory *> WebHookFactoryMap;
+
+          TaskFactoryMap _task_factories;
+          //WebHookFactoryMap _webhook_factories;
+
+          std::map<std::string,std::string> _config_data;
+          org::esb::core::http::Server * server;
       };
     }
   }

@@ -37,6 +37,8 @@ ADD_DEFINITIONS(-DPOCO_STATIC)
 
 
 #add_subdirectory (go)
+ADD_DEFINITIONS(-DMHIVE_VERSION="${MHIVE_VERSION}")
+
 add_subdirectory (org)
 add_subdirectory (plugins)
 

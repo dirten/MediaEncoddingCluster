@@ -33,6 +33,8 @@
 #include "org/esb/io/File.h"
 
 #include "org/esb/config/config.h"
+#include "org/esb/hive/Environment.h"
+
 #include "HiveException.h"
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/util/StringUtil.h"

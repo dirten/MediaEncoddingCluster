@@ -20,6 +20,13 @@ namespace org {
       std::map<std::string, std::string> Environment::_environmentMap;
       std::vector<std::string> Environment::_argumentMap;
 
+      const std::string Environment::BASE_PATH="hive.base_path";
+      const std::string Environment::USER_HOME="hive.user_path";
+      const std::string Environment::PLUGIN_PATH="hive.plugin_path";
+      const std::string Environment::EXE_PATH="hive.exec_path";
+      const std::string Environment::EXE_NAME="hive.exec_name";
+      const std::string Environment::DB_URL="db.url";
+
       Environment::Environment() {
       }
 
@@ -66,9 +73,16 @@ namespace org {
         /*override the user path when this environment variable is set*/
         upath = get("MHIVE_DATA_PATH", upath);
 
-        set("hive.user_path", upath);
-        set("hive.base_path", bpath);
-        set("hive.exec_path", f.getFilePath());
+        set(USER_HOME, upath);
+
+        set(BASE_PATH, bpath);
+        set(PLUGIN_PATH, get("MHIVE_PLUGIN_DIR", bpath+"/plugins" ));
+
+        set(EXE_PATH, f.getFilePath());
+        set(EXE_NAME, f.getFileName());
+
+        set(DB_URL, "database=" + upath + "/data/hive.db");
+
         set("web.docroot", bpath + "/web");
         set("hive.config_path", upath + "/conf");
         set("hive.update_path", upath + "/update");
@@ -77,13 +91,15 @@ namespace org {
         set("hive.data_path", upath + "/data");
         set("preset.path", bpath + "/presets");
         set("log.path", upath + "/logs");
-        set("db.url", "database=" + upath + "/data/hive.db");
 #ifdef __WIN32__
         set("PATH", get("PATH") + ";" + bpath + "/plugins");
+        set("PATH", get("PATH") + ";" + bpath + "/lib");
 #elif defined __APPLE__
         set("DYLD_LIBRARY_PATH", get("DYLD_LIBRARY_PATH") + ":" + bpath + "/plugins");
+        set("DYLD_LIBRARY_PATH", get("DYLD_LIBRARY_PATH") + ":" + bpath + "/lib");
 #elif defined __LINUX__
         set("LD_LIBRARY_PATH", get("LD_LIBRARY_PATH") + ":" + bpath + "/plugins");
+        set("LD_LIBRARY_PATH", get("LD_LIBRARY_PATH") + ":" + bpath + "/lib");
 #else
         #error "plattform not supported"
 #endif

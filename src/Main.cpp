@@ -57,8 +57,8 @@ int main(int argc, char * argv[]) {
   try {
     po::options_description gen("General options");
     gen.add_options()
-        ("help", "produce this message")
-        ("version", "Prints the Version");
+    ("help", "produce this message")
+    ("version", "Prints the Version");
 
     po::options_description ser("Server options");
     ser.add_options()
@@ -68,15 +68,15 @@ int main(int argc, char * argv[]) {
     po::options_description cli("Client options");
 
     cli.add_options()
-        ("client,i", "start the Hive Client");
+    ("client,i", "start the Hive Client");
 
     po::options_description priv("");
     priv.add_options()
-        ("process,p", "")
-        ("erlang", "")
-        ("console,c", "")
-        ("quiet", "")
-        ("docroot,d", po::value<std::string > (), "webserver document root");
+    ("process,p", "")
+    ("erlang", "")
+    ("console,c", "")
+    ("quiet", "")
+    ("docroot,d", po::value<std::string > (), "webserver document root");
     po::options_description all("all");
 
     log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT(Environment::get("hive.config_path") + "/logging.properties"));
@@ -87,19 +87,25 @@ int main(int argc, char * argv[]) {
 
     org::esb::av::FormatBaseStream::initialize();
 
-    string base_path = Environment::get("hive.base_path");
-
     all.add(gen).add(ser).add(cli);
 
-    std::string pluginDir = Environment::get("MHIVE_PLUGIN_DIR", base_path+"/plugins");
+    std::string pluginDir = Environment::get(Environment::PLUGIN_PATH);
+
+    /*loading all plugins from directory*/
     org::esb::core::PluginRegistry::getInstance()->load(pluginDir);
 
+    po::options_description plugin_opts("Plugin options");
 
+    /*retrieving all option from the loaded plugins*/
     foreach(std::list<std::string>::value_type data, org::esb::core::PluginRegistry::getInstance()->getPluginNameList()) {
       org::esb::core::OptionsDescription od = org::esb::core::PluginRegistry::getInstance()->getOptionsDescription(data);
-      if (od.options().size() > 0)
-        all.add(od);
+      if (od.options().size() > 0){
+        plugin_opts.add(od);
+      }
     }
+
+    all.add(plugin_opts);
+
     priv.add(all);
 
     po::variables_map vm;
@@ -114,6 +120,7 @@ int main(int argc, char * argv[]) {
 
     po::notify(vm);
 
+    /*setting all programm args into the Environment*/
     foreach(po::variables_map::value_type & val, vm) {
       if (vm[val.first].value().type() == typeid (int)) {
         Environment::set(val.first, StringUtil::toString(vm[val.first].as<int>()));
@@ -125,6 +132,7 @@ int main(int argc, char * argv[]) {
         Environment::set(val.first, vm[val.first].as<std::string > ());
       }
     }
+
     Environment::set("partition", "global");
 
     if (vm.count("help") || argc == 1) {
@@ -133,9 +141,11 @@ int main(int argc, char * argv[]) {
     }
 
     org::esb::core::PluginRegistry::getInstance()->initPlugins();
+
     if (vm.count("loglevel")) {
       Environment::set("loglevel", vm["loglevel"].as<std::string> ());
     }
+
     if (vm.count("webport")) {
       Environment::set("webport", vm["webport"].as<std::string> ());
     }
@@ -166,12 +176,10 @@ int main(int argc, char * argv[]) {
       LOGDEBUG("start mhive server");
       if(start_master){
         while(true){
-          std::string cmd=Environment::get("hive.exec_path")+"/mhive";
-          LOGDEBUG("as master:"<<cmd);
+          std::string cmd=Environment::get(Environment::EXE_PATH)+"/"+Environment::get(Environment::EXE_NAME);
+          std::cout <<cmd<<std::endl;
           std::vector<std::string> args=Environment::getArguments();
-          //args.push_back("-r");
           args.push_back("-p");
-          //args.push_back("--docroot="+vm["docroot"].as<std::string>());
           Poco::ProcessHandle handle=Poco::Process::launch(cmd, args);
           handle.wait();
         }
@@ -197,10 +205,8 @@ int main(int argc, char * argv[]) {
 
       if(start_master){
         while(true){
-          std::string cmd=Environment::get("hive.exec_path")+"/mhive";
-          LOGDEBUG("as master:"<<cmd);
+          std::string cmd=Environment::get(Environment::EXE_PATH)+"/"+Environment::get(Environment::EXE_NAME);
           std::vector<std::string> args=Environment::getArguments();
-          //args.push_back("-i");
           args.push_back("-p");
           Poco::ProcessHandle handle=Poco::Process::launch(cmd, args);
           handle.wait();
@@ -213,8 +219,9 @@ int main(int argc, char * argv[]) {
       }
     }
 
+
     if (vm.count("version")) {
-      cout << "MediaEncodingCluster 0.0.5.0" << endl;
+      cout << "MediaEncodingCluster "<< MHIVE_VERSION << endl;
       cout << LIBAVCODEC_IDENT << endl;
       cout << LIBAVFORMAT_IDENT << endl;
       cout << LIBAVUTIL_IDENT << endl;
@@ -233,8 +240,8 @@ int main(int argc, char * argv[]) {
   //CodecFactory::free();
   Messenger::free();
   LOGINFO("MHive is not running anymore!!!")
-      //Log::close();
+  //Log::close();
 
-      return 0;
+  return 0;
 
 }

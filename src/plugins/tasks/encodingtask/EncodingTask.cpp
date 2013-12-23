@@ -51,7 +51,7 @@ namespace encodingtask {
   void EncodingTask::prepare() {
 
     LOGDEBUG("PluginContext uuid="+getContext()->get<std::string > ("uuid"))
-        database=getContext()->database;
+    database=getContext()->database;
     _srcuristr = getContext()->getEnvironment<std::string > ("encodingtask.src");
     if (_srcuristr.length() == 0) {
       _srcuristr = getSource();
@@ -78,9 +78,9 @@ namespace encodingtask {
         if ((*it).second->getCodecType() == AVMEDIA_TYPE_VIDEO) {
           /*special prepare of the encoder for using the input width/heigth*/
           if (_codecs["video"].count("width") == 0 ||
-              atoi(_codecs["video"]["width"].c_str()) == 0 ||
-              _codecs["video"].count("height") == 0 ||
-              atoi(_codecs["video"]["height"].c_str()) == 0) {
+          atoi(_codecs["video"]["width"].c_str()) == 0 ||
+          _codecs["video"].count("height") == 0 ||
+          atoi(_codecs["video"]["height"].c_str()) == 0) {
             _codecs["video"]["width"] = org::esb::util::StringUtil::toString(tmp[(*it).first]->getWidth());
             _codecs["video"]["height"] = org::esb::util::StringUtil::toString(tmp[(*it).first]->getHeight());
             LOGDEBUG("setting video size from input to : " << _codecs["video"]["width"] << "*" << _codecs["video"]["height"]);
@@ -187,8 +187,8 @@ namespace encodingtask {
       setStatusMessage(std::string("Error while parsing JSON Profile:").append(ex.what()));
       throw org::esb::core::TaskException(getStatusMessage());
     }*/
-    partitionservice::PartitionManager::getInstance()->addCollector(boost::bind(&EncodingTask::collector, this, _1,_2));
-    _unit_list.addCallback(boost::bind(&EncodingTask::unitListCallback, this, _1));
+    //partitionservice::PartitionManager::getInstance()->addCollector(boost::bind(&EncodingTask::collector, this, _1,_2));
+    //_unit_list.addCallback(boost::bind(&EncodingTask::unitListCallback, this, _1));
     LOGDEBUG("starting progress observer");
 
     //boost::thread(boost::bind(&EncodingTask::observeProgress,this));
@@ -212,14 +212,14 @@ namespace encodingtask {
   org::esb::core::OptionsDescription EncodingTask::getOptionsDescription() {
     org::esb::core::OptionsDescription result("encodingtask");
     result.add_options()
-        ("encodingtask.src", boost::program_options::value<std::string > ()->default_value(""), "Encoding task source file")
-        ("encodingtask.partition", boost::program_options::value<std::string > ()->default_value("global"), "Encoding task partition")
-        //("encodingtask.profile", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile");
-        ("encodingtask.profiledata", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data")
-        ("data", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data");
+    ("encodingtask.src", boost::program_options::value<std::string > ()->default_value(""), "Encoding task source file")
+    ("encodingtask.partition", boost::program_options::value<std::string > ()->default_value("global"), "Encoding task partition")
+    //("encodingtask.profile", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile");
+    ("encodingtask.profiledata", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data")
+    ("data", boost::program_options::value<std::string > ()->default_value(""), "Encoding task profile data");
     return result;
   }
-
+#if 0
   void EncodingTask::observeProgress() {
     int next_id=0;
     while (true) {
@@ -253,7 +253,7 @@ namespace encodingtask {
           std::string d;
           int readed=inputstream.read(d);
           LOGDEBUG("bytes readed:"+StringUtil::toString(readed))
-              boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit;
+          boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit;
           try{
             Serializing::deserialize(unit, d);
             unit->_output_packets.sort(EncodingTask::ptsComparator);
@@ -310,15 +310,15 @@ namespace encodingtask {
     //boost::mutex::scoped_lock partition_get_lock(_partition_mutex);
 
     std::cerr<<unit->getJobId()<<
-               "=="<<
-               _task_uuid<<
-               ":"<<boost::this_thread::get_id()<<
-               " collector invoked "<<
-               unit->getDecoder()->getCodecName()<<
-               ", pu count"<<
-               unit->_output_packets.size()<<
-               " sequence:"<<unit->_sequence<<
-               std::endl;
+    "=="<<
+    _task_uuid<<
+    ":"<<boost::this_thread::get_id()<<
+    " collector invoked "<<
+    unit->getDecoder()->getCodecName()<<
+    ", pu count"<<
+    unit->_output_packets.size()<<
+    " sequence:"<<unit->_sequence<<
+    std::endl;
 
     if(unit->getJobId()==_task_uuid)
       _unit_list.pushUnit(unit);
@@ -332,7 +332,7 @@ namespace encodingtask {
       lastSequence++;
     }*/
   }
-
+#endif
   void EncodingTask::pushBuffer(Ptr<Packet>p) {
     if (!(getStatus() == PREPARED)) {
       setStatusMessage(std::string("Task is not in PREPARED State"));
@@ -445,13 +445,13 @@ namespace encodingtask {
     outstream.close();
     LOGDEBUG("written ProcessUnit to "<<outputfile.getFilePath())
 
-        //litesql::Blob blob=litesql::Blob(data.c_str(),data.length());
-        //pu.data=blob;
-        //std::ostringstream oss;
-        //oss << msg.getMessageID();
-        //pu.sendid=std::string(oss.str());
+    //litesql::Blob blob=litesql::Blob(data.c_str(),data.length());
+    //pu.data=blob;
+    //std::ostringstream oss;
+    //oss << msg.getMessageID();
+    //pu.sendid=std::string(oss.str());
 
-        pu.update();
+    pu.update();
     /*
     std::string d;
     litesql::Blob blob2=pu.data.value();
@@ -469,6 +469,8 @@ namespace encodingtask {
     //partitionservice::PartitionManager::getInstance()->putProcessUnit(_partition, unit, t);
     setProgressLength(getProgressLength() + 1);
   }
+
+#if 0
 
   void EncodingTask::enQueue(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast) {
     unit->setJobId(_task_uuid);
@@ -494,7 +496,6 @@ namespace encodingtask {
   void EncodingTask::putProcessUnit(boost::shared_ptr<org::esb::hive::job::ProcessUnit>) {
 
   }
-#if 0
   void EncodingTask::exportFile() {
     if (getStatus() == Task::ERROR) {
       LOGERROR("ExportTask have error");
@@ -635,4 +636,4 @@ namespace encodingtask {
 
   REGISTER_TASK("EncodingTask", EncodingTask)
 
-  }
+}
