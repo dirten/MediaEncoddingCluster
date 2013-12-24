@@ -147,15 +147,23 @@ void test_mediafile() {
 void test_upload_encoding(){
   std::string file = MEC_SOURCE_DIR;
   file += "/test-data/test.dvd";
-  /*
+  
   std::vector<std::string> args;
   args.push_back("-F file=@"+file+"");
   args.push_back(std::string("http://localhost:4000/api/v1/encoding/").append(created_profile_uuid));
   Poco::ProcessHandle handle=Poco::Process::launch("curl", args);
   handle.wait();
-  Thread::sleep(2000);
-  */
-
+  handle=Poco::Process::launch("curl", args);
+  handle.wait();
+  handle=Poco::Process::launch("curl", args);
+  handle.wait();
+  handle=Poco::Process::launch("curl", args);
+  handle.wait();
+  handle=Poco::Process::launch("curl", args);
+  handle.wait();
+  //Thread::sleep(2000);
+  
+  /*
   HTTPClientSession s(HOST, PORT);
   HTTPRequest request(HTTPRequest::HTTP_POST, std::string("/api/v1/encoding/").append(created_profile_uuid));
 
@@ -166,19 +174,19 @@ void test_upload_encoding(){
   form.add("filename","bla");
 
   form.prepareSubmit(request);
-  CountingOutputStream _cos(s.sendRequest(request));
+  //CountingOutputStream _cos(s.sendRequest(request));
 
-  //std::ostream& send = s.sendRequest(request);
-  form.write(_cos);
+  std::ostream& send = s.sendRequest(request);
+  form.write(send);
 
-  LOGDEBUG("data written:"<<_cos.chars())
+  //LOGDEBUG("data written:"<<_cos.chars())
+    
   HTTPResponse response;
   std::istream& rs = s.receiveResponse(response);
   std::string data;
   StreamCopier::copyToString(rs, data);
   LOGDEBUG("response:"<<data);
-
-
+      */
 }
 
 /*
@@ -216,8 +224,8 @@ int main(int argc, char** argv) {
   //test_profile_delete_fail();
   test_upload_encoding();
   org::esb::core::PluginRegistry::getInstance()->stopServices();
-  //org::esb::core::PluginRegistry::close();
-  //org::esb::config::Config::close();
+  org::esb::core::PluginRegistry::close();
+  org::esb::config::Config::close();
   return 0;
 }
 

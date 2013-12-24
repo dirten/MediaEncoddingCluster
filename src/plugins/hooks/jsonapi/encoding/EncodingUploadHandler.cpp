@@ -131,7 +131,7 @@ public:
     LOGDEBUG("handle upload");
     JSONResult result(req);
     std::string id = req.get("profileid");
-    litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (_db, db::Preset::Uuid == id);
+    litesql::DataSource<db::Preset> s = litesql::select<db::Preset > (_db, db::Preset::Uuid == id);
     if (s.count() > 0) {
       LOGDEBUG("preset found");
 
@@ -160,7 +160,6 @@ public:
       //graph.push_back(JSONNode("name","bla fasel"));
       //LOGDEBUG("default graph"<<graph.write_formatted());
 
-
       org::esb::core::GraphParser graphparser(graph.write_formatted());
       LOGDEBUG("here")
       org::esb::core::GraphParser::ElementMap & el = graphparser.getElementMap();
@@ -183,19 +182,20 @@ public:
        //release this scope before the graph will be freed
         EncodingUploadPartHandler partHandler(graphobj);
         Poco::Net::HTMLForm form(req, req.stream(), partHandler);
-
       job.status=db::Job::Status::Exporting;
       job.update();
+      
 
 
       //delete graphobj;
     }else{
-      result.setStatus("failed","Profile not found");
+      //result.setStatus("failed","Profile not found");
       res.setStatusAndReason(Poco::Net::HTTPServerResponse::HTTP_NOT_FOUND,"Profile not found");
     }
-    res.setChunkedTransferEncoding(true);
+    //res.setChunkedTransferEncoding(true);
     res.setContentType("text/plain");
-    std::ostream& ostr = res.send();
+//return;
+    std::ostream & ostr = res.send();
     ostr << result.write_formatted();
   }
 
