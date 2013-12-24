@@ -159,7 +159,7 @@ public:
       graph.push_back(JSONNode("uuid",id));
       //graph.push_back(JSONNode("name","bla fasel"));
       //LOGDEBUG("default graph"<<graph.write_formatted());
-      try{
+
 
       org::esb::core::GraphParser graphparser(graph.write_formatted());
       LOGDEBUG("here")
@@ -186,9 +186,7 @@ public:
 
       job.status=db::Job::Status::Exporting;
       job.update();
-      }catch(std::exception & ex){
-        LOGERROR("exception catched:"<<ex.what());
-      }
+
 
       //delete graphobj;
     }else{
