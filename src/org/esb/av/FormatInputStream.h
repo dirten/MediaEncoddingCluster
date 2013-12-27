@@ -63,6 +63,7 @@ namespace org {
         AVFormatContext * formatCtx;
         map<int, StreamInfo*> _stream_info_map;
         static boost::mutex file_open_mutex;
+        unsigned char * buffer;
         
       };
     }

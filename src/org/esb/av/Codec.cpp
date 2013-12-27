@@ -83,7 +83,7 @@ namespace org {
         findCodec(mode);
         //        ctx->codec = _codec;
         _opened = false;
-        _pre_allocated = true;
+        _pre_allocated = false;
         emptyFrameIsEOF=false;
 
 

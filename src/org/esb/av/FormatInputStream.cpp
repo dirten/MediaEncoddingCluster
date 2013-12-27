@@ -38,7 +38,7 @@ namespace org {
       FormatInputStream::FormatInputStream(std::istream  & stream){
         const int bufSize= 128 * 1024;
         const int probeBufSize= 2 * 1024;
-        unsigned char * buffer = reinterpret_cast<unsigned char*>(av_malloc(bufSize + FF_INPUT_BUFFER_PADDING_SIZE));
+        buffer = reinterpret_cast<unsigned char*>(av_malloc(bufSize + FF_INPUT_BUFFER_PADDING_SIZE));
         AVIOContext * avioContext= avio_alloc_context(buffer, bufSize, 0, reinterpret_cast<void*>(static_cast<std::istream*>(&stream)), &readFunction, NULL, NULL);
 
         //AVFormatContext * avFormat = avformat_alloc_context();
@@ -83,7 +83,7 @@ namespace org {
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         LOGINFO("opening InputFile: " << source);
         //_file_object=new org::esb::io::File(source);
-
+        buffer=NULL;
         _isValid = false;
         _sourceFile = source;
 
@@ -154,7 +154,11 @@ namespace org {
       FormatInputStream::~FormatInputStream() {
         LOGDEBUG("FormatInputStream::~FormatInputStream()")
             close();
-        //delete _file_object;
+        if(buffer){
+          av_freep(buffer);
+          buffer=NULL;
+        }
+          //delete _file_object;
       }
 
       int FormatInputStream::getStreamCount() {
