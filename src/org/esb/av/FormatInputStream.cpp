@@ -154,7 +154,7 @@ namespace org {
       FormatInputStream::~FormatInputStream() {
         LOGDEBUG("FormatInputStream::~FormatInputStream()")
             close();
-        if(buffer){
+        if(false&&buffer){
           av_freep(buffer);
           buffer=NULL;
         }
@@ -212,8 +212,14 @@ namespace org {
 
       /*closing the input file and delete all StreamInfo for that file*/
       void FormatInputStream::close() {
-        if (_isValid&&formatCtx)
+        if (formatCtx->flags & AVFMT_FLAG_CUSTOM_IO)
+        {
+          LOGDEBUG("free stream");
+          av_free(formatCtx->pb);
+        }
+        if (_isValid&&formatCtx){
           avformat_close_input(&formatCtx);
+        }
         formatCtx=NULL;
         if (_stream_info_map.size() > 0) {
           map<int, StreamInfo*>::iterator it = _stream_info_map.begin();
