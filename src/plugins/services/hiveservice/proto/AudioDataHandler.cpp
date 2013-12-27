@@ -31,7 +31,7 @@ using namespace org::esb;
 
 class AudioDataHandler : public org::esb::plugin::ProtocolCommand {
 private:
-  classlogger("org.esb.hive.protocol.DataHandler")
+  classlogger("org.esb.hive.protocol.AudioDataHandler")
   InputStream * _is;
   OutputStream * _os;
   //	PacketOutputStream * _pos;

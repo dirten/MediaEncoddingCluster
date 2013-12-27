@@ -226,6 +226,7 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
 
           _current_unit->recv=litesql::DateTime();
           _current_unit->update();
+          _current_unit.reset();
         } else {
           LOGERROR("unknown command received:" << command);
         }

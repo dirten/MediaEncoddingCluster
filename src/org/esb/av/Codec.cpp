@@ -689,7 +689,7 @@ namespace org {
       void Codec::close() {
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
 
-        if (_opened && avcodec_is_open(ctx)) {
+        //if (_opened && avcodec_is_open(ctx)) {
           LOGDEBUG(((_mode == ENCODER) ? "Encoder" : "Decoder")<<" Codec::close(" << this << ")");
           //LOGINFO("Closing codec ("<<ctx->codec_id<<")");
           if (ctx) {
@@ -703,9 +703,9 @@ namespace org {
           //if (fifo)
           //av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);
-        } else {
-          LOGDEBUG("Codec not closed, because it was not opened:" << ctx <<"("<<this<<")");
-        }
+        //} else {
+        //  LOGDEBUG("Codec not closed, because it was not opened:" << ctx <<"("<<this<<")");
+        //}
         LOGDEBUG("free context");
         if (ctx && !_pre_allocated) {
           av_free(ctx);

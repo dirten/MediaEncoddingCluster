@@ -76,7 +76,8 @@ int main(int argc, char * argv[]) {
     ("process,p", "")
     ("erlang", "")
     ("console,c", "")
-    ("quiet", "")
+        ("quiet", "")
+        ("debug", "")
     ("docroot,d", po::value<std::string > (), "webserver document root");
     po::options_description all("all");
 
@@ -178,8 +179,10 @@ int main(int argc, char * argv[]) {
       if(start_master){
         while(true){
           std::string cmd=Environment::get(Environment::EXE_PATH)+"/"+Environment::get(Environment::EXE_NAME);
-          std::cout <<cmd<<std::endl;
-          std::vector<std::string> args=Environment::getArguments();
+          //std::cout <<cmd<<std::endl;
+          std::vector<std::string> args;
+
+          args=Environment::getArguments();
           args.push_back("-p");
           Poco::ProcessHandle handle=Poco::Process::launch(cmd, args);
           handle.wait();

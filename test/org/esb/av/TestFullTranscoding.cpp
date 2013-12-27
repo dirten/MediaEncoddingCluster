@@ -198,9 +198,9 @@ int main(int argc, char** argv) {
       _sdata[i].dec->addTarget(_sdata[i].conv);
       _sdata[i].conv->addTarget(_sdata[i].enc);
     }
-    //_sdata[i].enc->addTarget(&pos);
+    _sdata[i].enc->addTarget(&pos);
 
-    //pos.setEncoder(*_sdata[i].enc, _sdata[i].enc->getStreamIndex());
+    pos.setEncoder(*_sdata[i].enc, _sdata[i].enc->getStreamIndex());
     //_sdata[i].enc->setOutputStream(&pos);
     LOGDEBUG(_sdata[i].enc->toString());
     LOGDEBUG(_sdata[i].dec->toString());
@@ -213,7 +213,7 @@ int main(int argc, char** argv) {
 
   /*main loop to encode the packets*/
   Packet *packet;
-  bool encode_whole_file=false;
+  bool encode_whole_file=true;
   for (int i = 0; i < 100 || encode_whole_file; i++) {
     //reading a packet from the Stream
     if ((packet=pis.readPacket()) ==NULL )break; //when no more packets available(EOF) then it return <0

@@ -102,7 +102,7 @@ namespace org {
 
       
       NodeResolver::NodeResolver(const boost::asio::ip::address& listen_address, const boost::asio::ip::address& multicast_address, int port, Node node) :
-      _node_timeout(5),
+      _node_timeout(10),
       send_endpoint_(multicast_address, port),
       send_socket_(send_service_, send_endpoint_.protocol()),
       send_timer_(send_service_),
