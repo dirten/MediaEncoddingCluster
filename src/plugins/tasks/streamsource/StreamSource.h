@@ -2,7 +2,7 @@
 #define STREAMSOURCE_H
 #include "org/esb/core/Task.h"
 #include "org/esb/av/FormatInputStream.h"
-
+#include "org/esb/lang/Ptr.h"
 using org::esb::av::FormatInputStream;
 namespace plugin {
 
@@ -14,9 +14,9 @@ namespace plugin {
     void execute();
     int getPadTypes();
     org::esb::core::OptionsDescription getOptionsDescription();
-    void setSource(FormatInputStream * fis);
+    void setSource(Ptr<FormatInputStream>  fis);
   private:
-    FormatInputStream * _fis;
+    Ptr<FormatInputStream>  _fis;
     std::map<int, Ptr<org::esb::av::Decoder> >_decs;
   };
 }

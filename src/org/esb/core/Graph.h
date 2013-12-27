@@ -24,7 +24,7 @@ namespace org {
           class Element{
             public:
               ~Element(){
-                dependsOn.clear();
+                //dependsOn.clear();
               }
               void setTask(Ptr<org::esb::core::Task>t){task=t;}
               void addChild(Ptr<Element>  el){linksTo.push_back(el);}

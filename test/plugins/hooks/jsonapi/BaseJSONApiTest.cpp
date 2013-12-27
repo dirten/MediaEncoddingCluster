@@ -153,6 +153,7 @@ void test_upload_encoding(){
   args.push_back(std::string("http://localhost:4000/api/v1/encoding/").append(created_profile_uuid));
   Poco::ProcessHandle handle=Poco::Process::launch("curl", args);
   handle.wait();
+
   handle=Poco::Process::launch("curl", args);
   handle.wait();
   handle=Poco::Process::launch("curl", args);
@@ -161,6 +162,7 @@ void test_upload_encoding(){
   handle.wait();
   handle=Poco::Process::launch("curl", args);
   handle.wait();
+
   //Thread::sleep(2000);
   
   /*
@@ -210,15 +212,17 @@ int main(int argc, char** argv) {
 
   org::esb::core::PluginRegistry::getInstance()->initPlugins();
   org::esb::core::PluginRegistry::getInstance()->startServerServices();
+  /*
   test_format_list();
   test_codec_list();
   test_file_list();
   test_mediafile();
+  */
   test_profile_create();
   
   test_profile_update();
-  test_profile_list();
-  test_profile_view();
+  //test_profile_list();
+  //test_profile_view();
 
   //test_profile_delete();
   //test_profile_delete_fail();

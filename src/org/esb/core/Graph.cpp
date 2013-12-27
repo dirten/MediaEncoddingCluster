@@ -128,7 +128,7 @@ namespace org {
           _current_task->execute();
           //s->progress="100";
           //exec.push_back(JSONNode("status", "cleanup"));
-
+          LOGDEBUG("cleanup task"<<_current_task->getUUID())
           _current_task->cleanup();
           status_list.back()->message = "Completed";
           //setStatus(e->task.get());

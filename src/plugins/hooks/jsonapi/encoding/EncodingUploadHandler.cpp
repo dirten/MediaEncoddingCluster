@@ -75,13 +75,13 @@ public:
       * because the graph need to be close the decoder first, after that
       * the InputStream could save destroyed
       */
-    fis=new FormatInputStream(stream);
+    //fis=new FormatInputStream(stream);
 
     foreach(Ptr<Graph::Element> el, graph.getElements()) {
       if (el->getParents().size() == 0) {
         LOGDEBUG("Element:"<<el->name);
         StreamSource * source=static_cast<StreamSource*>(el->task.get());
-        source->setSource(fis);
+        source->setSource(Ptr<FormatInputStream>(new FormatInputStream(stream)));
       }
     }
     graph.run();

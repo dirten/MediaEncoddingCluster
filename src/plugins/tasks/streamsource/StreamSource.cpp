@@ -9,7 +9,7 @@ namespace plugin {
 
   }
 
-  void StreamSource::setSource(FormatInputStream * fis){
+  void StreamSource::setSource(Ptr<FormatInputStream> fis){
     _fis=fis;
   }
 
@@ -49,7 +49,7 @@ namespace plugin {
     Task::execute();
 
 
-    org::esb::av::PacketInputStream pis(_fis);
+    org::esb::av::PacketInputStream pis(_fis.get());
     org::esb::av::Packet * packet;
     while((packet = pis.readPacket()) != NULL){
       //pPacket->_decoder=_decs[pPacket->getStreamIndex()];

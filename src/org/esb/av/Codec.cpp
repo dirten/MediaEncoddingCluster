@@ -75,9 +75,11 @@ namespace org {
         _dict=NULL;
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         LOGWARN("!!!PLEASE DONT USE THIS CONSTRUCTOR!!!");
-        ctx = s->codec;
+        //ctx = s->codec;
+        ctx = avcodec_alloc_context();
+        avcodec_copy_context(ctx, s->codec);
         _mode = mode;
-        //		ctx->codec_id=ctx->codec->id;
+        ctx->codec_id=s->codec->codec_id;//codec->id;
         findCodec(mode);
         //        ctx->codec = _codec;
         _opened = false;
@@ -704,6 +706,7 @@ namespace org {
         } else {
           LOGDEBUG("Codec not closed, because it was not opened:" << ctx <<"("<<this<<")");
         }
+        LOGDEBUG("free context");
         if (ctx && !_pre_allocated) {
           av_free(ctx);
           ctx = NULL;
