@@ -1,0 +1,19 @@
+
+set(BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build")
+
+IF(MINGW)
+  SET(USER_CONFIG "-DCMAKE_TOOLCHAIN_FILE=${PROJECT_SOURCE_DIR}/cmake/Toolchain-mingw32.cmake")
+ENDIF(MINGW)
+
+
+ExternalProject_Add(gperftools_dep
+GIT_REPOSITORY https://code.google.com/p/gperftools/
+#URL http://gperftools.googlecode.com/files/gperftools-2.1.zip
+#PATCH_COMMAND patch -s -t -p0 -d <SOURCE_DIR> < ${PROJECT_SOURCE_DIR}/src/patch/safmq-configure.patch && patch -s -t -p0 -d <SOURCE_DIR> < ${PROJECT_SOURCE_DIR}/src/patch/safmq-shared-uuidgen.patch && patch -s -t -p0 -d <SOURCE_DIR> < ${PROJECT_SOURCE_DIR}/src/patch/safmq-makefile-unix.patch && cp ${PROJECT_SOURCE_DIR}/src/patch/safmq-CMakeLists.txt <SOURCE_DIR>/CMakeLists.txt
+PATCH_COMMAND <SOURCE_DIR>/autogen.sh
+CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR}
+#CMAKE_ARGS -DNOMINMAX=1 -DCMAKE_INSTALL_PREFIX=${BUILD_DIR} ${USER_CONFIG} 
+BUILD_IN_SOURCE 1
+)
+SET(GPERFTOOLS_DIR "${BUILD_DIR}")
+
