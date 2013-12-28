@@ -213,6 +213,7 @@ class SampleFormat;*/
             } else {
               ctx->extradata = NULL;
             }
+            _pre_allocated=false;
           }
           //findCodec(_mode);
         };

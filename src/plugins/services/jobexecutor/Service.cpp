@@ -43,10 +43,18 @@ namespace jobexecutor {
   }
 
   void Service::startService() {
-    return;
     /*clean up interrupted encodings*/
-    LOGDEBUG("looking for aborted encodings");
-    litesql::DataSource<db::Job> source = litesql::select<db::Job > (*getContext()->database, db::Job::Status == db::Job::Status::Processing).orderBy(db::Job::Id, false);
+    LOGDEBUG("looking for aborted Jobs");
+    litesql::DataSource<db::Job> source = litesql::select<db::Job > (*getContext()->database, db::Job::Status == db::Job::Status::Waiting).orderBy(db::Job::Id, false);
+    litesql::Cursor<db::Job> cur=source.cursor();
+    for (;cur.rowsLeft(); cur++){
+      db::Job out=(*cur);
+      LOGDEBUG("aborted job found, finishing it:"<<out)
+      out.status=db::Job::Status::Exporting;
+      out.update();
+      LOGDEBUG("changed to:"<<out)
+    }
+    return;
 
     if (source.count() > 0) {
       db::Job job = source.one();

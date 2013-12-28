@@ -43,10 +43,10 @@ namespace plugin {
     LOGDEBUG("cleanup");
     if(_pos)
       _pos->close();
-    _pos=NULL;
+    _pos.reset();
     if(_fos)
       _fos->close();
-    _fos=NULL;
+    _fos.reset();
 
   }
 
@@ -55,14 +55,16 @@ namespace plugin {
     LOGDEBUG("Writer::run");
 
     int next_id=0;
+    litesql::DataSource<db::ProcessUnit > ds=litesql::select<db::ProcessUnit > (_outputfile.getDatabase(), db::ProcessUnit::Jobid == _outputfile.jobid).orderBy(db::ProcessUnit::Id);
     while (true) {
-      //LOGDEBUG("running observer")
+
+      LOGDEBUG("running observer for id:"<<next_id <<" for job "<<_outputfile.jobid);
       //int count=litesql::select<db::ProcessUnit > (_outputfile.getDatabase(), db::ProcessUnit::Jobid == _task_uuid).count();
       //if(count > 0){
         if(next_id==0){
           /*reading out the first id from the database*/
-          if(litesql::select<db::ProcessUnit > (_outputfile.getDatabase(), db::ProcessUnit::Jobid == _outputfile.jobid).orderBy(db::ProcessUnit::Id).count()){
-            db::ProcessUnit unit=litesql::select<db::ProcessUnit > (_outputfile.getDatabase(), db::ProcessUnit::Jobid == _outputfile.jobid).orderBy(db::ProcessUnit::Id).one();
+          if(ds.count()){
+            db::ProcessUnit unit=ds.one();
             next_id=unit.id;
             LOGDEBUG("setting first id:"+StringUtil::toString(next_id))
           }
@@ -85,13 +87,14 @@ namespace plugin {
           /*here comes the pushbuffer*/
           std::string base = org::esb::config::Config::get("hive.data_path");
           org::esb::io::File inputfile(base + "/"+pu.jobid+"/"+ pu.recvid);
-          FileInputStream inputstream(&inputfile);
-          std::string d;
-          int readed=inputstream.read(d);
-          LOGDEBUG("bytes readed:"+StringUtil::toString(readed))
-              boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit;
+          std::ifstream stream(base + "/"+pu.jobid+"/"+ pu.recvid);
+          //FileInputStream inputstream(&inputfile);
+          //std::string d;
+          //int readed=inputstream.read(d);
+          //LOGDEBUG("bytes readed:"+StringUtil::toString(readed))
+          boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit;
           try{
-            Serializing::deserialize(unit, d);
+            Serializing::deserialize(unit, stream);
             unit->_output_packets.sort(Writer::ptsComparator);
 
             foreach(PacketPtr p, unit->_output_packets) {

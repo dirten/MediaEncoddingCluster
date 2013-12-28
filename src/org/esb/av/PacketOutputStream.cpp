@@ -125,7 +125,7 @@ int PacketOutputStream::writePacket(Packet & packet) {
   } else {
     logdebug("CodecType unknown");
   }*/
-  LOGDEBUG("write packet to outputstream"<<packet.toString());
+  //LOGDEBUG("write packet to outputstream"<<packet.toString());
   AVStream *stream = _fmtCtx->streams[packet.getStreamIndex()];
   packet.setDuration(av_rescale_q(packet.getDuration(), packet.getTimeBase(), stream->time_base));
   packet.setPts(av_rescale_q(packet.getPts(), packet.getTimeBase(), stream->time_base));

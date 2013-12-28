@@ -38,6 +38,23 @@ namespace org {
             }
             return 0;
           }
+
+          template < typename T >
+          static int deserialize(T & object, std::istream & data) {
+            //if (data.length() <= 0) {
+            //  return -1;
+            //}
+            //std::istringstream archive_stream(data);
+            boost::archive::text_iarchive archive(data);
+            try {
+              archive >> object;
+            } catch (boost::archive::archive_exception & ex) {
+              std::cout << "Exception=" << ex.what() <<" code="<<ex.code<<std::endl;
+              throw ex;
+              //return -1;
+            }
+            return 0;
+          }
       };
     }
   }

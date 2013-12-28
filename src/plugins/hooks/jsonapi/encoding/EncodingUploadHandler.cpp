@@ -178,10 +178,13 @@ public:
       job.graph=graph.write_formatted();
       job.update();
 
-
+      try{
        //release this scope before the graph will be freed
         EncodingUploadPartHandler partHandler(graphobj);
         Poco::Net::HTMLForm form(req, req.stream(), partHandler);
+      }catch(...){
+        LOGDEBUG("upload canceled");
+      }
       job.status=db::Job::Status::Exporting;
       job.update();
       

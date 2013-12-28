@@ -16,6 +16,8 @@ namespace plugin {
 
   void WriterService::startService(){
     /*restart export from aborted writings*/
+
+
     LOGDEBUG("looking for aborted exports")
     litesql::DataSource<db::OutputFile> source = litesql::select<db::OutputFile > (*getContext()->database, db::OutputFile::Status==db::OutputFile::Status::Processing);
     litesql::Cursor<db::OutputFile> cur=source.cursor();
