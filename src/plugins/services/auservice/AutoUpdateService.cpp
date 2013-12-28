@@ -83,7 +83,7 @@ org::esb::core::ServicePlugin::ServiceType AutoUpdateService::getServiceType(){
     while(!_stop){
       LOGDEBUG("check for updates on server:"<<_host<<" with higher version of : "<< MHIVE_VERSION<< " for system "<<system)
       Poco::Net::HTTPStreamFactory fac;
-      std::string uri_str="http://"+_host.append(":").append(_port).append("/api/v1/update");
+      std::string uri_str="http://"+_host+":"+_port+"/api/v1/update";
       Poco::URI uri(uri_str);
       LOGDEBUG("URI:"<<uri.toString());
       std::istream *istr=fac.open(uri);
@@ -92,7 +92,7 @@ org::esb::core::ServicePlugin::ServiceType AutoUpdateService::getServiceType(){
       LOGDEBUG("data received:"<<data)
       if(data.compare(MHIVE_VERSION)>0){
         std::string filename="MediaEncodingCluster-"+data+"-"+system+".tgz";
-        std::string uri_str="http://"+_host.append("/").append(filename);
+        std::string uri_str="http://"+_host+"/"+filename;
         Poco::URI uri(uri_str);
         LOGDEBUG("URI:"<<uri.toString());
         try{
