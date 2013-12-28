@@ -87,7 +87,8 @@ namespace plugin {
           /*here comes the pushbuffer*/
           std::string base = org::esb::config::Config::get("hive.data_path");
           org::esb::io::File inputfile(base + "/"+pu.jobid+"/"+ pu.recvid);
-          std::ifstream stream(base + "/"+pu.jobid+"/"+ pu.recvid, std::ifstream::in);
+          base+="/"+pu.jobid+"/"+ pu.recvid;
+          std::ifstream stream(base.c_str(), std::ifstream::in);
           //FileInputStream inputstream(&inputfile);
           //std::string d;
           //int readed=inputstream.read(d);
