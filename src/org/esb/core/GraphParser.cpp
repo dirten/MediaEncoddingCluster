@@ -84,7 +84,7 @@ namespace org {
       }
 
       GraphParser::~GraphParser() {
-        //elements.clear();
+        elements.clear();
       }
 
       std::string GraphParser::getName() {

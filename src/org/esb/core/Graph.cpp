@@ -44,7 +44,7 @@ namespace org {
       }
 
       Graph::~Graph() {
-
+        elements.clear();
       }
 
       int Graph::getStepCount() {

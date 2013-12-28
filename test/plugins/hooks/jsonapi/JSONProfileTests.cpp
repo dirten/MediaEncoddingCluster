@@ -19,7 +19,15 @@ void test_profile_create(){
   
   JSONNode video(JSON_NODE);
   video.set_name("video");
-  video.push_back(JSONNode("id","mpeg4"));
+  //video.push_back(JSONNode("id","mpeg4"));
+  video.push_back(JSONNode("id","libx264"));
+  video.push_back(JSONNode("qscale","4"));
+  video.push_back(JSONNode("aubq","8"));
+  video.push_back(JSONNode("me_range","16"));
+  video.push_back(JSONNode("qmin","4"));
+  video.push_back(JSONNode("qmax","51"));
+  video.push_back(JSONNode("qcomp","0.6"));
+  video.push_back(JSONNode("qdiff","4"));
 
   base.push_back(video);
   
