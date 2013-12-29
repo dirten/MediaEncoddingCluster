@@ -60,7 +60,7 @@ class SampleFormat;*/
         Codec(AVStream * stream, int mode = DECODER);
         Codec(int mode = DECODER);
         Codec(std::map<std::string, std::string>,int mode = DECODER);
-        Codec(const Codec &);
+        //Codec(const Codec &);
         virtual ~Codec();
         /**
          *
@@ -249,6 +249,7 @@ class SampleFormat;*/
         static boost::mutex open_close_mutex;
         std::map<std::string, std::string> _options;
         AVDictionary * _dict;
+        CodecID _codecId;
       };
     }
   }
