@@ -37,7 +37,7 @@ namespace org {
 
       FormatInputStream::FormatInputStream(std::istream  & stream){
         const int bufSize= 128 * 1024;
-        const int probeBufSize= 2 * 1024;
+        //const int probeBufSize= 2 * 1024;
         buffer = reinterpret_cast<unsigned char*>(av_malloc(bufSize + FF_INPUT_BUFFER_PADDING_SIZE));
         AVIOContext * avioContext= avio_alloc_context(buffer, bufSize, 0, reinterpret_cast<void*>(static_cast<std::istream*>(&stream)), &readFunction, NULL, NULL);
 

@@ -98,7 +98,7 @@ int PacketInputStream::readPacketFromFormatIS(Packet & packet) {
   int status = av_read_frame(_formatCtx, packet.packet);
 
   if (status >= 0) {
-    //LOGDEBUG("DecodeStreamQuality:"<<_formatCtx->streams[packet.getStreamIndex()]->quality*100.0f);
+    LOGDEBUG("DecodeStreamQuality:"<<_formatCtx->streams[packet.getStreamIndex()]);
 //    av_dup_packet(packet.packet);
     packet.setTimeBase(_formatCtx->streams[packet.getStreamIndex()]->time_base);
 
