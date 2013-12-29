@@ -707,7 +707,7 @@ namespace org {
         //  LOGDEBUG("Codec not closed, because it was not opened:" << ctx <<"("<<this<<")");
         //}
         LOGDEBUG("free context");
-        if (ctx && !_pre_allocated) {
+        if (ctx ) {
           av_free(ctx);
           ctx = NULL;
         }

@@ -29,6 +29,7 @@ namespace plugin {
       static bool dtsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b);
 
       map<int,int64_t> _stream_timestamps;
+      list< boost::shared_ptr<org::esb::av::Encoder> > _encoderList;
   };
 }
 #endif // WRITER_H

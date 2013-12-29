@@ -11,7 +11,7 @@
 #include "org/esb/lang/Thread.h"
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/shared_ptr.hpp>
-
+#include "org/esb/util/Foreach.h"
 namespace plugin {
   using org::esb::util::Serializing;
   using org::esb::util::StringUtil;
@@ -27,6 +27,7 @@ namespace plugin {
 
     std::map<int, boost::shared_ptr<org::esb::av::Encoder> >::iterator it=encoder_map.begin();
     for (int a=0; it != encoder_map.end(); it++,a++) {
+      _encoderList.push_back((*it).second);
       (*it).second.get()->open();
       _pos->setEncoder(*(*it).second.get(),a);
       _stream_timestamps[a]=0;
@@ -41,6 +42,11 @@ namespace plugin {
   {
     LOGDEBUG("~Writer()")
     LOGDEBUG("cleanup");
+    foreach(boost::shared_ptr<org::esb::av::Encoder> encoder, _encoderList){
+      encoder->close();
+      encoder.reset();
+    }
+
     if(_pos)
       _pos->close();
     _pos.reset();
