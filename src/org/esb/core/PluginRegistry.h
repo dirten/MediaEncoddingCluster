@@ -44,6 +44,8 @@ namespace org {
           void registerTaskFactory(std::string,TaskFactory*);
           void registerWebHookFactory(std::string name, WebHookFactory *factory);
           void startServerServices();
+          void startWebService();
+          void startServiceByName(std::string name);
           void startClientServices();
           void stopServices();
           void load(std::string);

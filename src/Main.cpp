@@ -59,7 +59,8 @@ int main(int argc, char * argv[]) {
     po::options_description gen("General options");
     gen.add_options()
     ("help", "produce this message")
-    ("version", "Prints the Version");
+    ("version", "Prints the Version")
+    ("explicit", po::value<std::vector<std::string> >()->multitoken(), "starting only plugins explicit");
 
     po::options_description ser("Server options");
     ser.add_options()
@@ -130,6 +131,12 @@ int main(int argc, char * argv[]) {
         Environment::set(val.first, StringUtil::toString(vm[val.first].as<double>()));
       } else if (vm[val.first].value().type() == typeid (bool)) {
         Environment::set(val.first, StringUtil::toString(vm[val.first].as<bool>()));
+      } else if (vm[val.first].value().type() == typeid (std::vector<std::string>)) {
+        std::vector<std::string>plugins=vm["explicit"].as<std::vector<std::string> >();
+        foreach(std::string pluginname, plugins){
+          LOGDEBUG("setting evironment to be done: "<<pluginname);
+          //Environment::set(val.first, StringUtil::toString(vm[val.first].as<bool>()));
+        }
       } else {
         Environment::set(val.first, vm[val.first].as<std::string > ());
       }
@@ -152,7 +159,7 @@ int main(int argc, char * argv[]) {
       Environment::set("webport", vm["webport"].as<std::string> ());
     }
 
-    if (!vm.count("quiet") && !vm.count("process")) {
+    if (!vm.count("quiet") && !vm.count("process") && !vm.count("explicit")) {
       std::cout << "" << std::endl;
       std::cout << "******************************************************************" << std::endl;
       std::cout << "* MediaEncodingCluster, Copyright (C) 2000-2014   Jan Hoelscher  *" << std::endl;
@@ -172,6 +179,17 @@ int main(int argc, char * argv[]) {
 
     if(vm.count("process")){
       start_master=false;
+    }
+
+    if (vm.count("explicit")) {
+      LOGDEBUG("starting explicit plugin");
+      org::esb::core::PluginRegistry::getInstance()->startWebService();
+      std::vector<std::string>plugins=vm["explicit"].as<std::vector<std::string> >();
+      foreach(std::string pluginname, plugins){
+        LOGDEBUG("starting plugin : "<<pluginname);
+        org::esb::core::PluginRegistry::getInstance()->startServiceByName(pluginname);
+        return 0;
+      }
     }
 
     if (vm.count("run")) {
@@ -214,6 +232,7 @@ int main(int argc, char * argv[]) {
           args.push_back("-p");
           Poco::ProcessHandle handle=Poco::Process::launch(cmd, args);
           handle.wait();
+          //Poco::Process::kill(handle);
         }
       }else{
         Environment::set("mode", "client");

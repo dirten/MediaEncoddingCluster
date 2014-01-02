@@ -32,6 +32,27 @@
 using namespace org::esb::av;
 namespace encodingtask {
 
+  class StreamPacketizerPacketSink : public AVPipe {
+  public:
+    StreamPacketizerPacketSink():AVPipe() {
+    }
+
+    bool newFrame(Ptr<Frame>){return false;}
+
+    bool newPacket(Ptr<Packet> p){
+      pkts.push_back(p);
+
+      return true;
+    }
+
+    std::list<boost::shared_ptr<Packet> > getList() {
+      return pkts;
+    }
+
+  private:
+    std::list<boost::shared_ptr<Packet> > pkts;
+  };
+
   /**
   *
   */
@@ -160,11 +181,15 @@ namespace encodingtask {
     if (_stream.state == STATE_END_I_FRAME && (_decoder->getCodecId() == CODEC_ID_MPEG2VIDEO /*&& ptr->_pict_type == AV_PICTURE_TYPE_P*/)) {
       LOGDEBUG("decode Mpeg2 Stream");
       Ptr<Frame> frame=_decoder->decode2(*ptr.get());
+      LOGDEBUG("Frame:"<<frame->toString());
+      LOGDEBUG("FrameType:"<<frame->getAVFrame()->pict_type);
       if(!frame->isFinished()){
         delay++;
-      }
+      }else
+      //Packet :IBBPBBPBBPBBPBBP
+      //Frame  :
       if(frame->getAVFrame()->pict_type== AV_PICTURE_TYPE_P){
-
+        LOGDEBUG("Prediction Picture with delay of "<<delay)
         //IBBPBBPBBP
         //   IBBP
         //LOGDEBUG("frame type = "+ org::esb::util::StringUtil::toString(frame->getAVFrame()->pict_type));
@@ -203,6 +228,7 @@ namespace encodingtask {
         /*_overlap_queue[stream_idx]   =   */
         result = true;
         delay=0;
+        _decoder->reset();
       }
     } else if (_stream.state == STATE_END_I_FRAME && _decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
       /**************************************

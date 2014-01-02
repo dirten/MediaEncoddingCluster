@@ -359,13 +359,13 @@ namespace encodingtask {
       }
     }else{
       /*flush buffer for all streams*/
-      std::cerr<<"flushing packets"<<std::endl;
+      //std::cerr<<"flushing packets"<<std::endl;
       std::map<int,StreamPacketizer>::iterator it=_packetizer.begin();
       for(;it!=_packetizer.end();it++){
         (*it).second.flushStreams();
         PacketListPtr list = (*it).second.removePacketList();
         if(list.size()){
-          std::cerr<<"putflushto partition"<<std::endl;
+          //std::cerr<<"putflushto partition"<<std::endl;
           Ptr<org::esb::av::Encoder>enc=_encs[(*it).first];
           StreamProcessUnitBuilder & spub=_spu[(*it).first];
           boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit = spub.build(list, (*it).second.getDecoder(), enc);
@@ -419,6 +419,7 @@ namespace encodingtask {
     pu.recv=litesql::DateTime(1);
     pu.sendid=unit->uuid;
     pu.jobid=_task_uuid;
+    pu.sequence=unit->_sequence;
 
     if (unit->_input_packets.size() > 0) {
       boost::shared_ptr<org::esb::av::Packet> first_packet = unit->_input_packets.front();

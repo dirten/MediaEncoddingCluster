@@ -1,7 +1,7 @@
 /* 
  * File:   ProcessUnitBuilder.cpp
  * Author: HoelscJ
- * 
+ *
  * Created on 16. Juli 2010, 17:10
  */
 
@@ -10,6 +10,9 @@
 #include "org/esb/util/Decimal.h"
 #include <math.h>
 namespace encodingtask {
+
+
+
 
   ProcessUnitBuilder::ProcessUnitBuilder(map<int, StreamData> & data) : _map_data(data) {
     map<int, StreamData>::iterator it = _map_data.begin();
@@ -59,14 +62,14 @@ namespace encodingtask {
       org::esb::util::Decimal::ExponentType exp = 0;
       dec.getIntegralFractionalExponent<org::esb::util::Decimal::MantissaType > (i, f, exp, dec.getExponent());
 
-      /*in case to BFrames the resulting frame count is -1 
+      /*in case to BFrames the resulting frame count is -1
        * because there 1 I-Frame to much at the end
-       * 
+       *
        * e.g. IBBPBBPBBPBBPBBIBBP
        *                     |
        *            this i-frame is to much
        *    it is always the last i-frame in a ProcessUnit
-       * 
+       *
        * this only happend when the decoder has B-Frames
        */
       if (u->_decoder->getCodecId() == CODEC_ID_MPEG2VIDEO && u->_decoder->getCodecOption("has_b_frames") == "1")
@@ -106,4 +109,4 @@ namespace encodingtask {
 
     return u;
   }
-}
+  }

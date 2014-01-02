@@ -351,6 +351,15 @@
         <field name="start" type="datetime"/>
         <field name="end" type="datetime"/>
     </object>
+
+    <object name="Process">
+      <field name="executable" type="string"/>
+      <field name="arguments" type="string"/>
+        <field name="name" type="string"/>
+        <field name="pid" type="integer"/>
+        <field name="started" type="datetime"/>
+        <field name="stopped" type="datetime"/>
+    </object>
     <!--
     <relation id="WatchfolderProfile">
         <relate object="Watchfolder" handle="preset"/>
@@ -375,6 +384,7 @@
         <field name="deliverycount" type="integer"/>
         <field name="jobid" type="string"/>
         <field name="group" type="string"/>
+        <field name="sequence" type="integer"/>
     </object>
 
     <relation id="ProcessUnitJob">

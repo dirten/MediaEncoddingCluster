@@ -74,10 +74,8 @@ namespace org {
       }
 
       void CORE_EXPORT PluginRegistry::startServerServices() {
+        startWebService();
         typedef std::map<std::string, Plugin*> PluginMap;
-        server=new org::esb::core::http::Server(atoi(Environment::get("webport").c_str()));
-        server->setRequestHandlerFactory(_webhook_handler_factory);
-        server->start();
 
         foreach(PluginMap::value_type s, _service_map) {
           //LOGDEBUG("ServiceName="<<s.first<<" type="<<((ServicePlugin*) s.second)->getServiceType());
@@ -96,6 +94,28 @@ namespace org {
             ((ServicePlugin*) s.second)->startService();
         }
 
+      }
+
+      void CORE_EXPORT PluginRegistry::startWebService(){
+        server=new org::esb::core::http::Server(atoi(Environment::get("webport").c_str()));
+        server->setRequestHandlerFactory(_webhook_handler_factory);
+        server->start();
+      }
+
+      void CORE_EXPORT PluginRegistry::startServiceByName(std::string name){
+        bool found=false;
+        typedef std::map<std::string, Plugin*> PluginMap;
+
+        foreach(PluginMap::value_type s, _service_map) {
+          if (s.first== name){
+            ((ServicePlugin*) s.second)->startService();
+            found=true;
+            break;
+          }
+        }
+        if(!found){
+          LOGERROR("pluging with name "<<name<<" not found");
+        }
       }
 
       void CORE_EXPORT PluginRegistry::stopServices() {

@@ -34,7 +34,7 @@ void decode_packet_list(PacketListPtr list, Ptr<Decoder> dec) {
   PacketListPtr::iterator it = list.begin();
   char * outfile = new char[100];
   for (; it != list.end(); it++) {
-    Frame * frame = dec->decodeVideo2(*(*it).get());
+    Frame * frame = dec->decode2(*(*it).get());
     if(frame->isFinished()){
       sprintf(outfile, "test-%i-%i.pgm", ++i, (*it)->getDts());
       LOGDEBUG("writing file # "<<outfile);
@@ -60,8 +60,8 @@ int main(int argc, char** argv) {
   std::string trg;
   if (argc == 1) {
     src = MEC_SOURCE_DIR;
-    src.append("/target/dependency/fixtures/mpeg2_mp2.ts");
-    //    src.append("/test.dvd");
+    //src.append("/target/dependency/fixtures/mpeg2_mp2.ts");
+        src.append("/test-data/test.dvd");
   } else {
     src = argv[1];
   }
@@ -95,7 +95,11 @@ int main(int argc, char** argv) {
     if (stream_data.find(p.getStreamIndex()) == stream_data.end())continue;
     if (stream_data[p.getStreamIndex()].decoder->getCodecType() != AVMEDIA_TYPE_VIDEO)continue;
     if(!packetizer.count(p.getStreamIndex())){
-      packetizer[p.getStreamIndex()]=StreamPacketizer(10,Ptr<Decoder>(new Decoder(fis.getAVStream(p.getStreamIndex()))));
+
+      Decoder * dec=new Decoder(fis.getAVStream(p.getStreamIndex()));
+      dec->open();
+
+      packetizer[p.getStreamIndex()]=StreamPacketizer(10,Ptr<Decoder>(dec));
     }
     StreamPacketizer & pti=packetizer[p.getStreamIndex()];
 
@@ -107,7 +111,7 @@ int main(int argc, char** argv) {
       LOGDEBUG("--------------------------------------------------------------------------------------------");
       print_packet_list(list);
 
-      decode_packet_list(list, pti.getDecoder());
+      //decode_packet_list(list, pti.getDecoder());
     }
     a++;
   }

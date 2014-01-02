@@ -24,10 +24,6 @@ namespace plugin {
 
       void run();
       STATUS _status;
-
-
-
-
   };
   REGISTER_SERVICE("writerservice", WriterService)
 }

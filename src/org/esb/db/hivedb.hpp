@@ -21,6 +21,7 @@ class Task;
 class JobLog;
 class JobDetail;
 class Watchfolder;
+class Process;
 class ProcessUnit;
 class User;
 class UserGroup;
@@ -2193,6 +2194,56 @@ public:
     std::auto_ptr<Watchfolder> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, Watchfolder o);
+class Process : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType Executable;
+    litesql::Field<std::string> executable;
+    static const litesql::FieldType Arguments;
+    litesql::Field<std::string> arguments;
+    static const litesql::FieldType Name;
+    litesql::Field<std::string> name;
+    static const litesql::FieldType Pid;
+    litesql::Field<int> pid;
+    static const litesql::FieldType Started;
+    litesql::Field<litesql::DateTime> started;
+    static const litesql::FieldType Stopped;
+    litesql::Field<litesql::DateTime> stopped;
+protected:
+    void defaults();
+public:
+    Process(const litesql::Database& db);
+    Process(const litesql::Database& db, const litesql::Record& rec);
+    Process(const Process& obj);
+    const Process& operator=(const Process& obj);
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<Process> upcast();
+    std::auto_ptr<Process> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, Process o);
 class ProcessUnit : public litesql::Persistent {
 public:
     class Own {
@@ -2249,6 +2300,8 @@ public:
     litesql::Field<std::string> jobid;
     static const litesql::FieldType Group;
     litesql::Field<std::string> group;
+    static const litesql::FieldType Sequence;
+    litesql::Field<int> sequence;
 protected:
     void defaults();
 public:

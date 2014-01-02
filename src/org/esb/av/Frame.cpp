@@ -423,8 +423,12 @@ void Frame::copyFromFrame(const Frame& frame) {
 //P->S:1732:Pts:127800:Dts:124200:Index:0:Dur:3600:Pos:-1:TBase:1/90000:F:0:KF0
 
 std::string Frame::toString() {
+
   std::ostringstream oss;
   oss << "F->S:" << 0 << ":Pts:" << framePtr->pts << ":Dts:" << _dts << ":SmplFmt:" << framePtr->format << ":SmplSz:" << framePtr->nb_samples << ":W:" << framePtr->width << ":H:" << framePtr->height << ":PF:" << _pixFormat << ":Ch:" << av_frame_get_channels(framePtr.get()) << ":SmplRt:" << sample_rate << ":Dur:" << duration << ":FrameCount" << _frames << ":TBase:" << _time_base.num << "/" << _time_base.den << ":q" << framePtr->quality<<":fin:"<<_isFinished;
+  oss<<":ppts:"<<framePtr->pkt_pts;
+  oss<<":psts:"<<framePtr->pkt_dts;
+  oss<<":t:";
   switch (getAVFrame()->pict_type) {
     case AV_PICTURE_TYPE_B:
       oss << ("B");
