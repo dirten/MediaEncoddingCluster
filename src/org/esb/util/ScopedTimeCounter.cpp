@@ -14,6 +14,12 @@ namespace org {
         //LOGDEBUG(_name << " duration: " << to_simple_string(_end - _start));
         //std::cout << _name << " duration: " << to_simple_string(_end - _start) << std::endl;
       }
+
+      int64_t ScopedTimeCounter::getMilliSec(){
+        _end = microsec_clock::local_time();
+        time_duration td=_end - _start;
+        return td.total_milliseconds();
+      }
     }
   }
 }

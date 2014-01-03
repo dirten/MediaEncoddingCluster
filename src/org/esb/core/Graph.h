@@ -24,6 +24,7 @@ namespace org {
           class Element{
             public:
               ~Element(){
+                LOGDEBUG("~Element()")
                 dependsOn.clear();
               }
               void setTask(Ptr<org::esb::core::Task>t){task=t;}

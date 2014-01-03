@@ -19,6 +19,7 @@ namespace org{
       namespace http{
         class CORE_HTTP_EXPORT RequestHandler: public Poco::Net::HTTPRequestHandler{
         public:
+            virtual ~RequestHandler(){}
           virtual void handle(HTTPServerRequest& request, HTTPServerResponse& response)=0;
           void handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response){
             HTTPServerRequest * request1=static_cast<HTTPServerRequest *>(&request);

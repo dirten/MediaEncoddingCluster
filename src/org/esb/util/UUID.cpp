@@ -6,8 +6,8 @@
  */
 
 #include "UUID.h"
-//#include "Poco/UUID.h"
-//#include "Poco/UUIDGenerator.h"
+#include "Poco/UUID.h"
+#include "Poco/UUIDGenerator.h"
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
 #include "boost/lexical_cast.hpp"
@@ -15,9 +15,10 @@
 namespace org {
   namespace esb {
     namespace util {
-
+      using Poco::UUIDGenerator;
       PUUID::PUUID():
-      _uuid(boost::lexical_cast<std::string > (boost::uuids::random_generator()()))
+      //_uuid(boost::lexical_cast<std::string > (boost::uuids::random_generator()()))
+      _uuid(UUIDGenerator::defaultGenerator().createOne().toString())
       {
 
       }

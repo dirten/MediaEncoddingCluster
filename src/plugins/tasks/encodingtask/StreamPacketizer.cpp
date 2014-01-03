@@ -147,7 +147,7 @@ namespace encodingtask {
        *                   IPPPPPPPP
        *
        * in a MPeg Stream there is a reorder with BFrames
-       * each group will be also chunked in the position of the I-Frame, but in the case of the delay from the Decoder
+       * each group will also be chunked in the position of the I-Frame, but in the case of the delay from the Decoder
        * we will append the next packets until a P-Frame arrived.
        * IPBBPBBPBBIBBPBBPBBIBBPBBPBBIBBP
        * IPBBPBBPBBIBB

@@ -45,7 +45,7 @@ namespace org {
         ::AVFilter *abuffersink = avfilter_get_by_name("abuffersink");
         AVFilterInOut *outputs = avfilter_inout_alloc();
         AVFilterInOut *inputs  = avfilter_inout_alloc();
-
+        AVABufferSinkParams *buffersink_params;
         filter_graph = avfilter_graph_alloc();
 
         if(_input_params.find("channel_layout")==_input_params.end()){
@@ -100,13 +100,21 @@ namespace org {
           _filter=StringUtil::replace(_filter,"%"+(*it).first+"%",(*it).second);
         }
         //av_get_channel_layout(_output_params["channel_layout"].c_str());
-        int64_t ch_layout=av_get_channel_layout(_output_params["channel_layout"].c_str());
+        int64_t ch_layout=atoi((_output_params["channel_layout"]).c_str());//av_get_channel_layout((_output_params["channel_layout"]).c_str());
+
+        LOGDEBUG("channel layout :"<<ch_layout)
         int frame_size=atoi(_output_params["frame_size"].c_str());
+
         AVSampleFormat sample_format=av_get_sample_fmt(_output_params["sample_format"].c_str());
-        static const enum AVSampleFormat out_sample_fmts[] = { sample_format, AV_SAMPLE_FMT_NONE };
-        static const int64_t out_channel_layouts[] = { ch_layout, -1 };
+
+        const enum AVSampleFormat out_sample_fmts[] = { sample_format, AV_SAMPLE_FMT_NONE };
+
+        const int64_t out_channel_layouts[] = { AV_CH_LAYOUT_STEREO, -1 };
+        const int out_channel_counts[] = { 2, -1 };
+
         //static const int64_t out_channel_counts[] = { 2, -1 };
-        static const int out_sample_rates[] = { atoi(_output_params["sample_rate"].c_str()), -1 };
+
+        int out_sample_rates[] = { atoi(_output_params["sample_rate"].c_str()), -1 };
         /*
         snprintf(args, sizeof(args),
                  "channels=2:time_base=%s:sample_rate=%d:sample_fmt=%s:channel_layout=0x%"PRIx64,
@@ -119,14 +127,23 @@ namespace org {
         filter_graph->thread_type=0;
         filter_graph->nb_threads=1;
 
-        ret = avfilter_graph_create_filter(&buffersink_ctx, abuffersink, "out",
-        NULL, NULL, filter_graph);
+
+        /* buffer video sink: to terminate the filter chain. */
+        buffersink_params = av_abuffersink_params_alloc();
+        buffersink_params->sample_fmts=out_sample_fmts;
+        buffersink_params->channel_layouts=out_channel_layouts;
+        buffersink_params->channel_counts=out_channel_counts;
+        buffersink_params->sample_rates=out_sample_rates;
+
+
+        ret = avfilter_graph_create_filter(&buffersink_ctx, abuffersink, "out", NULL, buffersink_params, filter_graph);
+
         av_log(NULL, AV_LOG_INFO, "created audio buffer sink\n");
         if (ret < 0) {
           av_log(NULL, AV_LOG_ERROR, "Cannot create audio buffer sink with arguments\n%s", args);
           throw Exception(__FILE__, __LINE__,"Cannot create audio buffer sink with arguments\n%s", args);
         }
-
+        /*
         ret = av_opt_set_int_list(buffersink_ctx, "sample_fmts", out_sample_fmts, -1,
         AV_OPT_SEARCH_CHILDREN);
         if (ret < 0) {
@@ -134,8 +151,7 @@ namespace org {
           throw Exception(__FILE__, __LINE__,"Cannot set output sample format\n");
         }
 
-        ret = av_opt_set_int_list(buffersink_ctx, "channel_layouts", out_channel_layouts, -1,
-        AV_OPT_SEARCH_CHILDREN);
+        ret = av_opt_set_int_list(buffersink_ctx, "channel_layouts", out_channel_layouts, -1, AV_OPT_SEARCH_CHILDREN);
         if (ret < 0) {
           av_log(NULL, AV_LOG_ERROR, "Cannot set output channel layout\n");
           throw Exception(__FILE__, __LINE__,"Cannot set output channel layout\n");
@@ -147,6 +163,7 @@ namespace org {
           av_log(NULL, AV_LOG_ERROR, "Cannot set output sample rate\n");
           throw Exception(__FILE__, __LINE__,"Cannot set output sample rate\n");
         }
+        */
         /*
         ret = av_opt_set_int_list(buffersink_ctx, "channel_counts", out_channel_counts, -1,
                                   AV_OPT_SEARCH_CHILDREN);
@@ -169,10 +186,11 @@ namespace org {
         inputs->next       = NULL;
 
 
-
+        LOGDEBUG("create filter graph")
         if ((ret = avfilter_graph_parse_ptr(filter_graph, _filter.c_str(), &inputs, &outputs, NULL)) < 0){
           throw Exception("could not parse filter graph");
         }
+        LOGDEBUG("config filter graph")
         if ((ret = avfilter_graph_config(filter_graph, NULL)) < 0){
           throw Exception("could not configure filter graph");
         }
@@ -180,6 +198,7 @@ namespace org {
         av_buffersink_set_frame_size(buffersink_ctx,frame_size);
         avfilter_inout_free(&inputs);
         avfilter_inout_free(&outputs);
+        LOGDEBUG("filter graph success")
         //exit(0);
       }
 
@@ -286,6 +305,8 @@ namespace org {
       bool AVFilter::newFrame(Ptr<Frame> p)
       {
         bool result=false;
+
+
 
         /**
           * @TODO: have a look into this, why do i need to clone the frame for this operation

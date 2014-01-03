@@ -44,6 +44,7 @@ namespace org {
       }
 
       Graph::~Graph() {
+        LOGDEBUG("Graph::~Graph()")
         elements.clear();
       }
 

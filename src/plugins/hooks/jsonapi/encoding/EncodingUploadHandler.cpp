@@ -76,7 +76,6 @@ public:
       * the InputStream could save destroyed
       */
     //fis=new FormatInputStream(stream);
-
     foreach(Ptr<Graph::Element> el, graph.getElements()) {
       if (el->getParents().size() == 0) {
         LOGDEBUG("Element:"<<el->name);
@@ -84,6 +83,11 @@ public:
         source->setSource(Ptr<FormatInputStream>(new FormatInputStream(stream)));
       }
     }
+    /*
+    Poco::NullOutputStream noss;
+    Poco::StreamCopier::copyStream(stream, noss);
+    return;
+    */
     graph.run();
     //delete fis;
     /*
@@ -97,6 +101,7 @@ public:
   }
 
   ~EncodingUploadPartHandler(){
+    LOGDEBUG("~EncodingUploadPartHandler()")
     //delete fis;
   }
 
@@ -111,7 +116,7 @@ private:
   std::string _data;
   uint64_t _length;
   org::esb::core::Graph & graph;
-  FormatInputStream * fis;
+  //FormatInputStream * fis;
 };
 
 class JSONAPI_EXPORT EncodingUploadHandler : public org::esb::core::WebHookPlugin {
@@ -129,6 +134,7 @@ public:
   }
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
     LOGDEBUG("handle upload");
+
     JSONResult result(req);
     std::string id = req.get("profileid");
     litesql::DataSource<db::Preset> s = litesql::select<db::Preset > (_db, db::Preset::Uuid == id);

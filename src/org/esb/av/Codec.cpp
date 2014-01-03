@@ -171,6 +171,7 @@ namespace org {
         _pre_allocated = false;
         _frame_rate.num = 0;
         _frame_rate.den = 0;
+        _bytes_discard = 0;
 
         //ctx->codec_id = data["codec_id"];
         /*
@@ -255,6 +256,8 @@ namespace org {
         _pre_allocated = false;
         _frame_rate.num = 0;
         _frame_rate.den = 0;
+        _bytes_discard = 0;
+
 
       }
 
@@ -352,7 +355,6 @@ namespace org {
         ctx->sample_rate = 0;
         ctx->sample_fmt = AV_SAMPLE_FMT_NONE;
         ctx->channels = 0;
-        //ctx->channel_layout=AV_CH_LAYOUT_STEREO;
         //        ctx->idct_algo = FF_IDCT_AUTO;
         //        ctx->skip_idct = AVDISCARD_DEFAULT;
         //        ctx->error_recognition = FF_ER_CAREFUL;
@@ -645,6 +647,7 @@ namespace org {
           setCodecOption("threads","1");
           av_dict_set(&_dict,"threads","1",0);
           av_dict_set(&_dict,"thread_type","0",0);
+          //av_dict_set(&_dict,"channel_layout",("0x"+org::esb::util::StringUtil::toString(ctx->channel_layout)).c_str(),0);
           {
             AVDictionaryEntry *t = NULL;
             while ((t = av_dict_get(_dict, "", t, AV_DICT_IGNORE_SUFFIX)))
@@ -653,6 +656,8 @@ namespace org {
           //ctx->channel_layout=AV_CH_LAYOUT_STEREO;
           LOGDEBUG("channel bfore open:"<<ctx->channels);
           //ctx->refcounted_frames=1;
+          //ctx->channel_layout=AV_CH_LAYOUT_STEREO;
+
           if (avcodec_open2(ctx, _codec,&_dict) < 0) {
             LOGERROR("error in openning Codec (" << ctx->codec_id << ")");
           } else {
@@ -672,7 +677,7 @@ namespace org {
           LOGERROR("Exception while openning Codec (" << ctx->codec_id << ")");
         }
 
-
+        LOGDEBUG("channel layout after open :"<<ctx->channel_layout)
         return _opened;
         //        }
         //        return -1;
@@ -693,7 +698,7 @@ namespace org {
           LOGDEBUG(((_mode == ENCODER) ? "Encoder" : "Decoder")<<" Codec::close(" << this << ")");
           //LOGINFO("Closing codec ("<<ctx->codec_id<<")");
           if (ctx) {
-            if (false && ctx->extradata_size > 0 && !_pre_allocated) {
+            if (ctx->extradata_size > 0 ){
               av_freep(&ctx->extradata);
             }
             //ctx->thread_count = 1;

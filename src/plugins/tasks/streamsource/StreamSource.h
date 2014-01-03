@@ -10,6 +10,7 @@ namespace plugin {
   {
   public:
     StreamSource();
+    ~StreamSource();
     void prepare();
     void execute();
     int getPadTypes();

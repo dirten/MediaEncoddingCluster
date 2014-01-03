@@ -18,7 +18,7 @@ using namespace org::esb::av;
 int main(int argc, char** argv) {
   Log::open();
   std::string src = "test://";
-  src.append("/home/jan.hoelscher/devel/mec/test.dvd");
+  src.append("/home/jan.hoelscher/devel/mec/test-data/test.dvd");
   
   FormatInputStream fis(src);
 /*

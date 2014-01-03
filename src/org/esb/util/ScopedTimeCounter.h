@@ -15,6 +15,7 @@ namespace org {
       public:
         ScopedTimeCounter(std::string name);
         ~ScopedTimeCounter(void);
+        int64_t getMilliSec();
       private:
         ptime _start;
         ptime _end;

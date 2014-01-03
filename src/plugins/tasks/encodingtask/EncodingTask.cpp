@@ -197,12 +197,6 @@ namespace encodingtask {
   }
 
   void EncodingTask::cleanup() {
-    partitionservice::PartitionManager::getInstance()->resetFps();
-    std::string base = org::esb::config::Config::get("hive.tmp_path");
-    org::esb::io::File infile(base + "/jobs/" + getUUID() + "/" + _srcuristr);
-    if (infile.exists()) {
-      //infile.deleteFile();
-    }
   }
 
   int EncodingTask::getPadTypes() {

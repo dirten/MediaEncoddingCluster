@@ -487,11 +487,15 @@ bool Decoder::decodeAudio3(Packet & packet) {
     LOGDEBUG("Context channels:"<<ctx->channels);
     ch=ctx->channels;
   }
+  //avcodec_get_frame_defaults(frame->getAVFrame());
+  //frame->getAVFrame()->channel_layout=0x3;
   int bps = av_get_bytes_per_sample(ctx->sample_fmt);
   //uint8_t* t=(uint8_t*)av_malloc(100);
   //uint8_t *outbuf = static_cast<uint8_t*> (av_malloc(samples_size));
   //int len = avcodec_decode_audio3(ctx, (short *) outbuf, &samples_size, packet.packet);
+  //LOGDEBUG("decoder before ch layout = "<<ctx->channel_layout)
   int len = avcodec_decode_audio4(ctx, frame->getAVFrame(), &samples_size, packet.packet);
+  //LOGDEBUG("decoder ch layout = "<<ctx->channel_layout)
   if(packet.packet->size==0)
     emptyFrameIsEOF=true;
 

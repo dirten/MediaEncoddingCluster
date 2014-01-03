@@ -108,19 +108,19 @@ void testDecodeVideo(std::string filepath) {
     if ((p = pis.readPacket()) != NULL && p->getStreamIndex() == video_stream) {
       //3760002833
       //3760056833 = IFrame
-      if (i >= offset&& p->getDts()>=3760002833) {
-        org::esb::av::Frame * frame = dec.decode2(*p);
+      //if (i >= offset&& p->getDts()>=3760002833) {
+        Ptr<org::esb::av::Frame> frame = dec.decode2(*p);
         incount++;
         if (frame->isFinished() && i >= printout) {
           LOGDEBUG("frame finished!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
           outcount++;
-          assert(frame->_pixFormat==PIX_FMT_YUV444P);
+          //assert(frame->_pixFormat==PIX_FMT_YUV444P);
 //          sprintf(outfile,"test-%i.bmp", i);
 //          org::esb::av::BMPUtil::save("test-%d.bmp", frame);
 //          frame->dumpHex();
         }
         //delete frame;
-      }
+      //}
       i++;
     }
     delete p;
@@ -248,9 +248,9 @@ int main(int argc, char** argv) {
     filename=argv[1];
   }
   testVideoDecoderTimings();
-  testDecodeRawVideo();
+  //testDecodeRawVideo();
   testDecodeVideo(filename);
-  testDecodeAudio();
+  //testDecodeAudio();
   Log::close();
   return (EXIT_SUCCESS);
 

@@ -147,22 +147,42 @@ void test_mediafile() {
 void test_upload_encoding(){
   std::string file = MEC_SOURCE_DIR;
   file += "/test-data/test.dvd";
-  
+  file="/media/video/ChocolateFactory.ts";
   std::vector<std::string> args;
   args.push_back("-F file=@"+file+"");
   args.push_back(std::string("http://localhost:4000/api/v1/encoding/").append(created_profile_uuid));
   Poco::ProcessHandle handle=Poco::Process::launch("curl", args);
+  /*
+  Poco::ProcessHandle handle2=Poco::Process::launch("curl", args);
+  Poco::ProcessHandle handle3=Poco::Process::launch("curl", args);
+  Poco::ProcessHandle handle4=Poco::Process::launch("curl", args);
+  Poco::ProcessHandle handle5=Poco::Process::launch("curl", args);
+  Poco::ProcessHandle handle6=Poco::Process::launch("curl", args);
+  Poco::ProcessHandle handle7=Poco::Process::launch("curl", args);
+  Poco::ProcessHandle handle8=Poco::Process::launch("curl", args);
+  Poco::ProcessHandle handle9=Poco::Process::launch("curl", args);
+  Poco::ProcessHandle handle0=Poco::Process::launch("curl", args);
+*/
   handle.wait();
-
+  /*
+  handle2.wait();
+  handle3.wait();
+  handle4.wait();
+  handle5.wait();
+  handle6.wait();
+  handle7.wait();
+  handle8.wait();
+  handle9.wait();
+  handle0.wait();
+  */
+  /*
   handle=Poco::Process::launch("curl", args);
   handle.wait();
   handle=Poco::Process::launch("curl", args);
   handle.wait();
   handle=Poco::Process::launch("curl", args);
   handle.wait();
-  handle=Poco::Process::launch("curl", args);
-  handle.wait();
-
+  */
   //Thread::sleep(2000);
   
   /*
@@ -227,6 +247,7 @@ int main(int argc, char** argv) {
   //test_profile_delete();
   //test_profile_delete_fail();
   test_upload_encoding();
+  return 0;
   org::esb::core::PluginRegistry::getInstance()->stopServices();
   org::esb::core::PluginRegistry::close();
   org::esb::config::Config::close();

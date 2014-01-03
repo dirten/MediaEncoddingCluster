@@ -41,6 +41,7 @@
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/util/UUID.h"
+#include "org/esb/util/ScopedTimeCounter.h"
 
 #include "Poco/Process.h"
 
@@ -183,7 +184,7 @@ int main(int argc, char * argv[]) {
 
     if (vm.count("explicit")) {
       LOGDEBUG("starting explicit plugin");
-      org::esb::core::PluginRegistry::getInstance()->startWebService();
+      //org::esb::core::PluginRegistry::getInstance()->startWebService();
       std::vector<std::string>plugins=vm["explicit"].as<std::vector<std::string> >();
       foreach(std::string pluginname, plugins){
         LOGDEBUG("starting plugin : "<<pluginname);
@@ -195,7 +196,10 @@ int main(int argc, char * argv[]) {
     if (vm.count("run")) {
       LOGDEBUG("start mhive server");
       if(start_master){
+        int faste_respawn_count=3;
         while(true){
+
+          org::esb::util::ScopedTimeCounter respawn_time("respawn_time");
           std::string cmd=Environment::get(Environment::EXE_PATH)+"/"+Environment::get(Environment::EXE_NAME);
           //std::cout <<cmd<<std::endl;
           std::vector<std::string> args;
@@ -204,6 +208,8 @@ int main(int argc, char * argv[]) {
           args.push_back("-p");
           Poco::ProcessHandle handle=Poco::Process::launch(cmd, args);
           handle.wait();
+          LOGDEBUG("respawn after : "<< respawn_time.getMilliSec())
+
         }
       }else{
         LOGDEBUG("as sub process");

@@ -171,7 +171,7 @@ void ProcessUnit::processInternal2() {
 
   org::esb::av::AVFilter * filter=NULL;
   if(_decoder->getCodecType()==AVMEDIA_TYPE_AUDIO){
-    filter=new org::esb::av::AVFilter(AUDIO,"aresample=%sample_rate%,aformat=sample_fmts=%sample_format%:channel_layouts=%channel_layout%");
+    filter=new org::esb::av::AVFilter(AUDIO,"aresample=%sample_rate%,aformat=sample_fmts=%sample_format%:channel_layouts=0x%channel_layout%");
 
     filter->setInputParameter("channel_layout",StringUtil::toString(_decoder->getChannelLayout()));
     filter->setInputParameter("sample_rate",StringUtil::toString(_decoder->getSampleRate()));

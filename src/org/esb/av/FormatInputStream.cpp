@@ -18,11 +18,11 @@ namespace org {
 
       static int readFunction(void* opaque, uint8_t* buf, int buf_size) {
         streamsize result=0;
-          std::istream & me = *reinterpret_cast<std::istream*>(opaque);
-          me.read(reinterpret_cast<char*>(buf), buf_size);
-          result=me.gcount();
-          //LOGDEBUG("read buffer with size :"<<buf_size<<" bytes readed from stream : "<<result)
-          return result;
+        std::istream & me = *reinterpret_cast<std::istream*>(opaque);
+        me.read(reinterpret_cast<char*>(buf), buf_size);
+        result=me.gcount();
+        //LOGDEBUG("read buffer with size :"<<buf_size<<" bytes readed from stream : "<<result)
+        return result;
       }
 
       FormatInputStream::FormatInputStream(File * source) {
@@ -67,7 +67,7 @@ namespace org {
         int search_stream_info=3;
         for(int a=search_stream_info;a>0;a--){
           if (avformat_find_stream_info(formatCtx,NULL) < 0) {
-          //if (av_find_stream_info(formatCtx) < 0) {
+            //if (av_find_stream_info(formatCtx) < 0) {
             LOGERROR("no StreamInfo from stream with anaylze_duration of:"<<formatCtx->max_analyze_duration);
             formatCtx->max_analyze_duration+=1000000;
             //return;
@@ -152,13 +152,13 @@ namespace org {
       }
 
       FormatInputStream::~FormatInputStream() {
-        LOGDEBUG("FormatInputStream::~FormatInputStream()")
-            close();
+        LOGDEBUG("FormatInputStream::~FormatInputStream()");
+        close();
         if(false&&buffer){
           av_freep(buffer);
           buffer=NULL;
         }
-          //delete _file_object;
+        //delete _file_object;
       }
 
       int FormatInputStream::getStreamCount() {
@@ -212,12 +212,15 @@ namespace org {
 
       /*closing the input file and delete all StreamInfo for that file*/
       void FormatInputStream::close() {
+        /*nothing is needed to be cleared*/
+        if(!formatCtx)return;
+
         if (formatCtx->flags & AVFMT_FLAG_CUSTOM_IO)
         {
           LOGDEBUG("free stream");
           av_free(formatCtx->pb);
         }
-        if (_isValid&&formatCtx){
+        if (_isValid && formatCtx){
           avformat_close_input(&formatCtx);
         }
         formatCtx=NULL;
@@ -246,8 +249,8 @@ namespace org {
         return NULL;
       }
 
-      }
     }
   }
+}
 
 

@@ -35,14 +35,14 @@ namespace org {
         }
 
         virtual  ~Plugin() {
-        };
+        }
 
         virtual OptionsDescription getOptionsDescription() {
           return OptionsDescription();
-        };
+        }
 
         virtual void init() {
-        };
+        }
         //virtual std::map<std::string,std::string> getProperties();
       private:
         Ptr<org::esb::core::PluginContext>_ctx;
