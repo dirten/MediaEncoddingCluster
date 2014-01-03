@@ -52,13 +52,13 @@ namespace plugin {
     org::esb::av::PacketInputStream pis(_fis.get());
     org::esb::av::Packet * packet;
     while((packet = pis.readPacket()) != NULL){
+      Ptr<org::esb::av::Packet> pPacket(packet);
       //pPacket->_decoder=_decs[pPacket->getStreamIndex()];
       //LOGDEBUG("Push buffer")
       Ptr<org::esb::av::Decoder>dec=_decs[packet->getStreamIndex()];
       if(dec->getCodecType() != AVMEDIA_TYPE_AUDIO && dec->getCodecType() != AVMEDIA_TYPE_VIDEO){
         continue;
       }
-      Ptr<org::esb::av::Packet> pPacket(packet);
       Task::pushBuffer(pPacket);
     }
     Task::pushBuffer(Ptr<org::esb::av::Packet>(NULL));
