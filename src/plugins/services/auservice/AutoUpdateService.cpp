@@ -92,7 +92,7 @@ org::esb::core::ServicePlugin::ServiceType AutoUpdateService::getServiceType(){
       LOGDEBUG("data received:"<<data)
       if(data.compare(MHIVE_VERSION)>0){
         std::string filename="MediaEncodingCluster-"+data+"-"+system+".tgz";
-        uri_str+="bla/"+filename;
+        uri_str+="/"+filename;
         Poco::URI uri(uri_str);
         LOGDEBUG("URI:"<<uri.toString());
         try{
