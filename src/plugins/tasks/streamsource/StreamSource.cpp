@@ -60,7 +60,6 @@ namespace plugin {
       //pPacket->_decoder=_decs[pPacket->getStreamIndex()];
       //LOGDEBUG("Push buffer")
       Ptr<org::esb::av::Decoder>dec=_decs[packet->getStreamIndex()];
-      Ptr<org::esb::av::Packet> pPacket(packet);
       if(dec->getCodecType() != AVMEDIA_TYPE_AUDIO && dec->getCodecType() != AVMEDIA_TYPE_VIDEO){
         continue;
       }

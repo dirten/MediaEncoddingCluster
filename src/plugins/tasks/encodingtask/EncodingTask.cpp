@@ -441,7 +441,7 @@ namespace encodingtask {
       File(outputfile.getParent()).mkdirs();
     }*/
     /*serialize the process unit into string format*/
-    std::ofstream ost(base + "/"+_task_uuid+"/"+ unit->uuid);
+    std::ofstream ost((base + "/"+_task_uuid+"/"+ unit->uuid).c_str(), std::ofstream::out);
     Serializing::serialize(unit, ost);
     /*
     FileOutputStream outstream(&outputfile);
