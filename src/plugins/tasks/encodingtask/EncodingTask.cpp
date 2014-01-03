@@ -60,6 +60,12 @@ namespace encodingtask {
     _task_uuid = getContext()->get<std::string > ("uuid");//org::esb::util::PUUID();//getUUID(); //getContext()->getEnvironment<std::string > ("task.uuid");
     _target_file = getSink();
 
+    std::string base = org::esb::config::Config::get("hive.data_path");
+    org::esb::io::File outputfile(base + "/"+_task_uuid+"/dir");
+    if(!File(outputfile.getParent()).exists()){
+      File(outputfile.getParent()).mkdirs();
+    }
+
     std::string profiledata = getContext()->getEnvironment<std::string > ("data");
     //try {
     org::esb::hive::PresetReaderJson reader(profiledata);
@@ -426,19 +432,23 @@ namespace encodingtask {
     //boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit2;
     //int c=deserializeProcessUnit(unit2, data);
 
-    /*serialize the process unit into string format*/
-    std::string data=Serializing::serialize(unit);
 
     /*writing process units to the file system for delivery*/
     std::string base = org::esb::config::Config::get("hive.data_path");
+    /*
     org::esb::io::File outputfile(base + "/"+_task_uuid+"/"+ unit->uuid);
     if(!File(outputfile.getParent()).exists()){
       File(outputfile.getParent()).mkdirs();
-    }
+    }*/
+    /*serialize the process unit into string format*/
+    std::ofstream ost(base + "/"+_task_uuid+"/"+ unit->uuid);
+    Serializing::serialize(unit, ost);
+    /*
     FileOutputStream outstream(&outputfile);
     outstream.write(data);
     outstream.close();
-    LOGDEBUG("written ProcessUnit to "<<outputfile.getFilePath())
+    */
+    LOGDEBUG("written ProcessUnit to "<<base + "/"+_task_uuid+"/"+ unit->uuid)
 
     //litesql::Blob blob=litesql::Blob(data.c_str(),data.length());
     //pu.data=blob;

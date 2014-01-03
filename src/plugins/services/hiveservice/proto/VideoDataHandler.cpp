@@ -114,7 +114,7 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
         _current_unit->send=1;
         _current_unit->update();
       }
-      partitionservice::PartitionManager::getInstance()->getInstance()->leavePartition("", _ep);
+      //partitionservice::PartitionManager::getInstance()->getInstance()->leavePartition("", _ep);
       shutdown = true;
       if (_oos)
         delete _oos;
