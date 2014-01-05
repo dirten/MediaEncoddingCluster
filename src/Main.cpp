@@ -80,6 +80,8 @@ int main(int argc, char * argv[]) {
     ("console,c", "")
         ("quiet", "")
         ("debug", "")
+        ("webserver", "")
+        ("waitonstdin", "")
     ("docroot,d", po::value<std::string > (), "webserver document root");
     po::options_description all("all");
 
@@ -182,14 +184,17 @@ int main(int argc, char * argv[]) {
       start_master=false;
     }
 
-    if (vm.count("explicit")) {
+    if (vm.count("webserver")) {
+      org::esb::core::PluginRegistry::getInstance()->startWebService();
+    }
+      if (vm.count("explicit")) {
       LOGDEBUG("starting explicit plugin");
       //org::esb::core::PluginRegistry::getInstance()->startWebService();
       std::vector<std::string>plugins=vm["explicit"].as<std::vector<std::string> >();
       foreach(std::string pluginname, plugins){
         LOGDEBUG("starting plugin : "<<pluginname);
         org::esb::core::PluginRegistry::getInstance()->startServiceByName(pluginname);
-        return 0;
+        //return 0;
       }
     }
 
@@ -248,6 +253,10 @@ int main(int argc, char * argv[]) {
       }
     }
 
+    if (vm.count("waitonstdin")) {
+      getc(stdin);
+      std::cout <<"exit"<<std::endl;
+    }
 
     if (vm.count("version")) {
       cout << "MediaEncodingCluster "<< MHIVE_VERSION << endl;

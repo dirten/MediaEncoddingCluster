@@ -29,6 +29,9 @@ namespace plugin {
     LOGDEBUG("Writer()");
     _outputfile=new db::OutputFile(outputfile);
     File outfile(outputfile.path);
+    if(!File(outfile.getParent()).exists()){
+      outfile.mkdirs();
+    }
     _fos=new FormatOutputStream(&outfile, outfile.getExtension().c_str());
     _pos=new PacketOutputStream(_fos.get());
 

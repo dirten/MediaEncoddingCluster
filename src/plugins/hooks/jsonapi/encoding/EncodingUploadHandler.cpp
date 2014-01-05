@@ -155,8 +155,8 @@ public:
       std::string ext;
       if(tok.hasMoreTokens())
         ext=tok.nextToken();
-
-      std::string outfile="/tmp/"+uuid+"."+ext;
+      std::string base = org::esb::config::Config::get("hive.data_path");
+      std::string outfile=base+"/encodings/"+uuid+"."+ext;
       tasks.push_back(createInfilenode());
       tasks.push_back(createOutfilenode(outfile));
       tasks.push_back(profile);
