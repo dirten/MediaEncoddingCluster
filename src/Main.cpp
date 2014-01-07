@@ -182,15 +182,6 @@ int main(int argc, char * argv[]) {
       Environment::set("web.docroot", vm["docroot"].as<std::string>());
     }
 
-    if(vm.count("process")){
-      start_master=false;
-    }
-
-    if (vm.count("webserver")) {
-      org::esb::core::PluginRegistry::getInstance()->startWebService();
-    }
-
-
     if(vm.count("supervisor")){
       int fast_respawn_count=3;
       bool respawn=true;
@@ -225,6 +216,10 @@ int main(int argc, char * argv[]) {
           std::cout << "child process respawning to fast, exiting"<<std::endl;
         }
       }
+    }
+
+    if (vm.count("webserver") && !vm.count("supervisor")) {
+      org::esb::core::PluginRegistry::getInstance()->startWebService();
     }
 
     if (vm.count("explicit") && !vm.count("supervisor")) {
