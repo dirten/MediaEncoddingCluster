@@ -55,6 +55,7 @@ namespace org {
 
       void Environment::build(int argc, char ** argv) {
         for(int a = 0;a<argc;a++){
+          //std::cout << "arg:"<<argv[a]<<std::endl;
           std::string arg=argv[a];
           _argumentMap.push_back(arg);
         }

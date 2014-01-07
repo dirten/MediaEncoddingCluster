@@ -76,6 +76,7 @@ namespace plugin {
         //args=Environment::getArguments();
         args.push_back("--explicit");
         args.push_back("writer");
+        //args.push_back("--waitonstdin");
         args.push_back("--writer.jobid");
         args.push_back(StringUtil::toString(outputfile.id));
         std::list<string>arglist(args.begin(), args.end());

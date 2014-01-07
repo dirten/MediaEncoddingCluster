@@ -97,9 +97,13 @@ namespace org {
       }
 
       void CORE_EXPORT PluginRegistry::startWebService(){
+        try{
         server=new org::esb::core::http::Server(atoi(Environment::get("webport").c_str()));
         server->setRequestHandlerFactory(_webhook_handler_factory);
         server->start();
+        }catch(std::exception & ex){
+          LOGERROR("failed starting webserver,"<<ex.what())
+        }
       }
 
       void CORE_EXPORT PluginRegistry::startServiceByName(std::string name){

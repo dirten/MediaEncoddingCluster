@@ -15,7 +15,7 @@
  *
  * ----------------------------------------------------------------------
  */
-
+#include <vector>
 #include "org/esb/av/AV.h"
 #include "org/esb/av/FormatBaseStream.h"
 
@@ -78,10 +78,12 @@ int main(int argc, char * argv[]) {
     ("process,p", "")
     ("erlang", "")
     ("console,c", "")
-        ("quiet", "")
-        ("debug", "")
-        ("webserver", "")
-        ("waitonstdin", "")
+    ("quiet", "")
+    ("debug", "")
+    ("webserver", "")
+    ("waitonstdin", "")
+    ("waitonctrlc", "")
+    ("supervisor", "")
     ("docroot,d", po::value<std::string > (), "webserver document root");
     po::options_description all("all");
 
@@ -162,7 +164,7 @@ int main(int argc, char * argv[]) {
       Environment::set("webport", vm["webport"].as<std::string> ());
     }
 
-    if (!vm.count("quiet") && !vm.count("process") && !vm.count("explicit")) {
+    if (!vm.count("quiet") && !vm.count("supervisor") && !vm.count("explicit")) {
       std::cout << "" << std::endl;
       std::cout << "******************************************************************" << std::endl;
       std::cout << "* MediaEncodingCluster, Copyright (C) 2000-2014   Jan Hoelscher  *" << std::endl;
@@ -187,75 +189,88 @@ int main(int argc, char * argv[]) {
     if (vm.count("webserver")) {
       org::esb::core::PluginRegistry::getInstance()->startWebService();
     }
-      if (vm.count("explicit")) {
+
+
+    if(vm.count("supervisor")){
+      int fast_respawn_count=3;
+      bool respawn=true;
+      while(respawn){
+        org::esb::util::ScopedTimeCounter respawn_time("respawn_time");
+        std::string cmd=Environment::get(Environment::EXE_PATH)+"/"+Environment::get(Environment::EXE_NAME);
+        //std::cout <<cmd<<std::endl;
+        std::vector<std::string> args=Environment::getArguments();
+
+        std::vector<std::string>::iterator it=args.begin();
+        for(;it!= args.end();it++){
+          if((*it)=="--supervisor"){
+            args.erase(it);
+            break;
+          }
+        }
+
+
+        Poco::ProcessHandle handle=Poco::Process::launch(cmd, args);
+        handle.wait();
+        int64_t respawn_after=respawn_time.getMilliSec();
+        LOGDEBUG("respawn after : "<< respawn_after)
+
+        if(respawn_after<1000){
+          fast_respawn_count--;
+        }else{
+          fast_respawn_count=3;
+        }
+
+        if(fast_respawn_count==0){
+          respawn=false;
+          std::cout << "child process respawning to fast, exiting"<<std::endl;
+        }
+      }
+    }
+
+    if (vm.count("explicit") && !vm.count("supervisor")) {
       LOGDEBUG("starting explicit plugin");
       //org::esb::core::PluginRegistry::getInstance()->startWebService();
+
+
       std::vector<std::string>plugins=vm["explicit"].as<std::vector<std::string> >();
       foreach(std::string pluginname, plugins){
         LOGDEBUG("starting plugin : "<<pluginname);
         org::esb::core::PluginRegistry::getInstance()->startServiceByName(pluginname);
-        //return 0;
       }
     }
 
-    if (vm.count("run")) {
+    if (vm.count("run") && !vm.count("supervisor")) {
       LOGDEBUG("start mhive server");
-      if(start_master){
-        int faste_respawn_count=3;
-        while(true){
 
-          org::esb::util::ScopedTimeCounter respawn_time("respawn_time");
-          std::string cmd=Environment::get(Environment::EXE_PATH)+"/"+Environment::get(Environment::EXE_NAME);
-          //std::cout <<cmd<<std::endl;
-          std::vector<std::string> args;
+      LOGDEBUG("as sub process");
+      Environment::set("mode", "server");
 
-          args=Environment::getArguments();
-          args.push_back("-p");
-          Poco::ProcessHandle handle=Poco::Process::launch(cmd, args);
-          handle.wait();
-          LOGDEBUG("respawn after : "<< respawn_time.getMilliSec())
+      org::esb::core::PluginRegistry::getInstance()->startServerServices();
 
-        }
-      }else{
-        LOGDEBUG("as sub process");
-        Environment::set("mode", "server");
-
-        org::esb::core::PluginRegistry::getInstance()->startServerServices();
-
-        std::cout << "Press ctrl & c to stop the program" << std::endl;
-        org::esb::lang::CtrlCHitWaiter::wait();
-        std::cout << "\rshutdown app, this will take a minute!" << std::endl;
-        org::esb::core::PluginRegistry::getInstance()->stopServices();
-      }
+      std::cout << "Press ctrl & c to stop the program" << std::endl;
+      org::esb::lang::CtrlCHitWaiter::wait();
+      std::cout << "\rshutdown app, this will take a minute!" << std::endl;
+      org::esb::core::PluginRegistry::getInstance()->stopServices();
     }
 
-    if (vm.count("client")) {
-
+    if (vm.count("client")&& !vm.count("supervisor")) {
       log4cplus::helpers::Properties & props = const_cast<log4cplus::helpers::Properties&> (config.getProperties());
       props.setProperty(LOG4CPLUS_TEXT("appender.MAIN.File"), LOG4CPLUS_TEXT(Environment::get("log.path") + "/mhive-client-debug.log"));
       props.setProperty(LOG4CPLUS_TEXT("appender.ERROR.File"), LOG4CPLUS_TEXT(Environment::get("log.path") + "/mhive-client-error.log"));
       config.configure();
-
-      if(start_master){
-        while(true){
-          std::string cmd=Environment::get(Environment::EXE_PATH)+"/"+Environment::get(Environment::EXE_NAME);
-          std::vector<std::string> args=Environment::getArguments();
-          args.push_back("-p");
-          Poco::ProcessHandle handle=Poco::Process::launch(cmd, args);
-          handle.wait();
-          //Poco::Process::kill(handle);
-        }
-      }else{
-        Environment::set("mode", "client");
-        org::esb::core::PluginRegistry::getInstance()->startClientServices();
-        org::esb::lang::CtrlCHitWaiter::wait();
-        org::esb::core::PluginRegistry::getInstance()->stopServices();
-      }
+      Environment::set("mode", "client");
+      org::esb::core::PluginRegistry::getInstance()->startClientServices();
+      org::esb::lang::CtrlCHitWaiter::wait();
+      org::esb::core::PluginRegistry::getInstance()->stopServices();
     }
 
     if (vm.count("waitonstdin")) {
       getc(stdin);
       std::cout <<"exit"<<std::endl;
+    }
+
+    if (vm.count("waitonctrlc")) {
+      org::esb::lang::CtrlCHitWaiter::wait();
     }
 
     if (vm.count("version")) {

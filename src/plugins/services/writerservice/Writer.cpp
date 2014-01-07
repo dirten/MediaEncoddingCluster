@@ -64,7 +64,6 @@ namespace plugin {
       outputfile.status=db::OutputFile::Status::Processing;
       outputfile.update();
       run();
-
       //go(Writer::run, this);
       //org::esb::lang::CtrlCHitWaiter::wait();
       //getc(stdin);
