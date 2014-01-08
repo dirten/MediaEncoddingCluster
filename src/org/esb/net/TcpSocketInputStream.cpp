@@ -128,18 +128,22 @@ namespace org {
           
           int read = 0;
           try{
-            read = boost::asio::read(*_socket, boost::asio::buffer(&tmp, 10), boost::asio::transfer_at_least(10));
-          }catch(boost::system::system_error & ex){
+            if(_socket->is_open()){
+              read = boost::asio::read(*_socket, boost::asio::buffer(&tmp, 10), boost::asio::transfer_at_least(10));
+            }
+            }catch(boost::system::system_error & ex){
             if(ex.code()==boost::asio::error::eof){
               LOGERROR("socket closed by foreign host: "<<ex.code());
-              //throw SocketException(std::string("socket closed by foreign host"));
+              throw SocketException("socket closed by foreign host");
             }else{
               LOGERROR("Error reading length from socket:"<<ex.what()<<" code="<<ex.code());
+              throw SocketException(ex.what());
             }
-            _socket->close();
+            //_socket->close();
             return 0;
           }catch(std::exception & ex){
               LOGERROR("Error reading length from socket:"<<ex.what());
+              throw SocketException(ex.what());
           }
 
           if (error){

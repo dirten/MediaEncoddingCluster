@@ -56,12 +56,13 @@ namespace org {
 
       void TcpSocket::close() {
         if (_connected&&_socket.get() && _socket->is_open()) {
+          boost::system::error_code ec;
           try {
-            //            _socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both);
-          }          catch (exception & ex) {
+            _socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
+            _socket->close(ec);
+          }catch (exception & ex) {
             LOGERROR("while shutdown socket:" << ex.what());
           }
-          _socket->close();
         }
         _connected = false;
       }
@@ -69,7 +70,7 @@ namespace org {
       void TcpSocket::connect() {
         if (!_connected) {
           tcp::resolver resolver(_io_service);
-			tcp::resolver::query query(_host, org::esb::util::StringUtil::toString(_port).c_str());
+          tcp::resolver::query query(_host, org::esb::util::StringUtil::toString(_port).c_str());
           tcp::resolver::iterator iterator = resolver.resolve(query);
           tcp::resolver::iterator end;
           //		  asio::error e=boost::asio::error::host_not_found;
@@ -80,7 +81,6 @@ namespace org {
             _socket->connect(*iterator++, e);
             LOGDEBUG("Socket Message:" << e.message());
             LOGDEBUG("Socket status:" << e);
-
           }
           if (e) {
             _socket->close();

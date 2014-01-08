@@ -46,6 +46,7 @@ namespace org {
           void startServerServices();
           void startWebService();
           void startServiceByName(std::string name);
+          void stopServiceByName(std::string name);
           void startClientServices();
           void stopServices();
           void load(std::string);

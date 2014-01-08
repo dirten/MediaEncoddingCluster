@@ -122,6 +122,22 @@ namespace org {
         }
       }
 
+      void CORE_EXPORT PluginRegistry::stopServiceByName(std::string name){
+        bool found=false;
+        typedef std::map<std::string, Plugin*> PluginMap;
+
+        foreach(PluginMap::value_type s, _service_map) {
+          if (s.first== name){
+            ((ServicePlugin*) s.second)->stopService();
+            found=true;
+            break;
+          }
+        }
+        if(!found){
+          LOGERROR("pluging with name "<<name<<" not found");
+        }
+      }
+
       void CORE_EXPORT PluginRegistry::stopServices() {
         typedef std::map<std::string, Plugin*> PluginMap;
 

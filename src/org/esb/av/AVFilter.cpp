@@ -311,6 +311,9 @@ namespace org {
         /**
           * @TODO: have a look into this, why do i need to clone the frame for this operation
           * on some video files it will crash when i do not clone
+          *
+          * @TODO: Audio Frames should change its parameter like channel_layout during the packets
+          *        need to handle changes of the incomming packets
           */
         AVFrame * frame=av_frame_clone(p->getAVFrame());
         if(!frame){
