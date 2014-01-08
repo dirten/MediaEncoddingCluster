@@ -485,9 +485,12 @@ bool Decoder::decodeAudio3(Packet & packet) {
   static int ch=0;
   if(ch==0){
     LOGDEBUG("Context channels:"<<ctx->channels);
-    ch=ctx->channels;
+    //ch=ctx->channels;
+    char ch_name[1000];
+    av_get_channel_layout_string(ch_name, 1000, 0,ctx->channel_layout);
+    LOGDEBUG("Channel Layout:"<<ch_name)
   }
-  //avcodec_get_frame_defaults(frame->getAVFrame());
+  avcodec_get_frame_defaults(frame->getAVFrame());
   //frame->getAVFrame()->channel_layout=0x3;
   int bps = av_get_bytes_per_sample(ctx->sample_fmt);
   //uint8_t* t=(uint8_t*)av_malloc(100);
@@ -495,7 +498,10 @@ bool Decoder::decodeAudio3(Packet & packet) {
   //int len = avcodec_decode_audio3(ctx, (short *) outbuf, &samples_size, packet.packet);
   //LOGDEBUG("decoder before ch layout = "<<ctx->channel_layout)
   int len = avcodec_decode_audio4(ctx, frame->getAVFrame(), &samples_size, packet.packet);
-  //LOGDEBUG("decoder ch layout = "<<ctx->channel_layout)
+  LOGDEBUG("decoder ch layout = "<<ctx->channel_layout)
+  char ch_name[1000];
+  av_get_channel_layout_string(ch_name, 1000, 0,ctx->channel_layout);
+  LOGDEBUG("Channel Layout:"<<ch_name)
   if(packet.packet->size==0)
     emptyFrameIsEOF=true;
 
@@ -562,7 +568,7 @@ bool Decoder::decodeAudio3(Packet & packet) {
   frame->_buffer=outbuf;
   */
   frame->_type = AVMEDIA_TYPE_AUDIO;
-  frame->getAVFrame()->channels = ch;//ctx->channels;
+  //frame->getAVFrame()->channels = ch;//ctx->channels;
   frame->sample_rate = ctx->sample_rate;
   //frame->dumpHex();
   LOGDEBUG("Push Audio Frame from decoder:"<<frame->toString());
