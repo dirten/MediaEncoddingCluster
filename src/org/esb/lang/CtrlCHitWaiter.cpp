@@ -74,8 +74,8 @@ namespace org {
           sigaddset(&wait_mask2, SIGINT);
           sigaddset(&wait_mask2, SIGQUIT);
           sigaddset(&wait_mask2, SIGTERM);
-          sigaddset(&wait_mask2, SIGCHLD);
-          sigaddset(&wait_mask2, SIGSEGV);
+          //sigaddset(&wait_mask2, SIGCHLD);
+          //sigaddset(&wait_mask2, SIGSEGV);
           pthread_sigmask(SIG_BLOCK, &wait_mask2, 0);
           int sig = 0;
           //sigdelset(&wait_mask, SIGCHLD);

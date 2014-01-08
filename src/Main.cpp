@@ -55,7 +55,7 @@ namespace po = boost::program_options;
 int main(int argc, char * argv[]) {
 
   org::esb::hive::Environment::build(argc, argv);
-  bool start_master=true;
+
   try {
     po::options_description gen("General options");
     gen.add_options()
@@ -199,7 +199,6 @@ int main(int argc, char * argv[]) {
           }
         }
 
-
         Poco::ProcessHandle handle=Poco::Process::launch(cmd, args);
         handle.wait();
         int64_t respawn_after=respawn_time.getMilliSec();
@@ -216,6 +215,7 @@ int main(int argc, char * argv[]) {
           std::cout << "child process respawning to fast, exiting"<<std::endl;
         }
       }
+      return 0;
     }
 
     if (vm.count("webserver") && !vm.count("supervisor")) {
