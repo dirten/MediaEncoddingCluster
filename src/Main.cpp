@@ -235,6 +235,7 @@ int main(int argc, char * argv[]) {
     }
 
     if (vm.count("run") && !vm.count("supervisor")) {
+      //setpgrp();
       LOGDEBUG("start mhive server");
 
       LOGDEBUG("as sub process");

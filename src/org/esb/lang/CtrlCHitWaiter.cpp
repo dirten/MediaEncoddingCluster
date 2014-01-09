@@ -76,6 +76,7 @@ namespace org {
           sigaddset(&wait_mask2, SIGTERM);
           //sigaddset(&wait_mask2, SIGCHLD);
           //sigaddset(&wait_mask2, SIGSEGV);
+          //sigaddset(&wait_mask2, SIGKILL);
           pthread_sigmask(SIG_BLOCK, &wait_mask2, 0);
           int sig = 0;
           //sigdelset(&wait_mask, SIGCHLD);
@@ -83,6 +84,7 @@ namespace org {
           int err;
           do {
             err = sigwait(&wait_mask2, &sig);
+            std::cout<< "signal received"<<sig<<std::endl;
           } while (err != 0);
 
         
