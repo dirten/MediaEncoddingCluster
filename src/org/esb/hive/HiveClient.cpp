@@ -128,7 +128,7 @@ namespace org {
                 LOGERROR("failed to get ProcessUnit:" << ex.what());
                 //break;
                 //if(_sock->isClosed())
-                //  _sock->close();
+                  _sock->close();
               }
               if (!unit || unit->_input_packets.size() == 0) {
                 break;

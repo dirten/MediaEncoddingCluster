@@ -11,6 +11,7 @@
 #include "org/esb/util/Foreach.h"
 #include "Poco/RegularExpression.h"
 #include "Poco/StringTokenizer.h"
+#include "Poco/URI.h"
 #include "org/esb/util/UUID.h"
 #include "org/esb/config/config.h"
 #include "org/esb/util/StringUtil.h"
@@ -79,6 +80,18 @@ using namespace Poco;
                     req.add(var,req.getURI().substr(posVec2[1].offset,posVec2[1].length));
                   }
                 }*/
+
+                /*adding get parameter to the request*/
+                std::string param=Poco::URI(req.getURI()).getQuery();
+                Poco::StringTokenizer param_tokenz(param,"&");
+                LOGDEBUG("parameter : "<<param);
+                for(Poco::StringTokenizer::Iterator it=param_tokenz.begin();it!=param_tokenz.end();it++){
+                  Poco::StringTokenizer key_tokenz(*it,"=");
+
+                  LOGDEBUG("setting query parameter -> key="<<key_tokenz[0]<<" val="<< (key_tokenz.count()>1)?key_tokenz[1]:"");
+                  req.add(key_tokenz[0], key_tokenz.count()>1?key_tokenz[1]:"");
+
+                }
                 req.add("requestUUID", org::esb::util::PUUID());
                 req.add("hive.graph_path", _user_path);
                 req.add("db.url", org::esb::config::Config::get("db.url"));

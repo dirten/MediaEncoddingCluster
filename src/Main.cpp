@@ -30,6 +30,7 @@
 #include "org/esb/io/FileInputStream.h"
 
 #include "org/esb/lang/CtrlCHitWaiter.h"
+#include "org/esb/lang/ProcessSupervisor.h"
 
 #include "org/esb/libjson/JSONNode.h"
 #include "org/esb/libjson/libjson.h"
@@ -48,6 +49,7 @@
 using org::esb::hive::Environment;
 using org::esb::signal::Messenger;
 using org::esb::util::StringUtil;
+using org::esb::lang::ProcessSupervisor;
 
 namespace po = boost::program_options;
 
@@ -183,12 +185,7 @@ int main(int argc, char * argv[]) {
     }
 
     if(vm.count("supervisor")){
-      int fast_respawn_count=3;
-      bool respawn=true;
-      while(respawn){
-        org::esb::util::ScopedTimeCounter respawn_time("respawn_time");
         std::string cmd=Environment::get(Environment::EXE_PATH)+"/"+Environment::get(Environment::EXE_NAME);
-        //std::cout <<cmd<<std::endl;
         std::vector<std::string> args=Environment::getArguments();
 
         std::vector<std::string>::iterator it=args.begin();
@@ -198,23 +195,8 @@ int main(int argc, char * argv[]) {
             break;
           }
         }
-
-        Poco::ProcessHandle handle=Poco::Process::launch(cmd, args);
-        handle.wait();
-        int64_t respawn_after=respawn_time.getMilliSec();
-        LOGDEBUG("respawn after : "<< respawn_after)
-
-        if(respawn_after<1000){
-          fast_respawn_count--;
-        }else{
-          fast_respawn_count=3;
-        }
-
-        if(fast_respawn_count==0){
-          respawn=false;
-          std::cout << "child process respawning to fast, exiting"<<std::endl;
-        }
-      }
+        ProcessSupervisor ps(cmd, args, 5);
+        ps.start();
       return 0;
     }
 

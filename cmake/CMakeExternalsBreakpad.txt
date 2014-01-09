@@ -8,6 +8,7 @@ ENDIF(MINGW)
 ExternalProject_Add(breakpaddep
 SVN_REPOSITORY http://google-breakpad.googlecode.com/svn/trunk/
 CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --disable-shared --enable-static --with-pic ${USER_CONFIG}
+UPDATE_COMMAND true
 #INSTALL_COMMAND true
 BUILD_IN_SOURCE 1
 )

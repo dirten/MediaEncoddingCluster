@@ -1,8 +1,9 @@
 
 
 add_library (remote SHARED
-  Start.cpp
+  StartHandler.cpp
   StopHandler.cpp
+  RemoteController.cpp
 )
 
 TARGET_LINK_LIBRARIES(remote

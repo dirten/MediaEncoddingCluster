@@ -55,7 +55,7 @@ namespace org {
       }
 
       void TcpSocket::close() {
-        if (_connected&&_socket.get() && _socket->is_open()) {
+        if (_connected && _socket && _socket->is_open()) {
           boost::system::error_code ec;
           try {
             _socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);

@@ -1,8 +1,9 @@
 
 #include "org/esb/core/WebHookPlugin.h"
 #include "org/esb/libjson/JSONResult.h"
-#include "org/esb/core/PluginRegistry.h"
 #include "org/esb/util/Log.h"
+
+#include "RemoteController.h"
 
 namespace plugin{
   class StopHandler : public org::esb::core::WebHookPlugin {
@@ -11,7 +12,8 @@ namespace plugin{
         JSONResult result(req);
         std::string pluginname=req.get("pluginname");
         LOGDEBUG("stopping plugin : "<<pluginname);
-        org::esb::core::PluginRegistry::getInstance()->stopServiceByName(pluginname);
+
+        RemoteController::stopPlugin(pluginname);
 
         std::ostream& ostr = res.send();
         ostr << result.write_formatted();

@@ -13,6 +13,7 @@ SET(lang_source
     CtrlCHitWaiter.cpp
     ProcessException.cpp
     ProcessListener.cpp
+    ProcessSupervisor.cpp
     NotFoundException.cpp
     Object.cpp
 )
