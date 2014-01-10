@@ -7,7 +7,7 @@ ENDIF(WIN32)
 
 MACRO (GENERATE_PROTO infile)
 ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/${infile}.pb.cc
-	           COMMAND ${MEC_SOURCE_DIR}/target/dependency/bin/${PROTOC_CMD}
+             COMMAND ${MEC_SOURCE_DIR}/build/build/bin/${PROTOC_CMD}
                    ARGS --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}
                 	--proto_path=${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/${infile}.proto

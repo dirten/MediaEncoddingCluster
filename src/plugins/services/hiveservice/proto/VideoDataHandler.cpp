@@ -174,6 +174,11 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
         //un = man->getProcessUnit(_ep);
         _oos->writeObject(un);
         */
+        /*something is going wrong on the client, resetting the processUnit*/
+        if(_current_unit){
+          _current_unit->send=1;
+          _current_unit->update();
+        }
         db::ProcessUnit unit=getProcessUnit();
         _current_unit=new db::ProcessUnit(unit);
 

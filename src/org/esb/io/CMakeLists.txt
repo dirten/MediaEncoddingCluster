@@ -22,6 +22,8 @@ add_library (io ${IO_LINK_TYPE}
       StringOutputStream.cpp
       #QueueOutputStream.cpp
       #QueueInputStream.cpp
+      portable_binary_iarchive.cpp
+      portable_binary_oarchive.cpp
 )
 #MESSAGE("Boost Libraries in io " ${Boost_LIBRARIES})
 TARGET_LINK_LIBRARIES(io
