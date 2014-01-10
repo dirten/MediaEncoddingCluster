@@ -130,7 +130,7 @@ add_subdirectory (core)
 add_subdirectory (libjson)
 add_subdirectory (av)
 add_subdirectory (lang)
-add_subdirectory (thrift)
+#add_subdirectory (thrift)
 
 #add_subdirectory (mq)
 #add_subdirectory (grid)

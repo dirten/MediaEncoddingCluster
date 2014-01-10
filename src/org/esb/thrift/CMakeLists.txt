@@ -18,7 +18,7 @@ ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/proto_types.cpp
 #ENDMACRO (GENERATE_PROTO)
 
 #GENERATE_PROTO(proto)
-ADD_LIBRARY(mhive-thrift proto_constants.cpp proto_types.cpp Calculator.cpp)
+#ADD_LIBRARY(mhive-thrift proto_constants.cpp proto_types.cpp Calculator.cpp)
 LINK_DIRECTORIES(${THRIFT_DIR}/lib)
 TARGET_LINK_LIBRARIES(mhive-thrift thrift)
 #include_directories (${MEC_SOURCE_DIR}/src)
