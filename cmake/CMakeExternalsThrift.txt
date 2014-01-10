@@ -1,0 +1,13 @@
+
+set(BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build")
+
+IF(MINGW)
+  SET(USER_CONFIG "--host=x86_64-w64-mingw32")
+ENDIF(MINGW)
+
+ExternalProject_Add(thriftdep
+URL http://apache.openmirror.de/thrift/0.9.1/thrift-0.9.1.tar.gz
+CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --with-boost=${BUILD_DIR} --with-qt4=no --with-java=no --with-python=no --with-php=no --disable-shared --enable-static --with-pic ${USER_CONFIG}
+BUILD_IN_SOURCE 1
+)
+SET(THRIFT_DIR "${BUILD_DIR}")

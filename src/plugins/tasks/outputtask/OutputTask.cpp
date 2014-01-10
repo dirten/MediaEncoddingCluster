@@ -74,7 +74,9 @@ namespace plugin {
       encoder_map_copy[a]=(*it).second;
     }
 
-    std::string encdata=Serializing::serialize(encoder_map_copy);
+    std::string sdata=Serializing::serialize(encoder_map_copy);
+    litesql::Blob encdata=litesql::Blob(sdata.c_str(),sdata.length());
+
     boost::shared_ptr<db::HiveDb> database=getContext()->database;
 
     db::OutputFile oFile(*database);

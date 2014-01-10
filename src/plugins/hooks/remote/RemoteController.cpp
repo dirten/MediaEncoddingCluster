@@ -35,6 +35,7 @@ namespace plugin{
   {
     _service_map[name]->kill();
     delete _service_map[name];
+    _service_map.erase(name);
   }
 
   RemoteController::RemoteController()

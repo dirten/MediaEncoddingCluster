@@ -994,7 +994,7 @@ public:
     static const litesql::FieldType Jobid;
     litesql::Field<std::string> jobid;
     static const litesql::FieldType Outfiledata;
-    litesql::Field<std::string> outfiledata;
+    litesql::Field<litesql::Blob> outfiledata;
 protected:
     static std::vector < std::pair< std::string, std::string > > status_values;
 public:

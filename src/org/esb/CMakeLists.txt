@@ -47,6 +47,7 @@ LINK_DIRECTORIES(${LITESQL_DIR}/lib/static)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
 
+
 add_library (db 
   db/hivedb.cpp
   db/Functions.cpp

@@ -174,6 +174,7 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
         //un = man->getProcessUnit(_ep);
         _oos->writeObject(un);
         */
+
         /*something is going wrong on the client, resetting the processUnit*/
         if(_current_unit){
           _current_unit->send=1;
@@ -183,14 +184,23 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
         _current_unit=new db::ProcessUnit(unit);
 
 
-
-        /*reading process units from the file system for delivery*/
-        std::string base = org::esb::config::Config::get("hive.data_path");
-        org::esb::io::File inputfile(base + "/"+unit.jobid+"/"+ unit.sendid);
         std::string d;
-        if(inputfile.isFile()){
-          FileInputStream inputstream(&inputfile);
-          inputstream.read(d);
+
+        if(unit.id>0){
+          /*reading process units from the file system for delivery*/
+          std::string base = org::esb::config::Config::get("hive.data_path");
+          org::esb::io::File inputfile(base + "/"+unit.jobid+"/"+ unit.sendid);
+          if(inputfile.exists() && inputfile.isFile()){
+            FileInputStream inputstream(&inputfile);
+            inputstream.read(d);
+          }else{
+            LOGWARN("file not found:"<<inputfile.getFilePath())
+            _current_unit->recv=litesql::DateTime();
+            _current_unit->update();
+            _current_unit.reset();
+          }
+        }else{
+          _current_unit.reset();
         }
         /*
         litesql::Blob blob2=unit.data.value();
