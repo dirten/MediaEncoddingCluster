@@ -7,7 +7,8 @@ ENDIF(MINGW)
 
 ExternalProject_Add(thriftdep
 URL http://apache.openmirror.de/thrift/0.9.1/thrift-0.9.1.tar.gz
-CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --with-boost=${BUILD_DIR} --with-qt4=no --with-java=no --with-python=no --with-php=no --disable-shared --enable-static --with-pic ${USER_CONFIG}
+CONFIGURE_COMMAND CXXFLAGS="-std=c++11" && <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --with-boost=${BUILD_DIR} --with-qt4=no --with-java=no --with-python=no --with-php=no --disable-shared --enable-static --with-pic ${USER_CONFIG}
+BUILD_COMMAND CXXFLAGS="-std=c++11" && make
 BUILD_IN_SOURCE 1
 )
 SET(THRIFT_DIR "${BUILD_DIR}")

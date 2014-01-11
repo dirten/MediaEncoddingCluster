@@ -15,8 +15,10 @@ namespace org {
   namespace esb {
     namespace av {
       boost::mutex FormatInputStream::file_open_mutex;
+      boost::mutex read_mutex;
 
       static int readFunction(void* opaque, uint8_t* buf, int buf_size) {
+        boost::mutex::scoped_lock read_lock(read_mutex);
         streamsize result=0;
         std::istream & me = *reinterpret_cast<std::istream*>(opaque);
         me.read(reinterpret_cast<char*>(buf), buf_size);

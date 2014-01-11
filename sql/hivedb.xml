@@ -64,7 +64,7 @@
         <field name="filename" type="string"/>
         <field name="path" type="string"/>
         <field name="jobid" type="string"/>
-        <field name="outfiledata" type="blob"/>
+        <field name="outfiledata" type="string"/>
         <field name="status" type="string">
           <value name="Waiting" value="WAITING"/>
           <value name="Processing" value="PROCESSING"/>

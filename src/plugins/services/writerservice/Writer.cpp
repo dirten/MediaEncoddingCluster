@@ -34,7 +34,7 @@ namespace plugin {
     }
     _fos=new FormatOutputStream(&outfile, outfile.getExtension().c_str());
     _pos=new PacketOutputStream(_fos.get());
-
+    /*
     std::string d;
     litesql::Blob blob2=outputfile.outfiledata.value();
     d.reserve(blob2.length());
@@ -43,7 +43,8 @@ namespace plugin {
       char ch=blob2.data(a);
       d.push_back(ch);
     }
-    Serializing::deserialize(encoder_map,d);
+    */
+    Serializing::deserialize(encoder_map,outputfile.outfiledata);
 
     std::map<int, boost::shared_ptr<org::esb::av::Encoder> >::iterator it=encoder_map.begin();
     for (int a=0; it != encoder_map.end(); it++,a++) {

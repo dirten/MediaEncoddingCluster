@@ -11,7 +11,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * ----------------------------------------------------------------------
  */
@@ -33,7 +33,7 @@ namespace org {
       char * ApiWebServer::p = new char();
 
       void ApiWebServer::startService() {
-         
+        return;
         LOGDEBUG("context parameter port:" << getContext()->getEnvironment<std::string>("webservice.port"));
         LOGDEBUG("context parameter docroot:" << getContext()->getEnvironment<std::string>("webservice.docroot"));
         port = getContext()->getEnvironment<std::string>("webservice.port");
@@ -47,9 +47,9 @@ namespace org {
           "num_threads", "10",
           "index_files", "index.html",
           /*
-          "protect_uri","/=test.file",
-          "authentication_domain","localhost",
-           */
+            "protect_uri","/=test.file",
+            "authentication_domain","localhost",
+             */
           NULL
         };
         ctx = mg_start(&ApiWebServer::event_handler, NULL, options);
@@ -64,16 +64,17 @@ namespace org {
 
       void ApiWebServer::stopService() {
         LOGTRACEMETHOD("ApiWebServer::stopService()")
-        if (ctx)
-          mg_stop(ctx);
+            if (ctx)
+            mg_stop(ctx);
       }
 
       org::esb::core::OptionsDescription ApiWebServer::getOptionsDescription() {
         org::esb::core::OptionsDescription result("webservice");
         result.add_options()
-                ("webservice.port", boost::program_options::value<int >()->default_value(8080), "web server port listen on")
-                ("webservice.docroot", boost::program_options::value<std::string > ()->default_value(org::esb::config::Config::get("web.docroot")), "web server document root")
-                ("webservice.servicetype", boost::program_options::value<int > ()->default_value(1), "start this plugin on the Server/Client or both");
+            //("webport", boost::program_options::value<int >()->default_value(8080), "web server port listen on")
+            ("webservice.port", boost::program_options::value<int >()->default_value(8080), "web server port listen on")
+            ("webservice.docroot", boost::program_options::value<std::string > ()->default_value(org::esb::config::Config::get("web.docroot")), "web server document root")
+            ("webservice.servicetype", boost::program_options::value<int > ()->default_value(1), "start this plugin on the Server/Client or both");
         return result;
       }
 
@@ -89,8 +90,8 @@ namespace org {
       }
 
       void * ApiWebServer::event_handler(enum mg_event event,
-              struct mg_connection *conn,
-              const struct mg_request_info *request_info) {
+                                         struct mg_connection *conn,
+                                         const struct mg_request_info *request_info) {
         void *processed = NULL;
         if (event == MG_NEW_REQUEST) {
           ServiceResponse * res = new ServiceResponse(conn, request_info);
@@ -113,8 +114,8 @@ namespace org {
 
         return processed;
       }
+      }
     }
   }
-}
 
 

@@ -64,7 +64,7 @@ namespace org {
         map<int, StreamInfo*> _stream_info_map;
         static boost::mutex file_open_mutex;
         unsigned char * buffer;
-        
+        //int readFunction(void* opaque, uint8_t* buf, int buf_size);
       };
     }
   }

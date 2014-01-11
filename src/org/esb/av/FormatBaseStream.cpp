@@ -12,6 +12,7 @@
 namespace org {
   namespace esb {
     namespace av {
+      boost::mutex log_mutex;
 
       bool isInitialized = false;
       //int av_log_level = AV_LOG_INFO;
@@ -85,6 +86,8 @@ namespace org {
       std::map<std::string, std::list<std::string> > FormatBaseStream::logMap;
 
       void FormatBaseStream::mhive_log_default_callback(void* ptr, int level, const char* fmt, va_list vl) {
+        boost::mutex::scoped_lock log_lock(log_mutex);
+
         static int print_prefix = 1;
         static int count;
         static char line[4096], prev[4096];
@@ -103,6 +106,7 @@ namespace org {
         } else {
           line[0] = 0;
           ptrString[0] = 0;
+          return;
         }
 
         vsnprintf(line + strlen(line), sizeof (line) - strlen(line), fmt, vl);
