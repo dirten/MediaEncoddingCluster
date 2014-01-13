@@ -30,6 +30,7 @@
 
 #include "AVPipe.h"
 #include "AV.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace av {
@@ -38,7 +39,7 @@ namespace org {
         AUDIO
       };
 
-      class AVFilter: public AVPipe
+      class AV_EXPORT AVFilter: public AVPipe
       {          
         public:
           AVFilter(AVFilterType type,std::string filter);

@@ -4,12 +4,12 @@
 #include <vector>
 
 #include "Poco/Process.h"
-
+#include "exports.h"
 namespace org{
   namespace esb{
     namespace lang{
 
-      class ProcessSupervisor
+      class LANG_EXPORT ProcessSupervisor
       {
         public:
           ProcessSupervisor(std::string & command, std::vector<std::string> & args, int restart_count);

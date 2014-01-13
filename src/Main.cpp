@@ -57,8 +57,10 @@ namespace po = boost::program_options;
 
 
 int main(int argc, char * argv[]) {
+    std::cout << "test"<<std::endl;
+    org::esb::hive::Environment::build(argc, argv);
+    //return 0;
 
-  org::esb::hive::Environment::build(argc, argv);
 
   try {
     po::options_description gen("General options");
