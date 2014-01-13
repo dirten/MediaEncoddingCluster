@@ -136,7 +136,7 @@ namespace org {
               try {
                 processUnit(unit);
               } catch (std::exception & ex) {
-                std::cout << "failed process unit:"<<unit->uuid<<std::endl;
+                //std::cout << "failed process unit:"<<unit->uuid<<std::endl;
                 LOGERROR("processUnit(unit):" << ex.what());
               }
               /**

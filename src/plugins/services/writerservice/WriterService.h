@@ -23,6 +23,7 @@ namespace plugin {
       };
 
       void run();
+      void observeProcessUnits();
       STATUS _status;
   };
   REGISTER_SERVICE("writerservice", WriterService)

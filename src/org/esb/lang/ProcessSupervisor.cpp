@@ -2,6 +2,9 @@
 #include <signal.h>
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "Poco/Pipe.h"
+#include "Poco/PipeStream.h"
+#include "Poco/NullStream.h"
+#include "Poco/StreamCopier.h"
 
 //#include "org/esb/hive/Environment.h"
 
@@ -22,10 +25,15 @@ namespace org{
       {
 
       }
+
+      ProcessSupervisor::~ProcessSupervisor(){
+        delete _handle;
+      }
+
       void ProcessSupervisor::kill()
       {
         _respawn=false;
-        Poco::Process::kill(_handle->id());
+        Poco::Process::kill(*_handle);
       }
 
       void ProcessSupervisor::start()
@@ -45,7 +53,18 @@ namespace org{
           Poco::Pipe errPipe;
 
           _handle=new Poco::ProcessHandle(Poco::Process::launch(_cmd, _args,&inPipe, &outPipe, &errPipe));
-          _handle->wait();
+
+          /* reading the outputstream from processes, when this should not be done
+           * then the process hangs on stdout when the buffer is full
+           */
+          Poco::PipeInputStream istr(outPipe);
+          Poco::NullOutputStream ostr;
+          Poco::StreamCopier::copyStream(istr, ostr);
+          try{
+          int ret=_handle->wait();
+          }catch(...){
+            std::cout << "ProcessSupervisor exception catched"<<std::endl;
+          }
 
           ptime end = microsec_clock::local_time();
           time_duration td=end - start;

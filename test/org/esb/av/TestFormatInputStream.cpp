@@ -10,6 +10,7 @@ void test_stream(std::string & filename){
   std::ifstream stream(filename.c_str(), std::ifstream::in);
   FormatInputStream fis(stream);
   fis.dumpFormat();
+  LOGDEBUG("StreamCount"<<fis.getStreamCount())
   PacketInputStream pis(&fis);
   Packet p;
   for(int a = 0; a<10 ;a++){
@@ -26,11 +27,14 @@ int main(int argc, char ** argv) {
   if(argc>1){
     src=argv[1];
   }
+  //std::ifstream ifs (src.c_str(), std::ifstream::in);
+  /*
   File f(src.c_str());
   FormatInputStream fis(&f);
   assert(fis.isValid() == true);
   LOGDEBUG(fis.getStreamCount());
-  //assert(fis.getFileSize() == 3409920);
+  */
+//assert(fis.getFileSize() == 3409920);
   //assert(fis.getStreamCount() == 3);
   test_stream(src);
 

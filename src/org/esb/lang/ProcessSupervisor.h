@@ -13,6 +13,8 @@ namespace org{
       {
         public:
           ProcessSupervisor(std::string & command, std::vector<std::string> & args, int restart_count);
+
+          ~ProcessSupervisor();
           void kill();
           void start();
         private:

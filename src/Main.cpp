@@ -47,6 +47,8 @@
 #include "Poco/Process.h"
 
 using org::esb::hive::Environment;
+using org::esb::core::PluginRegistry;
+using org::esb::core::OptionsDescription;
 using org::esb::signal::Messenger;
 using org::esb::util::StringUtil;
 using org::esb::lang::ProcessSupervisor;
@@ -107,8 +109,8 @@ int main(int argc, char * argv[]) {
     po::options_description plugin_opts("Plugin options");
 
     /*retrieving all option from the loaded plugins*/
-    foreach(std::list<std::string>::value_type data, org::esb::core::PluginRegistry::getInstance()->getPluginNameList()) {
-      org::esb::core::OptionsDescription od = org::esb::core::PluginRegistry::getInstance()->getOptionsDescription(data);
+    foreach(std::string data, PluginRegistry::getInstance()->getPluginNameList()) {
+      OptionsDescription od = PluginRegistry::getInstance()->getOptionsDescription(data);
       if (od.options().size() > 0){
         plugin_opts.add(od);
       }
@@ -141,7 +143,7 @@ int main(int argc, char * argv[]) {
       } else if (vm[val.first].value().type() == typeid (std::vector<std::string>)) {
         std::vector<std::string>plugins=vm["explicit"].as<std::vector<std::string> >();
         foreach(std::string pluginname, plugins){
-          LOGDEBUG("setting evironment to be done: "<<pluginname);
+          LOGDEBUG("setting evironment need to be done: "<<pluginname);
           //Environment::set(val.first, StringUtil::toString(vm[val.first].as<bool>()));
         }
       } else {
@@ -156,7 +158,7 @@ int main(int argc, char * argv[]) {
       exit(0);
     }
 
-    org::esb::core::PluginRegistry::getInstance()->initPlugins();
+    PluginRegistry::getInstance()->initPlugins();
 
     if (vm.count("loglevel")) {
       Environment::set("loglevel", vm["loglevel"].as<std::string> ());
@@ -201,7 +203,7 @@ int main(int argc, char * argv[]) {
     }
 
     if (vm.count("webserver") && !vm.count("supervisor")) {
-      org::esb::core::PluginRegistry::getInstance()->startWebService();
+      PluginRegistry::getInstance()->startWebService();
     }
 
     if (vm.count("explicit") && !vm.count("supervisor")) {
@@ -212,7 +214,7 @@ int main(int argc, char * argv[]) {
       std::vector<std::string>plugins=vm["explicit"].as<std::vector<std::string> >();
       foreach(std::string pluginname, plugins){
         LOGDEBUG("starting plugin : "<<pluginname);
-        org::esb::core::PluginRegistry::getInstance()->startServiceByName(pluginname);
+        PluginRegistry::getInstance()->startServiceByName(pluginname);
       }
     }
 
@@ -223,12 +225,12 @@ int main(int argc, char * argv[]) {
       LOGDEBUG("as sub process");
       Environment::set("mode", "server");
 
-      org::esb::core::PluginRegistry::getInstance()->startServerServices();
+      PluginRegistry::getInstance()->startServerServices();
 
       std::cout << "Press ctrl & c to stop the program" << std::endl;
       org::esb::lang::CtrlCHitWaiter::wait();
       std::cout << "\rshutdown app, this will take a minute!" << std::endl;
-      org::esb::core::PluginRegistry::getInstance()->stopServices();
+      PluginRegistry::getInstance()->stopServices();
     }
 
     if (vm.count("client")&& !vm.count("supervisor")) {
@@ -237,9 +239,9 @@ int main(int argc, char * argv[]) {
       props.setProperty(LOG4CPLUS_TEXT("appender.ERROR.File"), LOG4CPLUS_TEXT(Environment::get("log.path") + "/mhive-client-error.log"));
       config.configure();
       Environment::set("mode", "client");
-      org::esb::core::PluginRegistry::getInstance()->startClientServices();
+      PluginRegistry::getInstance()->startClientServices();
       org::esb::lang::CtrlCHitWaiter::wait();
-      org::esb::core::PluginRegistry::getInstance()->stopServices();
+      PluginRegistry::getInstance()->stopServices();
     }
 
     if (vm.count("waitonstdin")) {
@@ -265,7 +267,7 @@ int main(int argc, char * argv[]) {
   }
 
   org::esb::hive::DatabaseService::stop();
-  org::esb::core::PluginRegistry::close();
+  PluginRegistry::close();
 
   //org::esb::config::Config::close();
   //CodecFactory::free();
