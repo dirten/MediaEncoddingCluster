@@ -8,9 +8,15 @@
 #include "Poco/Process.h"
 #include "Poco/Pipe.h"
 #include "org/esb/lang/Process.h"
+
+#include "org/esb/signal/Message.h"
+#include "org/esb/signal/Messenger.h"
 namespace plugin {
   using org::esb::util::StringUtil;
   using org::esb::hive::Environment;
+  using org::esb::signal::Message;
+  using org::esb::signal::Messenger;
+
   WriterService::WriterService()
   {
 
@@ -37,6 +43,7 @@ namespace plugin {
 
     _status=RUNNING;
     go(WriterService::run, this);
+    go(WriterService::observeProcessUnits, this);
   }
 
   void WriterService::stopService(){
@@ -59,15 +66,40 @@ namespace plugin {
 
   }
 
+  void WriterService::observeProcessUnits(){
+    int next_id=0;
+    while (_status == RUNNING) {
+      if(next_id==0){
+        litesql::DataSource<db::ProcessUnit> pu_ds=litesql::select<db::ProcessUnit > (*getContext()->database, db::ProcessUnit::Recv == 1).orderBy(db::ProcessUnit::Id);
+        if(pu_ds.count()){
+          next_id=pu_ds.one().id;
+        }
+      }else{
+        litesql::DataSource<db::ProcessUnit> next_pu_ds=litesql::select<db::ProcessUnit > (*getContext()->database, db::ProcessUnit::Id == next_id && db::ProcessUnit::Recv > 1);
+        if(next_pu_ds.count()){
+          db::ProcessUnit pu=next_pu_ds.one();
+          Message msg;
+          msg.setProperty("processunit_encoded",pu.id.value());
+          msg.setProperty("jobid",pu.jobid.value());
+          msg.setProperty("sequence",pu.sequence.value());
+          Messenger::getInstance().sendMessage(msg);
+          next_id++;
+        }
+      }
+      Thread::sleep2(1000);
+    }
+  }
+
   void WriterService::run(){
     LOGDEBUG("WriterService");
     while (_status == RUNNING) {
       litesql::DataSource<db::OutputFile> source = litesql::select<db::OutputFile > (*getContext()->database, db::OutputFile::Status==db::OutputFile::Status::Waiting);
       if(source.count()>0){
         db::OutputFile outputfile=source.one();
-        //Ptr<Writer> writer=new Writer(outputfile);
-        //go(Writer::run, writer);
+        Ptr<Writer> writer=new Writer(outputfile);
+        go(Writer::run, writer);
 
+        /*
 
         std::string cmd=Environment::get(Environment::EXE_PATH)+"/"+Environment::get(Environment::EXE_NAME);
         //std::cout <<cmd<<std::endl;
@@ -92,7 +124,6 @@ namespace plugin {
         //Poco::ProcessHandle handle=Poco::Process::launch(cmd, args);
         go(Poco::ProcessHandle::wait, handle);
 
-        /*
         org::esb::lang::Process p(cmd, arglist, "mhive-writer");
         p.run(false);
         */

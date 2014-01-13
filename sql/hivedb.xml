@@ -64,7 +64,7 @@
         <field name="filename" type="string"/>
         <field name="path" type="string"/>
         <field name="jobid" type="string"/>
-        <field name="outfiledata" type="blob"/>
+        <field name="outfiledata" type="string"/>
         <field name="status" type="string">
           <value name="Waiting" value="WAITING"/>
           <value name="Processing" value="PROCESSING"/>
@@ -374,15 +374,15 @@
         <field name="startts" type="double"/>
         <field name="endts" type="double"/>
         <field name="framecount" type="integer"/>
-        <field name="send" type="datetime"/>
-        <field name="recv" type="datetime"/>
+        <field name="send" type="datetime" indexed="true"/>
+        <field name="recv" type="datetime" indexed="true"/>
         <field name="sendid" type="string"/>
         <field name="recvid" type="string"/>
         <field name="data" type="blob"/>
         <field name="responseData" type="blob"/>
         <field name="clientid" type="string"/>
         <field name="deliverycount" type="integer"/>
-        <field name="jobid" type="string"/>
+        <field name="jobid" type="string" indexed="true"/>
         <field name="group" type="string"/>
         <field name="sequence" type="integer"/>
     </object>

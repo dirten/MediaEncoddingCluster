@@ -33,7 +33,7 @@ namespace org {
         void detouch();
         void addProcessListener(ProcessListener * l){_listener.push_back(l);}
 
-        bool isRunning(){return _running;};
+        bool isRunning(){return _running;}
         int32_t getPid(){return _processId;}
         std::list<Process*> getProcessList(){return _process_list;}
         std::string getName(){return _name;}

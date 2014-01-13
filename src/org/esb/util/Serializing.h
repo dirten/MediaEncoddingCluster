@@ -19,8 +19,8 @@ namespace org {
           template<typename T>
           static std::string serialize(const T &object) {
               std::ostringstream archive_stream;
-              portable_binary_oarchive archive(archive_stream);
-              //boost::archive::text_oarchive archive(archive_stream);
+              //portable_binary_oarchive archive(archive_stream);
+              boost::archive::text_oarchive archive(archive_stream);
               archive << object;
               std::string _outbound_data = archive_stream.str();
               return _outbound_data;
@@ -32,8 +32,8 @@ namespace org {
               return -1;
             }
             std::istringstream archive_stream(data);
-            portable_binary_iarchive archive(archive_stream);
-            //boost::archive::text_iarchive archive(archive_stream);
+            //portable_binary_iarchive archive(archive_stream);
+            boost::archive::text_iarchive archive(archive_stream);
             try {
               archive >> object;
             } catch (boost::archive::archive_exception & ex) {
@@ -46,8 +46,8 @@ namespace org {
 
           template < typename T >
           static int deserialize(T & object, std::istream & data) {
-            portable_binary_iarchive archive(data);
-            //boost::archive::text_iarchive archive(data);
+            //portable_binary_iarchive archive(data);
+            boost::archive::text_iarchive archive(data);
             try {
               archive >> object;
             } catch (boost::archive::archive_exception & ex) {
@@ -60,8 +60,8 @@ namespace org {
 
           template<typename T>
           static void serialize(const T &object, std::ostream & ost) {
-              portable_binary_oarchive archive(ost);
-              //boost::archive::text_oarchive archive(ost);
+              //portable_binary_oarchive archive(ost);
+              boost::archive::text_oarchive archive(ost);
               archive << object;
           }
 

@@ -45,11 +45,13 @@ namespace org {
       }
 
       void Messenger::addMessageListener(MessageListener & l, std::string name) {
+        boost::mutex::scoped_lock scoped_lock(request_mutex);
         (listener[name]).push_back(&l);
       }
 
-      void Messenger::removeMessageListener(MessageListener & listener, std::string name) {
-
+      void Messenger::removeMessageListener(MessageListener & l, std::string name) {
+        boost::mutex::scoped_lock scoped_lock(request_mutex);
+        (listener[name]).remove(&l);
       }
 
       void Messenger::sendMessage(Message & msg, std::string name) {

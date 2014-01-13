@@ -14,10 +14,12 @@
 #include <boost/serialization/shared_ptr.hpp>
 #include "org/esb/util/Foreach.h"
 #include "org/esb/lang/CtrlCHitWaiter.h"
+
+#include "org/esb/signal/Messenger.h"
 namespace plugin {
   using org::esb::util::Serializing;
   using org::esb::util::StringUtil;
-
+  using org::esb::signal::Messenger;
   Writer::Writer(){
   }
 
@@ -27,6 +29,11 @@ namespace plugin {
 
   void Writer::setOutputFile(db::OutputFile outputfile){
     LOGDEBUG("Writer()");
+
+    /*adding this instance to the Messenger*/
+    Messenger::getInstance().addMessageListener(*this);
+
+
     _outputfile=new db::OutputFile(outputfile);
     File outfile(outputfile.path);
     if(!File(outfile.getParent()).exists()){
@@ -34,7 +41,7 @@ namespace plugin {
     }
     _fos=new FormatOutputStream(&outfile, outfile.getExtension().c_str());
     _pos=new PacketOutputStream(_fos.get());
-
+    /*
     std::string d;
     litesql::Blob blob2=outputfile.outfiledata.value();
     d.reserve(blob2.length());
@@ -43,7 +50,8 @@ namespace plugin {
       char ch=blob2.data(a);
       d.push_back(ch);
     }
-    Serializing::deserialize(encoder_map,d);
+    */
+    Serializing::deserialize(encoder_map,outputfile.outfiledata);
 
     std::map<int, boost::shared_ptr<org::esb::av::Encoder> >::iterator it=encoder_map.begin();
     for (int a=0; it != encoder_map.end(); it++,a++) {
@@ -97,8 +105,8 @@ namespace plugin {
 
   Writer::~Writer()
   {
-    LOGDEBUG("~Writer()")
-        LOGDEBUG("cleanup");
+    LOGDEBUG("~Writer()");
+    LOGDEBUG("cleanup");
 
     if(_pos)
       _pos->close();
@@ -112,34 +120,64 @@ namespace plugin {
       (*it).second->close();
       (*it).second.reset();
     }
+    /*removing this instance to the Messenger*/
+    Messenger::getInstance().removeMessageListener(*this);
+
+  }
+
+  void Writer::onMessage(Message & msg){
+    if(msg.containsProperty("processunit_encoded")){
+      if(msg.containsProperty("jobid")){
+        if(msg.getProperty<std::string>("jobid")==_outputfile->jobid.value()){
+          if(msg.containsProperty("sequence")){
+            if(msg.getProperty<int>("sequence")==next_id){
+
+              /*time to push the packets*/
+              write_condition.notify_one();
+
+              //need to implement this
+
+            }
+          }
+        }
+      }
+    }
   }
 
   void Writer::run()
   {
     LOGDEBUG("Writer::run");
 
-    int next_id=0;
+    next_id=0;
     //litesql::DataSource<db::ProcessUnit > ds=litesql::select<db::ProcessUnit > (_outputfile.getDatabase(), db::ProcessUnit::Jobid == _outputfile.jobid).orderBy(db::ProcessUnit::Id);
+    litesql::DataSource<db::Job> job_ds = litesql::select<db::Job > (_outputfile->getDatabase(), db::Job::Uuid == _outputfile->jobid && db::Job::Status == db::Job::Status::Exporting);
+    litesql::DataSource<db::ProcessUnit> pu_ds=litesql::select<db::ProcessUnit > (_outputfile->getDatabase(), db::ProcessUnit::Jobid == _outputfile->jobid && db::ProcessUnit::Recv == 1);
+    boost::mutex::scoped_lock write_lock(write_mutex);
+
     while (true) {
+
 
       LOGDEBUG("running observer for sequence id:"<<next_id <<" for job "<<_outputfile->jobid);
       //int count=litesql::select<db::ProcessUnit > (_outputfile.getDatabase(), db::ProcessUnit::Jobid == _task_uuid).count();
       //if(count > 0){
 
 
-      int flushed=litesql::select<db::Job > (_outputfile->getDatabase(), db::Job::Uuid == _outputfile->jobid && db::Job::Status == db::Job::Status::Exporting).count();
+      //int flushed=litesql::select<db::Job > (_outputfile->getDatabase(), db::Job::Uuid == _outputfile->jobid && db::Job::Status == db::Job::Status::Exporting).count();
+      int flushed=job_ds.count();
       /*calculating progress*/
-      int completed=litesql::select<db::ProcessUnit > (_outputfile->getDatabase(), db::ProcessUnit::Jobid == _outputfile->jobid && db::ProcessUnit::Recv == 1).count();
+      //int completed=litesql::select<db::ProcessUnit > (_outputfile->getDatabase(), db::ProcessUnit::Jobid == _outputfile->jobid && db::ProcessUnit::Recv == 1).count();
+      int completed=pu_ds.count();
 
       /*!!!!caution: this order is needed to prevent race condition in completition!!!!*/
 
       /*next process unit ready*/
       //Records recs = db.query("SELECT count(*) from "+db::ProcessUnit::table__+" where "+db::ProcessUnit::Id.name()+" = ");
-      int next_ready=litesql::select<db::ProcessUnit > (_outputfile->getDatabase(), db::ProcessUnit::Sequence==next_id && db::ProcessUnit::Recv > 1 && db::ProcessUnit::Jobid == _outputfile->jobid).count();
-
-      if(next_ready){
+      //int next_ready=litesql::select<db::ProcessUnit > (_outputfile->getDatabase(), db::ProcessUnit::Sequence==next_id && db::ProcessUnit::Recv > 1 && db::ProcessUnit::Jobid == _outputfile->jobid).count();
+      litesql::DataSource<db::ProcessUnit> next_pu_ds = litesql::select<db::ProcessUnit > (_outputfile->getDatabase(), db::ProcessUnit::Jobid == _outputfile->jobid && db::ProcessUnit::Sequence==next_id && db::ProcessUnit::Recv > 1);
+      if(next_pu_ds.count()){
         LOGDEBUG("pushing next id"+StringUtil::toString(next_id));
-        db::ProcessUnit pu=litesql::select<db::ProcessUnit > (_outputfile->getDatabase(), db::ProcessUnit::Sequence==next_id && db::ProcessUnit::Jobid == _outputfile->jobid).one();
+        //db::ProcessUnit pu=litesql::select<db::ProcessUnit > (_outputfile->getDatabase(), db::ProcessUnit::Sequence==next_id && db::ProcessUnit::Jobid == _outputfile->jobid).one();
+        db::ProcessUnit pu=next_pu_ds.one();
 
         /*here comes the pushbuffer*/
         std::string base = org::esb::config::Config::get("hive.data_path");
@@ -180,7 +218,9 @@ namespace plugin {
         break;
       }
       //}
-      org::esb::lang::Thread::sleep2(5 * 1000);
+      write_condition.wait(write_lock);
+
+      //org::esb::lang::Thread::sleep2(5 * 1000);
     }
     /*mark completed*/
     _outputfile->status=db::OutputFile::Status::Completed;
@@ -200,7 +240,7 @@ namespace plugin {
     }
 
     LOGDEBUG("finishing output ")
-    //fclose(stdin);
+        //fclose(stdin);
   }
   bool Writer::ptsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b) {
     return a->getPts() < b->getPts();

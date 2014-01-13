@@ -29,7 +29,8 @@ using namespace org::esb::util;
 using namespace org::esb::signal;
 using namespace org::esb;
 using org::esb::io::FileInputStream;
-
+using org::esb::signal::Message;
+using org::esb::signal::Messenger;
 #define GET_UNIT  "get process_unit"
 #define GET_AUDIO_UNIT  "get audio_process_unit"
 #define PUT_AUDIO_UNIT  "put audio_process_unit"
@@ -175,12 +176,13 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
         _oos->writeObject(un);
         */
 
+        db::ProcessUnit unit=getProcessUnit();
+
         /*something is going wrong on the client, resetting the processUnit*/
         if(_current_unit){
           _current_unit->send=1;
           _current_unit->update();
         }
-        db::ProcessUnit unit=getProcessUnit();
         _current_unit=new db::ProcessUnit(unit);
 
 
@@ -241,6 +243,13 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
 
           _current_unit->recv=litesql::DateTime();
           _current_unit->update();
+
+          Message msg;
+          msg.setProperty("processunit_encoded",_current_unit->id.value());
+          msg.setProperty("jobid",_current_unit->jobid.value());
+          msg.setProperty("sequence",_current_unit->sequence.value());
+          Messenger::getInstance().sendMessage(msg);
+
           _current_unit.reset();
         } else {
           LOGERROR("unknown command received:" << command);
