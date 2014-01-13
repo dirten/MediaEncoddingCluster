@@ -17,7 +17,7 @@ diff -rup litesql-src-0.3.8/src/CMakeLists.txt litesqldep/src/CMakeLists.txt
 -add_subdirectory(generator)
 -add_subdirectory(tests)
 -add_subdirectory(examples)
-+add_subdirectory(generator)
++#add_subdirectory(generator)
 +#add_subdirectory(tests)
 +#add_subdirectory(examples)
 Nur in litesqldep/src: CTestTestfile.cmake.
