@@ -27,6 +27,7 @@
 #ifndef AVPIPE_H
 #define AVPIPE_H
 #include "org/esb/lang/Ptr.h"
+#include "exports.h"
 #include <list>
 namespace org {
   namespace esb {
@@ -37,7 +38,7 @@ namespace org {
   * @TODO : think about the need of the shared / plain pointer
   *
 */
-      class AVPipe
+      class AV_EXPORT AVPipe
       {
         public:
           AVPipe();

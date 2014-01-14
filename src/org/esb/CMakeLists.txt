@@ -196,7 +196,7 @@ ENDIF(NOT WIN32)
 TARGET_LINK_LIBRARIES(util log4cplus )
 
 IF(WIN32)
-  TARGET_LINK_LIBRARIES(util wsock32 ws2_32 advapi32 )
+  TARGET_LINK_LIBRARIES(util wsock32 ws2_32 advapi32 iphlpapi)
 ENDIF(WIN32)
 
 

@@ -54,6 +54,8 @@ namespace org {
       }
 
       void Environment::build(int argc, char ** argv) {
+        //std::cout << "build environment"<<std::endl;
+        //return;
         for(int a = 0;a<argc;a++){
           //std::cout << "arg:"<<argv[a]<<std::endl;
           std::string arg=argv[a];
@@ -61,7 +63,7 @@ namespace org {
         }
         org::esb::io::File f(argv[0]);
         std::string bpath = org::esb::io::File(f.getParent()).getParent();
-        
+        std::cout << "bpath:"<<bpath<<std::endl;
 #ifdef __WIN32__
         std::string upath = get("APPDATA") + "/mhive";
 #elif defined __APPLE__
@@ -71,6 +73,7 @@ namespace org {
 #else
         #error "plattform not supported"
 #endif
+        std::cout << "upath:"<<upath<<std::endl;
         /*override the user path when this environment variable is set*/
         upath = get("MHIVE_DATA_PATH", upath);
 

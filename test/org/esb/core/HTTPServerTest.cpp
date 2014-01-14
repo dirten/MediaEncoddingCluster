@@ -62,6 +62,7 @@ return NULL;//new DataHandler();
 /*
  * 
  */
+ /*
 using namespace Poco::Net;
 int main2(int argc, char ** argv) {
   Log::open();
@@ -80,7 +81,7 @@ int main2(int argc, char ** argv) {
 
 return 0;
 }
-
+*/
 class RootHandler2 : public org::esb::core::http::RequestHandler {
 public:
 
