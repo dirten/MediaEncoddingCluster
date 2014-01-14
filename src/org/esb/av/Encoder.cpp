@@ -118,9 +118,9 @@ int Encoder::encode(Frame & frame) {
   _last_idx = frame.stream_index;
   _frames = frame.getFrameCount();
   ctx->sample_aspect_ratio = frame.getPixelAspectRatio();
-
+  LOGDEBUG("Encode Frame:"<<frame.toString())
   if (_last_dts == AV_NOPTS_VALUE) {
-    _last_dts = frame.getDts();
+    _last_dts = frame.getPts();
     LOGDEBUG("setting last_dts=" << _last_dts);
   }
   if (ctx->codec_type == AVMEDIA_TYPE_VIDEO) {

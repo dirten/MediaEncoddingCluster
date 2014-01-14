@@ -40,27 +40,27 @@ using namespace org::esb::av;
 using namespace std;
 
 Decoder::Decoder() : Codec(Codec::DECODER) {
-  _last_pts = 0;
-  _next_pts = 0;
+  _last_pts = AV_NOPTS_VALUE;
+  _next_pts = AV_NOPTS_VALUE;
   frame = Ptr<Frame>(new Frame());
 
 }
 
 Decoder::Decoder(CodecID id) : Codec(id, Codec::DECODER) {
-  _last_pts = 0;
-  _next_pts = 0;
+  _last_pts = AV_NOPTS_VALUE;
+  _next_pts = AV_NOPTS_VALUE;
   frame = Ptr<Frame>(new Frame());
 }
 
 Decoder::Decoder(std::string name) : Codec(name, Codec::DECODER) {
-  _last_pts = 0;
-  _next_pts = 0;
+  _last_pts = AV_NOPTS_VALUE;
+  _next_pts = AV_NOPTS_VALUE;
   frame = Ptr<Frame>(new Frame());
 }
 
 Decoder::Decoder(AVStream * c) : Codec(c, Codec::DECODER) {
-  _last_pts = 0;
-  _next_pts = 0;
+  _last_pts = AV_NOPTS_VALUE;
+  _next_pts = AV_NOPTS_VALUE;
   frame = Ptr<Frame>(new Frame());
 }
 
@@ -195,9 +195,9 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
 #ifdef USE_TIME_BASE_Q
     _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), AV_TIME_BASE_Q);
 #else
-    _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), ctx->time_base);
+    _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), _frame_rate);
 #endif
-    LOGDEBUG("setting last pts to " << _last_pts << " ctxtb=" << ctx->time_base.num << "/" << ctx->time_base.den
+    LOGDEBUG("setting last pts to " << _last_pts << " ctxtb=" << _frame_rate.num << "/" << _frame_rate.den
     << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
   }
 
@@ -297,21 +297,25 @@ bool Decoder::decodeVideo3(Packet & packet) {
   if (_frameFinished) {
 
     //_pix_fmt_converter->process(*tmp_frame, *frame);
-    /*
+
     if (ctx->coded_frame) {
 
       LOGDEBUG("DeCodedFrameQuality:" << ctx->coded_frame->quality);
       LOGDEBUG("Interlaced:" << ctx->coded_frame->interlaced_frame);
       LOGDEBUG("topfieldfirst:" << ctx->coded_frame->top_field_first);
-      LOGDEBUG("PictureType:" << av_get_pict_type_char(ctx->coded_frame->pict_type));
-    }*/
+      //LOGDEBUG("PictureType:" << av_get_pict_type_char(ctx->coded_frame->pict_type));
+      LOGDEBUG("PicturePts:" << frame->getAVFrame()->best_effort_timestamp);
+    }
   }
   //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded
-  if (false && _last_pts == AV_NOPTS_VALUE) {
+  if (_last_pts == AV_NOPTS_VALUE) {
 #ifdef USE_TIME_BASE_Q
     _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), AV_TIME_BASE_Q);
 #else
-    _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), ctx->time_base);
+    AVRational fr;
+    fr.num = _frame_rate.den;
+    fr.den = _frame_rate.num;
+    _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), fr);
 #endif
     LOGDEBUG("setting last pts to " << _last_pts << " ctxtb=" << ctx->time_base.num << "/" << ctx->time_base.den
     << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
@@ -497,6 +501,8 @@ bool Decoder::decodeAudio3(Packet & packet) {
   //uint8_t *outbuf = static_cast<uint8_t*> (av_malloc(samples_size));
   //int len = avcodec_decode_audio3(ctx, (short *) outbuf, &samples_size, packet.packet);
   //LOGDEBUG("decoder before ch layout = "<<ctx->channel_layout)
+  LOGDEBUG("decode input audio packet:"<<packet.toString());
+
   int len = avcodec_decode_audio4(ctx, frame->getAVFrame(), &samples_size, packet.packet);
   LOGDEBUG("decoder ch layout = "<<ctx->channel_layout)
   char ch_name[1000];
@@ -550,11 +556,11 @@ bool Decoder::decodeAudio3(Packet & packet) {
 #else
   //  int64_t dur = av_rescale_q(samples_size, packet.getTimeBase(), ar);
   //samples_size=max(1,samples_size);
-  int64_t dur = ((int64_t) AV_TIME_BASE / bps * samples_size) / (ctx->sample_rate * ctx->channels);
+  int64_t dur = ((int64_t) AV_TIME_BASE / bps * ctx->frame_size) / (ctx->sample_rate * ctx->channels);
   AVRational arbase;
   arbase.num = 1;
   arbase.den = AV_TIME_BASE;
-  frame->duration = av_rescale_q(dur, arbase, ar);
+  frame->duration = frame->getAVFrame()->nb_samples;//av_rescale_q(dur, arbase, ar);
   frame->setTimeBase(ar);
 
   //  _last_pts += frame->duration;

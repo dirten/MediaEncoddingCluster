@@ -109,21 +109,12 @@ void testDecodeVideo(std::string filepath) {
       //3760002833
       //3760056833 = IFrame
       //if (i >= offset&& p->getDts()>=3760002833) {
-        Ptr<org::esb::av::Frame> frame = dec.decode2(*p);
+      LOGDEBUG("decode picture")
+        dec.newPacket(p);
         incount++;
-        if (frame->isFinished() && i >= printout) {
-          LOGDEBUG("frame finished!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-          outcount++;
-          //assert(frame->_pixFormat==PIX_FMT_YUV444P);
-//          sprintf(outfile,"test-%i.bmp", i);
-//          org::esb::av::BMPUtil::save("test-%d.bmp", frame);
-//          frame->dumpHex();
-        }
-        //delete frame;
-      //}
       i++;
     }
-    delete p;
+    //delete p;
   }
   delete [] outfile;
   LOGDEBUG("decoding delay")
@@ -131,6 +122,8 @@ void testDecodeVideo(std::string filepath) {
   ptmp->setDuration(3600);
   ptmp->setTimeBase(1, 90000);
   bool decode_last = true;
+  while(dec.newPacket(new Packet()));
+  /*
   while (decode_last) {
     org::esb::av::Frame * frame = dec.decode2(*ptmp);
     if (frame->isFinished()) {
@@ -141,7 +134,7 @@ void testDecodeVideo(std::string filepath) {
       decode_last = false;
     }
     delete frame;
-  }
+  }*/
   LOGDEBUG("incount=" << incount << " outcount=" << outcount);
   delete ptmp;
 }

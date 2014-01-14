@@ -38,11 +38,11 @@ namespace org {
       }
 
       bool Rational::operator>(const Rational &r) {
-        return av_cmp_q(*this, r) == -1;
+        return av_cmp_q(*this, r) == 1;
       }
 
       bool Rational::operator<(const Rational &r) {
-        return av_cmp_q(*this, r) == 1;
+        return av_cmp_q(*this, r) == -1;
       }
 
       Rational::~Rational() {

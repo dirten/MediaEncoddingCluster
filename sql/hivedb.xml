@@ -65,7 +65,7 @@
         <field name="path" type="string"/>
         <field name="jobid" type="string"/>
         <field name="outfiledata" type="string"/>
-        <field name="status" type="string">
+        <field name="status" type="string" indexed="true">
           <value name="Waiting" value="WAITING"/>
           <value name="Processing" value="PROCESSING"/>
           <value name="Error" value="ERROR"/>

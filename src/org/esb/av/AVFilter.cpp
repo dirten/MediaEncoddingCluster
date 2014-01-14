@@ -27,6 +27,13 @@ namespace org {
           initAudioSourceSink();
         }
         outFrame=Ptr<Frame>(new Frame());
+        int num = 0,den = 0;
+        sscanf(_input_params["time_base"].c_str(),"%d/%d", &num, &den);
+
+        AVRational r={num, den};
+
+        //outFrame->setTimeBase(r);
+        //outFrame->setDuration(1);
       }
 
       void AVFilter::setInputParameter(std::string key, std::string value){
@@ -305,6 +312,8 @@ namespace org {
       bool AVFilter::newFrame(Ptr<Frame> p)
       {
         bool result=false;
+
+
 
 
 

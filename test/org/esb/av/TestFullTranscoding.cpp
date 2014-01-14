@@ -103,11 +103,12 @@ int main(int argc, char** argv) {
       _sdata[i].enc->setCodecOption("flags","+psnr");
       AVRational ar;
       ar.num = 1;
-      ar.den = 15;
+      ar.den = 25;
       //ar.den = _sdata[i].dec->getTimeBase().den/_sdata[i].dec->ctx->ticks_per_frame;
 
-      _sdata[i].enc->setTimeBase(_sdata[i].dec->getTimeBase());
-      _sdata[i].enc->setBitRate(1500000);
+      //_sdata[i].enc->setTimeBase(_sdata[i].dec->getTimeBase());
+      _sdata[i].enc->setTimeBase(ar);
+      _sdata[i].enc->setBitRate(15000);
 
 
 
@@ -156,7 +157,7 @@ int main(int argc, char** argv) {
       _sdata[i].filter->setInputParameter("channel_layout",StringUtil::toString(ch_layout));
       _sdata[i].filter->setInputParameter("sample_rate",StringUtil::toString(_sdata[i].dec->getSampleRate()));
       _sdata[i].filter->setInputParameter("sample_format", av_get_sample_fmt_name(_sdata[i].dec->getSampleFormat()));
-      _sdata[i].filter->setInputParameter("time_base", "1/"+StringUtil::toString(fis.getStreamInfo(i)->getTimeBase().den));
+      _sdata[i].filter->setInputParameter("time_base", "1/"+StringUtil::toString(_sdata[i].dec->getSampleRate()));
 
       _sdata[i].filter->setOutputParameter("channel_layout","stereo");
       _sdata[i].filter->setOutputParameter("channel_layout2","stereo");
@@ -213,8 +214,8 @@ int main(int argc, char** argv) {
 
   /*main loop to encode the packets*/
   Packet *packet;
-  bool encode_whole_file=true;
-  for (int i = 0; i < 100 || encode_whole_file; i++) {
+  bool encode_whole_file=false;
+  for (int i = 0; i < 100000 || encode_whole_file; i++) {
     //reading a packet from the Stream
     if ((packet=pis.readPacket()) ==NULL )break; //when no more packets available(EOF) then it return <0
     boost::shared_ptr<Packet> p(packet);

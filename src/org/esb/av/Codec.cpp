@@ -123,7 +123,7 @@ namespace org {
         }
         _frame_rate.num = s->r_frame_rate.num;
         _frame_rate.den = s->r_frame_rate.den;
-
+        _frame_rate=av_guess_frame_rate(NULL,s,NULL);
         //		_codec_resolved=false;
       }
 
