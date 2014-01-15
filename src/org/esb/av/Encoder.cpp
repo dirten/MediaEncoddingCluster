@@ -120,7 +120,7 @@ int Encoder::encode(Frame & frame) {
   ctx->sample_aspect_ratio = frame.getPixelAspectRatio();
   LOGDEBUG("Encode Frame:"<<frame.toString())
   if (_last_dts == AV_NOPTS_VALUE) {
-    _last_dts = frame.getPts();
+    _last_dts = 0;//frame.getPts();
     LOGDEBUG("setting last_dts=" << _last_dts);
   }
   if (ctx->codec_type == AVMEDIA_TYPE_VIDEO) {
@@ -305,6 +305,7 @@ int Encoder::encodeVideo2(AVFrame * inframe) {
 #endif
 
     pac->packet->dts = _last_dts;
+    pac->packet->pts = _last_dts;
     pac->setDtsTimeStamp(TimeStamp(_last_dts, ctx->time_base));
     LOGDEBUG(pac->toString());
 

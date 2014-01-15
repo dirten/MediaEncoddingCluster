@@ -31,12 +31,12 @@ using namespace org::esb::av;
 using org::esb::util::StringUtil;
 using org::esb::hive::Environment;
 struct StreamData {
-    Decoder * dec;
-    Encoder * enc;
-    FrameConverter * conv;
-    org::esb::av::AVFilter * filter;
-    int64_t start_dts;
-    bool more_frames;
+  Decoder * dec;
+  Encoder * enc;
+  FrameConverter * conv;
+  org::esb::av::AVFilter * filter;
+  int64_t start_dts;
+  bool more_frames;
 };
 
 map<int, StreamData> _sdata;
@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
   bool video = false, audio = false;
   for (int i = 0; i < c; i++) {
     if (fis.getStreamInfo(i)->getCodecType() != AVMEDIA_TYPE_VIDEO &&
-    fis.getStreamInfo(i)->getCodecType() != AVMEDIA_TYPE_AUDIO) continue;
+        fis.getStreamInfo(i)->getCodecType() != AVMEDIA_TYPE_AUDIO) continue;
     //if(i!=4&&i!=1)continue;
     if (audio && video)continue;
     fis.dumpFormat();
@@ -94,6 +94,51 @@ int main(int argc, char** argv) {
       _sdata[i].enc->setStreamIndex(s);
       video = true;
       _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
+      //_sdata[i].enc->setCodecId(CODEC_ID_H264);
+
+
+      if(_sdata[i].enc->getCodecId()==CODEC_ID_H264){
+        _sdata[i].enc->setCodecOption("b","1024000");
+        //_sdata[i].enc->setCodecOption("passlogfile","test.passlog");
+        _sdata[i].enc->setCodecOption("minrate","512000");
+        _sdata[i].enc->setCodecOption("coder","1");
+        _sdata[i].enc->setCodecOption("flags","+loop+mv4+psnr");
+        //_sdata[i].enc->setCodecOption("cmp","+chroma");
+        _sdata[i].enc->setCodecOption("partitions","all");
+        _sdata[i].enc->setCodecOption("me_method","umh");
+        _sdata[i].enc->setCodecOption("subq","8");
+        _sdata[i].enc->setCodecOption("me_range","16");
+        _sdata[i].enc->setCodecOption("g","5");
+        _sdata[i].enc->setCodecOption("keyint_min","25");
+        _sdata[i].enc->setCodecOption("sc_threshold","40");
+        _sdata[i].enc->setCodecOption("i_qfactor","0.71");
+        _sdata[i].enc->setCodecOption("b_strategy","2");
+        _sdata[i].enc->setCodecOption("qcomp","0.6");
+        _sdata[i].enc->setCodecOption("qmin","10");
+        _sdata[i].enc->setCodecOption("qmax","51");
+        _sdata[i].enc->setCodecOption("qdiff","4");
+        _sdata[i].enc->setCodecOption("bf","3");
+        _sdata[i].enc->setCodecOption("refs","5");
+        _sdata[i].enc->setCodecOption("directpred","3");
+        _sdata[i].enc->setCodecOption("trellis","1");
+        _sdata[i].enc->setCodecOption("mixed_refs","1");
+        _sdata[i].enc->setCodecOption("wpred","1");
+        _sdata[i].enc->setCodecOption("b-pyramid","1");
+        _sdata[i].enc->setCodecOption("8x8dct","1");
+        _sdata[i].enc->setCodecOption("coder","1");
+        //_sdata[i].enc->setCodecOption("psnr","1");
+
+        //_sdata[i].enc->setCodecOption("flags2","+bpyramid+wpred+mixed_refs+dct8x8");
+        _sdata[i].enc->setCodecOption("wpredp","2");
+        _sdata[i].enc->setCodecOption("level","5.1");
+        _sdata[i].enc->setCodecOption("profile","high444");
+        _sdata[i].enc->setCodecOption("tune","psnr");
+        //_sdata[i].enc->setCodecOption("x264opts","verbose=1");
+        _sdata[i].enc->setCodecOption("preset","veryslow");
+        _sdata[i].enc->setCodecOption("passlogfile","test.log");
+        _sdata[i].enc->setFlag(CODEC_FLAG_PASS1);
+      }
+
       //_sdata[i].enc->setCodecId(CODEC_ID_THEORA);
       //_sdata[i].enc->setWidth(720);
       //_sdata[i].enc->setHeight(576);
@@ -138,7 +183,7 @@ int main(int argc, char** argv) {
       audio = true;
       _sdata[i].enc->setStreamIndex(s);
 
-      _sdata[i].enc->setCodecId(CODEC_ID_MP2);
+      _sdata[i].enc->setCodecId(CODEC_ID_AAC);
       _sdata[i].enc->setBitRate(128000);
       _sdata[i].enc->setSampleRate(44100);
       _sdata[i].enc->setChannels(2);
@@ -153,8 +198,8 @@ int main(int argc, char** argv) {
       av_get_channel_layout_string(buf, sizeof(buf), _sdata[i].dec->getChannels(), _sdata[i].dec->getChannelLayout());
       int64_t ch_layout=_sdata[i].dec->getChannelLayout();
       LOGDEBUG("ChannelLayout : "<<ch_layout<<" channels : "<<_sdata[i].dec->getChannels())
-      //_sdata[i].filter->setInputParameter("channel_layout",buf);
-      _sdata[i].filter->setInputParameter("channel_layout",StringUtil::toString(ch_layout));
+          //_sdata[i].filter->setInputParameter("channel_layout",buf);
+          _sdata[i].filter->setInputParameter("channel_layout",StringUtil::toString(ch_layout));
       _sdata[i].filter->setInputParameter("sample_rate",StringUtil::toString(_sdata[i].dec->getSampleRate()));
       _sdata[i].filter->setInputParameter("sample_format", av_get_sample_fmt_name(_sdata[i].dec->getSampleFormat()));
       _sdata[i].filter->setInputParameter("time_base", "1/"+StringUtil::toString(_sdata[i].dec->getSampleRate()));
@@ -244,9 +289,9 @@ int main(int argc, char** argv) {
     Frame * trg_frame = NULL;
     if (_sdata[idx].dec->getCodecType() == AVMEDIA_TYPE_VIDEO)
       trg_frame = new Frame(
-      _sdata[idx].enc->getInputFormat().pixel_format,
-      _sdata[idx].enc->getWidth(),
-      _sdata[idx].enc->getHeight());
+            _sdata[idx].enc->getInputFormat().pixel_format,
+            _sdata[idx].enc->getWidth(),
+            _sdata[idx].enc->getHeight());
     if (_sdata[idx].dec->getCodecType() == AVMEDIA_TYPE_AUDIO)
       trg_frame = new Frame();
 
