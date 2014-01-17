@@ -6,11 +6,10 @@ namespace plugin {
 
   StreamSource::StreamSource():Task()
   {
-
   }
+
   StreamSource::~StreamSource()
   {
-    LOGDEBUG("StreamSource::~StreamSource()")
   }
 
   void StreamSource::setSource(Ptr<FormatInputStream> fis){
@@ -28,37 +27,23 @@ namespace plugin {
     /*preprocessing the input streams*/
     int scount = _fis->getStreamCount();
     for (int a = 0; a < scount; a++) {
-      /*getting the input stream from the file*/
+      /*getting the input stream from the file to extract the decoders*/
       org::esb::av::AVInputStream* is = _fis->getAVStream(a);
       _decs[is->index]=new org::esb::av::Decoder(is);
       _decs[is->index]->setStreamIndex(a);
       _decs[is->index]->open();
-
-      //setBufferCodec(is->stream_identifier,_decs[is->stream_identifier]);
     }
     getContext()->setProperty<std::map<int, Ptr<org::esb::av::Decoder> > >("decoder",_decs);
-    /*std::map<int, Ptr<org::esb::av::Decoder> >tmp=getContext()->get<std::map<int, Ptr<org::esb::av::Decoder> > >("decoder");
-    std::map<int, Ptr<org::esb::av::Decoder> >::iterator it1=_decs.begin();
-    for(;it1!=_decs.end();it1++){
-      LOGDEBUG("Decoder:"<<(*it1).first<<":"<<(*it1).second->toString());
-    }
-    std::map<int, Ptr<org::esb::av::Decoder> >::iterator it=tmp.begin();
-    for(;it!=tmp.end();it++){
-      LOGDEBUG("Decoder:"<<(*it).first<<":"<<(*it).second->toString());
-    }*/
-
   }
 
   void StreamSource::execute(){
     Task::execute();
 
 
-    org::esb::av::PacketInputStream pis(_fis.get());
+    org::esb::av::PacketInputStream pis(_fis.get(), true);
     org::esb::av::Packet * packet;
     while((packet = pis.readPacket()) != NULL){
       Ptr<org::esb::av::Packet> pPacket(packet);
-      //pPacket->_decoder=_decs[pPacket->getStreamIndex()];
-      //LOGDEBUG("Push buffer")
       Ptr<org::esb::av::Decoder>dec=_decs[packet->getStreamIndex()];
       if(dec->getCodecType() != AVMEDIA_TYPE_AUDIO && dec->getCodecType() != AVMEDIA_TYPE_VIDEO){
         continue;

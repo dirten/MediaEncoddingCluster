@@ -65,6 +65,7 @@ namespace org {
         int64_t _next_pts;
         Ptr<PixelFormatConverter> _pix_fmt_converter;
         Ptr<Frame> frame;
+        AVRational _input_packet_time_base;
       };
     }
   }

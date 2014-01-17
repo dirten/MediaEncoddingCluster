@@ -125,6 +125,7 @@ int Encoder::encode(Frame & frame) {
   }
   if (ctx->codec_type == AVMEDIA_TYPE_VIDEO) {
     LOGTRACEMETHOD("Encode Video");
+
     return encodeVideo(frame);
   }
   if (ctx->codec_type == AVMEDIA_TYPE_AUDIO) {
@@ -149,6 +150,10 @@ int Encoder::encodeVideo(Frame & frame) {
   //Ptr<Frame> tmp_frame = new Frame(ctx->pix_fmt, ctx->width, ctx->height);
   //_pix_fmt_converter->process(frame,*tmp_frame);
   LOGDEBUG(frame.toString());
+
+  /*setting the right pts for the input to the codec*/
+  frame.setPts(av_rescale_q(frame.getPts(),frame.getTimeBase(),ctx->time_base));
+  frame.getAVFrame()->pict_type=AV_PICTURE_TYPE_NONE;
   return encodeVideo2(frame.getAVFrame());
   //  return encodeVideo(frame.getAVFrame());
 }
@@ -269,6 +274,7 @@ int Encoder::encodeVideo2(AVFrame * inframe) {
   int ret = 0, got_output;
   _frames=1;
 
+
   Ptr<Packet> pacInt=Ptr<Packet>(new Packet());
   Packet *pac=pacInt.get();
   ret = avcodec_encode_video2(ctx, pac->getAVPacket(), inframe, &got_output);
@@ -288,7 +294,7 @@ int Encoder::encodeVideo2(AVFrame * inframe) {
       if (ctx->coded_frame->key_frame) {
         pac->packet->flags |= AV_PKT_FLAG_KEY;
       }
-      pac->packet->pts = ctx->coded_frame->pts;
+      //pac->packet->pts = ctx->coded_frame->pts;
       pac->setPtsTimeStamp(TimeStamp(ctx->coded_frame->pts,ctx->time_base));
       pac->_pict_type=ctx->coded_frame->pict_type;
     }
@@ -304,8 +310,8 @@ int Encoder::encodeVideo2(AVFrame * inframe) {
     }
 #endif
 
-    pac->packet->dts = _last_dts;
-    pac->packet->pts = _last_dts;
+    //pac->packet->dts = _last_dts;
+    //pac->packet->pts = _last_dts;
     pac->setDtsTimeStamp(TimeStamp(_last_dts, ctx->time_base));
     LOGDEBUG(pac->toString());
 

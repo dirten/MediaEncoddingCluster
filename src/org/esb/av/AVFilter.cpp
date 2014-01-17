@@ -32,8 +32,8 @@ namespace org {
 
         AVRational r={num, den};
 
-        //outFrame->setTimeBase(r);
-        //outFrame->setDuration(1);
+        outFrame->setTimeBase(r);
+        outFrame->setDuration(1);
       }
 
       void AVFilter::setInputParameter(std::string key, std::string value){

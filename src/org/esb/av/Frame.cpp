@@ -29,7 +29,7 @@ Frame::Frame() {
   duration = 0;
   _time_base.num = 0;
   _time_base.den = 0;
-  _dts = 0;
+  //_dts = 0;
   _frames = 1;
   memset(&_pixel_aspect_ratio, 0, sizeof (_pixel_aspect_ratio));
   memset(&_storage_aspect_ratio, 0, sizeof (_pixel_aspect_ratio));
@@ -52,7 +52,7 @@ Frame::Frame(uint8_t *buffer, int64_t size) {
   duration = 0;
   _time_base.num = 0;
   _time_base.den = 0;
-  _dts = 0;
+  //_dts = 0;
   _frames = 1;
   memset(&_pixel_aspect_ratio, 0, sizeof (_pixel_aspect_ratio));
   memset(&_storage_aspect_ratio, 0, sizeof (_pixel_aspect_ratio));
@@ -113,7 +113,7 @@ Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
   //  logdebug("Create Frame(int format, int width, int height)");
   _isFinished = false;
   _size = 0;
-  _dts = 0;
+  //_dts = 0;
   framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
   framePtr->pts = 0;
   _width = width;
@@ -275,19 +275,19 @@ void Frame::setDuration(int d) {
 int64_t Frame::getPts() {
   return framePtr->pts;
 }
-
+/*
 int64_t Frame::getDts() {
   return _dts;
 }
-
+*/
 void Frame::setPts(int64_t pts) {
   framePtr->pts = pts;
 }
-
+/*
 void Frame::setDts(int64_t dts) {
   _dts = dts;
 }
-
+*/
 void Frame::setTimeBase(AVRational t) {
   _time_base = t;
 }
@@ -348,7 +348,7 @@ void Frame::copyFromFrame(const Frame& frame) {
   //quality = frame.quality;
   _isFinished = frame._isFinished;
   _size = frame._size;
-  _dts = frame._dts;
+  //_dts = frame._dts;
   framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
   framePtr->pts = frame.framePtr->pts;
   _width = frame._width;
@@ -425,7 +425,7 @@ void Frame::copyFromFrame(const Frame& frame) {
 std::string Frame::toString() {
 
   std::ostringstream oss;
-  oss << "F->S:" << 0 << ":Pts:" << framePtr->pts << ":Dts:" << _dts << ":SmplFmt:" << framePtr->format << ":SmplSz:" << framePtr->nb_samples << ":W:" << framePtr->width << ":H:" << framePtr->height << ":PF:" << _pixFormat << ":Ch:" << av_frame_get_channels(framePtr.get()) <<":ChL:"<< av_frame_get_channel_layout(framePtr.get())<< ":SmplRt:" << sample_rate << ":Dur:" << duration << ":FrameCount" << _frames << ":TBase:" << _time_base.num << "/" << _time_base.den << ":q" << framePtr->quality<<":fin:"<<_isFinished;
+  oss << "F->S:" << 0 << ":Pts:" << framePtr->pts << ":SmplFmt:" << framePtr->format << ":SmplSz:" << framePtr->nb_samples << ":W:" << framePtr->width << ":H:" << framePtr->height << ":PF:" << _pixFormat << ":Ch:" << av_frame_get_channels(framePtr.get()) <<":ChL:"<< av_frame_get_channel_layout(framePtr.get())<< ":SmplRt:" << sample_rate << ":Dur:" << duration << ":FrameCount" << _frames << ":TBase:" << _time_base.num << "/" << _time_base.den << ":q" << framePtr->quality<<":fin:"<<_isFinished;
   oss<<":ppts:"<<framePtr->pkt_pts;
   oss<<":psts:"<<framePtr->pkt_dts;
   oss<<":t:";

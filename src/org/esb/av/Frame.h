@@ -34,9 +34,9 @@ namespace org {
         AVPacket * getPacket();
         Frame getFrame(int format = 0);
         void setPts(int64_t pts);
-        void setDts(int64_t pts);
+        //void setDts(int64_t pts);
         int64_t getPts();
-        int64_t getDts();
+        //int64_t getDts();
         int getDuration();
         void setDuration(int);
         AVFrame * getAVFrame();
@@ -73,7 +73,7 @@ namespace org {
       private:
         void copyFromFrame(const Frame&);
         bool _isFinished;
-        int64_t _dts;
+       // int64_t _dts;
         int64_t _pts;
         boost::shared_ptr<AVFrame> framePtr;
         AVRational _time_base;

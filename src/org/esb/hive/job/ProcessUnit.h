@@ -140,7 +140,7 @@ namespace org {
                   ptime _end;
 
                 };
-
+                /*
                 class PtsComparator {
                 public:
 
@@ -148,7 +148,7 @@ namespace org {
                         return lp->getDts() < rp->getDts();
                     }
                 };
-
+                */
                 class PtsPacketComparator {
                 public:
 

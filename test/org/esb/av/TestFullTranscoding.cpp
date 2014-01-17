@@ -93,8 +93,8 @@ int main(int argc, char** argv) {
     if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_VIDEO) {
       _sdata[i].enc->setStreamIndex(s);
       video = true;
-      _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
-      //_sdata[i].enc->setCodecId(CODEC_ID_H264);
+      //_sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
+      _sdata[i].enc->setCodecId(CODEC_ID_H264);
 
 
       if(_sdata[i].enc->getCodecId()==CODEC_ID_H264){
@@ -259,8 +259,8 @@ int main(int argc, char** argv) {
 
   /*main loop to encode the packets*/
   Packet *packet;
-  bool encode_whole_file=false;
-  for (int i = 0; i < 100000 || encode_whole_file; i++) {
+  bool encode_whole_file=true;
+  for (int i = 0; i < 10000 || encode_whole_file; i++) {
     //reading a packet from the Stream
     if ((packet=pis.readPacket()) ==NULL )break; //when no more packets available(EOF) then it return <0
     boost::shared_ptr<Packet> p(packet);

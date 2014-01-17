@@ -36,7 +36,7 @@ namespace org{
         out_frame.setTimeBase(in_frame.getTimeBase());
         out_frame.pos = in_frame.pos;
         out_frame.setPts(in_frame.getPts());
-        out_frame.setDts(in_frame.getDts());
+       // out_frame.setDts(in_frame.getDts());
         out_frame.stream_index = in_frame.stream_index;
         out_frame.duration = in_frame.duration;
       }

@@ -27,7 +27,7 @@ void test_swscale(Decoder & dec, Encoder & enc) {
 
   Frame in_frame(dec.getOutputFormat().pixel_format, dec.getWidth(), dec.getHeight());
   in_frame.setTimeBase(dec.getTimeBase());
-  in_frame.setDts(1);
+  //in_frame.setDts(1);
   in_frame.setPts(1);
 
   Frame out_frame(enc.getInputFormat().pixel_format, enc.getWidth(), enc.getHeight());
@@ -40,7 +40,7 @@ void test_deinterlace(Decoder & dec, Encoder & enc) {
   FrameConverter conv(&dec,&enc);
 
   Frame in_frame(dec.getOutputFormat().pixel_format, dec.getWidth(), dec.getHeight());
-  in_frame.setDts(1);
+  //in_frame.setDts(1);
   in_frame.setPts(1);
   in_frame.setTimeBase(dec.getTimeBase());
 

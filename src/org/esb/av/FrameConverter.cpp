@@ -154,7 +154,7 @@ namespace org {
 #else
         out_frame.setTimeBase(_enc->getTimeBase());
         out_frame.setPts(av_rescale_q(in_frame.getPts(), in_frame.getTimeBase(), _enc->getTimeBase()));
-        out_frame.setDts(av_rescale_q(in_frame.getDts(), in_frame.getTimeBase(), _enc->getTimeBase()));
+        //out_frame.setDts(av_rescale_q(in_frame.getDts(), in_frame.getTimeBase(), _enc->getTimeBase()));
 
         //        out_frame.setDuration(av_rescale_q(in_frame.getDuration(), in_frame.getTimeBase(), _enc->getTimeBase()));
         //if(_enc->getCodecType()==CODEC_TYPE_VIDEO)
@@ -318,7 +318,7 @@ namespace org {
         out_frame.setTimeBase(in_frame.getTimeBase());
         out_frame.pos = in_frame.pos;
         out_frame.setPts(in_frame.getPts());
-        out_frame.setDts(in_frame.getDts());
+        //out_frame.setDts(in_frame.getDts());
         out_frame.stream_index = in_frame.stream_index;
         out_frame.duration = in_frame.duration;
         LOGDEBUG(out_frame.toString());
