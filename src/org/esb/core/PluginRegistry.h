@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   PluginRegistry.h
  * Author: HoelscJ
  *
@@ -15,7 +15,7 @@
 #include "org/esb/lang/SharedObjectLoader.h"
 #include "org/esb/lang/Ptr.h"
 #include "http/Server.h"
-
+#include "org/esb/grid/GridRegistry.h"
 #include "exports.h"
 namespace org {
   namespace esb {
@@ -34,6 +34,12 @@ namespace org {
       class CORE_EXPORT PluginRegistry {
           classlogger("org.esb.core.PluginRegistry")
           public:
+          enum PLUGIN_ORDER {
+            NONE,
+            NAME,
+            PRIO
+          };
+
           static  PluginRegistry * getInstance();
           static void close();
           void registerPlugin(std::string, Plugin*);
@@ -53,7 +59,7 @@ namespace org {
           void initPlugins();
 
           OptionsDescription getOptionsDescription(std::string);
-          std::list<std::string> getPluginNameList();
+          std::list<std::string> getPluginNameList(PLUGIN_ORDER order=NONE);
 
           std::list<std::string> getTaskNameList();
           OptionsDescription getTaskOptionsDescription(std::string);
@@ -87,6 +93,12 @@ namespace org {
 
           std::map<std::string,std::string> _config_data;
           org::esb::core::http::Server * server;
+
+          Ptr<org::esb::grid::GridRegistry> _gridRegistry;
+
+
+          //bool compare_service_byname(std::string & lhs, std::string & rhs);
+          //bool compare_service_byprio(std::string & lhs, std::string & rhs);
       };
     }
   }

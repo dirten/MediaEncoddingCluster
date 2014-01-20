@@ -32,9 +32,12 @@ namespace jobexecutor {
   }
 
   void Service::onMessage(org::esb::signal::Message &msg) {
-    if (msg.getProperty<std::string > ("jobexecutor") == "STOP_JOB") {
-      LOGDEBUG("STOP_JOB request try cancel graph");
-      _current_graph.cancel();
+    if(msg.containsProperty("jobexecutor")){
+      if (msg.getProperty<std::string > ("jobexecutor") == "STOP_JOB") {
+        LOGDEBUG("STOP_JOB request try cancel graph");
+        _current_graph.cancel();
+      }
+
     }
   }
 

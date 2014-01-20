@@ -21,7 +21,7 @@ DEPENDS sqlitedep
 URL http://downloads.sourceforge.net/project/litesql/litesql/0.3.9/litesql-src-0.3.9.tar.gz
 PATCH_COMMAND chmod +x <SOURCE_DIR>/configure && chmod +x <SOURCE_DIR>/install-sh && cd <SOURCE_DIR> && patch -p1  < ${PROJECT_SOURCE_DIR}/src/patch/litesql.patch && cp ${PROJECT_SOURCE_DIR}/src/patch/litesql-CMakeLists.txt <SOURCE_DIR>/CMakeLists.txt
 #CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --enable-static --disable-shared --with-sqlite3=${BUILD_DIR} --without-mysql --without-pgsql --with-pic
-CMAKE_ARGS  -DCMAKE_INSTALL_PREFIX=${BUILD_DIR} ${USER_CMAKE_CONFIG} -DBUILD_SHARED_LIBS=Yes -DSHARED_LIBS=On -DWITH_MYSQL=Off -DWITH_POSTGRES=Off 
+CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${BUILD_DIR} ${USER_CMAKE_CONFIG} -DBUILD_SHARED_LIBS=Yes -DSHARED_LIBS=On -DWITH_MYSQL=Off -DWITH_POSTGRES=Off
 #-DCMAKE_CXX_FLAGS='-fPIC' -DSHARED_LIBS=On
 BUILD_IN_SOURCE 1
 )

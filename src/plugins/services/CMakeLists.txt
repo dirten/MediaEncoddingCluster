@@ -2,7 +2,7 @@
 
 add_subdirectory (hiveservice)
 add_subdirectory (jobexecutor)
-add_subdirectory (processunitcontroller)
+#add_subdirectory (processunitcontroller)
 #add_subdirectory (webservice)
 #add_subdirectory (mediaimporter)
 #add_subdirectory (mediaexporter)

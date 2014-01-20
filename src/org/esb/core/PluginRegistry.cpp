@@ -53,13 +53,14 @@ namespace org {
         return OptionsDescription();
       }
 
-      std::list<std::string> PluginRegistry::getPluginNameList() {
+      std::list<std::string> PluginRegistry::getPluginNameList(PLUGIN_ORDER order) {
         std::list<std::string> result;
         typedef std::map<std::string, Plugin*> PluginMap;
-
         foreach(PluginMap::value_type s, _plug_map) {
           result.push_back(s.first);
         }
+
+
         return result;
       }
 
@@ -73,7 +74,7 @@ namespace org {
         //OptionsDescription desc = plugin->getOptionsDescription();
       }
 
-      void CORE_EXPORT PluginRegistry::startServerServices() {
+      void PluginRegistry::startServerServices() {
         startWebService();
         typedef std::map<std::string, Plugin*> PluginMap;
 
@@ -85,7 +86,7 @@ namespace org {
         }
       }
 
-      void CORE_EXPORT PluginRegistry::startClientServices() {
+      void PluginRegistry::startClientServices() {
         typedef std::map<std::string, Plugin*> PluginMap;
 
         foreach(PluginMap::value_type s, _service_map) {
@@ -96,7 +97,7 @@ namespace org {
 
       }
 
-      void CORE_EXPORT PluginRegistry::startWebService(){
+      void PluginRegistry::startWebService(){
         //try{
         server=new org::esb::core::http::Server(atoi(Environment::get("webport").c_str()));
         server->setRequestHandlerFactory(_webhook_handler_factory);
@@ -106,7 +107,7 @@ namespace org {
         //}
       }
 
-      void CORE_EXPORT PluginRegistry::startServiceByName(std::string name){
+      void PluginRegistry::startServiceByName(std::string name){
         bool found=false;
         typedef std::map<std::string, Plugin*> PluginMap;
 
@@ -122,7 +123,7 @@ namespace org {
         }
       }
 
-      void CORE_EXPORT PluginRegistry::stopServiceByName(std::string name){
+      void PluginRegistry::stopServiceByName(std::string name){
         bool found=false;
         typedef std::map<std::string, Plugin*> PluginMap;
 
@@ -138,7 +139,7 @@ namespace org {
         }
       }
 
-      void CORE_EXPORT PluginRegistry::stopServices() {
+      void PluginRegistry::stopServices() {
         typedef std::map<std::string, Plugin*> PluginMap;
 
         foreach(PluginMap::value_type s, _service_map) {
@@ -199,6 +200,7 @@ namespace org {
         Poco::Net::FTPStreamFactory::registerFactory();
         server=NULL;
         _webhook_handler_factory=new WebHookHandlerFactory();
+        org::esb::grid::GridRegistry::init();
         //istringstream iss (std::string("<test/>"),istringstream::in);
         //Poco::AutoPtr<Poco::Util::XMLConfiguration> conf = new Poco::Util::XMLConfiguration(iss);
 

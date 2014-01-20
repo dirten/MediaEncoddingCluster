@@ -161,6 +161,7 @@ int main(int argc, char * argv[]) {
     }
 
     PluginRegistry::getInstance()->initPlugins();
+    Environment::set("mode", "node");
 
     if (vm.count("loglevel")) {
       Environment::set("loglevel", vm["loglevel"].as<std::string> ());

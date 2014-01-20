@@ -36,7 +36,10 @@ namespace org {
         std::string getData(std::string key);
         void setData(std::string key, std::string value);
         void setEndpoint(boost::asio::ip::udp::endpoint);
-      private:
+        boost::posix_time::ptime getLastActivity();
+        void setLastActivity(boost::posix_time::ptime la);
+        void setStatus(NodeStatus status);
+        private:
         boost::asio::ip::address _ipaddress;
         std::string _name;
         NodeStatus _status;

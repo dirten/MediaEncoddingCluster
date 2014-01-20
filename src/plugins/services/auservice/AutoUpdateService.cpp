@@ -27,7 +27,7 @@ namespace auservice {
     if (msg.containsProperty("server_up_event")) {
       LOGDEBUG("Server Up event received");
       _host = msg.getProperty<std::string > ("host");
-      _port = msg.getProperty<std::string>("webport");
+      _port = msg.getProperty<std::string> ("webport");
       _stop=false;
       go(AutoUpdateService::run, this);
     } else if (msg.containsProperty("server_down_event")) {

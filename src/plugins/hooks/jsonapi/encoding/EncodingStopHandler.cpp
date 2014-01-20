@@ -28,7 +28,7 @@ public:
       job.status = job.status == db::Job::Status::Processing ? db::Job::Status::Stopping : db::Job::Status::Stopped;
       job.update();
       std::string job_id = org::esb::util::StringUtil::toString(job.id);
-      org::esb::signal::Messenger::getInstance().sendMessage(org::esb::signal::Message().setProperty("jobexecutor", "STOP_JOB").setProperty("job_id", job_id));
+      org::esb::signal::Messenger::getInstance().sendMessage(org::esb::signal::Message().setProperty("jobexecutor", std::string("STOP_JOB")).setProperty("job_id", job_id));
 
       result.setStatus(res.HTTP_OK,"stop encoding succesful signaled");
     } else {

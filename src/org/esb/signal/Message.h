@@ -22,24 +22,18 @@ namespace org {
       public:
         Message();
         Message(boost::shared_ptr<void *> ent);
-        Message & setProperty(std::string key, std::string value);
-        Message & setProperty(std::string key, int value);
+        //Message & setProperty(std::string key, std::string value);
+        //Message & setProperty(std::string key, int value);
+        Message & setProperty(std::string key, boost::any value);
         //Message & setProperty(std::string key, boost::shared_ptr<org::esb::hive::job::ProcessUnit>);
-        Message & setProperty(std::string key, boost::shared_ptr<void>);
+        //Message & setProperty(std::string key, boost::shared_ptr<void>);
         //std::string & getProperty(std::string key);
 
         template<typename T>
         T getProperty(std::string key) {
-          boost::any data;
-          if (containsProperty(key))
-            data = str_props[key];
-          else
-            data=std::string("");
-          return boost::any_cast<T > (data);
+          //if (containsProperty(key))
+          return boost::any_cast<T > (str_props[key]);
         }
-
-        //boost::shared_ptr<org::esb::hive::job::ProcessUnit> getPtrProperty(std::string key);
-        //boost::shared_ptr<void> getVoidProperty(std::string key);
 
         template<typename T>
         boost::shared_ptr<T> getPtrProperty(std::string key) {

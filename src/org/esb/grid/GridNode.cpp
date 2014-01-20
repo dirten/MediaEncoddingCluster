@@ -6,6 +6,7 @@
  */
 
 #include "GridNode.h"
+#include "org/esb/util/Foreach.h"
 //#include "boost/date_time/posix_time/posix_time.hpp"
 namespace org {
   namespace esb {
@@ -28,9 +29,11 @@ namespace org {
       std::string GridNode::toString() {
         std::ostringstream oss;
         oss << _ep.address() << ":";
-        oss << _ep.port();
-        //        oss<<":"<<_ep.protocol();
-        //oss << ":" << boost::posix_time::to_simple_string(_last_activity);
+        oss << _ep.port()<<" ";
+        typedef std::map<std::string, std::string> KeyValueMap;
+        foreach(KeyValueMap::value_type line, _node_data){
+          oss<<line.first<<"="<<line.second<<" ";
+        }
         return oss.str();
       }
         GridNode::NodeStatus GridNode::getStatus(){
@@ -62,6 +65,16 @@ namespace org {
       bool GridNode::operator==(const GridNode*a)const {
         //        logdebug("*operator==");
         return _ep == a->_ep;
+      }
+      boost::posix_time::ptime GridNode::getLastActivity(){
+        return _last_activity;
+      }
+      void GridNode::setLastActivity(boost::posix_time::ptime la){
+        _last_activity=la;
+      }
+
+      void GridNode::setStatus(NodeStatus status){
+        _status=status;
       }
 
       GridNode::~GridNode() {

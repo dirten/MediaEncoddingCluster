@@ -38,13 +38,15 @@
 #include <exception>
 
 #include "org/esb/util/Serializing.h"
+#include "org/esb/grid/GridNode.h"
+
 //#include "boost/date_time/gregorian/gregorian.hpp"
 
 namespace org {
   namespace esb {
     namespace plugin {
       NodeResolver::NodeList NodeResolver::_nodes;
-
+      /*
       Node::Node() {
         _name = "null";
         _status = NODE_UP;
@@ -99,9 +101,9 @@ namespace org {
         //        logdebug("*operator==");
         return _ep == a->_ep;
       }
-
+      */
       
-      NodeResolver::NodeResolver(const boost::asio::ip::address& listen_address, const boost::asio::ip::address& multicast_address, int port, Node node) :
+      NodeResolver::NodeResolver(const boost::asio::ip::address& listen_address, const boost::asio::ip::address& multicast_address, int port, GridNode node) :
       _node_timeout(10),
       send_endpoint_(multicast_address, port),
       send_socket_(send_service_, send_endpoint_.protocol()),
@@ -139,7 +141,7 @@ namespace org {
 
       }
 
-      void NodeResolver::setNode(Node node) {
+      void NodeResolver::setNode(GridNode node) {
       }
 
       void NodeResolver::handle_send(const boost::system::error_code& error) {
@@ -181,7 +183,7 @@ namespace org {
       void NodeResolver::handle_receive(const boost::system::error_code& error, size_t bytes_recvd) {
         //LOGDEBUG("Bytes received"<<bytes_recvd);
         if (!error) {
-          Ptr<Node> nodePtr = Ptr<Node > (new Node());
+          Ptr<GridNode> nodePtr = Ptr<GridNode > (new GridNode());
 
           if (bytes_recvd > 0) {
             std::string tmp(data_, bytes_recvd);
@@ -204,18 +206,18 @@ namespace org {
           nodePtr->setEndpoint(recv_endpoint_);
 
           bool contains = false;
-          std::list<Ptr<Node> >::iterator it = _nodes.begin();
+          std::list<Ptr<GridNode> >::iterator it = _nodes.begin();
           for (; it != _nodes.end(); it++) {
             boost::posix_time::ptime actual_time = boost::posix_time::second_clock::local_time();
-            if ((*it)->_last_activity + boost::posix_time::seconds(_node_timeout) < actual_time) {
-              if ((*it)->_status == Node::NODE_UP) {
-                (*it)->_status = Node::NODE_DOWN;
+            if ((*it)->getLastActivity() + boost::posix_time::seconds(_node_timeout) < actual_time) {
+              if ((*it)->getStatus() == GridNode::NODE_UP) {
+                (*it)->setStatus(GridNode::NODE_DOWN) ;
                 notifyListener(*(*it));
               }
             }
             if (*(*it) == *nodePtr) {
               contains = true;
-              (*it)->_last_activity = actual_time;
+              (*it)->setLastActivity(actual_time);
             }
           }
           if (!contains) {
@@ -234,7 +236,7 @@ namespace org {
       }
 
       void NodeResolver::start() {
-        std::list<Ptr<Node> >::iterator it = _nodes.begin();
+        std::list<Ptr<GridNode> >::iterator it = _nodes.begin();
         for (; it != _nodes.end(); it++) {
               notifyListener(*(*it));
         }
@@ -264,16 +266,16 @@ namespace org {
         send_service_.stop();
       }
 
-      void NodeResolver::notifyListener(Node & node) {
+      void NodeResolver::notifyListener(GridNode & node) {
         //LOGDEBUG("Notify:"<<node.toString()<<":"<<node.getData("type"))
         boost::mutex::scoped_lock lock(notify_mutex);
         std::list<NodeListener*>::iterator it = _listener.begin();
         for (; it != _listener.end(); it++) {
-          if (node._status == Node::NODE_UP) {
+          if (node.getStatus() == GridNode::NODE_UP) {
             LOGDEBUG("NotifyNodeUp:"<<node.toString());
             (*it)->onNodeUp(node);
           }
-          if (node._status == Node::NODE_DOWN) {
+          if (node.getStatus()== GridNode::NODE_DOWN) {
             LOGDEBUG("NotifyNodeDown:"<<node.toString())
             (*it)->onNodeDown(node);
           }

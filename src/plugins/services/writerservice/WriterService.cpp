@@ -22,9 +22,6 @@ namespace plugin {
 
   }
 
-  void WriterService::onMessage(org::esb::signal::Message &){
-
-  }
 
   void WriterService::startService(){
     /*restart export from aborted writings*/
@@ -48,6 +45,7 @@ namespace plugin {
 
   void WriterService::stopService(){
     _status=STOPPING;
+    //Thread::sleep2(1500);
   }
 
   org::esb::core::OptionsDescription WriterService::getOptionsDescription(){
@@ -62,9 +60,6 @@ namespace plugin {
     return SERVICE_TYPE_SERVER;
   }
 
-  void WriterService::init(){
-
-  }
 
   void WriterService::observeProcessUnits(){
     int next_id=0;

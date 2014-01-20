@@ -4,16 +4,14 @@
 #include "org/esb/core/ServicePlugin.h"
 
 namespace plugin {
-  class WriterService : public org::esb::core::ServicePlugin , org::esb::signal::MessageListener
+  class WriterService : public org::esb::core::ServicePlugin
   {
     public:
       WriterService();
-      void onMessage(org::esb::signal::Message &);
       void startService();
       void stopService();
       org::esb::core::OptionsDescription getOptionsDescription();
       org::esb::core::ServicePlugin::ServiceType getServiceType();
-      void init();
     private:
       enum STATUS {
         NONE,

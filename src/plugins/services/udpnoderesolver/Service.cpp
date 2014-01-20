@@ -12,36 +12,43 @@
 #include "org/esb/config/config.h"
 #include "org/esb/signal/Message.h"
 #include "org/esb/signal/Messenger.h"
+#include "org/esb/grid/GridNode.h"
+using org::esb::grid::GridNode;
 
 class NodeListener : public org::esb::plugin::NodeListener {
-
     classlogger("NodeListener")
     public:
     NodeListener() {
     }
 
-    void onNodeUp(org::esb::plugin::Node & node) {
+    void onNodeUp(GridNode & node) {
       if (node.getData("type") == "server") {
         LOGDEBUG("Server Node up")
         org::esb::signal::Messenger::getInstance().sendMessage(
-        org::esb::signal::Message().setProperty("server_up_event", "").
+        org::esb::signal::Message().setProperty("server_up_event", std::string("")).
         setProperty("host", node.getIpAddress().to_string()).
         setProperty("port", atoi(node.getData("port").c_str())).
-        setProperty("webport", node.getData("webport").c_str())
+        setProperty("webport", node.getData("webport"))
         );
       }
+      org::esb::signal::Messenger::getInstance().sendMessage(
+      org::esb::signal::Message().setProperty("node_up_event", node)
+      );
     }
 
-    void onNodeDown(org::esb::plugin::Node & node) {
+    void onNodeDown(GridNode & node) {
       if (node.getData("type") == "server") {
         LOGDEBUG("Server Node down")
         org::esb::signal::Messenger::getInstance().sendMessage(
-        org::esb::signal::Message().setProperty("server_down_event", "").
+        org::esb::signal::Message().setProperty("server_down_event", std::string("")).
         setProperty("host", node.getIpAddress().to_string()).
         setProperty("port", atoi(node.getData("port").c_str())).
-        setProperty("webport", node.getData("webport").c_str())
+        setProperty("webport", node.getData("webport"))
         );
       }
+      org::esb::signal::Messenger::getInstance().sendMessage(
+      org::esb::signal::Message().setProperty("node_down_event", node)
+      );
     }
   private:
 };
@@ -62,7 +69,7 @@ namespace udpnoderesolver {
 
   void Service::startService() {
     LOGDEBUG("Start UDP Node Resolver Service");
-    org::esb::plugin::Node node;
+    GridNode node;
     node.setData("type", org::esb::config::Config::getProperty("mode", "server"));
     node.setData("version", "0.0.5.0");
     node.setData("port", org::esb::config::Config::getProperty("hiveserver.port", "20200"));

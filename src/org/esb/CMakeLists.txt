@@ -133,7 +133,7 @@ add_subdirectory (lang)
 #add_subdirectory (thrift)
 
 #add_subdirectory (mq)
-#add_subdirectory (grid)
+add_subdirectory (grid)
 #add_subdirectory (rpc)
 #add_subdirectory (api)
 #TARGET_LINK_LIBRARIES(lang
@@ -369,6 +369,9 @@ TARGET_LINK_LIBRARIES(hive
   json
   util
   ${Boost_LIBRARIES}
+  ${POCO_LIB_NET}
+  ${POCO_LIB_FOUNDATION}
+
 )
 
 INSTALL(TARGETS hive

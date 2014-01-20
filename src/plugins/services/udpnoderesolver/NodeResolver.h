@@ -34,6 +34,7 @@
 #include <list>
 #include "org/esb/util/Log.h"
 #include "org/esb/lang/Ptr.h"
+#include "org/esb/grid/GridNode.h"
 
 #include "boost/date_time/posix_time/posix_time.hpp"
 //#include <boost/serialization/serialization.hpp>
@@ -47,7 +48,8 @@
 namespace org {
   namespace esb {
     namespace plugin {
-
+      using org::esb::grid::GridNode;
+      /*
       class UDPNODERSOLVER_EXPORT Node {
         classlogger("org.esb.plugin.Node")
       public:
@@ -81,20 +83,20 @@ namespace org {
           ar & _node_data;
         }
       };
-
+      */
       class UDPNODERSOLVER_EXPORT NodeListener {
         classlogger("org.esb.UdpNodeListener")
       public:
-        virtual void onNodeUp(Node & node) = 0;
-        virtual void onNodeDown(Node & node) = 0;
+        virtual void onNodeUp(GridNode & node) = 0;
+        virtual void onNodeDown(GridNode & node) = 0;
 
       };
 
       class UDPNODERSOLVER_EXPORT NodeResolver{
         classlogger("org.esb.UdpNodeResolver")
       public:
-        typedef std::list<Ptr<Node> > NodeList;
-        NodeResolver(const boost::asio::ip::address& listen_address, const boost::asio::ip::address& multicast_address, int, Node);
+        typedef std::list<Ptr<GridNode> > NodeList;
+        NodeResolver(const boost::asio::ip::address& listen_address, const boost::asio::ip::address& multicast_address, int, GridNode);
         void setListenAddress(const boost::asio::ip::address& address);
         void setMulticastAddress(const boost::asio::ip::address& address);
         void setPort(int);
@@ -104,7 +106,7 @@ namespace org {
         void stop();
         void setNodeTimeout(unsigned int sec);
         void setNodeMessage(std::string msg);
-        void setNode(Node);
+        void setNode(GridNode);
         static NodeList getNodes();
 
       private:
@@ -126,7 +128,7 @@ namespace org {
 
         int message_count_;
         std::string message_;
-        Node _self;
+        GridNode _self;
         static NodeList _nodes;
         std::list<NodeListener*>_listener;
 
@@ -141,7 +143,7 @@ namespace org {
           NODE_UP,
           NODE_DOWN
         };
-        void notifyListener(Node & n);
+        void notifyListener(GridNode & n);
         boost::mutex notify_mutex;
       };
     }

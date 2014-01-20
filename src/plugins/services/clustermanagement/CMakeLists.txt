@@ -12,7 +12,7 @@ add_library (clustermanagement SHARED
  )
 
 TARGET_LINK_LIBRARIES(clustermanagement
-  mhive-thrift
+  signal
 )
 
 SET_TARGET_PROPERTIES( clustermanagement PROPERTIES PREFIX "")

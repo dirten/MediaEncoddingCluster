@@ -39,9 +39,9 @@ add_library (core SHARED
 MESSAGE("PocoLinkLibarayUtil"  ${POCO_LIB_NET_UTIL})
 
 TARGET_LINK_LIBRARIES(core 
-  ${POCO_LIB_NET}
+  #${POCO_LIB_NET}
   #${POCO_LIB_NET_UTIL}
-  ${POCO_LIB_FOUNDATION}
+  #${POCO_LIB_FOUNDATION}
   #json
   #db
   #lang
@@ -55,6 +55,7 @@ TARGET_LINK_LIBRARIES(core
   #db
   #util
   #core_http
+  grid
 )
 
 if(MINGW)
