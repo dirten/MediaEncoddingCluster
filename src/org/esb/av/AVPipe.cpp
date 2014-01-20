@@ -11,8 +11,13 @@ namespace org {
       }
       AVPipe::~AVPipe()
       {
+        clearTargets();
+      }
+
+      void AVPipe::clearTargets(){
         _targets.clear();
       }
+
       /*
       bool AVPipe::newPacket(Ptr<Packet> p){
         return false;

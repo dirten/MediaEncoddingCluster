@@ -44,7 +44,7 @@ namespace org {
           AVPipe();
           virtual ~AVPipe();
           void addTarget(AVPipe * pipe);
-
+          void clearTargets();
         //protected:
           bool pushPacket(Ptr<Packet> p);
           bool pushFrame(Ptr<Frame> p);

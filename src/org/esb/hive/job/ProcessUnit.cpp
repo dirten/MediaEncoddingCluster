@@ -133,15 +133,17 @@ void ProcessUnit::process() {
     delete _converter;
     _output_packets.clear();
     _converter = NULL;
-    _decoder = boost::shared_ptr<Decoder>(new Decoder(*_decoder.get()));//_2passdecoder;
-    _encoder = boost::shared_ptr<Encoder>(new Encoder(*_encoder.get()));//_2passencoder;
-    //_decoder->reset();
-    //_encoder->reset();
+    //_decoder = boost::shared_ptr<Decoder>(new Decoder(*_decoder.get()));//_2passdecoder;
+    //_encoder = boost::shared_ptr<Encoder>(new Encoder(*_encoder.get()));//_2passencoder;
+    _decoder->reset();
+    _encoder->reset();
     //_encoder->setCodecID(CODEC_ID_LIBXVID);
     _encoder->setCodecOption("flags", "pass2");
     //_encoder->setCodecOption("g", org::esb::util::StringUtil::toString(_input_packets.size()));
     _encoder->setCodecOption("passlogfile", oss.str());
     _encoder->setFlag(CODEC_FLAG_PASS2);
+
+    _decoder->clearTargets();
     processInternal2();
   }
   org::esb::io::File statsfile(oss.str());
@@ -217,9 +219,13 @@ void ProcessUnit::processInternal2() {
     boost::shared_ptr<Packet> p = *it;
     _decoder->newPacket(p);
   }
-  LOGDEBUG("flush");
-  /*sending an empty packet is implicit a flush for the pipe*/
-  while(_decoder->newPacket(new Packet()));
+
+  if(_decoder->getCodecType()==AVMEDIA_TYPE_VIDEO){
+    LOGDEBUG("flush");
+
+    /*sending an empty packet is implicit a flush for the pipe*/
+    while(_decoder->newPacket(new Packet()));
+  }
 
   _output_packets = sink.getList();
 }
