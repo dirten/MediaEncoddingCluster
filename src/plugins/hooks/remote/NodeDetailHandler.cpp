@@ -10,7 +10,7 @@
 using org::esb::grid::GridNode;
 using org::esb::grid::GridRegistry;
 namespace plugin{
-  class NodeListHandler : public org::esb::core::WebHookPlugin {
+  class NodeDetailHandler : public org::esb::core::WebHookPlugin {
 
       void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
         JSONResult result(req);
@@ -36,7 +36,7 @@ namespace plugin{
 
   };
 
-  REGISTER_WEB_HOOK("/api/v1/node$", GET, NodeDeatilHandler)
+  REGISTER_WEB_HOOK("/api/v1/node$", GET, NodeDetailHandler)
 
 }
 

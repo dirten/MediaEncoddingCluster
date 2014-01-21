@@ -21,10 +21,10 @@ namespace plugin{
           JSONNode entry(JSON_NODE);
           //entry.set_name("node");
           entry.push_back(JSONNode("ip",node.getIpAddress().to_string()));
-          entry.push_back(JSONNode("ip",node.getIpAddress().to_string()));
           entry.push_back(JSONNode("hiveport",node.getData("port")));
           entry.push_back(JSONNode("mgmtport",node.getData("webport")));
           entry.push_back(JSONNode("type",node.getData("type")));
+          entry.push_back(JSONNode("status",node.getStatus()));
 
           c.push_back(entry);
         }

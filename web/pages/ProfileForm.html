@@ -7,7 +7,7 @@
   $('#profile_tabs').tabs();
 
   function loadFormAndBind(formname, data){
-    console.log(data);
+    //console.log(data);
 
     $('#'+formname).empty();
     /*load format form*/
@@ -26,8 +26,10 @@
       loadFormAndBind(formname,data);
     })
   }
-
-  $.getJSON( "/api/v1/profile/"+profileId, function( data ) {
+//  var profileId=$("#dialog-form").data('profileId');
+  //alert("test"+$("#dialog-form").data());
+  //console.log(this);
+  $.getJSON( "/api/v1/profile/"+$("#dialog-form").data('profileId'), function( data ) {
     profile_data=data.data;
   }).fail(function(jqxhr, textStatus, error) {
     profile_data={

@@ -1,0 +1,63 @@
+
+<script>
+$.getJSON( "/api/v1/nodes", function( data ) {
+  var i=0;
+  $.each( data.data, function( key, val ) {
+    var even_odd=++i%2==0?'even':'odd';
+    $("#list_nodes").append('<tr class="'+even_odd+' clickable" data="'+val.ip+'"><td>'+val.ip+'</td><td>'+val.mgmtport+'</td><td>'+val.hiveport+'</td><td>'+val.type+'</td><td style="color:'+(val.status==0?"red":"green")+'">'+(val.status==0?"Offline":"Online")+'</td></tr>');
+  });
+  $(".clickable").click( function() {
+    var ip=this.getAttribute("data");
+    $("#dialog-form-node-services").data('ip', ip)
+    //$("#dialog-form-node-services").dialog("open");
+    $("#dialog-form-node-services").load('pages/SystemDetail.html', function() {
+      $( this ).dialog("open");
+    });
+  });
+
+});
+
+
+
+  $("#dialog-form-node-services").dialog({
+    autoOpen: false,
+    height: 300,
+    width: 800,
+    modal: true,
+    closeOnEscape: false,
+    buttons: [
+            {
+                id: "button-start",
+                text: "Start",
+                click: function() {
+                    $(this).dialog("close");
+                }
+            },
+            {
+                  id: "button-cancel",
+                  text: "Close",
+                  click: function() {
+                    $(this).dialog("close");
+                  }
+              }
+
+    ],
+    close: function() {
+      //allFields.val( "" ).removeClass( "ui-state-error" );
+    }
+  });
+
+</script>
+<table width="800" border=0>
+<thead>
+<tr>
+  <th class="underline" style="width:400px">IP Address</th>
+  <th class="underline" style="width:400px">mgmtport</th>
+  <th class="underline" style="width:400px">hiveport</th>
+  <th class="underline" style="width:400px">type</th>
+  <th class="underline" style="width:400px">status</th>
+</tr>
+</thead>
+<tbody id="list_nodes"/>
+</table>
+<div id="dialog-form-node-services" title="Node Services">

@@ -6,6 +6,7 @@ add_library (remote SHARED
   StatusHandler.cpp
   RemoteController.cpp
   NodeListHandler.cpp
+  NodeDetailHandler.cpp
 )
 
 TARGET_LINK_LIBRARIES(remote

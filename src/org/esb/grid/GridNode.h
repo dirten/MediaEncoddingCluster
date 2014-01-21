@@ -18,8 +18,8 @@ namespace org {
       public:
 
         enum NodeStatus {
-          NODE_UP,
-          NODE_DOWN
+          NODE_DOWN,
+          NODE_UP
         };
 
         GridNode();

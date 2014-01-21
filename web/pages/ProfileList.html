@@ -13,7 +13,8 @@
 <div id="dialog-form" title="Edit Profile">
 </div>
 
-<script>var profileId=0;
+<script>
+
 	$( "#new_profile" )
 	.button()
 	.click( function( event ) {
@@ -22,6 +23,7 @@
 			$("#dialog-form").dialog("open");
 		});
 	});
+
 	function loadList() {
 		$("#list_profile").empty();
 		$.getJSON( "/api/v1/profile", function( data ) {
@@ -30,13 +32,18 @@
 				var even_odd=++i%2==0?'even':'odd';
 				$("#list_profile").append('<tr class="'+even_odd+' clickable" data="'+val.uuid+'"><td>'+val.name+'</td><td>'+val.uuid+'</td></tr>');
 			});
+
 			$(".clickable").click( function() {
-				profileId=this.getAttribute("data");
-				//console.log(profileId);
-				$("#dialog-form").load('pages/ProfileForm.html', function() {
-					$("#dialog-form").dialog("open");
+        profileId=this.getAttribute("data");
+        $("#dialog-form").data('profileId', profileId)
+        //console.log(profileId);
+        $("#dialog-form").load('pages/ProfileForm.html', function() {
+          $( this ).dialog("open");
 				});
 			});
+
+
+
       /*
 			$(".clickable").contextMenu('context-menu-1', {
 				'Context Menu Item 1': {
@@ -70,7 +77,7 @@
 	}
 
 	loadList();
-	$("#dialog-form").dialog({
+  $("#dialog-form").dialog({
 		autoOpen: false,
 		height: 600,
 		width: 800,

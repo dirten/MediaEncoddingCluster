@@ -37,7 +37,8 @@ namespace org{
         } else if (msg.containsProperty("node_down_event")) {
           LOGDEBUG("Server Down event received");
           GridNode node=msg.getProperty<org::esb::grid::GridNode> ("node_down_event");
-          //_instance->removeNode(node);
+          _instance->removeNode(node);
+          _instance->addNode(node);
         } else if (msg.containsProperty("node_list")) {
           LOGDEBUG("node_list request received");
           msg.setProperty("node_list", _instance->nodes());
