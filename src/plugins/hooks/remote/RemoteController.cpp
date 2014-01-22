@@ -26,6 +26,7 @@ namespace plugin{
     _service_map.erase(name);
   }
 
+
   void RemoteController::startPlugin(std::string & name,std::vector<std::string> & extra_args)
   {
     if(!_service_map.count(name)>0){
@@ -44,6 +45,10 @@ namespace plugin{
     if(_service_map.count(name)){
       _service_map[name]->kill();
     }
+  }
+
+  bool RemoteController::running(string plugin_name){
+    return _service_map.count(plugin_name)>0;
   }
 
   RemoteController::RemoteController()

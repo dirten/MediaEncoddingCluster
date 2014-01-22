@@ -36,7 +36,7 @@ namespace plugin{
 
   };
 
-  REGISTER_WEB_HOOK("/api/v1/node$", GET, NodeDetailHandler)
+  REGISTER_WEB_HOOK("/api/v1/node/?$", GET, NodeDetailHandler)
 
 }
 

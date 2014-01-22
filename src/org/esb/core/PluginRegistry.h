@@ -15,10 +15,12 @@
 #include "org/esb/lang/SharedObjectLoader.h"
 #include "org/esb/lang/Ptr.h"
 #include "http/Server.h"
-#include "org/esb/grid/GridRegistry.h"
 #include "exports.h"
 namespace org {
   namespace esb {
+    namespace grid{
+      class GridRegistry;
+    }
     namespace core {
       class Plugin;
       class PluginContext;

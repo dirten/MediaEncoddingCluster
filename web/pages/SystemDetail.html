@@ -1,23 +1,17 @@
 <script>
-var ip=$("#dialog-form-node-services").data('ip');
-console.log(ip);
-$.getJSON( "/api/v1/node", function( data ) {
-  //profile_data=data.data;
-  console.log(data)
-});
+  var ip=$("#dialog-form-node-services").data('ip');
 
+  $.getJSON( "/api/v1/remote/status?ip="+ip, function( data ) {
+    var i=0;
+    $.each( data.data, function( key, val ) {
+      var even_odd=++i%2==0?'even':'odd';
+      $("#node_services").append('<label class="'+even_odd+'" for="'+val.name+'">'+val.name+'</label>');
+      $("#node_services").append('<input class="'+even_odd+'" type="checkbox" name="'+val.name+'" id="'+val.name+'" '+(val.running?"checked":"")+' class="text ui-widget-content ui-corner-all"></br>');
+    });
+  });
 </script>
 <form id="ProfileForm" name="ProfileForm">
-  <fieldset id="profile"><legend>General</legend>
-
-    <label for="name">Client Service</label>
-    <input type="checkbox" name="clientcontroller" id="clientcontroller" class="text ui-widget-content ui-corner-all"></br>
-
-    <label for="name">HiveListener Service</label>
-    <input type="checkbox" name="hivelistener" id="hivelistener" class="text ui-widget-content ui-corner-all"></br>
-
-    <label for="name">Writer Service</label>
-    <input type="checkbox" name="writerservice" id="writerservice" class="text ui-widget-content ui-corner-all"></br>
+  <fieldset id="node_services"><legend>General</legend>
 
   </fieldset>
 </form>

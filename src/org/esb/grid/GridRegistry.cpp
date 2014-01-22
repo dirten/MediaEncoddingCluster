@@ -33,6 +33,7 @@ namespace org{
         if (msg.containsProperty("node_up_event")) {
           LOGDEBUG("Node Up event received:"<<  msg.getProperty<org::esb::grid::GridNode> ("node_up_event").toString());
           GridNode node=msg.getProperty<org::esb::grid::GridNode> ("node_up_event");
+          _instance->removeNode(node);
           _instance->addNode(node);
         } else if (msg.containsProperty("node_down_event")) {
           LOGDEBUG("Server Down event received");

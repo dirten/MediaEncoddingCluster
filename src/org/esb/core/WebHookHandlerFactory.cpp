@@ -30,12 +30,14 @@ using namespace Poco;
         if (req.getURI().find("/api/v1/") != string::npos) {
           LOGDEBUG("WebHookFactory.size()" << _webhook_factory_list.size());
           foreach(WebHookFactory * factory, _webhook_factory_list) {
-            LOGDEBUG("RegEx="+factory->getUrl() << " / uri=" << req.getURI());
+            std::string uri=req.getURI();
+            //uri=StringUtil::replace(uri,".","\\.");
+            //uri=Poco::replace(uri, ".", "\\.");
+            LOGDEBUG("RegEx="+factory->getUrl() << " / uri=" << uri);
             LOGDEBUG("Request Method"+factory->getMethod()<<" / "<< req.getMethod());
             if (factory->getMethod() == req.getMethod()) {
               /*matching url paceholder*/
               std::string url = factory->getUrl();
-              std::string uri=req.getURI();
               Poco::StringTokenizer tokenz(uri,"?");
               //uri=tokenz[0];
               Poco::RegularExpression reholder("\\{(.*?)\\}");

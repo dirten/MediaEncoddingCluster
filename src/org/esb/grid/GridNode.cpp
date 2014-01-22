@@ -57,15 +57,15 @@ namespace org {
         return _ep.address();
       }
 
-      bool GridNode::operator==(const GridNode&a)const {
-        //        logdebug("&operator==");
-        return _ep == a._ep;
+      bool GridNode::operator==(const GridNode & rhs)const {
+        return _ep.address() == rhs._ep.address();
       }
 
-      bool GridNode::operator==(const GridNode*a)const {
-        //        logdebug("*operator==");
-        return _ep == a->_ep;
+
+      bool GridNode::operator==(const GridNode * rhs)const {
+        return _ep.address() == rhs->_ep.address();
       }
+
       boost::posix_time::ptime GridNode::getLastActivity(){
         return _last_activity;
       }

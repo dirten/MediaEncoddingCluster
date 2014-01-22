@@ -12,7 +12,7 @@ namespace plugin{
     public:
       static void startPlugin(std::string & name,std::vector<std::string> & extra_args);
       static void stopPlugin(std::string & name);
-
+      static bool running(std::string plugin_name);
     private:
       RemoteController();
       static void startProcessThread(std::string & name,std::string & command, std::vector<std::string> & args);

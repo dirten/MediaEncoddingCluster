@@ -218,6 +218,10 @@ namespace org {
             if (*(*it) == *nodePtr) {
               contains = true;
               (*it)->setLastActivity(actual_time);
+              if ((*it)->getStatus() == GridNode::NODE_DOWN) {
+                (*it)->setStatus(GridNode::NODE_UP);
+                notifyListener(*nodePtr);
+              }
             }
           }
           if (!contains) {

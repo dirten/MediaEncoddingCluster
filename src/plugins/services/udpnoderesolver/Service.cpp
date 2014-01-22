@@ -31,6 +31,7 @@ class NodeListener : public org::esb::plugin::NodeListener {
         setProperty("webport", node.getData("webport"))
         );
       }
+      LOGDEBUG("Node up")
       org::esb::signal::Messenger::getInstance().sendMessage(
       org::esb::signal::Message().setProperty("node_up_event", node)
       );
@@ -46,6 +47,7 @@ class NodeListener : public org::esb::plugin::NodeListener {
         setProperty("webport", node.getData("webport"))
         );
       }
+      LOGDEBUG("Node down")
       org::esb::signal::Messenger::getInstance().sendMessage(
       org::esb::signal::Message().setProperty("node_down_event", node)
       );
