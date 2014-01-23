@@ -59,7 +59,7 @@ namespace org {
           void stopServices();
           void load(std::string);
           void initPlugins();
-
+          bool isRunning(std::string plugin_name);
           OptionsDescription getOptionsDescription(std::string);
           std::list<std::string> getPluginNameList(PLUGIN_ORDER order=NONE);
 
@@ -97,7 +97,7 @@ namespace org {
           org::esb::core::http::Server * server;
 
           Ptr<org::esb::grid::GridRegistry> _gridRegistry;
-
+          std::list<std::string> _running_plugins;
 
           //bool compare_service_byname(std::string & lhs, std::string & rhs);
           //bool compare_service_byprio(std::string & lhs, std::string & rhs);

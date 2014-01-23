@@ -7,6 +7,7 @@
 #include "RemoteController.h"
 #include "org/esb/util/Foreach.h"
 using org::esb::core::PluginRegistry;
+using org::esb::core::PluginRegistry;
 
 namespace plugin{
   class StatusHandler : public org::esb::core::WebHookPlugin {
@@ -18,7 +19,7 @@ namespace plugin{
           pluginname=req.get("pluginname");
         }
 
-        /*if it has an ip as parameter, then make a remote call like a transparent proxy*/
+        /*if it has an ip parameter, then make a remote call like a transparent proxy*/
         if(req.has("ip")){
           LOGDEBUG("ip="<<req.get("ip"))
         }
@@ -28,7 +29,8 @@ namespace plugin{
           c.set_name("data");
 
           foreach(std::string & name , plugin_names){
-            bool running=RemoteController::running(name);
+            //bool running=RemoteController::running(name);
+            bool running=PluginRegistry::getInstance()->isRunning(name);
             JSONNode entry(JSON_NODE);
             entry.push_back(JSONNode("name",name));
             entry.push_back(JSONNode("running",running));

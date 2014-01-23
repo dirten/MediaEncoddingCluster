@@ -83,7 +83,8 @@ namespace org {
           //LOGDEBUG("ServiceName="<<s.first<<" type="<<((ServicePlugin*) s.second)->getServiceType());
           if (((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_SERVER ||
           ((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_ALL)
-            ((ServicePlugin*) s.second)->startService();
+            //((ServicePlugin*) s.second)->startService();
+          startServiceByName(s.first);
         }
       }
 
@@ -93,9 +94,9 @@ namespace org {
         foreach(PluginMap::value_type s, _service_map) {
           if (((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_CLIENT ||
           ((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_ALL)
-            ((ServicePlugin*) s.second)->startService();
+            //((ServicePlugin*) s.second)->startService();
+          startServiceByName(s.first);
         }
-
       }
 
       void PluginRegistry::startWebService(){
@@ -116,6 +117,7 @@ namespace org {
           if (s.first== name){
             ((ServicePlugin*) s.second)->startService();
             found=true;
+            _running_plugins.push_back(name);
             break;
           }
         }
@@ -132,6 +134,7 @@ namespace org {
           if (s.first== name){
             ((ServicePlugin*) s.second)->stopService();
             found=true;
+            _running_plugins.remove(name);
             break;
           }
         }
@@ -140,17 +143,28 @@ namespace org {
         }
       }
 
+      bool PluginRegistry::isRunning(std::string plugin_name){
+        bool result=false;
+        foreach(std::string name, _running_plugins){
+          if(name==plugin_name){
+            result=true;
+            break;
+          }
+        }
+        return result;
+      }
+
       void PluginRegistry::stopServices() {
         typedef std::map<std::string, Plugin*> PluginMap;
 
         foreach(PluginMap::value_type s, _service_map) {
-          ((ServicePlugin*) s.second)->stopService();
+          //((ServicePlugin*) s.second)->stopService();
+          stopServiceByName(s.first);
         }
         if(server)
           server->stop();
         delete server;
         server=NULL;
-
       }
 
       void PluginRegistry::registerHookPlugin(std::string name, HookPlugin*plugin) {
