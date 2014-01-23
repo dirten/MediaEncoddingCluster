@@ -18,6 +18,7 @@ SET(core_source
   GraphParser.cpp
   GraphException.cpp
   WebHookHandlerFactory.cpp
+  WebHookProxy.cpp
   #http/Server.cpp
   #http/HTTPServerRequest.cpp
   #http/HTTPServerResponse.cpp

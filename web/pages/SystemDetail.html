@@ -1,17 +1,23 @@
 <script>
   var ip=$("#dialog-form-node-services").data('ip');
 
-  $.getJSON( "/api/v1/remote/status?ip="+ip, function( data ) {
+  $.getJSON( "/api/v1/remote/status?ip="+ip.ip, function( data ) {
     var i=0;
     $.each( data.data, function( key, val ) {
       var even_odd=++i%2==0?'even':'odd';
       $("#node_services").append('<label class="'+even_odd+'" for="'+val.name+'">'+val.name+'</label>');
-      $("#node_services").append('<input class="'+even_odd+'" type="checkbox" name="'+val.name+'" id="'+val.name+'" '+(val.running?"checked":"")+' class="text ui-widget-content ui-corner-all"></br>');
+      var checkbox=$('<input class="'+even_odd+'" type="checkbox" name="'+val.name+'" id="'+val.name+'" '+(val.running?"checked":"")+' class="text ui-widget-content ui-corner-all"></br>');
+      $("#node_services").append(checkbox);
+      checkbox.click( function() {
+        console.log("checked"+this.getAttribute("name")+" "+$(this).is(":checked"));
+        var startstop=$(this).is(":checked")==true?"start":"stop";
+        $.post( "/api/v1/remote/"+startstop+"/"+this.getAttribute("name")+"?ip="+ip.ip, function( data ) {
+          console.log(data);
+        });
+      });
     });
   });
 </script>
 <form id="ProfileForm" name="ProfileForm">
-  <fieldset id="node_services"><legend>General</legend>
-
-  </fieldset>
+  <fieldset id="node_services"><legend>Services</legend></fieldset>
 </form>

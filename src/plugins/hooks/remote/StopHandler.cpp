@@ -21,7 +21,7 @@ namespace plugin{
 
   };
 
-  REGISTER_WEB_HOOK("/api/v1/remote/stop/{pluginname}$", POST, StopHandler)
+  REGISTER_WEB_HOOK("/api/v1/remote/stop/{pluginname}?(?:\\?.*)?$", POST, StopHandler)
 
 }
 

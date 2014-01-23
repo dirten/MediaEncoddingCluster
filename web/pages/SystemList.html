@@ -4,17 +4,15 @@ $.getJSON( "/api/v1/nodes", function( data ) {
   var i=0;
   $.each( data.data, function( key, val ) {
     var even_odd=++i%2==0?'even':'odd';
-    $("#list_nodes").append('<tr class="'+even_odd+' clickable" data="'+val.ip+'"><td>'+val.ip+'</td><td>'+val.mgmtport+'</td><td>'+val.hiveport+'</td><td>'+val.type+'</td><td style="color:'+(val.status==0?"red":"green")+'">'+(val.status==0?"Offline":"Online")+'</td></tr>');
-  });
-  $(".clickable").click( function() {
-    var ip=this.getAttribute("data");
-    $("#dialog-form-node-services").data('ip', ip)
-    //$("#dialog-form-node-services").dialog("open");
-    $("#dialog-form-node-services").load('pages/SystemDetail.html', function() {
-      $( this ).dialog("open");
+    var element=$('<tr class="'+even_odd+' clickable" data="'+val.ip+'"><td>'+val.ip+'</td><td>'+val.mgmtport+'</td><td>'+val.hiveport+'</td><td>'+val.type+'</td><td style="color:'+(val.status==0?"red":"green")+'">'+(val.status==0?"Offline":"Online")+'</td></tr>');
+    $("#list_nodes").append(element);
+    element.click( function() {
+      $("#dialog-form-node-services").data('ip', val)
+      $("#dialog-form-node-services").load('pages/SystemDetail.html', function() {
+        $( this ).dialog("open");
+      });
     });
   });
-
 });
 
 
@@ -26,13 +24,7 @@ $.getJSON( "/api/v1/nodes", function( data ) {
     modal: true,
     closeOnEscape: false,
     buttons: [
-            {
-                id: "button-start",
-                text: "Start",
-                click: function() {
-                    $(this).dialog("close");
-                }
-            },
+
             {
                   id: "button-cancel",
                   text: "Close",

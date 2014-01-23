@@ -21,6 +21,7 @@ namespace org{
           static void addNode(GridNode &node);
           static void removeNode(GridNode &node);
           static const std::list<GridNode> nodes();
+          static const GridNode node(std::string ip);
 
     private:
           GridRegistry();

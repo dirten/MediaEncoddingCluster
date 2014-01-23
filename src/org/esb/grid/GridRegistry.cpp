@@ -1,4 +1,5 @@
 #include "GridRegistry.h"
+#include "org/esb/util/Foreach.h"
 
 namespace org{
   namespace esb{
@@ -27,6 +28,14 @@ namespace org{
 
       const std::list<GridNode> GridRegistry::nodes(){
         return _instance->_nodes;
+      }
+
+      const GridNode GridRegistry::node(std::string ip){
+        foreach(GridNode node,_instance->_nodes){
+          if(node.getIpAddress()==boost::asio::ip::address::from_string(ip)){
+            return node;
+          }
+        }
       }
 
       void GridRegistry::onMessage(org::esb::signal::Message &msg) {

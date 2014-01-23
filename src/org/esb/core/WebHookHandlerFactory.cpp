@@ -7,6 +7,7 @@
 
 #include "WebHookHandlerFactory.h"
 #include "WebHookPlugin.h"
+#include "WebHookProxy.h"
 #include "http/RootRequestHandler.h"
 #include "org/esb/util/Foreach.h"
 #include "Poco/RegularExpression.h"
@@ -28,6 +29,22 @@ using namespace Poco;
         //LOGDEBUG("WebHookHandlerFactory::createHandler");
         /*only process the plugins when it is an api call*/
         if (req.getURI().find("/api/v1/") != string::npos) {
+
+          /*here is the right place to intercept proxy requests for remote hosts in the case that is an "ip" request parameter present*/
+          std::string param=URI(req.getURI()).getQuery();
+          Poco::StringTokenizer param_tokenz(param,"&");
+          LOGDEBUG("query parameter : "<<param);
+          bool use_proxy=false;
+          for(Poco::StringTokenizer::Iterator it=param_tokenz.begin();it!=param_tokenz.end();it++){
+            Poco::StringTokenizer key_tokenz(*it,"=");
+            if(key_tokenz[0]=="ip"){
+              use_proxy=true;
+            }
+          }
+          if(use_proxy){
+            LOGDEBUG("redirect to proxy")
+            return static_cast<org::esb::core::http::RequestHandler *> (new WebHookProxy());
+          }
           LOGDEBUG("WebHookFactory.size()" << _webhook_factory_list.size());
           foreach(WebHookFactory * factory, _webhook_factory_list) {
             std::string uri=req.getURI();
