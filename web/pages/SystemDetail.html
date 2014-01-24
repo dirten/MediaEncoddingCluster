@@ -4,14 +4,43 @@
   $.getJSON( "/api/v1/remote/status?ip="+ip.ip, function( data ) {
     var i=0;
     $.each( data.data, function( key, val ) {
+      var parameter={};
       var even_odd=++i%2==0?'even':'odd';
-      $("#node_services").append('<label class="'+even_odd+'" for="'+val.name+'">'+val.name+'</label>');
-      var checkbox=$('<input class="'+even_odd+'" type="checkbox" name="'+val.name+'" id="'+val.name+'" '+(val.running?"checked":"")+' class="text ui-widget-content ui-corner-all"></br>');
-      $("#node_services").append(checkbox);
+      var fieldset=$('<fieldset id="'+val.name+'"><legend>'+val.name+'</legend></fieldset>')
+
+      //console.log(val.parameter);
+      $.each( val.parameter, function( pkey, pval ) {
+          fieldset.append('<label for="'+pval.name+'">'+pval.name+'</label>');
+          var inputfield=$('<input name="'+pval.name+'" type="text" value="'+pval.default+'"></br>');
+          fieldset.append(inputfield);
+          parameter[pval.name]=pval.default;
+          inputfield.change(function() {
+            console.log("Field change "+pval.name+"="+inputfield.val());
+            parameter[pval.name]=inputfield.val();
+          });
+
+
+      });
+      //console.log(parameter);
+      fieldset.append('<label for="'+val.name+'">'+val.name+'</label>');
+      var checkbox=$('<input type="checkbox" name="'+val.name+'" id="'+val.name+'" '+(val.running?"checked":"")+' class="text ui-widget-content ui-corner-all"></br>');
+      fieldset.append(checkbox);
+
+      $("#node_services").append(fieldset);
+
+
       checkbox.click( function() {
+        /*build query parameter list*/
+        var query="";
+        $.each(parameter, function(key, val){
+          query+="&"+key+"="+val;
+        });
+        console.log("Query:"+query);
         console.log("checked"+this.getAttribute("name")+" "+$(this).is(":checked"));
         var startstop=$(this).is(":checked")==true?"start":"stop";
-        $.post( "/api/v1/remote/"+startstop+"/"+this.getAttribute("name")+"?ip="+ip.ip, function( data ) {
+        var url="/api/v1/remote/"+startstop+"/"+this.getAttribute("name")+"?ip="+ip.ip+query;
+        console.log("Url:"+url);
+        $.post( url, function( data ) {
           console.log(data);
         });
       });

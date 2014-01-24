@@ -39,6 +39,7 @@ namespace org{
         std::string ip_address;
         Poco::StringTokenizer param_tokenz(param,"&");
         LOGDEBUG("query parameter : "<<param);
+        path+="?";
         for(Poco::StringTokenizer::Iterator it=param_tokenz.begin();it!=param_tokenz.end();it++){
           Poco::StringTokenizer key_tokenz(*it,"=");
 
@@ -48,7 +49,7 @@ namespace org{
             continue;
           }
           //req.add(key_tokenz[0], key_tokenz.count()>1?key_tokenz[1]:"");
-          path+=key_tokenz[0]+"=";//
+          path+=key_tokenz[0]+"=";
           path+=key_tokenz.count()>1?key_tokenz[1]:"";
           //URI::encode(it->second,"",path);
           path+="&";

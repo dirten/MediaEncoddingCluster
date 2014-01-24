@@ -99,6 +99,7 @@ int main(int argc, char * argv[]) {
     props.setProperty(LOG4CPLUS_TEXT("appender.ERROR.File"), LOG4CPLUS_TEXT(Environment::get("log.path") + "/mhive-error.log"));
     config.configure();
 
+    /*this initialize the ffmpeg library*/
     org::esb::av::FormatBaseStream::initialize();
 
     all.add(gen).add(ser).add(cli);
@@ -126,7 +127,6 @@ int main(int argc, char * argv[]) {
     try {
       po::store(po::parse_command_line(argc, argv, priv), vm);
     } catch(std::exception & ex) {
-      // std::cout <<boost::diagnostic_information(ex)<<std::endl;
       std::cout << ex.what() << "!!!" << std::endl << std::endl;
       std::cout << all << std::endl;
       exit(1);
@@ -145,8 +145,7 @@ int main(int argc, char * argv[]) {
       } else if (vm[val.first].value().type() == typeid (std::vector<std::string>)) {
         std::vector<std::string>plugins=vm["explicit"].as<std::vector<std::string> >();
         foreach(std::string pluginname, plugins){
-          LOGDEBUG("setting evironment need to be done: "<<pluginname);
-          //Environment::set(val.first, StringUtil::toString(vm[val.first].as<bool>()));
+          std::cout << "setting evironment need to be done: "<<pluginname<< std::endl;
         }
       } else {
         Environment::set(val.first, vm[val.first].as<std::string > ());
