@@ -224,10 +224,18 @@ void ProcessUnit::processInternal2() {
     LOGDEBUG("flush");
 
     /*sending an empty packet is implicit a flush for the pipe*/
-    while(_decoder->newPacket(new Packet()));
+    if(_decoder->getCodecId()!=AV_CODEC_ID_MPEG2VIDEO){
+      while(_decoder->newPacket(new Packet()));
+    }else{
+      //while(filter->newPacket(new Packet()));
+      while(filter->newFrame(new Frame()));
+    }
   }
 
   _output_packets = sink.getList();
+  if(_decoder->getCodecId()==AV_CODEC_ID_MPEG2VIDEO){
+    //_output_packets.pop_back();
+  }
 }
 
 
