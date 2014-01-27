@@ -11,9 +11,11 @@ namespace org {
       class AV_EXPORT FormatBaseStream {
         classlogger("org.esb.av.FormatBaseStream")
       public:
-        FormatBaseStream();
         static void initialize();
         static std::list<std::string> getLastAvMessage(void * ptr);
+      protected:
+        FormatBaseStream();
+
       private:
         static void mhive_log_default_callback(void* ptr, int level, const char* fmt, va_list vl);
         static std::map<std::string, std::list<std::string> > logMap;

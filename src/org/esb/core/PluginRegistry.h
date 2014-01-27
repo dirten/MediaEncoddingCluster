@@ -61,7 +61,7 @@ namespace org {
           void initPlugins();
           bool isRunning(std::string plugin_name);
           OptionsDescription getOptionsDescription(std::string);
-          std::list<std::string> getPluginNameList(PLUGIN_ORDER order=NONE);
+          std::list<std::string> getPluginNameList();
 
           std::list<std::string> getTaskNameList();
           OptionsDescription getTaskOptionsDescription(std::string);

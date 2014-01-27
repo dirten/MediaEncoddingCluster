@@ -183,7 +183,7 @@ int main(int argc, char** argv) {
       audio = true;
       _sdata[i].enc->setStreamIndex(s);
 
-      _sdata[i].enc->setCodecId(CODEC_ID_AAC);
+      _sdata[i].enc->setCodecId(CODEC_ID_MP3);
       _sdata[i].enc->setBitRate(128000);
       _sdata[i].enc->setSampleRate(44100);
       _sdata[i].enc->setChannels(2);

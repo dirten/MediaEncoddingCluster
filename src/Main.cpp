@@ -57,40 +57,40 @@ namespace po = boost::program_options;
 
 
 int main(int argc, char * argv[]) {
-    std::cout << "test"<<std::endl;
-    org::esb::hive::Environment::build(argc, argv);
-    //return 0;
+  std::cout << "test"<<std::endl;
+  org::esb::hive::Environment::build(argc, argv);
+  //return 0;
 
 
   try {
     po::options_description gen("General options");
     gen.add_options()
-    ("help", "produce this message")
-    ("version", "Prints the Version")
-    ("explicit", po::value<std::vector<std::string> >()->multitoken(), "starting only plugins explicit");
+        ("help", "produce this message")
+        ("version", "Prints the Version")
+        ("explicit", po::value<std::vector<std::string> >()->multitoken(), "starting only plugins explicit");
 
     po::options_description ser("Server options");
     ser.add_options()
-    ("run,r", "start the Hive as Console Process")
-    ("webport,w", po::value<std::string > ()->default_value("8080"), "Port number for the webservice");
+        ("run,r", "start the Hive as Console Process")
+        ("webport,w", po::value<std::string > ()->default_value("8080"), "Port number for the webservice");
 
     po::options_description cli("Client options");
 
     cli.add_options()
-    ("client,i", "start the Hive Client");
+        ("client,i", "start the Hive Client");
 
     po::options_description priv("");
     priv.add_options()
-    ("process,p", "")
-    ("erlang", "")
-    ("console,c", "")
-    ("quiet", "")
-    ("debug", "")
-    ("webserver", "")
-    ("waitonstdin", "")
-    ("waitonctrlc", "")
-    ("supervisor", "")
-    ("docroot,d", po::value<std::string > (), "webserver document root");
+        ("process,p", "")
+        ("erlang", "")
+        ("console,c", "")
+        ("quiet", "")
+        ("debug", "")
+        ("webserver", "")
+        ("waitonstdin", "")
+        ("waitonctrlc", "")
+        ("supervisor", "")
+        ("docroot,d", po::value<std::string > (), "webserver document root");
     po::options_description all("all");
 
     log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT(Environment::get("hive.config_path") + "/logging.properties"));
@@ -112,8 +112,8 @@ int main(int argc, char * argv[]) {
     po::options_description plugin_opts("Plugin options");
 
     /*retrieving all option from the loaded plugins*/
-    foreach(std::string data, PluginRegistry::getInstance()->getPluginNameList()) {
-      OptionsDescription od = PluginRegistry::getInstance()->getOptionsDescription(data);
+    foreach(std::string name, PluginRegistry::getInstance()->getPluginNameList()) {
+      OptionsDescription od = PluginRegistry::getInstance()->getOptionsDescription(name);
       if (od.options().size() > 0){
         plugin_opts.add(od);
       }
@@ -145,6 +145,7 @@ int main(int argc, char * argv[]) {
       } else if (vm[val.first].value().type() == typeid (std::vector<std::string>)) {
         std::vector<std::string>plugins=vm["explicit"].as<std::vector<std::string> >();
         foreach(std::string pluginname, plugins){
+          /*TODO: setting list arguments in the environment*/
           std::cout << "setting evironment need to be done: "<<pluginname<< std::endl;
         }
       } else {
@@ -152,7 +153,6 @@ int main(int argc, char * argv[]) {
       }
     }
 
-    Environment::set("partition", "global");
 
     if (vm.count("help") || argc == 1) {
       cout << all << "\n";
@@ -160,7 +160,9 @@ int main(int argc, char * argv[]) {
     }
 
     PluginRegistry::getInstance()->initPlugins();
+
     Environment::set("mode", "node");
+    Environment::set("partition", "global");
 
     if (vm.count("loglevel")) {
       Environment::set("loglevel", vm["loglevel"].as<std::string> ());
@@ -189,18 +191,18 @@ int main(int argc, char * argv[]) {
     }
 
     if(vm.count("supervisor")){
-        std::string cmd=Environment::get(Environment::EXE_PATH)+"/"+Environment::get(Environment::EXE_NAME);
-        std::vector<std::string> args=Environment::getArguments();
+      std::string cmd=Environment::get(Environment::EXE_PATH)+"/"+Environment::get(Environment::EXE_NAME);
+      std::vector<std::string> args=Environment::getArguments();
 
-        std::vector<std::string>::iterator it=args.begin();
-        for(;it!= args.end();it++){
-          if((*it)=="--supervisor"){
-            args.erase(it);
-            break;
-          }
+      std::vector<std::string>::iterator it=args.begin();
+      for(;it!= args.end();it++){
+        if((*it)=="--supervisor"){
+          args.erase(it);
+          break;
         }
-        ProcessSupervisor ps(cmd, args, 5);
-        ps.start();
+      }
+      ProcessSupervisor ps(cmd, args, 5);
+      ps.start();
       return 0;
     }
 
@@ -209,10 +211,6 @@ int main(int argc, char * argv[]) {
     }
 
     if (vm.count("explicit") && !vm.count("supervisor")) {
-      LOGDEBUG("starting explicit plugin");
-      //org::esb::core::PluginRegistry::getInstance()->startWebService();
-
-
       std::vector<std::string>plugins=vm["explicit"].as<std::vector<std::string> >();
       foreach(std::string pluginname, plugins){
         LOGDEBUG("starting plugin : "<<pluginname);
@@ -275,8 +273,8 @@ int main(int argc, char * argv[]) {
   //CodecFactory::free();
   Messenger::free();
   LOGINFO("MHive is not running anymore!!!")
-  //Log::close();
+      //Log::close();
 
-  return 0;
+      return 0;
 
 }

@@ -17,6 +17,7 @@ namespace plugin{
       RemoteController();
       static void startProcessThread(std::string & name,std::string & command, std::vector<std::string> & args);
       static std::map<std::string,ProcessSupervisor*> _service_map;
+      static std::map<std::string, std::vector<std::string> > _arguments;
 
   };
 }

@@ -18,10 +18,10 @@ namespace org{
       using boost::posix_time::microsec_clock;
 
       ProcessSupervisor::ProcessSupervisor(std::string & command, std::vector<std::string> & args, int restart_count)
-      :_cmd(command),
-      _args(args),
-      _restart_count(restart_count),
-      _respawn(true)
+        :_cmd(command),
+          _args(args),
+          _restart_count(restart_count),
+          _respawn(true)
       {
 
       }
@@ -61,7 +61,7 @@ namespace org{
           Poco::NullOutputStream ostr;
           Poco::StreamCopier::copyStream(istr, ostr);
           try{
-          int ret=_handle->wait();
+            int ret=_handle->wait();
           }catch(...){
             std::cout << "ProcessSupervisor exception catched"<<std::endl;
           }
@@ -82,6 +82,6 @@ namespace org{
           }
         }
       }
+      }
     }
   }
-}

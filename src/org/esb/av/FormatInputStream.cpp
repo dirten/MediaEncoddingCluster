@@ -45,6 +45,7 @@ namespace org {
 
         //AVFormatContext * avFormat = avformat_alloc_context();
         formatCtx = avformat_alloc_context();
+
         //formatCtx->max_analyze_duration=2147483647;//+=10000000;
         //formatCtx->probesize=2147483647;//+=10000000;
         //auto avFormatPtr = avFormat;
@@ -90,7 +91,7 @@ namespace org {
         _sourceFile = source;
 
         formatCtx = avformat_alloc_context();
-        //        formatCtx->flags |= AVFMT_FLAG_GENPTS;
+               formatCtx->flags |= AVFMT_FLAG_GENPTS;
         //        formatCtx->flags |= AVFMT_FLAG_NONBLOCK;
         //        AVInputFormat*iformat = av_find_input_format("mpegts");
         //formatCtx->debug=5;

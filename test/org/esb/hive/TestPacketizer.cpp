@@ -30,7 +30,7 @@ void decode_packet_list(PacketListPtr list, std::map<int, Packetizer::StreamData
   PacketListPtr::iterator it = list.begin();
   char * outfile = new char[100];
   for (; it != list.end(); it++) {
-    Frame * frame = stream_data[(*it)->getStreamIndex()].decoder->decodeVideo2(*(*it).get());
+    Frame * frame = stream_data[(*it)->getStreamIndex()].decoder->decode2(*(*it).get());
     if(frame->isFinished()){
       sprintf(outfile, "test-%i-%i.pgm", ++i, (*it)->getDts());
       LOGDEBUG("writing file # "<<outfile);
@@ -56,8 +56,8 @@ int main(int argc, char** argv) {
   std::string trg;
   if (argc == 1) {
     src = MEC_SOURCE_DIR;
-    src.append("/target/dependency/fixtures/mpeg2_mp2.ts");
-    //    src.append("/test.dvd");
+    //src.append("/target/dependency/fixtures/mpeg2_mp2.ts");
+    src.append("/test-data/test.dvd");
   } else {
     src = argv[1];
   }
@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
   File f(src.c_str());
   FormatInputStream fis(&f);
   PacketInputStream pis(&fis);
-  return 0;
+  //return 0;
 
 
   /*get input format parameter*/
@@ -90,7 +90,7 @@ int main(int argc, char** argv) {
     if (pis.readPacket(p) < 0)break;
     if (stream_data.find(p.getStreamIndex()) == stream_data.end())continue;
     if (stream_data[p.getStreamIndex()].decoder->getCodecType() != AVMEDIA_TYPE_VIDEO)continue;
-    if(p.getDts()<3760262033)continue;
+    //if(p.getDts()<3760262033)continue;
     boost::shared_ptr<Packet> pPacket(new Packet(p));
     if (pti.putPacket(pPacket)) {
       PacketListPtr list = pti.removePacketList();

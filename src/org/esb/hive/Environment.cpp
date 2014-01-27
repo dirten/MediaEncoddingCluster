@@ -1,7 +1,7 @@
 /* 
  * File:   Environment.cpp
  * Author: HoelscJ
- * 
+ *
  * Created on 2. November 2011, 13:22
  */
 
@@ -33,7 +33,7 @@ namespace org {
       void Environment::close() {
         _environmentMap.clear();
         _argumentMap.clear();
-	org::esb::config::Config::close();
+        org::esb::config::Config::close();
       }
 
       std::vector<std::string> Environment::getArguments(){
@@ -71,7 +71,7 @@ namespace org {
 #elif defined __LINUX__
         std::string upath = get("HOME") + "/.mhive";
 #else
-        #error "plattform not supported"
+#error "plattform not supported"
 #endif
         std::cout << "upath:"<<upath<<std::endl;
         /*override the user path when this environment variable is set*/
@@ -105,7 +105,7 @@ namespace org {
         set("LD_LIBRARY_PATH", get("LD_LIBRARY_PATH") + ":" + bpath + "/plugins");
         set("LD_LIBRARY_PATH", get("LD_LIBRARY_PATH") + ":" + bpath + "/lib");
 #else
-        #error "plattform not supported"
+#error "plattform not supported"
 #endif
 
         org::esb::io::File u2path(get("hive.user_path"));
@@ -197,6 +197,6 @@ namespace org {
 
       Environment::~Environment() {
       }
+      }
     }
   }
-}

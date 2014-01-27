@@ -27,8 +27,6 @@ namespace org {
         char ptrString[10];
         char ptrLine[4096];
         AVClass* avc = ptr ? *(AVClass**) ptr : NULL;
-        //if (level > av_log_level)
-        //  return;
 #undef fprintf
 #ifdef __WIN32__
 #define snprintf _snprintf
@@ -43,17 +41,6 @@ namespace org {
         }
 
         vsnprintf(line + strlen(line), sizeof (line) - strlen(line), fmt, vl);
-        //vsnprintf(ptrLine, sizeof (ptrLine), fmt, vl);
-        /*
-                print_prefix = line[strlen(line) - 1] == '\n';
-                if (print_prefix && !strcmp(line, prev)) {
-                  count++;
-                  return;
-                }
-                if (count > 0) {
-                  fprintf(stderr, "    Last message repeated %d times\n", count);
-                  count = 0;
-                }*/
         std::string msg = org::esb::util::StringUtil::trim(line, "\n");
         std::string msgPtr = org::esb::util::StringUtil::trim(line, "\n");
         if (logMap.count(ptrString)) {
@@ -63,36 +50,31 @@ namespace org {
         }
         logMap[ptrString].push_front(msgPtr);
 
-        /*filter out unwnated logging by loglevel*/
+        /*filter out unwanted messages by loglevel*/
         if(level>av_log_get_level())return;
         switch (level) {
-          case AV_LOG_DEBUG:
-            LOGDEBUG(msg);
-            break;
-          case AV_LOG_INFO:
-            LOGINFO(msg);
-            break;
-          case AV_LOG_ERROR:
-            LOGERROR(msg);
-            break;
-          case AV_LOG_WARNING:
-            LOGWARN(msg);
-            break;
-          case AV_LOG_PANIC:
-            LOGFATAL(msg);
-            break;
-          case AV_LOG_VERBOSE:
-            LOGTRACE(msg);
-            break;
-          default:
-            LOGERROR("Unknown LogLevel:" << level << " - " << msg);
-            break;
+        case AV_LOG_DEBUG:
+          LOGDEBUG(msg);
+          break;
+        case AV_LOG_INFO:
+          LOGINFO(msg);
+          break;
+        case AV_LOG_ERROR:
+          LOGERROR(msg);
+          break;
+        case AV_LOG_WARNING:
+          LOGWARN(msg);
+          break;
+        case AV_LOG_PANIC:
+          LOGFATAL(msg);
+          break;
+        case AV_LOG_VERBOSE:
+          LOGTRACE(msg);
+          break;
+        default:
+          LOGERROR("Unknown LogLevel:" << level << " - " << msg);
+          break;
         }
-
-        //        logerror(msg);
-        //    fputs(line, stderr);
-        //        strcpy(prev, line);
-
       }
 
       std::list<std::string> FormatBaseStream::getLastAvMessage(void * ptr) {
@@ -107,20 +89,20 @@ namespace org {
 
       static int lockmgr(void **mtx, enum AVLockOp op) {
         switch (op) {
-          case AV_LOCK_CREATE:
-            *mtx = new boost::mutex();
-            if (!*mtx)
-              return 1;
-            break;
-          case AV_LOCK_OBTAIN:
-            static_cast<boost::mutex*> (*mtx)->lock();
-            break;
-          case AV_LOCK_RELEASE:
-            static_cast<boost::mutex*> (*mtx)->unlock();
-            break;
-          case AV_LOCK_DESTROY:
-            delete static_cast<boost::mutex*> (*mtx);
-            break;
+        case AV_LOCK_CREATE:
+          *mtx = new boost::mutex();
+          if (!*mtx)
+            return 1;
+          break;
+        case AV_LOCK_OBTAIN:
+          static_cast<boost::mutex*> (*mtx)->lock();
+          break;
+        case AV_LOCK_RELEASE:
+          static_cast<boost::mutex*> (*mtx)->unlock();
+          break;
+        case AV_LOCK_DESTROY:
+          delete static_cast<boost::mutex*> (*mtx);
+          break;
         }
         return 0;
       }
@@ -139,14 +121,16 @@ namespace org {
           av_log_set_callback(FormatBaseStream::mhive_log_default_callback);
           av_log_set_level(AV_LOG_INFO);
 
-          /*this is needed for mutlithreaded environment*/
+          /* install my own lock manager
+           * this is needed for multithreaded environment
+           */
           av_lockmgr_register(lockmgr);
 
           isInitialized = true;
         }
       }
+      }
     }
   }
-}
 
 

@@ -68,6 +68,7 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
         db::ProcessUnit unit=litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1).orderBy(db::ProcessUnit::Id, true).one();
         unit.send=litesql::DateTime();
         unit.deliverycount=unit.deliverycount+1;
+        unit.clientid=StringUtil::toString(_ep);
         unit.update();
         _db.query("end");
         return unit;

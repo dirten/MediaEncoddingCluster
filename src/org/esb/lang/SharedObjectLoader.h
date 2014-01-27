@@ -43,7 +43,6 @@ namespace org {
     namespace lang {
 
       class LANG_EXPORT SharedObjectLoader {
-        //classlogger("org.esb.lang.SharedObjectLoader");
         std::string _filename;
       public:
         SharedObjectLoader(std::string);
@@ -58,7 +57,6 @@ namespace org {
             result = dlsym(_lib_handle, name.c_str());
           } catch (std::exception & ex) {
             result = NULL;
-            //LOGERROR("Error occurred during loading function :" << ex.what());
           }
           if (!result) {
             std::string message = std::string("Error occurred during loading SharedObject: ") + dlerror();
@@ -66,14 +64,12 @@ namespace org {
           }
 #elif __WIN32__
 
-          //DLLPROC pFunc = NULL;
           try
           {
             result =  GetProcAddress(hMod, name.c_str());
           }
           catch( std::exception &exc)
           {
-            //getLogger().log( Logger::LOG_ERROR, "[WinDllCreator#createObjectFromDll] Error occurred during calling DLL entry method, %1", exc.what() );
             result = NULL;
           }
 
@@ -81,8 +77,6 @@ namespace org {
           {
             std::string message = std::string("Error occurred during loading SharedObject: ");
             throw NotFoundException(__FILE__,__LINE__,message);
-            //ObjectCreationException exc( "Error during loading object from DLL." );
-            //throw exc;
           }
 #else
 #error "no SharedObjectLoader for this plattform"

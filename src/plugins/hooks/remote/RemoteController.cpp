@@ -8,14 +8,14 @@ namespace plugin{
   using org::esb::hive::Environment;
 
   std::map<std::string,ProcessSupervisor*> RemoteController::_service_map;
-
+  std::map<std::string, std::vector<std::string> > RemoteController::_arguments;
 
   void RemoteController::startProcessThread(std::string & name,std::string & command, std::vector<std::string> & args)
   {
 
     ProcessSupervisor *ps=new ProcessSupervisor(command, args, 5);
     _service_map[name]=ps;
-
+    _arguments[name]=args;
     /*this call will start the Process and block until the process will be killed or is respwning to fast*/
     ps->start();
 

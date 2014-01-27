@@ -180,6 +180,7 @@ namespace encodingtask {
          * */
     if (_stream.state == STATE_END_I_FRAME && (_decoder->getCodecId() == CODEC_ID_MPEG2VIDEO /*&& ptr->_pict_type == AV_PICTURE_TYPE_P*/)) {
       LOGDEBUG("decode Mpeg2 Stream");
+      //ptr->getAVPacket()->flags
       Ptr<Frame> frame=_decoder->decode2(*ptr.get());
       LOGDEBUG("Frame:"<<frame->toString());
       LOGDEBUG("FrameType:"<<frame->getAVFrame()->pict_type);

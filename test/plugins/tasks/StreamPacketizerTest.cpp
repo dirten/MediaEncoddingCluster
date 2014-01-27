@@ -15,6 +15,7 @@
 
 #include "org/esb/av/FrameConverter.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/util/StringUtil.h"
 #include "org/esb/av/PGMUtil.h"
 #include "org/esb/av/Frame.h"
 #include "plugins/tasks/encodingtask/StreamPacketizer.h"
@@ -23,7 +24,7 @@ using namespace org::esb::av;
 using namespace org::esb::io;
 using namespace encodingtask;
 //using namespace org::esb::hive::job;
-
+using org::esb::util::StringUtil;
 /*
  * 
  */
@@ -32,21 +33,20 @@ int i = 0;
 void decode_packet_list(PacketListPtr list, Ptr<Decoder> dec) {
   dec->reset();
   PacketListPtr::iterator it = list.begin();
+  int a=0;
   char * outfile = new char[100];
   for (; it != list.end(); it++) {
-    Frame * frame = dec->decode2(*(*it).get());
-    if(frame->isFinished()){
-      sprintf(outfile, "test-%i-%i.pgm", ++i, (*it)->getDts());
-      LOGDEBUG("writing file # "<<outfile);
-      PGMUtil::save(outfile, frame);
-    }
+    LOGDEBUG("frame count:"<<++a);
+    dec->newPacket((*it));
   }
+  while(dec->newPacket(new Packet()));
 }
 
 void print_packet_list(PacketListPtr list) {
   PacketListPtr::iterator it = list.begin();
+  int a=0;
   for (; it != list.end(); it++) {
-    LOGDEBUG((*it)->toString());
+    LOGDEBUG(StringUtil::toString(++a)<<" : "<<(*it)->toString());
   }
 }
 
@@ -87,7 +87,7 @@ int main(int argc, char** argv) {
   }
   std::map<int,StreamPacketizer> packetizer;
   //StreamPacketizer pti(stream_data);
-  for (int a = 0; a < 40;) {
+  for (int a = 0; a < 150;) {
     Packet p;
     //reading a packet from the Stream
     //when no more packets available(EOF) then it return <0
@@ -110,8 +110,10 @@ int main(int argc, char** argv) {
 
       LOGDEBUG("--------------------------------------------------------------------------------------------");
       print_packet_list(list);
-
-      //decode_packet_list(list, pti.getDecoder());
+      pti.getDecoder()->reset();
+      decode_packet_list(list, pti.getDecoder());
+      pti.getDecoder()->reset();
+      LOGDEBUG("finish decoding test--continue with next packets------------------------------------------------------------------------------------------")
     }
     a++;
   }

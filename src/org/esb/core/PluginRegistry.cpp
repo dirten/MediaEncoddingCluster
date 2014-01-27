@@ -54,25 +54,23 @@ namespace org {
         return OptionsDescription();
       }
 
-      std::list<std::string> PluginRegistry::getPluginNameList(PLUGIN_ORDER order) {
+      std::list<std::string> PluginRegistry::getPluginNameList() {
         std::list<std::string> result;
         typedef std::map<std::string, Plugin*> PluginMap;
         foreach(PluginMap::value_type s, _plug_map) {
           result.push_back(s.first);
         }
-
-
         return result;
       }
 
       void PluginRegistry::registerPlugin(std::string name, Plugin*plugin) {
+        /*NOP*/
       }
 
       void PluginRegistry::registerService(std::string name, ServicePlugin*plugin) {
         if (plugin == NULL)return;
         _service_map[name] = plugin;
         _plug_map[name] = plugin;
-        //OptionsDescription desc = plugin->getOptionsDescription();
       }
 
       void PluginRegistry::startServerServices() {
@@ -80,11 +78,11 @@ namespace org {
         typedef std::map<std::string, Plugin*> PluginMap;
 
         foreach(PluginMap::value_type s, _service_map) {
-          //LOGDEBUG("ServiceName="<<s.first<<" type="<<((ServicePlugin*) s.second)->getServiceType());
-          if (((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_SERVER ||
-          ((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_ALL)
-            //((ServicePlugin*) s.second)->startService();
-          startServiceByName(s.first);
+          if (
+              ((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_SERVER ||
+              ((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_ALL){
+            startServiceByName(s.first);
+          }
         }
       }
 
@@ -92,21 +90,18 @@ namespace org {
         typedef std::map<std::string, Plugin*> PluginMap;
 
         foreach(PluginMap::value_type s, _service_map) {
-          if (((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_CLIENT ||
-          ((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_ALL)
-            //((ServicePlugin*) s.second)->startService();
-          startServiceByName(s.first);
+          if (
+              ((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_CLIENT ||
+              ((ServicePlugin*) s.second)->getServiceType() == ServicePlugin::SERVICE_TYPE_ALL){
+            startServiceByName(s.first);
+          }
         }
       }
 
       void PluginRegistry::startWebService(){
-        //try{
         server=new org::esb::core::http::Server(atoi(Environment::get("webport").c_str()));
         server->setRequestHandlerFactory(_webhook_handler_factory);
         server->start();
-        //}catch(std::exception & ex){
-        //  LOGERROR("failed starting webserver,"<<ex.what())
-        //}
       }
 
       void PluginRegistry::startServiceByName(std::string name){
@@ -158,7 +153,6 @@ namespace org {
         typedef std::map<std::string, Plugin*> PluginMap;
 
         foreach(PluginMap::value_type s, _service_map) {
-          //((ServicePlugin*) s.second)->stopService();
           stopServiceByName(s.first);
         }
         if(server)
@@ -207,7 +201,6 @@ namespace org {
 
       void PluginRegistry::close() {
         delete _instance;
-
       }
 
       PluginRegistry::PluginRegistry() {
@@ -215,10 +208,12 @@ namespace org {
         Poco::Net::FTPStreamFactory::registerFactory();
         server=NULL;
         _webhook_handler_factory=new WebHookHandlerFactory();
-        org::esb::grid::GridRegistry::init();
-        //istringstream iss (std::string("<test/>"),istringstream::in);
-        //Poco::AutoPtr<Poco::Util::XMLConfiguration> conf = new Poco::Util::XMLConfiguration(iss);
 
+        /*
+         * this is not the right place for initialization
+         * this generates unnecessary dependencies to the grid library
+         */
+        org::esb::grid::GridRegistry::init();
       }
 
       Ptr<Task>PluginRegistry::createTask(std::string name, std::map<std::string, std::string> cfg) {
@@ -329,7 +324,7 @@ namespace org {
         * REGISTER_WEB_HOOK(url,method,clazz)
         * REGISTER_TASK(name,instance)
         * REGISTER_SERVICE(name,type)
-        * REGISTER_HOOK(name,instance, function, prio) --- this is currently not used
+        * REGISTER_HOOK(name,instance, function, prio) --- this is currently not fully implemented
         */
       void PluginRegistry::loadFile(std::string file) {
         if(strstr(file.c_str(),".dylib")>0||strstr(file.c_str(),".dll")>0||strstr(file.c_str(),".so")>0){
@@ -363,6 +358,6 @@ namespace org {
           //row.second=NULL;
         }
       }
+      }
     }
   }
-}
