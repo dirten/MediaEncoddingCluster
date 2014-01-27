@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   ProcessUnitBuilder.cpp
  * Author: HoelscJ
  *
@@ -44,6 +44,9 @@ namespace encodingtask {
     u->_gop_size = list.size(); //- _map_data[idx].b_frame_offset;
     int cou = u->_gop_size;
     u->_frameRateCompensateBase = _map_data[idx].frameRateCompensateBase;
+
+
+
     if (u->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
       AVRational input_framerate = u->_decoder->getFrameRate();
       AVRational output_framerate = u->_encoder->getFrameRate();

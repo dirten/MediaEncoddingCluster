@@ -329,6 +329,9 @@ namespace org {
           LOGDEBUG("flush filter")
         }
         if (av_buffersrc_add_frame_flags(buffersrc_ctx, frame, 0) < 0) {
+          if(frame)
+            av_frame_unref(frame);
+          av_frame_free(&frame);
           //throw Exception(__FILE__, __LINE__,"failed to push frame into filter chain");
           return true;
         }
