@@ -209,6 +209,7 @@ void ProcessUnit::processInternal2() {
 
 
   /*build up the transcoding chain*/
+  /*i need to build a special frame filter for frame count on a MPEG2 Stream with B-Frames*/
   _decoder->addTarget(filter);
   filter->addTarget(_encoder.get());
   _encoder->addTarget(&sink);

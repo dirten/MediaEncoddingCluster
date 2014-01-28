@@ -324,10 +324,12 @@ namespace org {
           * @TODO: Audio Frames should change its parameter like channel_layout during the packets
           *        need to handle changes of the incomming packets
           */
+        outFrame->setDuration(p->getDuration());
         AVFrame * frame=av_frame_clone(p->getAVFrame());
         if(!frame){
           LOGDEBUG("flush filter")
         }
+        //frame->opaque=new int(p->getDuration());
         if (av_buffersrc_add_frame_flags(buffersrc_ctx, frame, 0) < 0) {
           if(frame)
             av_frame_unref(frame);
@@ -344,6 +346,7 @@ namespace org {
           }
           result=true;
           LOGDEBUG("push new frame from filter")
+          //outFrame->setDuration(*(int*)frame->opaque);
           pushFrame(outFrame);
         }
         if(!result && !frame){

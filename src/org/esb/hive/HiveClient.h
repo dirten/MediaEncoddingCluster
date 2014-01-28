@@ -69,11 +69,11 @@ namespace org {
                 boost::condition ctrlCHit;
                 boost::thread _t;
 
-                std::map<int, boost::shared_ptr<org::esb::av::Decoder> > _decoder_list;
-                std::map<int, boost::shared_ptr<org::esb::av::Encoder> > _encoder_list;
-                std::map<int, org::esb::av::FrameConverter *  > _converter_list;
+                std::map<std::string, boost::shared_ptr<org::esb::av::Decoder> > _decoder_list;
+                std::map<std::string, boost::shared_ptr<org::esb::av::Encoder> > _encoder_list;
+                std::map<std::string, org::esb::av::FrameConverter *  > _converter_list;
 
-                std::map<int, bool> _swap_codec_list;
+                std::map<std::string, bool> _swap_codec_list;
 
 //                boost::mutex thread_read_mutex;
 //                boost::mutex thread_write_mutex;

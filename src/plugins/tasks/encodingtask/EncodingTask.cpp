@@ -421,6 +421,14 @@ namespace encodingtask {
     pu.jobid=_task_uuid;
     pu.sequence=unit->_sequence;
 
+    if(unit->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO){
+      pu.codectype=db::ProcessUnit::Codectype::VIDEO;
+    }
+
+    if(unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO){
+      pu.codectype=db::ProcessUnit::Codectype::AUDIO;
+    }
+
     if (unit->_input_packets.size() > 0) {
       boost::shared_ptr<org::esb::av::Packet> first_packet = unit->_input_packets.front();
       boost::shared_ptr<org::esb::av::Packet> last_packet = unit->_input_packets.back();

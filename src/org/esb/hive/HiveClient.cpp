@@ -13,12 +13,13 @@
 #include "org/esb/hive/protocol/PartitionHandler.h"
 #include "org/esb/config/config.h"
 #include "org/esb/net/SocketException.h"
+#include "org/esb/util/StringUtil.h"
 //#define USE_SAFMQ
 //#include "Version.h"
 namespace org {
   namespace esb {
     namespace hive {
-
+  using org::esb::util::StringUtil;
       HiveClient::HiveClient(std::string host, int port) {
         LOGDEBUG("start client")
         _host = host;
@@ -187,34 +188,40 @@ namespace org {
           //delete unit;
           return;
         }
+        /*building single stream id, a combination from source_stream and job uuid*/
+        std::string stream_id=unit->getJobId();
+        stream_id+=StringUtil::toString(unit->_source_stream);
+
         if (false&&unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+
+
           LOGDEBUG("special handling audio")
-          if (_swap_codec_list.find(unit->_source_stream) == _swap_codec_list.end()) {
-            _swap_codec_list[unit->_source_stream] = false;
+          if (_swap_codec_list.find(stream_id) == _swap_codec_list.end()) {
+            _swap_codec_list[stream_id] = false;
           }
 
-          if (_swap_codec_list[unit->_source_stream]) {
+          if (_swap_codec_list[stream_id]) {
             LOGDEBUG("Swapping codec for audio encoding");
-            if (_decoder_list[unit->_source_stream])
-              unit->_decoder = _decoder_list[unit->_source_stream];
-            if (_encoder_list[unit->_target_stream])
-              unit->_encoder = _encoder_list[unit->_target_stream];
-            if (_converter_list[unit->_target_stream])
-              unit->_converter = _converter_list[unit->_target_stream];
+            if (_decoder_list[stream_id])
+              unit->_decoder = _decoder_list[stream_id];
+            if (_encoder_list[stream_id])
+              unit->_encoder = _encoder_list[stream_id];
+            if (_converter_list[stream_id])
+              unit->_converter = _converter_list[stream_id];
           } else {
             LOGDEBUG("audio no swap!!!");
           }
-          _swap_codec_list[unit->_source_stream] = true;
+          _swap_codec_list[stream_id] = true;
         } else {
           LOGDEBUG("no audio codec");
         }
         unit->process();
         if (false&&unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
-          if (_swap_codec_list[unit->_source_stream]) {
+          if (_swap_codec_list[stream_id]) {
             LOGDEBUG("swap back to hold the data");
-            _decoder_list[unit->_source_stream] = unit->_decoder;
-            _encoder_list[unit->_target_stream] = unit->_encoder;
-            _converter_list[unit->_target_stream] = unit->_converter;
+            _decoder_list[stream_id] = unit->_decoder;
+            _encoder_list[stream_id] = unit->_encoder;
+            _converter_list[stream_id] = unit->_converter;
           }
         }
         if (false&&unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
@@ -224,7 +231,7 @@ namespace org {
             _swap_codec_list.clear();
             _decoder_list.clear();
             _encoder_list.clear();
-            std::map<int, org::esb::av::FrameConverter * >::iterator it = _converter_list.begin();
+            std::map<std::string, org::esb::av::FrameConverter * >::iterator it = _converter_list.begin();
             for (; it != _converter_list.end(); it++) {
               delete (*it).second;
             }

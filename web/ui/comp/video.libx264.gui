@@ -77,7 +77,6 @@
 		}
 	    },
 	    {"id":"refs", "type":"string","title":"Reference Frames","group":"frametype_settings","unit":"","control":{"type":"Slider", "default":"6","min":"0", "max":"16"}},
-	    {"id":"bf", "type":"string","title":"B-Frames","group":"frametype_settings","unit":"","control":{"type":"TextBox", "default":"16"}},
 	    {"id":"profile", "type":"string","title":"Profile","group":"preset_settings","unit":"",
 		"control":{
 		    "type":"ComboBox",

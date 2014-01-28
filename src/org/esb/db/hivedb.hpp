@@ -2250,6 +2250,17 @@ public:
     public:
         static const litesql::FieldType Id;
     };
+    class CodectypeType : public litesql::FieldType {
+    public:
+        static const std::string AUDIO;
+        static const std::string VIDEO;
+        CodectypeType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
+    };
+    class Codectype {
+    public:
+        static const std::string AUDIO;
+        static const std::string VIDEO;
+    };
     class JobHandle : public litesql::RelationHandle<ProcessUnit> {
     public:
         JobHandle(const ProcessUnit& owner);
@@ -2302,6 +2313,12 @@ public:
     litesql::Field<std::string> group;
     static const litesql::FieldType Sequence;
     litesql::Field<int> sequence;
+protected:
+    static std::vector < std::pair< std::string, std::string > > codectype_values;
+public:
+    static const ProcessUnit::CodectypeType Codectype;
+    litesql::Field<std::string> codectype;
+    static void initValues();
 protected:
     void defaults();
 public:

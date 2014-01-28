@@ -385,6 +385,10 @@
         <field name="jobid" type="string" indexed="true"/>
         <field name="group" type="string"/>
         <field name="sequence" type="integer"/>
+        <field name="codectype" type="string" default="0">
+          <value name="AUDIO" value="AUDIO"/>
+          <value name="VIDEO" value="VIDEO"/>
+        </field>
     </object>
 
     <relation id="ProcessUnitJob">
