@@ -63,7 +63,7 @@ namespace org {
         }
         org::esb::io::File f(argv[0]);
         std::string bpath = org::esb::io::File(f.getParent()).getParent();
-        std::cout << "bpath:"<<bpath<<std::endl;
+
 #ifdef __WIN32__
         std::string upath = get("APPDATA") + "/mhive";
 #elif defined __APPLE__
@@ -73,7 +73,7 @@ namespace org {
 #else
 #error "plattform not supported"
 #endif
-        std::cout << "upath:"<<upath<<std::endl;
+
         /*override the user path when this environment variable is set*/
         upath = get("MHIVE_DATA_PATH", upath);
 
