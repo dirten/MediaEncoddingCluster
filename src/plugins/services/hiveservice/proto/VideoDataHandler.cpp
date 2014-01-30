@@ -70,6 +70,12 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
       /*check for audio processunits to process it before the video processunits*/
       if(litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1 && db::ProcessUnit::Codectype==db::ProcessUnit::Codectype::AUDIO).count()){
 
+        /*
+          * 1. select all audio processunits which are previous encoded by anyone of the clients
+          * 2. look if there are any open audio streams which could connect to a new client
+          * 3.
+          *
+        */
         result=litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1 && db::ProcessUnit::Codectype==db::ProcessUnit::Codectype::AUDIO).orderBy(db::ProcessUnit::Id, true).one();
 
         litesql::DataSource<db::ProcessUnit> prevEncodedUnits=litesql::select<db::ProcessUnit > (
