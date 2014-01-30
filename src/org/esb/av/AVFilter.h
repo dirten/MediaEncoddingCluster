@@ -43,7 +43,7 @@ namespace org {
       {          
         public:
           AVFilter(AVFilterType type,std::string filter);
-          ~AVFilter();
+          virtual ~AVFilter();
           bool newFrame(Ptr<Frame> p);
           bool newPacket(Ptr<Packet>){return false;}
           void setInputParameter(std::string key, std::string value);

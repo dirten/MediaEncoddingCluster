@@ -53,7 +53,7 @@ namespace org {
          bool newFrame(Ptr<Frame>){return false;}
         static std::string getStaticCodecName(CodecID codec_id);
         static CodecID getStaticCodecId(std::string codec_name);
-
+        void reset();
       private:
         bool decode3(Packet & packet);
         DEPRECATED(Frame * decodeVideo2(Packet & packet));

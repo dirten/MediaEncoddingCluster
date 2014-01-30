@@ -33,24 +33,24 @@ using namespace org::esb::av;
 namespace encodingtask {
 
   class StreamPacketizerPacketSink : public AVPipe {
-  public:
-    StreamPacketizerPacketSink():AVPipe() {
-    }
+    public:
+      StreamPacketizerPacketSink():AVPipe() {
+      }
 
-    bool newFrame(Ptr<Frame>){return false;}
+      bool newFrame(Ptr<Frame>){return false;}
 
-    bool newPacket(Ptr<Packet> p){
-      pkts.push_back(p);
+      bool newPacket(Ptr<Packet> p){
+        pkts.push_back(p);
 
-      return true;
-    }
+        return true;
+      }
 
-    std::list<boost::shared_ptr<Packet> > getList() {
-      return pkts;
-    }
+      std::list<boost::shared_ptr<Packet> > getList() {
+        return pkts;
+      }
 
-  private:
-    std::list<boost::shared_ptr<Packet> > pkts;
+    private:
+      std::list<boost::shared_ptr<Packet> > pkts;
   };
 
   /**
@@ -175,95 +175,112 @@ namespace encodingtask {
     if (_stream.state == STATE_END_I_FRAME) {
       _overlap_queue.push_back(ptr);
     }
-    /**
-         * case handling for mpeg2 video packets(formaly streams with b frames)
-         * */
-    if (_stream.state == STATE_END_I_FRAME && (_decoder->getCodecId() == CODEC_ID_MPEG2VIDEO /*&& ptr->_pict_type == AV_PICTURE_TYPE_P*/)) {
-      LOGDEBUG("decode Mpeg2 Stream");
 
-      //ptr->getAVPacket()->flags
-      Ptr<Frame> frame=_decoder->decode2(*ptr.get());
-      LOGDEBUG("Frame:"<<frame->toString());
-      LOGDEBUG("FrameType:"<<frame->getAVFrame()->pict_type);
-      if(!frame->isFinished()){
-        delay++;
-      }else
-      //Packet :IBBPBBPBBPBBPBBP
-      //Frame  :
-      if(frame->getAVFrame()->pict_type== AV_PICTURE_TYPE_P){
-        LOGDEBUG("Prediction Picture with delay of "<<delay)
-        //IBBPBBPBBP
-        //   IBBP
-        //LOGDEBUG("frame type = "+ org::esb::util::StringUtil::toString(frame->getAVFrame()->pict_type));
-        /*in the first roundtrip the stream packets look like this, the first B Frames are not removed*/
-        /*_streams[stream_idx].packets =IBBPBBPBBPBB*/
-        /*in the following roundtrip the stream packets look like this*/
-        /*_streams[stream_idx].packets =IPBBPBBPBB*/
-        /*_overlap_queue[stream_idx]   =IBBP*/
+    if(_stream.state == STATE_END_I_FRAME && (_decoder->getCodecOption("has_b_frames") == "1")){
+      LOGDEBUG("has a bframe")
+      delay++;
+      if(delay>=3){
         _stream.state = STATE_START_I_FRAME;
-        /**
-           * appending the next IBB from the IBBP order to the actual packet_list
-           * */
-        _stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.end() - (1+delay));
-        /*_streams[stream_idx].packets =IBBPBBPBBPBBIBB*/
-        /*_overlap_queue[stream_idx]   =IBBP*/
-
+        _stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.end());
         _packet_list.push_back(_stream.packets);
         _stream.packets.clear();
-        /*_streams[stream_idx].packets =    */
-        /*_overlap_queue[stream_idx]   =IBBP*/
+
+        _stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.end());
+        _overlap_queue.clear();
+
+        result=true;
+        delay=0;
+      }
+    }else
+      /**
+         * case handling for mpeg2 video packets(formaly streams with b frames)
+         * */
+      if (false && _stream.state == STATE_END_I_FRAME && (_decoder->getCodecId() == CODEC_ID_MPEG2VIDEO /*&& ptr->_pict_type == AV_PICTURE_TYPE_P*/)) {
+        LOGDEBUG("decode Mpeg2 Stream");
+
+        //ptr->getAVPacket()->flags
+        Ptr<Frame> frame=_decoder->decode2(*ptr.get());
+        LOGDEBUG("Frame:"<<frame->toString());
+        LOGDEBUG("FrameType:"<<frame->getAVFrame()->pict_type);
+        if(!frame->isFinished()){
+          delay++;
+        }else
+          //Packet :IBBPBBPBBPBBPBBP
+          //Frame  :
+          if(frame->getAVFrame()->pict_type== AV_PICTURE_TYPE_P){
+            LOGDEBUG("Prediction Picture with delay of "<<delay)
+            //IBBPBBPBBP
+            //   IBBP
+            //LOGDEBUG("frame type = "+ org::esb::util::StringUtil::toString(frame->getAVFrame()->pict_type));
+            /*in the first roundtrip the stream packets look like this, the first B Frames are not removed*/
+            /*_streams[stream_idx].packets =IBBPBBPBBPBB*/
+            /*in the following roundtrip the stream packets look like this*/
+            /*_streams[stream_idx].packets =IPBBPBBPBB*/
+            /*_overlap_queue[stream_idx]   =IBBP*/
+            _stream.state = STATE_START_I_FRAME;
+            /**
+           * appending the next IBB from the IBBP order to the actual packet_list
+           * */
+            _stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.end() - (1+delay));
+            /*_streams[stream_idx].packets =IBBPBBPBBPBBIBB*/
+            /*_overlap_queue[stream_idx]   =IBBP*/
+
+            _packet_list.push_back(_stream.packets);
+            _stream.packets.clear();
+            /*_streams[stream_idx].packets =    */
+            /*_overlap_queue[stream_idx]   =IBBP*/
 
 
-        /**
+            /**
            * appending the IP frames from the IBBP order to the actual packet_list
            * that are the first and the last entries in the overlap queue
            * */
-        _stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.begin() + 1);
-        _stream.packets.insert(_stream.packets.end(), _overlap_queue.end() - (1+delay), _overlap_queue.end());
-        //            _streams[stream_idx].packets.insert(_streams[stream_idx].packets.end(), _overlap_queue[stream_idx].begin(), _overlap_queue[stream_idx].end());
-        /*_streams[stream_idx].packets =IP  */
-        /*_overlap_queue[stream_idx]   =IBBP*/
+            _stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.begin() + 1);
+            _stream.packets.insert(_stream.packets.end(), _overlap_queue.end() - (1+delay), _overlap_queue.end());
+            //            _streams[stream_idx].packets.insert(_streams[stream_idx].packets.end(), _overlap_queue[stream_idx].begin(), _overlap_queue[stream_idx].end());
+            /*_streams[stream_idx].packets =IP  */
+            /*_overlap_queue[stream_idx]   =IBBP*/
 
 
-        _overlap_queue.clear();
-        /*_streams[stream_idx].packets =IP */
-        /*_overlap_queue[stream_idx]   =   */
-        result = true;
-        delay=0;
-        _decoder->reset();
-      }
-    } else if (_stream.state == STATE_END_I_FRAME && _decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
-      /**************************************
+            _overlap_queue.clear();
+            /*_streams[stream_idx].packets =IP */
+            /*_overlap_queue[stream_idx]   =   */
+            result = true;
+            delay=0;
+            _decoder->reset();
+          }
+      } else if (_stream.state == STATE_END_I_FRAME && _decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+        /**************************************
            * this is used for all audio streams
            **************************************/
-      _stream.state = STATE_START_I_FRAME;
-      /**copying all Packets into the actual ProcessUnit*/
-      _packet_list.push_back(_stream.packets);
-      /**clear out the PacketList, because they are in the ProcessUnit*/
-      _stream.packets.clear();
-      /**bring in the first I-Frame for the next Process Unit*/
-      _stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.end());
-      /**clear out the overlap queue, because there is only an I-Frame packet and this is now in the next ProcessUnit*/
-      _overlap_queue.clear();
-      result = true;
-    } else if (_stream.state == STATE_END_I_FRAME && _decoder->getCodecId() != CODEC_ID_MPEG2VIDEO) {
-      /**********************************************************************
+        _stream.state = STATE_START_I_FRAME;
+        /**copying all Packets into the actual ProcessUnit*/
+        _packet_list.push_back(_stream.packets);
+        /**clear out the PacketList, because they are in the ProcessUnit*/
+        _stream.packets.clear();
+        /**bring in the first I-Frame for the next Process Unit*/
+        _stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.end());
+        /**clear out the overlap queue, because there is only an I-Frame packet and this is now in the next ProcessUnit*/
+        _overlap_queue.clear();
+        result = true;
+      } else if (_stream.state == STATE_END_I_FRAME) {
+        /**********************************************************************
            * this is used for all video stream types except MPEG2 Video Streams
            **********************************************************************/
 
-      _stream.state = STATE_START_I_FRAME;
-      /**copying all Packets into the actual ProcessUnit*/
-      _packet_list.push_back(_stream.packets);
-      /**clear out the PacketList, because they are in the ProcessUnit*/
-      _stream.packets.clear();
-      /**bring in the first I-Frame for the next Process Unit*/
-      _stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.end());
-      /**clear out the overlap queue, because there is only an I-Frame packet and this is now in the next ProcessUnit*/
-      _overlap_queue.clear();
-      result = true;
-    }
+        _stream.state = STATE_START_I_FRAME;
+        /**copying all Packets into the actual ProcessUnit*/
+        _packet_list.push_back(_stream.packets);
+        /**clear out the PacketList, because they are in the ProcessUnit*/
+        _stream.packets.clear();
+        /**bring in the first I-Frame for the next Process Unit*/
+        _stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.end());
+        /**clear out the overlap queue, because there is only an I-Frame packet and this is now in the next ProcessUnit*/
+        _overlap_queue.clear();
+        result = true;
+      }
     return result;
   }
-  }
+}
 
 

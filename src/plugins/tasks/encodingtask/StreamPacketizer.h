@@ -44,37 +44,37 @@ namespace org {
     }
   }
 }
-    namespace encodingtask {
-        class ENCTASK_EXPORT StreamPacketizer {
-        private:
-        public:
-            StreamPacketizer();
-            StreamPacketizer(int size, Ptr<org::esb::av::Decoder>);
-          ~StreamPacketizer();
-          bool putPacket(org::esb::av::PacketPtr);
-          void flushStreams();
-          org::esb::av::PacketListPtr getPacketList();
-          org::esb::av::PacketListPtr removePacketList();
-          int getPacketListCount();
-          Ptr<org::esb::av::Decoder> getDecoder();
-        private:
-          bool processPacket(org::esb::av::PacketPtr);
-          StreamData _stream;
-          Ptr<org::esb::av::Decoder> _decoder;
+namespace encodingtask {
+  class ENCTASK_EXPORT StreamPacketizer {
+    private:
+    public:
+      StreamPacketizer();
+      StreamPacketizer(int size, Ptr<org::esb::av::Decoder>);
+      ~StreamPacketizer();
+      bool putPacket(org::esb::av::PacketPtr);
+      void flushStreams();
+      org::esb::av::PacketListPtr getPacketList();
+      org::esb::av::PacketListPtr removePacketList();
+      int getPacketListCount();
+      Ptr<org::esb::av::Decoder> getDecoder();
+    private:
+      bool processPacket(org::esb::av::PacketPtr);
+      StreamData _stream;
+      Ptr<org::esb::av::Decoder> _decoder;
 
-          std::list<org::esb::av::PacketListPtr> _packet_list;
+      std::list<org::esb::av::PacketListPtr> _packet_list;
 
-          static const int MIN_AUDIO_PACKETS = 5000;
-          static const int MIN_VIDEO_PACKETS = 500;
+      static const int MIN_AUDIO_PACKETS = 5000;
+      static const int MIN_VIDEO_PACKETS = 20;
 
-          org::esb::av::PacketListPtr _overlap_queue;
+      org::esb::av::PacketListPtr _overlap_queue;
 
-          std::map<CodecID, int> _codec_overlap;
-          std::map<AVMediaType, int> _codec_min_packets;
+      std::map<CodecID, int> _codec_overlap;
+      std::map<AVMediaType, int> _codec_min_packets;
 
-          int delay;
+      int delay;
 
-        };
-    }
+  };
+}
 #endif	/* _STREAMPACKETIZER_H */
 

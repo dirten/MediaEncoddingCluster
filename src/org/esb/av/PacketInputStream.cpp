@@ -101,6 +101,8 @@ int PacketInputStream::readPacketFromFormatIS(Packet & packet) {
     packet.setTimeDuration(Duration(packet.getDuration(), Rational(packet.getTimeBase())));
 
     if(_formatCtx->streams[packet.getStreamIndex()]->parser){
+
+      //LOGDEBUG("StreamParser:"<<_formatCtx->streams[packet.getStreamIndex()]->parser->pict_type)
       packet._pict_type=_formatCtx->streams[packet.getStreamIndex()]->parser->pict_type;
     }
   }

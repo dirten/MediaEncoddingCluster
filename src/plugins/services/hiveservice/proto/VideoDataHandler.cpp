@@ -63,17 +63,43 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
 
 
     db::ProcessUnit getProcessUnit(){
-      if(litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1).count()){
-        _db.query("begin exclusive");
-        db::ProcessUnit unit=litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1).orderBy(db::ProcessUnit::Id, true).one();
-        unit.send=litesql::DateTime();
-        unit.deliverycount=unit.deliverycount+1;
-        unit.clientid=StringUtil::toString(_ep);
-        unit.update();
-        _db.query("end");
-        return unit;
+      db::ProcessUnit result=db::ProcessUnit(_db);
+      bool audioProcessunitReceived=false;
+      _db.query("begin exclusive");
+
+      /*check for audio processunits to process it before the video processunits*/
+      if(litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1 && db::ProcessUnit::Codectype==db::ProcessUnit::Codectype::AUDIO).count()){
+
+        result=litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1 && db::ProcessUnit::Codectype==db::ProcessUnit::Codectype::AUDIO).orderBy(db::ProcessUnit::Id, true).one();
+
+        litesql::DataSource<db::ProcessUnit> prevEncodedUnits=litesql::select<db::ProcessUnit > (
+        _db,
+        db::ProcessUnit::Jobid== result.jobid &&
+        db::ProcessUnit::Sorcestream == result.sorcestream &&
+        db::ProcessUnit::Send > 1 &&
+        db::ProcessUnit::Clientid == StringUtil::toString(_ep) &&
+        db::ProcessUnit::Codectype==db::ProcessUnit::Codectype::AUDIO
+        );
+
+        if(prevEncodedUnits.count()>0){
+          result=litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1 && db::ProcessUnit::Sorcestream == result.sorcestream && db::ProcessUnit::Codectype==db::ProcessUnit::Codectype::AUDIO).orderBy(db::ProcessUnit::Id, true).one();
+        }
+
+        result.send=litesql::DateTime();
+        result.deliverycount=result.deliverycount+1;
+        result.clientid=StringUtil::toString(_ep);
+        result.update();
+        audioProcessunitReceived=true;
       }
-      return  db::ProcessUnit(_db);
+      if(!audioProcessunitReceived && litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1 && db::ProcessUnit::Codectype==db::ProcessUnit::Codectype::VIDEO).count()){
+        result=litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1 && db::ProcessUnit::Codectype==db::ProcessUnit::Codectype::VIDEO).orderBy(db::ProcessUnit::Id, true).one();
+        result.send=litesql::DateTime();
+        result.deliverycount=result.deliverycount+1;
+        result.clientid=StringUtil::toString(_ep);
+        result.update();
+      }
+      _db.query("end");
+      return result;
     }
 
   public:

@@ -30,6 +30,7 @@
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/Encoder.h"
 #include "org/esb/av/AVFilter.h"
+#include "org/esb/av/filter/BFrameProcessUnitFilter.h"
 
 #include "org/esb/av/Sink.h"
 #include "org/esb/av/AVPipe.h"
@@ -199,7 +200,6 @@ void ProcessUnit::processInternal2() {
     filter->setOutputParameter("width",StringUtil::toString(_encoder->getWidth()));
     filter->setOutputParameter("height",StringUtil::toString(_encoder->getHeight()));
     filter->setOutputParameter("pixel_format",StringUtil::toString(_encoder->getPixelFormat()));
-
   }
 
   filter->init();
@@ -207,10 +207,20 @@ void ProcessUnit::processInternal2() {
   /*init the packet sink*/
   MyPacketSink sink;//=new MyPacketSink();
 
-
   /*build up the transcoding chain*/
+
+
+
   /*i need to build a special frame filter for frame count on a MPEG2 Stream with B-Frames*/
-  _decoder->addTarget(filter);
+  Ptr<org::esb::av::AVFilter> puFilter;
+  if(_decoder->getCodecOption("has_b_frames")=="1"){
+    puFilter=new org::esb::av::BFrameProcessUnitFilter();
+    puFilter->addTarget(filter);
+    _decoder->addTarget(puFilter.get());
+  }else{
+    _decoder->addTarget(filter);
+  }
+
   filter->addTarget(_encoder.get());
   _encoder->addTarget(&sink);
 

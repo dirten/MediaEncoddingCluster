@@ -12,12 +12,18 @@ namespace org {
 
       AVFilter::AVFilter(AVFilterType type,std::string filter) : _type(type), _filter(filter)
       {
+        buffersink_ctx=NULL;
+        buffersrc_ctx=NULL;
+        filter_graph=NULL;
       }
 
       AVFilter::~AVFilter(){
-        avfilter_free(buffersink_ctx);
-        avfilter_free(buffersrc_ctx);
-        avfilter_graph_free(&filter_graph);
+        if(buffersink_ctx)
+          avfilter_free(buffersink_ctx);
+        if(buffersrc_ctx)
+          avfilter_free(buffersrc_ctx);
+        if(filter_graph)
+          avfilter_graph_free(&filter_graph);
       }
 
       void AVFilter::init(){
@@ -27,6 +33,7 @@ namespace org {
           initAudioSourceSink();
         }
         outFrame=Ptr<Frame>(new Frame());
+        outFrame->setFinished(true);
         int num = 0,den = 0;
         sscanf(_input_params["time_base"].c_str(),"%d/%d", &num, &den);
 

@@ -119,6 +119,11 @@ int Encoder::encode(Frame & frame) {
   _frames = frame.getFrameCount();
   ctx->sample_aspect_ratio = frame.getPixelAspectRatio();
   LOGDEBUG("Encode Frame:"<<frame.toString())
+  /*handling to flush the encoder*/
+  if(!frame.isFinished()){
+    LOGDEBUG("flushing encoder")
+    emptyFrameIsEOF=true;
+  }
   if (_last_dts == AV_NOPTS_VALUE) {
     _last_dts = 0;//frame.getPts();
     LOGDEBUG("setting last_dts=" << _last_dts);
@@ -313,7 +318,7 @@ int Encoder::encodeVideo2(AVFrame * inframe) {
     //pac->packet->dts = _last_dts;
     //pac->packet->pts = _last_dts;
     pac->setDtsTimeStamp(TimeStamp(_last_dts, ctx->time_base));
-    LOGDEBUG(pac->toString());
+    //LOGDEBUG(pac->toString());
 
     //LOGDEBUG("PSNR=========" << ((double) ctx->coded_frame->error[0]) / ((double) ctx->width * ctx->height * 255.0 * 255.0));
     /**
@@ -340,7 +345,7 @@ int Encoder::encodeVideo2(AVFrame * inframe) {
   if (_last_duration > 0 && _last_time_base.num > 0 && _last_time_base.den > 0){
     _last_dts += av_rescale_q(_last_duration, _last_time_base, ctx->time_base);
   }
-
+  //LOGDEBUG("encoder ret:"<<ret)
   return ret;
 }
 
