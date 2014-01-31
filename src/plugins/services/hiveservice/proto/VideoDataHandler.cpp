@@ -60,42 +60,48 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
     //Ptr<safmq::MessageQueue> read_q;
     //Ptr<safmq::MessageQueue> write_q;
     Ptr<db::ProcessUnit> _current_unit;
-
+    //litesql::DataSource<db::ProcessUnit> _prevEncodedUnits;
 
     db::ProcessUnit getProcessUnit(){
       db::ProcessUnit result=db::ProcessUnit(_db);
       bool audioProcessunitReceived=false;
+      std::string client_id=StringUtil::toString(_ep);
       _db.query("begin exclusive");
-
+      litesql::DataSource<db::ProcessUnit> nextAudioUnit=litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1 && db::ProcessUnit::Codectype==db::ProcessUnit::Codectype::AUDIO);
       /*check for audio processunits to process it before the video processunits*/
-      if(litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1 && db::ProcessUnit::Codectype==db::ProcessUnit::Codectype::AUDIO).count()){
-
-        /*
-          * 1. select all audio processunits which are previous encoded by anyone of the clients
-          * 2. look if there are any open audio streams which could connect to a new client
-          * 3.
-          *
-        */
-        result=litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1 && db::ProcessUnit::Codectype==db::ProcessUnit::Codectype::AUDIO).orderBy(db::ProcessUnit::Id, true).one();
-
-        litesql::DataSource<db::ProcessUnit> prevEncodedUnits=litesql::select<db::ProcessUnit > (
-        _db,
-        db::ProcessUnit::Jobid== result.jobid &&
-        db::ProcessUnit::Sorcestream == result.sorcestream &&
-        db::ProcessUnit::Send > 1 &&
-        db::ProcessUnit::Clientid == StringUtil::toString(_ep) &&
-        db::ProcessUnit::Codectype==db::ProcessUnit::Codectype::AUDIO
-        );
-
-        if(prevEncodedUnits.count()>0){
-          result=litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1 && db::ProcessUnit::Sorcestream == result.sorcestream && db::ProcessUnit::Codectype==db::ProcessUnit::Codectype::AUDIO).orderBy(db::ProcessUnit::Id, true).one();
+      if(nextAudioUnit.count()){
+        litesql::Records recs = _db.query("select  max(clientid_),jobid_, sorcestream_ from processunit_ where codectype_='AUDIO' group by jobid_, sorcestream_ having count(*)>sum(send_>1) order by 1 desc");
+        //bool did_handle_previous_pu=false;
+        for (litesql::Records::iterator i = recs.begin(); i != recs.end(); i++){
+          if((*i)[0]==client_id){
+            /*found an previous audio encoding*/
+            litesql::DataSource<db::ProcessUnit> nextEncodedUnits=litesql::select<db::ProcessUnit > (
+            _db,
+            db::ProcessUnit::Jobid == (*i)[1] &&
+            db::ProcessUnit::Sorcestream == (*i)[2] &&
+            db::ProcessUnit::Send == 1
+            );
+            result=nextEncodedUnits.one();
+            break;
+          }
+          if((*i)[0].length()==0){
+            litesql::DataSource<db::ProcessUnit> nextEncodedUnits=litesql::select<db::ProcessUnit > (
+            _db,
+            db::ProcessUnit::Jobid == (*i)[1] &&
+            db::ProcessUnit::Sorcestream == (*i)[2] &&
+            db::ProcessUnit::Send == 1
+            );
+            result=nextEncodedUnits.one();
+            break;
+          }
         }
-
-        result.send=litesql::DateTime();
-        result.deliverycount=result.deliverycount+1;
-        result.clientid=StringUtil::toString(_ep);
-        result.update();
-        audioProcessunitReceived=true;
+        if(result.id>0){
+          result.send=litesql::DateTime();
+          result.deliverycount=result.deliverycount+1;
+          result.clientid=StringUtil::toString(_ep);
+          result.update();
+          audioProcessunitReceived=true;
+        }
       }
       if(!audioProcessunitReceived && litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1 && db::ProcessUnit::Codectype==db::ProcessUnit::Codectype::VIDEO).count()){
         result=litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1 && db::ProcessUnit::Codectype==db::ProcessUnit::Codectype::VIDEO).orderBy(db::ProcessUnit::Id, true).one();
@@ -110,7 +116,9 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
 
   public:
 
-    VideoDataHandler(InputStream * is, OutputStream * os, boost::asio::ip::tcp::endpoint e): _db(db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"))) {
+    VideoDataHandler(InputStream * is, OutputStream * os, boost::asio::ip::tcp::endpoint e):
+    _db(db::HiveDb("sqlite3", org::esb::config::Config::get("db.url")))
+    {
       _ep=e;
       _os=os;
       _is=is;
@@ -147,6 +155,9 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
       if(_current_unit){
         _current_unit->send=1;
         _current_unit->update();
+        if(_current_unit->codectype==db::ProcessUnit::Codectype::AUDIO){
+          _db.query("UPDATE processunit_ set clientid_='', send_=1 where jobid_='"+_current_unit->jobid+"' and codectype_='AUDIO'");
+        }
       }
       //partitionservice::PartitionManager::getInstance()->getInstance()->leavePartition("", _ep);
       shutdown = true;

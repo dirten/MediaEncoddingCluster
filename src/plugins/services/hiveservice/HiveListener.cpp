@@ -70,6 +70,8 @@ namespace org {
           db::ProcessUnit out=(*cur);
           LOGDEBUG("aborted ProcessUnit found, restart it:"<<out)
           out.send=1;
+          out.clientid="";
+          out.sendid="";
           out.update();
           LOGDEBUG("changed to:"<<out)
         }

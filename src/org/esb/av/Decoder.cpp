@@ -339,7 +339,7 @@ bool Decoder::decodeVideo3(Packet & packet) {
   if (!_frameFinished) {
     if(emptyFrameIsEOF){
       LOGDEBUG("Decoder flushed");
-      return pushFrame(new Frame());
+      return pushFrame(Ptr<Frame>());
     }
     /*eof not reached, continue cosuming packets*/
     return true;

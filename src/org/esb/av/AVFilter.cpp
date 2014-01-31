@@ -331,8 +331,11 @@ namespace org {
           * @TODO: Audio Frames should change its parameter like channel_layout during the packets
           *        need to handle changes of the incomming packets
           */
-        outFrame->setDuration(p->getDuration());
-        AVFrame * frame=av_frame_clone(p->getAVFrame());
+        AVFrame * frame=NULL;
+        if(p){
+          outFrame->setDuration(p->getDuration());
+          frame=av_frame_clone(p->getAVFrame());
+        }
         if(!frame){
           LOGDEBUG("flush filter")
         }

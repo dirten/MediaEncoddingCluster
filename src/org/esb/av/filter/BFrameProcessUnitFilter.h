@@ -14,6 +14,8 @@ namespace org {
           ~BFrameProcessUnitFilter();
           bool newFrame(Ptr<Frame> p);
           void init(){/*NOP*/}
+        private:
+          Ptr<Frame> previousFrame;
       };
     }
   }
