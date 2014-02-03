@@ -71,6 +71,8 @@ namespace org {
                     bool hasProperty(std::string);
                     void setFps(int);
                     int getFps();
+                    Ptr<org::esb::av::AVFilter>getFilter();
+                    void setFilter(Ptr<org::esb::av::AVFilter> filter);
                     //	private:
                     //	        friend class boost::serialization::access;
 
@@ -138,7 +140,7 @@ namespace org {
                   int _fps;
                   ptime _start;
                   ptime _end;
-
+                  Ptr<org::esb::av::AVFilter> _filter;
                 };
                 /*
                 class PtsComparator {

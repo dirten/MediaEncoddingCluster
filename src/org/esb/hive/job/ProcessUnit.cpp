@@ -50,7 +50,7 @@ bool toDebug = false;
 class MyPacketSink : public AVPipe {
 public:
 
-    MyPacketSink():AVPipe() {
+  MyPacketSink():AVPipe() {
   }
   bool newFrame(Ptr<Frame>){return false;}
   bool newPacket(Ptr<Packet> p){
@@ -172,37 +172,39 @@ void ProcessUnit::processInternal2() {
     return;
   }
 
-  org::esb::av::AVFilter * filter=NULL;
-  if(_decoder->getCodecType()==AVMEDIA_TYPE_AUDIO){
-    filter=new org::esb::av::AVFilter(AUDIO,"aresample=%sample_rate%,aformat=sample_fmts=%sample_format%:channel_layouts=0x%channel_layout%");
 
-    filter->setInputParameter("channel_layout",StringUtil::toString(_decoder->getChannelLayout()));
-    filter->setInputParameter("sample_rate",StringUtil::toString(_decoder->getSampleRate()));
-    filter->setInputParameter("sample_format", av_get_sample_fmt_name(_decoder->getSampleFormat()));
-    filter->setInputParameter("time_base", "1/"+StringUtil::toString(_decoder->getTimeBase().den));
+  //org::esb::av::AVFilter * filter=NULL;
+  if(!_filter){
+    if(_decoder->getCodecType()==AVMEDIA_TYPE_AUDIO){
+      _filter=new org::esb::av::AVFilter(AUDIO,"aresample=%sample_rate%,aformat=sample_fmts=%sample_format%:channel_layouts=0x%channel_layout%");
 
-    filter->setOutputParameter("channel_layout",StringUtil::toString(_encoder->getChannelLayout()));
-    filter->setOutputParameter("frame_size",StringUtil::toString(_encoder->ctx->frame_size));
-    filter->setOutputParameter("sample_rate",StringUtil::toString(_encoder->getSampleRate()));
-    filter->setOutputParameter("sample_format", av_get_sample_fmt_name(_encoder->getSampleFormat()));
-    filter->setOutputParameter("frame_size",StringUtil::toString(_encoder->ctx->frame_size));
+      _filter->setInputParameter("channel_layout",StringUtil::toString(_decoder->getChannelLayout()));
+      _filter->setInputParameter("sample_rate",StringUtil::toString(_decoder->getSampleRate()));
+      _filter->setInputParameter("sample_format", av_get_sample_fmt_name(_decoder->getSampleFormat()));
+      _filter->setInputParameter("time_base", "1/"+StringUtil::toString(_decoder->getTimeBase().den));
+
+      _filter->setOutputParameter("channel_layout",StringUtil::toString(_encoder->getChannelLayout()));
+      _filter->setOutputParameter("frame_size",StringUtil::toString(_encoder->ctx->frame_size));
+      _filter->setOutputParameter("sample_rate",StringUtil::toString(_encoder->getSampleRate()));
+      _filter->setOutputParameter("sample_format", av_get_sample_fmt_name(_encoder->getSampleFormat()));
+      _filter->setOutputParameter("frame_size",StringUtil::toString(_encoder->ctx->frame_size));
+    }
+
+    if(_decoder->getCodecType()==AVMEDIA_TYPE_VIDEO){
+      _filter=new org::esb::av::AVFilter(VIDEO,"scale=%width%:%height%");
+
+      _filter->setInputParameter("width",StringUtil::toString(_decoder->getWidth()));
+      _filter->setInputParameter("height",StringUtil::toString(_decoder->getHeight()));
+      _filter->setInputParameter("pixel_format",StringUtil::toString(_decoder->getPixelFormat()));
+      _filter->setInputParameter("time_base", StringUtil::toString(_decoder->getTimeBase().num)+"/"+StringUtil::toString(_decoder->getTimeBase().den));
+      _filter->setInputParameter("sample_aspect_ratio", StringUtil::toString(_decoder->ctx->sample_aspect_ratio.num)+"/"+StringUtil::toString(_decoder->ctx->sample_aspect_ratio.den));
+
+      _filter->setOutputParameter("width",StringUtil::toString(_encoder->getWidth()));
+      _filter->setOutputParameter("height",StringUtil::toString(_encoder->getHeight()));
+      _filter->setOutputParameter("pixel_format",StringUtil::toString(_encoder->getPixelFormat()));
+    }
+    _filter->init();
   }
-
-  if(_decoder->getCodecType()==AVMEDIA_TYPE_VIDEO){
-    filter=new org::esb::av::AVFilter(VIDEO,"scale=%width%:%height%");
-
-    filter->setInputParameter("width",StringUtil::toString(_decoder->getWidth()));
-    filter->setInputParameter("height",StringUtil::toString(_decoder->getHeight()));
-    filter->setInputParameter("pixel_format",StringUtil::toString(_decoder->getPixelFormat()));
-    filter->setInputParameter("time_base", StringUtil::toString(_decoder->getTimeBase().num)+"/"+StringUtil::toString(_decoder->getTimeBase().den));
-    filter->setInputParameter("sample_aspect_ratio", StringUtil::toString(_decoder->ctx->sample_aspect_ratio.num)+"/"+StringUtil::toString(_decoder->ctx->sample_aspect_ratio.den));
-
-    filter->setOutputParameter("width",StringUtil::toString(_encoder->getWidth()));
-    filter->setOutputParameter("height",StringUtil::toString(_encoder->getHeight()));
-    filter->setOutputParameter("pixel_format",StringUtil::toString(_encoder->getPixelFormat()));
-  }
-
-  filter->init();
 
   /*init the packet sink*/
   MyPacketSink sink;//=new MyPacketSink();
@@ -215,13 +217,13 @@ void ProcessUnit::processInternal2() {
   Ptr<org::esb::av::AVFilter> puFilter;
   if(_decoder->getCodecOption("has_b_frames")=="1"){
     puFilter=new org::esb::av::BFrameProcessUnitFilter();
-    puFilter->addTarget(filter);
+    puFilter->addTarget(_filter.get());
     _decoder->addTarget(puFilter.get());
   }else{
-    _decoder->addTarget(filter);
+    _decoder->addTarget(_filter.get());
   }
 
-  filter->addTarget(_encoder.get());
+  _filter->addTarget(_encoder.get());
   _encoder->addTarget(&sink);
 
   list<boost::shared_ptr<Packet> >::iterator it = _input_packets.begin();
@@ -236,17 +238,27 @@ void ProcessUnit::processInternal2() {
 
     /*sending an empty packet is implicit a flush for the pipe*/
     //if(_decoder->getCodecId()!=AV_CODEC_ID_MPEG2VIDEO && _decoder->getCodecOption("has_b_frames") != "1"){
-      while(_decoder->newPacket(new Packet()));
+    while(_decoder->newPacket(new Packet()));
     //}else{
-      //while(filter->newPacket(new Packet()));
-      //while(filter->newFrame(new Frame()));
+    //while(filter->newPacket(new Packet()));
+    //while(filter->newFrame(new Frame()));
     //}
   }
+  _decoder->clearTargets();
+  _filter->clearTargets();
+  _encoder->clearTargets();
 
   _output_packets = sink.getList();
   if(_decoder->getCodecId()==AV_CODEC_ID_MPEG2VIDEO){
     //_output_packets.pop_back();
   }
+}
+Ptr<org::esb::av::AVFilter> ProcessUnit::getFilter(){
+  return _filter;
+}
+
+void ProcessUnit::setFilter(Ptr<org::esb::av::AVFilter> filter){
+  _filter=filter;
 }
 
 

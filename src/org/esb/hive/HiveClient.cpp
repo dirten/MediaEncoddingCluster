@@ -192,7 +192,7 @@ namespace org {
         std::string stream_id=unit->getJobId();
         stream_id+=StringUtil::toString(unit->_source_stream);
 
-        if (false&&unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+        if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
 
 
           LOGDEBUG("special handling audio")
@@ -208,6 +208,8 @@ namespace org {
               unit->_encoder = _encoder_list[stream_id];
             if (_converter_list[stream_id])
               unit->_converter = _converter_list[stream_id];
+            if (_filter_list[stream_id])
+              unit->setFilter( _filter_list[stream_id]);
           } else {
             LOGDEBUG("audio no swap!!!");
           }
@@ -216,15 +218,16 @@ namespace org {
           LOGDEBUG("no audio codec");
         }
         unit->process();
-        if (false&&unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+        if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
           if (_swap_codec_list[stream_id]) {
             LOGDEBUG("swap back to hold the data");
             _decoder_list[stream_id] = unit->_decoder;
             _encoder_list[stream_id] = unit->_encoder;
             _converter_list[stream_id] = unit->_converter;
+            _filter_list[stream_id] = unit->getFilter();
           }
         }
-        if (false&&unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+        if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
 
           if (unit->_last_process_unit) {
             LOGDEBUG("Last ProcessUnit for Audio received, clear out");
@@ -236,6 +239,7 @@ namespace org {
               delete (*it).second;
             }
             _converter_list.clear();
+            _filter_list.clear();
           }
         }
       }

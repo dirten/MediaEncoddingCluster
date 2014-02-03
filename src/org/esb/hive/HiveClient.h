@@ -72,6 +72,7 @@ namespace org {
                 std::map<std::string, boost::shared_ptr<org::esb::av::Decoder> > _decoder_list;
                 std::map<std::string, boost::shared_ptr<org::esb::av::Encoder> > _encoder_list;
                 std::map<std::string, org::esb::av::FrameConverter *  > _converter_list;
+                std::map<std::string, Ptr<org::esb::av::AVFilter>  > _filter_list;
 
                 std::map<std::string, bool> _swap_codec_list;
 
