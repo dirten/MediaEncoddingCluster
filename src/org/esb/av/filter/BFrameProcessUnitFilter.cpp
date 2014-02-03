@@ -16,7 +16,6 @@ namespace org {
       bool BFrameProcessUnitFilter::newFrame(Ptr<Frame> p){
 
         if(!p){
-
           if(!previousFrame || previousFrame->getAVFrame()->pict_type==AV_PICTURE_TYPE_I){
             return pushFrame(Ptr<Frame>());
           }

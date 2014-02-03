@@ -123,7 +123,7 @@ namespace org {
 
         const enum AVSampleFormat out_sample_fmts[] = { sample_format, AV_SAMPLE_FMT_NONE };
 
-        const int64_t out_channel_layouts[] = { AV_CH_LAYOUT_STEREO, -1 };
+        const int64_t out_channel_layouts[] = { ch_layout, -1 };
         const int out_channel_counts[] = { 2, -1 };
 
         //static const int64_t out_channel_counts[] = { 2, -1 };
@@ -252,8 +252,7 @@ namespace org {
         filter_graph->nb_threads=1;
 
 
-        ret = avfilter_graph_create_filter(&buffersrc_ctx, buffersrc, "in",
-        args, NULL, filter_graph);
+        ret = avfilter_graph_create_filter(&buffersrc_ctx, buffersrc, "in", args, NULL, filter_graph);
         if (ret < 0) {
           throw Exception(__FILE__, __LINE__,"Cannot create video buffer source with arguments\n%s", args);
         }
@@ -319,7 +318,13 @@ namespace org {
       bool AVFilter::newFrame(Ptr<Frame> p)
       {
         bool result=false;
+          int64_t filter_ch_layout=atoi((_input_params["channel_layout"]).c_str());
+          int64_t frame_ch_layout=av_frame_get_channel_layout(p->getAVFrame());
+          if(filter_ch_layout!=frame_ch_layout){
+            _input_params["channel_layout"]=StringUtil::toString(frame_ch_layout);
 
+            initAudioSourceSink();
+          }
 
 
 

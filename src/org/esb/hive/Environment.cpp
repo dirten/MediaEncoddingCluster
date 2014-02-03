@@ -191,7 +191,7 @@ namespace org {
           DatabaseService::updateTables();
         }
         /**stopping the internal database service*/
-        org::esb::hive::DatabaseService::stop();
+        //org::esb::hive::DatabaseService::stop();
 
       }
 
