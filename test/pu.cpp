@@ -143,6 +143,7 @@ void execute(char * infile, char * outfile) {
   //pu->_decoder->reset();
   pu->process();
   delete pu->_converter;
+
   LOGDEBUG("output packets"<<pu->_output_packets.size())
   FileOutputStream fos(outfile);
   ObjectOutputStream oos(&fos);

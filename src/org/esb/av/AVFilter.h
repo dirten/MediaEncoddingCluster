@@ -52,6 +52,7 @@ namespace org {
       private:
           void initAudioSourceSink();
           void initVideoSourceSink();
+          void cleanUp();
           bool sanityCheck(std::map<std::string, std::string>,std::list<std::string>, std::string);
           std::string _filter;
           std::map<std::string, std::string> _input_params;
