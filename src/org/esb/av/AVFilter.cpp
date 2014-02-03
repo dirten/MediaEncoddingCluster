@@ -318,13 +318,6 @@ namespace org {
       bool AVFilter::newFrame(Ptr<Frame> p)
       {
         bool result=false;
-          int64_t filter_ch_layout=atoi((_input_params["channel_layout"]).c_str());
-          int64_t frame_ch_layout=av_frame_get_channel_layout(p->getAVFrame());
-          if(filter_ch_layout!=frame_ch_layout){
-            _input_params["channel_layout"]=StringUtil::toString(frame_ch_layout);
-
-            initAudioSourceSink();
-          }
 
 
 
@@ -338,6 +331,13 @@ namespace org {
           */
         AVFrame * frame=NULL;
         if(p){
+          int64_t filter_ch_layout=atoi((_input_params["channel_layout"]).c_str());
+          int64_t frame_ch_layout=av_frame_get_channel_layout(p->getAVFrame());
+          if(filter_ch_layout!=frame_ch_layout){
+            _input_params["channel_layout"]=StringUtil::toString(frame_ch_layout);
+            initAudioSourceSink();
+          }
+
           outFrame->setDuration(p->getDuration());
           frame=av_frame_clone(p->getAVFrame());
         }
