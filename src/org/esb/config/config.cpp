@@ -115,6 +115,8 @@ std::string Config::get(std::string key, std::string def) {
 
 void Config::setProperty(std::string key, std::string val) {
   if(!_isInitialized)init();
+
+
   properties->setProperty(key, val);
   std::string env=std::string(key).append("=").append(val);
   char * pa=new char[env.length()+1];

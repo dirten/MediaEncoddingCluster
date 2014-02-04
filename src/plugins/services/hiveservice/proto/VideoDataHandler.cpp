@@ -156,7 +156,7 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
         _current_unit->send=1;
         _current_unit->update();
         if(_current_unit->codectype==db::ProcessUnit::Codectype::AUDIO){
-          _db.query("UPDATE processunit_ set clientid_='', send_=1 where jobid_='"+_current_unit->jobid+"' and codectype_='AUDIO'");
+          _db.query("UPDATE processunit_ set clientid_='', send_=1 where jobid_='"+_current_unit->jobid+"' and codectype_='AUDIO' AND clientid_='"+StringUtil::toString(_ep)+"'");
         }
       }
       //partitionservice::PartitionManager::getInstance()->getInstance()->leavePartition("", _ep);

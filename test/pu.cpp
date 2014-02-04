@@ -305,7 +305,7 @@ int main(int argc, char** argv) {
   if (command == "view")view(infilename);
   if (command == "execute")execute(infilename, argv[3]);
   if (command == "pc")packet_count(infilename, argv[3]);
-
+  org::esb::hive::Environment::close();
   return (EXIT_SUCCESS);
 }
 

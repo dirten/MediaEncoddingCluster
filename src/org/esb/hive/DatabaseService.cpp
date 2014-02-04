@@ -125,8 +125,12 @@ namespace org {
       void DatabaseService::updateTables() {
         db::HiveDb db = getDatabase();
         if (db.needsUpgrade()) {
-          LOGDEBUG("Upgrade database");
+          std::cout <<"Upgrade database"<<std::endl;
+          //LOGDEBUG("Upgrade database");
           db.upgrade();
+        }else{
+          std::cout <<"no database upgrade"<<std::endl;
+          //LOGDEBUG("no database upgrade");
         }
       }
 
