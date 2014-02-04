@@ -350,6 +350,7 @@ namespace org {
 
           outFrame->setDuration(p->getDuration());
           frame=av_frame_clone(p->getAVFrame());
+          //frame=p->getAVFrame();
         }
         if(!frame){
           LOGDEBUG("flush filter")
@@ -364,7 +365,8 @@ namespace org {
         }
         /* pull filtered frames from the filtergraph */
         while (1) {
-          int ret = av_buffersink_get_frame(buffersink_ctx, outFrame->getAVFrame());
+          //int ret = av_buffersink_get_frame_flags(buffersink_ctx, outFrame->getAVFrame(),AV_BUFFERSINK_FLAG_NO_REQUEST);
+          int ret = av_buffersink_get_frame_flags(buffersink_ctx, outFrame->getAVFrame(),0);
           /*when not enough data is available*/
           if(ret == AVERROR(EAGAIN) || ret == AVERROR_EOF){
             break;
@@ -373,13 +375,13 @@ namespace org {
           LOGDEBUG("push new frame from filter")
           //outFrame->setDuration(*(int*)frame->opaque);
           pushFrame(outFrame);
+          av_frame_unref(outFrame->getAVFrame());
         }
         if(!result && !frame){
           /*flushing next segment*/
           LOGDEBUG("push empty frame from filter")
           result|=pushFrame(Ptr<Frame>());
         }
-        av_frame_unref(outFrame->getAVFrame());
         if(frame)
           av_frame_unref(frame);
         av_frame_free(&frame);
