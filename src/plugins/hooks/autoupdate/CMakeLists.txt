@@ -3,6 +3,7 @@
 add_library (autoupdate SHARED
   AutoUpdateHandler.cpp
   UpdateDownloadHandler.cpp
+  UpdateUploadHandler.cpp
 )
 
 TARGET_LINK_LIBRARIES(autoupdate
@@ -12,6 +13,6 @@ TARGET_LINK_LIBRARIES(autoupdate
 SET_TARGET_PROPERTIES( autoupdate PROPERTIES PREFIX "")
 
 INSTALL(TARGETS autoupdate
-  RUNTIME DESTINATION plugins
-  LIBRARY DESTINATION plugins
+  RUNTIME DESTINATION ${PLUGIN_INSTALL_DIR}
+  LIBRARY DESTINATION ${PLUGIN_INSTALL_DIR}
 )
