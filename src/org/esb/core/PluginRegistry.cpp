@@ -308,6 +308,7 @@ namespace org {
       }
 
       void PluginRegistry::load(std::string file) {
+        LOGDEBUG("loading plugin from directory" << file);
         org::esb::io::File plugin_dir(file);
         if(plugin_dir.isDirectory()) {
           org::esb::io::FileList plugin_list = plugin_dir.listFiles();
@@ -328,7 +329,7 @@ namespace org {
         */
       void PluginRegistry::loadFile(std::string file) {
         if(strstr(file.c_str(),".dylib")>0||strstr(file.c_str(),".dll")>0||strstr(file.c_str(),".so")>0){
-          LOGDEBUG("loading plugins from " << file);
+          LOGDEBUG("loading plugin" << file);
           try {
             org::esb::lang::SharedObjectLoader * loader = new org::esb::lang::SharedObjectLoader(file);
             _shared_objects[file] = loader;

@@ -14,7 +14,7 @@ project (MEC)
 ############################################################
 SET(MAJOR_VERSION 0)
 SET(MINOR_VERSION 5)
-SET(PATCH_VERSION 1)
+SET(PATCH_VERSION 2)
 SET(MINOR_PATCH_VERSION 0)
 SET(REV ${SVN_VERSION})
 

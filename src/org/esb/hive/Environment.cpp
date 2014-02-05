@@ -57,13 +57,22 @@ namespace org {
         //std::cout << "build environment"<<std::endl;
         //return;
         for(int a = 0;a<argc;a++){
-          //std::cout << "arg:"<<argv[a]<<std::endl;
+          std::cout << "arg:"<<argv[a]<<std::endl;
           std::string arg=argv[a];
           _argumentMap.push_back(arg);
         }
-        org::esb::io::File f(argv[0]);
-        std::string bpath = org::esb::io::File(f.getParent()).getParent();
+        /*get the absolute path to the executable*/
+        org::esb::io::File ftmp(argv[0]);
+        chdir(ftmp.getFilePath().c_str());
+        char buf[1000];
+        getcwd(buf, 1000);
 
+        org::esb::io::File f(buf);
+        //std::string bpath = org::esb::io::File(f.getParent()).getParent();
+        std::string bpath = f.getParent();
+        std::cout << "bpath:"<<bpath<<std::endl;
+        //std::cout << "bpath2:"<<bpath2<<std::endl;
+        std::cout << "cwd:"<<buf<<std::endl;
 #ifdef __WIN32__
         std::string upath = get("APPDATA") + "/mhive";
 #elif defined __APPLE__
@@ -80,7 +89,7 @@ namespace org {
         set(USER_HOME, upath);
 
         set(BASE_PATH, bpath);
-        set(PLUGIN_PATH, get("MHIVE_PLUGIN_DIR", bpath+"/plugins" ));
+        set(PLUGIN_PATH, get("MHIVE_PLUGIN_DIR", bpath+"/plugin" ));
 
         set(EXE_PATH, f.getFilePath());
         set(EXE_NAME, f.getFileName());
