@@ -60,8 +60,8 @@ namespace org {
         */
         //formatCtx->iformat= getInputFormat("mp4");
         //formatCtx->iformat->flags|=AVFMT_NOFILE;
-
         formatCtx->flags=AVFMT_FLAG_CUSTOM_IO;
+        formatCtx->flags |= AVFMT_FLAG_GENPTS;
         if (avformat_open_input(&formatCtx, NULL, NULL, NULL) != 0) {
           LOGERROR("could not open stream data");
 

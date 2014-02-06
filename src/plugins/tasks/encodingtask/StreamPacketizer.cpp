@@ -29,6 +29,7 @@
 #include "org/esb/av/Encoder.h"
 #include "org/esb/av/Decoder.h"
 #include "org/esb/util/StringUtil.h"
+#include "org/esb/util/Foreach.h"
 using namespace org::esb::av;
 namespace encodingtask {
 
@@ -185,7 +186,16 @@ namespace encodingtask {
         _packet_list.push_back(_stream.packets);
         _stream.packets.clear();
 
-        _stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.end());
+
+        PacketPtr iFrame=_overlap_queue.front();
+        _stream.packets.push_back(iFrame);
+        foreach(PacketPtr packet,_overlap_queue){
+          if(packet->getPts()>iFrame->getPts()){
+            _stream.packets.push_back(ptr);
+          }
+        }
+        //_stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.end());
+
         _overlap_queue.clear();
 
         result=true;

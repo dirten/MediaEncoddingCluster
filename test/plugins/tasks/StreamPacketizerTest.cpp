@@ -87,7 +87,7 @@ int main(int argc, char** argv) {
   }
   std::map<int,StreamPacketizer> packetizer;
   //StreamPacketizer pti(stream_data);
-  for (int a = 0; a < 150;) {
+  for (int a = 0; a < 350;) {
     Packet p;
     //reading a packet from the Stream
     //when no more packets available(EOF) then it return <0
