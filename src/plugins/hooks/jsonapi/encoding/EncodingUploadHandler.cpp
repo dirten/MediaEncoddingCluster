@@ -102,7 +102,7 @@ public:
 
   ~EncodingUploadPartHandler(){
     LOGDEBUG("~EncodingUploadPartHandler()")
-    //delete fis;
+        //delete fis;
   }
 
   std::string getData() {
@@ -120,7 +120,7 @@ private:
 };
 
 class JSONAPI_EXPORT EncodingUploadHandler : public org::esb::core::WebHookPlugin {
-org::esb::core::Graph * graphobj;
+  org::esb::core::Graph * graphobj;
   db::HiveDb _db;
 public:
   EncodingUploadHandler() : _db(db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"))){
@@ -168,13 +168,13 @@ public:
 
       org::esb::core::GraphParser graphparser(graph.write_formatted());
       LOGDEBUG("here")
-      org::esb::core::GraphParser::ElementMap & el = graphparser.getElementMap();
+          org::esb::core::GraphParser::ElementMap & el = graphparser.getElementMap();
       std::list<Ptr<org::esb::core::Graph::Element> > list;
       foreach(org::esb::core::GraphParser::ElementMap::value_type & element, el) {
         element.second->task->getContext()->set<std::string>("uuid",uuid);
         list.push_back(element.second);
       }
-     org::esb::core::Graph graphobj = org::esb::core::Graph(list, uuid);
+      org::esb::core::Graph graphobj = org::esb::core::Graph(list, uuid);
 
       /*create a job entry here*/
 
@@ -185,7 +185,7 @@ public:
       job.update();
 
       try{
-       //release this scope before the graph will be freed
+        //release this scope before the graph will be freed
         EncodingUploadPartHandler partHandler(graphobj);
         Poco::Net::HTMLForm form(req, req.stream(), partHandler);
       }catch(...){
@@ -203,7 +203,7 @@ public:
     }
     //res.setChunkedTransferEncoding(true);
     res.setContentType("text/plain");
-//return;
+    //return;
     std::ostream & ostr = res.send();
     ostr << result.write_formatted();
   }
