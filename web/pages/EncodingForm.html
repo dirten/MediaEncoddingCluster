@@ -10,7 +10,7 @@
   </fieldset>
 </form>
 <div id="progress">
-    <div class="bar" style="width: 0%;"></div>
+    <div id="progressbar" class="bar" style="width: 100%;"></div>
 </div>
 <script>
 var encoding_data={};
@@ -33,6 +33,7 @@ $('#profile_selector').change(function() {
 
 $('#filename').change(function() {
   encoding_data.filename=$('#filename');
+  console.log($('#filename'));
 });
 
 $('#target').change(function() {
@@ -41,15 +42,24 @@ $('#target').change(function() {
 
 $('#button-start').button("disable");
 
+var jqXHR = null;
 $('#filename').fileupload({
     dataType: 'json',
     add: function (e, data) {
       $('#button-start').button("enable");
       $('#button-start').click(function(){
         //data.context = $('<p/>').text('Uploading...').replaceAll($(this));
+        console.log(encoding_data);
         $('#button-start').button("disable");
-        data.submit();
-      })
+        jqXHR=data.submit();
+      });
+      $('#button-cancel').click(function(){
+        if(jqXHR!=null){
+          jqXHR.abort();
+          jqXHR=null;
+        }
+      });
+
       console.log("add");
       console.log(data);
     },
@@ -61,9 +71,17 @@ $('#filename').fileupload({
 
     },
     progressall: function (e, data) {
-            var progress = parseInt(data.loaded / data.total * 100, 10);
+          var progress = parseInt(data.loaded / data.total * 100, 10);
           console.log(progress);
+          $( "#progressbar" ).progressbar( "value", progress);
         }
 });
+
+$(function() {
+    $( "#progressbar" ).progressbar({
+      value: 0
+    });
+  });
+
 </script>
 

@@ -5,6 +5,7 @@ $.getJSON( "/api/v1/encoding", function( data ) {
   $.each( data.data, function( key, val ) {
     var even_odd=++i%2==0?'even':'odd';
     $("#list_encoding").append('<tr class="'+even_odd+'"><td>'+val.flowname+'</td><td>'+val.id+'</td></tr>');
+    if(i>20)return false;
   });
 });
 
@@ -21,7 +22,7 @@ $( "#new_encoding" )
 function createDialog(){
   $("#dialog-form-encoding").dialog({
     autoOpen: false,
-    height: 300,
+    height: 400,
     width: 800,
     modal: true,
     closeOnEscape: false,

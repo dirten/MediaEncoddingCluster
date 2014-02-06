@@ -183,6 +183,9 @@ public:
       job.outfile=outfile;
       job.graph=graph.write_formatted();
       job.update();
+      if(req.has("Content-Disposition")){
+        LOGDEBUG("Header Content Disposition:"<<req.get("Content-Disposition"))
+      }
 
       try{
         //release this scope before the graph will be freed

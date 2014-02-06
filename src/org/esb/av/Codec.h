@@ -50,6 +50,7 @@ class AVCodecContext;
 class PixelFormat;
 class SampleFormat;*/
 
+
       class AV_EXPORT Codec {
         classlogger("org.esb.av.Codec")
       public:
