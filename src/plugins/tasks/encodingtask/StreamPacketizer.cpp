@@ -179,19 +179,23 @@ namespace encodingtask {
 
     if(_stream.state == STATE_END_I_FRAME && (_decoder->getCodecOption("has_b_frames") == "1")){
       LOGDEBUG("has a bframe")
+      PacketPtr iFrame=_overlap_queue.front();
       delay++;
-      if(delay>=3){
+      //if(delay>=3){
+
+      /*this makes the assumption, that B-Frames has allways a lower pts than the previous I-Frame*/
+      if(iFrame->getPts()<ptr->getPts()){
         _stream.state = STATE_START_I_FRAME;
-        _stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.end());
+        _stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.end()-1);
         _packet_list.push_back(_stream.packets);
         _stream.packets.clear();
 
 
-        PacketPtr iFrame=_overlap_queue.front();
         _stream.packets.push_back(iFrame);
+
         foreach(PacketPtr packet,_overlap_queue){
           if(packet->getPts()>iFrame->getPts()){
-            _stream.packets.push_back(ptr);
+            _stream.packets.push_back(packet);
           }
         }
         //_stream.packets.insert(_stream.packets.end(), _overlap_queue.begin(), _overlap_queue.end());
