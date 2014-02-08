@@ -43,12 +43,12 @@ namespace org {
           *this = ex;
         }
 
-        Exception(const char * msg) {
-
+        Exception(const char * msg):_msg(msg) {
+          message=_msg;
         }
 
         Exception(const std::string msg):_msg(msg) {
-            
+          message=_msg;
         }
 
         /**

@@ -62,6 +62,17 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
     Ptr<db::ProcessUnit> _current_unit;
     //litesql::DataSource<db::ProcessUnit> _prevEncodedUnits;
 
+
+    /** @TODO:  1. select next ProcessUnit from database
+     *          2. check if it is an Audio Unit
+     *          3. when it is an audio packet then check if this client handler is responsible for this audio packet
+     *          4. when it is not responsible then goto step 1. otherwise continue with the next step
+     *          5. deliver it to the client
+     *
+     * explain the check of an audio packet to make a decision if this client is responsible
+     * 1. if the column clientid is empty then allocate all audio units for this jobid and sourcestream for this clientid by updating the column clientid to this clientif of all rows for this jobid and sourcestream.
+     * 2. if the clientid == this handler clientid then responsible=true
+     */
     db::ProcessUnit getProcessUnit(){
       db::ProcessUnit result=db::ProcessUnit(_db);
       bool audioProcessunitReceived=false;

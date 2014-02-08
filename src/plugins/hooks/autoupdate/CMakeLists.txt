@@ -4,6 +4,7 @@ add_library (autoupdate SHARED
   AutoUpdateHandler.cpp
   UpdateDownloadHandler.cpp
   UpdateUploadHandler.cpp
+  UpdateInstallHandler.cpp
 )
 
 TARGET_LINK_LIBRARIES(autoupdate
