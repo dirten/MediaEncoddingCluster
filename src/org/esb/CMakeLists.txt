@@ -369,9 +369,9 @@ TARGET_LINK_LIBRARIES(hive
   json
   util
   ${Boost_LIBRARIES}
+  ${POCO_LIB_ZIP}
   ${POCO_LIB_NET}
   ${POCO_LIB_FOUNDATION}
-
 )
 
 INSTALL(TARGETS hive

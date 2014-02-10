@@ -6,7 +6,8 @@
 #include "org/esb/io/File.h"
 
 #include "Poco/Net/HTTPResponse.h"
-
+#include "Poco/Zip/Decompress.h"
+#include "Poco/Delegate.h"
 using org::esb::core::Version;
 using org::esb::hive::Environment;
 using org::esb::io::File;
@@ -23,7 +24,7 @@ void UpdateInstallHandler::handle(org::esb::core::http::HTTPServerRequest&req, o
 
   if(!v.equals(current_version)){
     std::string filename=std::string("MediaEncodingCluster-").
-    append(v.toString()).append("-").
+    append(version).append("-").
     append(Environment::get(Environment::SYSTEM)).
     append(".tar.gz");
 
@@ -33,7 +34,21 @@ void UpdateInstallHandler::handle(org::esb::core::http::HTTPServerRequest&req, o
 
     File updateFile(update_path_str);
     if(updateFile.exists()&&updateFile.isFile()){
-      LOGDEBUG("unpacking file :"<<update_path_str)
+      LOGDEBUG("unpacking file :"<<update_path_str<<" to "<<Poco::Path().toString())
+
+      std::ifstream inp(update_path_str.c_str(), std::ios::binary);
+      // decompress to current working dir
+      Poco::Zip::Decompress dec(inp, Poco::Path());
+      // if an error happens invoke the ZipTest::onDecompressError method
+      dec.EError += Poco::Delegate<UpdateInstallHandler, std::pair<const Poco::Zip::ZipLocalFileHeader, const std::string> >(this, &UpdateInstallHandler::onDecompressError);
+      try{
+      dec.decompressAllFiles();
+      }catch(std::exception & ex){
+        LOGERROR("error decompression:"<<ex.what())
+      }
+
+      dec.EError -= Poco::Delegate<UpdateInstallHandler, std::pair<const Poco::Zip::ZipLocalFileHeader, const std::string> >(this, &UpdateInstallHandler::onDecompressError);
+
     }else{
       LOGWARN("update file not found :"<<update_path_str)
       result.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND,"Update File not found","");
@@ -46,4 +61,8 @@ void UpdateInstallHandler::handle(org::esb::core::http::HTTPServerRequest&req, o
   std::ostream& ostr = res.send();
   ostr << result.write_formatted();
 
+}
+void UpdateInstallHandler::onDecompressError(const void* pSender, std::pair<const Poco::Zip::ZipLocalFileHeader, const std::string>& info)
+{
+  LOGERROR("error extracting:"<<info.second)
 }
