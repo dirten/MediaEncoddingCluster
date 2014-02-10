@@ -66,13 +66,9 @@ UpdateUploadHandler::UpdateUploadHandler()
 void UpdateUploadHandler::handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res){
   JSONResult result(req);
 
-  std::string update_path_str=Environment::get("hive.update_path");
-  //File update_path(update_path_str);
   try{
-    //std::ofstream ostream(update_path_str.append("/test.upload").c_str());
-   //release this scope before the graph will be freed
     UpdateUploadPartHandler partHandler;
-    Poco::Net::HTMLForm form(req, req.stream(), partHandler);
+    Poco::Net::HTMLForm(req, req.stream(), partHandler);
   }catch(...){
     LOGDEBUG("upload canceled");
   }

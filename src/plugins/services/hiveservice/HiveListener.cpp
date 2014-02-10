@@ -75,6 +75,10 @@ namespace org {
           out.update();
           LOGDEBUG("changed to:"<<out)
         }
+        litesql::Records recs = getContext()->database->query("select jobid_, sorcestream_ from processunit_ where codectype_='AUDIO' group by jobid_, sorcestream_ having count(*)>sum(send_>1) order by 1 desc");
+        for (litesql::Records::iterator i = recs.begin(); i != recs.end(); i++){
+          getContext()->database->query("UPDATE processunit_ set clientid_='', send_=1, recv_=1 where jobid_='"+(*i)[0]+"' and codectype_='AUDIO' AND sorcestream_="+(*i)[1]);
+        }
 
 
         boost::thread(boost::bind(&HiveListener::startListener, this));

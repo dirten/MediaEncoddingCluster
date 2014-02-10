@@ -248,7 +248,8 @@ namespace org {
         if (!_running) {
           start();
         }
-        return db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
+        static db::HiveDb db=db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
+        return db;
       }
     }
   }

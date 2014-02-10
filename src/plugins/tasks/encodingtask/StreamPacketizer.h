@@ -64,8 +64,8 @@ namespace encodingtask {
 
       std::list<org::esb::av::PacketListPtr> _packet_list;
 
-      static const int MIN_AUDIO_PACKETS = 5000;
-      static const int MIN_VIDEO_PACKETS = 20;
+      static const int MIN_AUDIO_PACKETS = 500;
+      static const int MIN_VIDEO_PACKETS = 200;
 
       org::esb::av::PacketListPtr _overlap_queue;
 

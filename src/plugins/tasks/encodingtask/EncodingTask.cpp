@@ -420,7 +420,8 @@ namespace encodingtask {
     pu.sendid=unit->uuid;
     pu.jobid=_task_uuid;
     pu.sequence=unit->_sequence;
-
+    pu.timebasenum=unit->_decoder->getTimeBase().num*unit->_decoder->ctx->ticks_per_frame;
+    pu.timebaseden=unit->_decoder->getTimeBase().den;
     if(unit->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO){
       pu.codectype=db::ProcessUnit::Codectype::VIDEO;
     }

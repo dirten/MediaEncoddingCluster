@@ -19,6 +19,7 @@ SET(core_source
   GraphException.cpp
   WebHookHandlerFactory.cpp
   WebHookProxy.cpp
+  Version.cpp
   #http/Server.cpp
   #http/HTTPServerRequest.cpp
   #http/HTTPServerResponse.cpp

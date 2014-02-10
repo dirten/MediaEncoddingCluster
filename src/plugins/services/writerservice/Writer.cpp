@@ -14,7 +14,8 @@
 #include <boost/serialization/shared_ptr.hpp>
 #include "org/esb/util/Foreach.h"
 #include "org/esb/lang/CtrlCHitWaiter.h"
-
+#include "org/esb/av/TimeStamp.h"
+#include "org/esb/av/Rational.h"
 #include "org/esb/signal/Messenger.h"
 namespace plugin {
   using org::esb::util::Serializing;
@@ -58,7 +59,7 @@ namespace plugin {
       _encoderList.push_back((*it).second);
       (*it).second->open();
       _pos->setEncoder(*(*it).second.get(),a);
-      _stream_timestamps[a]=0;
+      _stream_timestamps[a]=AV_NOPTS_VALUE;
     }
 
     if(!_pos->init()){
@@ -195,6 +196,11 @@ namespace plugin {
 
           foreach(PacketPtr p, unit->_output_packets) {
             int idx = p->getStreamIndex();
+            if(_stream_timestamps[idx]==AV_NOPTS_VALUE){
+              org::esb::av::TimeStamp ts(pu.startts, org::esb::av::Rational(pu.timebasenum, pu.timebaseden));
+              ts=ts.rescaleTo(org::esb::av::Rational(p->getTimeBase()));
+              _stream_timestamps[idx]=ts.getTime();
+            }
             p->setPts(_stream_timestamps[idx]);
             //_in_out_stream_map[idx].last_timestamp = _in_out_stream_map[idx].next_timestamp;
             _stream_timestamps[idx] += p->getDuration();
