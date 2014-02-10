@@ -42,9 +42,10 @@ void UpdateInstallHandler::handle(org::esb::core::http::HTTPServerRequest&req, o
       // if an error happens invoke the ZipTest::onDecompressError method
       dec.EError += Poco::Delegate<UpdateInstallHandler, std::pair<const Poco::Zip::ZipLocalFileHeader, const std::string> >(this, &UpdateInstallHandler::onDecompressError);
       try{
-      dec.decompressAllFiles();
+        dec.decompressAllFiles();
       }catch(std::exception & ex){
         LOGERROR("error decompression:"<<ex.what())
+        result.setStatus(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST,"Update File is not in Zip Format","");
       }
 
       dec.EError -= Poco::Delegate<UpdateInstallHandler, std::pair<const Poco::Zip::ZipLocalFileHeader, const std::string> >(this, &UpdateInstallHandler::onDecompressError);
@@ -55,7 +56,7 @@ void UpdateInstallHandler::handle(org::esb::core::http::HTTPServerRequest&req, o
     }
   }else{
     LOGWARN("Update is the same Version as Current:"<<v.toString())
-    result.setStatus(Poco::Net::HTTPResponse::HTTP_CONFLICT,"Update is the same Version as Current","");
+    result.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_MODIFIED,"Update is the same Version as Current","");
   }
   res.setContentType("text/plain");
   std::ostream& ostr = res.send();
