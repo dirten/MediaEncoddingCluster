@@ -8,7 +8,7 @@ ENDIF(MINGW)
 ExternalProject_Add(log4cplusdep
 URL http://downloads.sourceforge.net/project/log4cplus/log4cplus-stable/1.1.2/log4cplus-1.1.2.tar.bz2
 #URL http://downloads.sourceforge.net/project/log4cplus/log4cplus-stable/1.0.4/log4cplus-1.0.4.tar.bz2
-CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${BUILD_DIR} ${USER_CMAKE_CONFIG} -DSHARED_LIBS=On
+CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${BUILD_DIR} ${USER_CMAKE_CONFIG} -DSHARED_LIBS=On
 #CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --disable-static --enable-shared --with-pic ${USER_CONFIG}
 BUILD_IN_SOURCE 1
 )
