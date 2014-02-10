@@ -25,6 +25,7 @@ namespace org {
       const std::string Environment::PLUGIN_PATH="hive.plugin_path";
       const std::string Environment::EXE_PATH="hive.exec_path";
       const std::string Environment::EXE_NAME="hive.exec_name";
+      const std::string Environment::SYSTEM="hive.arch";
       const std::string Environment::DB_URL="db.url";
 
       Environment::Environment() {
@@ -75,10 +76,13 @@ namespace org {
         std::cout << "cwd:"<<buf<<std::endl;
 #ifdef __WIN32__
         std::string upath = get("APPDATA") + "/mhive";
+        set(SYSTEM, "win");
 #elif defined __APPLE__
         std::string upath = get("HOME") + "/.mhive";
+        set(SYSTEM, "Darwin");
 #elif defined __LINUX__
         std::string upath = get("HOME") + "/.mhive";
+        set(SYSTEM, "Linux");
 #else
 #error "plattform not supported"
 #endif

@@ -11,6 +11,7 @@ int main(int argc, char**argv){
   Version a("1.2.3");
   Version a2("1.2.3");
   Version b("1.2.4");
+  //Version b2("MediaEncodingCluster-1.2.4-Linux.tar.gz");
 
   assert(a.newerAs(a2)==false);
   assert(a.olderAs(a2)==false);

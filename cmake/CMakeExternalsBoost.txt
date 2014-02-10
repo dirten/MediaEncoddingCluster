@@ -4,9 +4,14 @@ set(BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build")
 IF(MINGW)
   MESSAGE("build boost with mingw")
   SET(USER_CONFIG "--user-config=user-config.jam")
-  SET(SPECIAL_ARGS "toolset=gcc-mingw" "target-os=windows" "threadapi=win32" "variant=release")
+  SET(SPECIAL_ARGS "toolset=gcc-mingw" "target-os=windows" "threadapi=win32")
 ENDIF(MINGW)
 
+IF(DEBUG)
+  SET(SPECIAL_ARGS ${SPECIAL_ARGS} "variant=debug")
+ELSE(DEBUG)
+  SET(SPECIAL_ARGS ${SPECIAL_ARGS} "variant=release")
+ENDIF(DEBUG)
 
 ExternalProject_Add(boost
   URL http://dfn.dl.sourceforge.net/project/boost/boost/1.54.0/boost_1_54_0.tar.gz

@@ -142,25 +142,30 @@ void testDecodeVideo(std::string filepath) {
 /*
  * 
  */
-void testDecodeAudio(){
-  std::string filepath = MEC_SOURCE_DIR;
-    filepath.append("/test-data/test.dvd");
+void testDecodeAudio(std::string filepath){
+  //std::string filepath = MEC_SOURCE_DIR;
+  //  filepath.append("/test-data/test.dvd");
   org::esb::io::File file(filepath.c_str());
   org::esb::av::FormatInputStream fis(&file);
   int offset = 0;
  
   /**
-   * retriving the first video stream
+   * retriving the first audio stream
    */
   int c = fis.getStreamCount();
-  int video_stream = -1;
+  int audio_stream = -1;
   for (int a = 0; a < c; a++) {
     if (fis.getStreamInfo(a)->getCodecType() == AVMEDIA_TYPE_AUDIO) {
-      video_stream = a;
+      audio_stream = a;
       break;
     }
   }
-  org::esb::av::Decoder dec(fis.getAVStream(video_stream));
+  if(audio_stream==-1){
+    LOGWARN("no audio stream found in file:"<<filepath)
+    return;
+  }
+
+  org::esb::av::Decoder dec(fis.getAVStream(audio_stream));
   dec.setTimeBase(1, 25);
   dec.open();
   LOGDEBUG(dec.toString());
@@ -170,7 +175,7 @@ void testDecodeAudio(){
   int incount = 0;
   int outcount = 0;
   for (int i = 0; i < 25;) {
-    if ((p = pis.readPacket()) != NULL && p->getStreamIndex() == video_stream) {
+    if ((p = pis.readPacket()) != NULL && p->getStreamIndex() == audio_stream) {
       if (i >= offset) {
         org::esb::av::Frame * frame = dec.decode2(*p);
         incount++;
@@ -242,8 +247,8 @@ int main(int argc, char** argv) {
   }
   testVideoDecoderTimings();
   //testDecodeRawVideo();
-  testDecodeVideo(filename);
-  //testDecodeAudio();
+  //testDecodeVideo(filename);
+  testDecodeAudio(filename);
   Log::close();
   return (EXIT_SUCCESS);
 

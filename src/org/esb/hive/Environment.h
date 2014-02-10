@@ -17,11 +17,18 @@ namespace org {
 
       class HIVE_EXPORT Environment {
         public:
+          enum SYSTEM_TYPE{
+            UNKNOWN ,
+            WINDOWS,
+            DARWIN,
+            LINUX
+          };
           const static std::string BASE_PATH;
           const static std::string USER_HOME;
           const static std::string PLUGIN_PATH;
           const static std::string EXE_PATH;
           const static std::string EXE_NAME;
+          const static std::string SYSTEM;
           const static std::string DB_URL;
           static void build(int argc, char**argv);
           static std::string get(std::string key, std::string def="");

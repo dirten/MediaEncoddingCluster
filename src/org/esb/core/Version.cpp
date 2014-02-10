@@ -1,5 +1,7 @@
+#include <stdio.h>
 #include "Version.h"
 #include "org/esb/lang/Exception.h"
+
 namespace org {
   namespace esb {
     namespace core {
@@ -19,6 +21,12 @@ namespace org {
         if(sscanf(version_string.c_str(),"%d.%d.%d", &major, &minor, &patch)!=3){
           throw Exception("no version string found:"+version_string);
         }
+      }
+
+      std::string Version::toString(){
+        std::stringstream sstream;
+        sstream << major << "." << minor << "." <<patch;
+        return sstream.str();
       }
 
       bool Version::equals(const Version & a)const{

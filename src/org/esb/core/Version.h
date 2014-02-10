@@ -13,7 +13,7 @@ namespace org {
         bool newerAs(Version & version);
         bool olderAs(Version & version);
         bool equals(const Version & version)const;
-
+        std::string toString();
         int major;
         int minor;
         int patch;

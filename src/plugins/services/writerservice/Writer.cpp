@@ -197,6 +197,7 @@ namespace plugin {
           foreach(PacketPtr p, unit->_output_packets) {
             int idx = p->getStreamIndex();
             if(_stream_timestamps[idx]==AV_NOPTS_VALUE){
+              pu.timebaseden=pu.timebaseden==0?1:pu.timebaseden;
               org::esb::av::TimeStamp ts(pu.startts, org::esb::av::Rational(pu.timebasenum, pu.timebaseden));
               ts=ts.rescaleTo(org::esb::av::Rational(p->getTimeBase()));
               _stream_timestamps[idx]=ts.getTime();

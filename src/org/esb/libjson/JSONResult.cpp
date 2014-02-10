@@ -27,12 +27,16 @@ void JSONResult::setData(JSONNode & data){
 
 void JSONResult::setStatus(Poco::Net::HTTPResponse::HTTPStatus s, std::string msg, std::string desc){
   _req.response().setStatusAndReason(s,msg);
-  if(desc.length()==0)
+  if(desc.length()==0){
     desc=msg;
-  if(_req.response().HTTP_OK!=s){
+  }
+    setStatus(_req.response().getReasonForStatus(s), desc);
+/*
+    if(_req.response().HTTP_OK!=s){
     setStatus("error", desc);    
   }else
     setStatus("ok", desc);
+    */
 }
 
 void JSONResult::setStatus(std::string status, std::string msg){
