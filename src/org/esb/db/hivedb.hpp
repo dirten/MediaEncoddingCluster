@@ -684,9 +684,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<Project> upcast();
-    std::auto_ptr<Project> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<Project> upcast() const;
+    std::auto_ptr<Project> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Project o);
 class Filter : public litesql::Persistent {
@@ -776,9 +776,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<Filter> upcast();
-    std::auto_ptr<Filter> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<Filter> upcast() const;
+    std::auto_ptr<Filter> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Filter o);
 class FilterParameter : public litesql::Persistent {
@@ -828,9 +828,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<FilterParameter> upcast();
-    std::auto_ptr<FilterParameter> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<FilterParameter> upcast() const;
+    std::auto_ptr<FilterParameter> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, FilterParameter o);
 class MediaFile : public litesql::Persistent {
@@ -954,9 +954,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<MediaFile> upcast();
-    std::auto_ptr<MediaFile> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<MediaFile> upcast() const;
+    std::auto_ptr<MediaFile> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, MediaFile o);
 class OutputFile : public litesql::Persistent {
@@ -971,7 +971,7 @@ public:
         static const std::string Processing;
         static const std::string Error;
         static const std::string Completed;
-        StatusType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
+        StatusType(const std::string& n, AT_field_type t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
     };
     class Status {
     public:
@@ -1021,9 +1021,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<OutputFile> upcast();
-    std::auto_ptr<OutputFile> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<OutputFile> upcast() const;
+    std::auto_ptr<OutputFile> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, OutputFile o);
 class ProfileGroup : public litesql::Persistent {
@@ -1091,9 +1091,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<ProfileGroup> upcast();
-    std::auto_ptr<ProfileGroup> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<ProfileGroup> upcast() const;
+    std::auto_ptr<ProfileGroup> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, ProfileGroup o);
 class Profile : public litesql::Persistent {
@@ -1223,9 +1223,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<Profile> upcast();
-    std::auto_ptr<Profile> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<Profile> upcast() const;
+    std::auto_ptr<Profile> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Profile o);
 class Preset : public litesql::Persistent {
@@ -1299,9 +1299,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<Preset> upcast();
-    std::auto_ptr<Preset> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<Preset> upcast() const;
+    std::auto_ptr<Preset> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Preset o);
 class ProfileParameter : public litesql::Persistent {
@@ -1353,9 +1353,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<ProfileParameter> upcast();
-    std::auto_ptr<ProfileParameter> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<ProfileParameter> upcast() const;
+    std::auto_ptr<ProfileParameter> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, ProfileParameter o);
 class Stream : public litesql::Persistent {
@@ -1505,9 +1505,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<Stream> upcast();
-    std::auto_ptr<Stream> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<Stream> upcast() const;
+    std::auto_ptr<Stream> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Stream o);
 class StreamParameter : public litesql::Persistent {
@@ -1557,9 +1557,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<StreamParameter> upcast();
-    std::auto_ptr<StreamParameter> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<StreamParameter> upcast() const;
+    std::auto_ptr<StreamParameter> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, StreamParameter o);
 class CodecPreset : public litesql::Persistent {
@@ -1633,9 +1633,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<CodecPreset> upcast();
-    std::auto_ptr<CodecPreset> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<CodecPreset> upcast() const;
+    std::auto_ptr<CodecPreset> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, CodecPreset o);
 class CodecPresetParameter : public litesql::Persistent {
@@ -1685,9 +1685,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<CodecPresetParameter> upcast();
-    std::auto_ptr<CodecPresetParameter> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<CodecPresetParameter> upcast() const;
+    std::auto_ptr<CodecPresetParameter> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, CodecPresetParameter o);
 class Config : public litesql::Persistent {
@@ -1727,9 +1727,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<Config> upcast();
-    std::auto_ptr<Config> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<Config> upcast() const;
+    std::auto_ptr<Config> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Config o);
 class Job : public litesql::Persistent {
@@ -1749,7 +1749,7 @@ public:
         static const int Completed;
         static const int Deleted;
         static const int CompletedWithError;
-        StatusType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
+        StatusType(const std::string& n, AT_field_type t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
     };
     class Status {
     public:
@@ -1919,9 +1919,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<Job> upcast();
-    std::auto_ptr<Job> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<Job> upcast() const;
+    std::auto_ptr<Job> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Job o);
 class Task : public litesql::Persistent {
@@ -1936,7 +1936,7 @@ public:
         static const int Error;
         static const int Complete;
         static const int Processing;
-        StatusType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
+        StatusType(const std::string& n, AT_field_type t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
     };
     class Status {
     public:
@@ -2011,9 +2011,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<Task> upcast();
-    std::auto_ptr<Task> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<Task> upcast() const;
+    std::auto_ptr<Task> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Task o);
 class JobLog : public litesql::Persistent {
@@ -2063,9 +2063,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<JobLog> upcast();
-    std::auto_ptr<JobLog> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<JobLog> upcast() const;
+    std::auto_ptr<JobLog> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, JobLog o);
 class JobDetail : public litesql::Persistent {
@@ -2137,9 +2137,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<JobDetail> upcast();
-    std::auto_ptr<JobDetail> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<JobDetail> upcast() const;
+    std::auto_ptr<JobDetail> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, JobDetail o);
 class Watchfolder : public litesql::Persistent {
@@ -2189,9 +2189,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<Watchfolder> upcast();
-    std::auto_ptr<Watchfolder> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<Watchfolder> upcast() const;
+    std::auto_ptr<Watchfolder> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Watchfolder o);
 class Process : public litesql::Persistent {
@@ -2239,9 +2239,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<Process> upcast();
-    std::auto_ptr<Process> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<Process> upcast() const;
+    std::auto_ptr<Process> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Process o);
 class ProcessUnit : public litesql::Persistent {
@@ -2254,7 +2254,7 @@ public:
     public:
         static const std::string AUDIO;
         static const std::string VIDEO;
-        CodectypeType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
+        CodectypeType(const std::string& n, AT_field_type t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
     };
     class Codectype {
     public:
@@ -2340,9 +2340,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<ProcessUnit> upcast();
-    std::auto_ptr<ProcessUnit> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<ProcessUnit> upcast() const;
+    std::auto_ptr<ProcessUnit> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, ProcessUnit o);
 class User : public litesql::Persistent {
@@ -2436,9 +2436,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<User> upcast();
-    std::auto_ptr<User> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<User> upcast() const;
+    std::auto_ptr<User> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, User o);
 class UserGroup : public litesql::Persistent {
@@ -2488,9 +2488,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<UserGroup> upcast();
-    std::auto_ptr<UserGroup> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<UserGroup> upcast() const;
+    std::auto_ptr<UserGroup> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, UserGroup o);
 class Request : public litesql::Persistent {
@@ -2538,9 +2538,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<Request> upcast();
-    std::auto_ptr<Request> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<Request> upcast() const;
+    std::auto_ptr<Request> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Request o);
 class Partition : public litesql::Persistent {
@@ -2590,9 +2590,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<Partition> upcast();
-    std::auto_ptr<Partition> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<Partition> upcast() const;
+    std::auto_ptr<Partition> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Partition o);
 class Graph : public litesql::Persistent {
@@ -2644,9 +2644,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<Graph> upcast();
-    std::auto_ptr<Graph> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<Graph> upcast() const;
+    std::auto_ptr<Graph> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Graph o);
 class Location : public litesql::Persistent {
@@ -2688,9 +2688,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<Location> upcast();
-    std::auto_ptr<Location> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<Location> upcast() const;
+    std::auto_ptr<Location> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Location o);
 class Queue : public litesql::Persistent {
@@ -2703,7 +2703,7 @@ public:
     public:
         static const int ONE2ONE;
         static const int ONE4ALL;
-        QtypeType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
+        QtypeType(const std::string& n, AT_field_type t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
     };
     class Qtype {
     public:
@@ -2759,9 +2759,9 @@ protected:
 public:
     virtual void update();
     virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<Queue> upcast();
-    std::auto_ptr<Queue> upcastCopy();
+    virtual bool typeIsCorrect() const;
+    std::auto_ptr<Queue> upcast() const;
+    std::auto_ptr<Queue> upcastCopy() const;
 };
 std::ostream & operator<<(std::ostream& os, Queue o);
 class HiveDb : public litesql::Database {

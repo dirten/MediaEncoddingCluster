@@ -32,39 +32,40 @@ using namespace org::esb;
 using org::esb::io::FileInputStream;
 using org::esb::signal::Message;
 using org::esb::signal::Messenger;
+
 #define GET_UNIT  "get process_unit"
 #define GET_AUDIO_UNIT  "get audio_process_unit"
 #define PUT_AUDIO_UNIT  "put audio_process_unit"
 #define PUT_UNIT  "put process_unit"
 
 class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
-private:
-  classlogger("org.esb.hive.protocol.VideoDataHandler")
-  db::HiveDb _db;
-  InputStream * _is;
-  OutputStream * _os;
-  //	PacketOutputStream * _pos;
-  io::ObjectOutputStream * _oos;
-  io::ObjectInputStream * _ois;
-  //  ClientHandler* _handler;
+  private:
+    classlogger("org.esb.hive.protocol.VideoDataHandler")
+    db::HiveDb _db;
+    InputStream * _is;
+    OutputStream * _os;
+    //	PacketOutputStream * _pos;
+    io::ObjectOutputStream * _oos;
+    io::ObjectInputStream * _ois;
+    //  ClientHandler* _handler;
 
-  std::string _own_id;
-  //  boost::asio::io_service io_timer;
-  //  boost::asio::deadline_timer timer;
-  //  boost::shared_ptr<boost::thread> _timer_thread;
-  //  boost::asio::deadline_timer t2;
-  boost::shared_ptr<ProcessUnit> un;
-  boost::asio::ip::tcp::endpoint _ep;
-  bool shutdown;
-  static std::map<std::string, boost::asio::ip::tcp::endpoint> _label_ep_map;
-  //Ptr<org::esb::mq::QueueConnection> con;
-  //Ptr<safmq::MessageQueue> read_q;
-  //Ptr<safmq::MessageQueue> write_q;
-  Ptr<db::ProcessUnit> _current_unit;
-  //litesql::DataSource<db::ProcessUnit> _prevEncodedUnits;
+    std::string _own_id;
+    //  boost::asio::io_service io_timer;
+    //  boost::asio::deadline_timer timer;
+    //  boost::shared_ptr<boost::thread> _timer_thread;
+    //  boost::asio::deadline_timer t2;
+    boost::shared_ptr<ProcessUnit> un;
+    boost::asio::ip::tcp::endpoint _ep;
+    bool shutdown;
+    static std::map<std::string, boost::asio::ip::tcp::endpoint> _label_ep_map;
+    //Ptr<org::esb::mq::QueueConnection> con;
+    //Ptr<safmq::MessageQueue> read_q;
+    //Ptr<safmq::MessageQueue> write_q;
+    Ptr<db::ProcessUnit> _current_unit;
+    //litesql::DataSource<db::ProcessUnit> _prevEncodedUnits;
 
 
-  /** @TODO:  1. select next ProcessUnit from database
+    /** @TODO:  1. select next ProcessUnit from database
      *          2. check if it is an Audio Unit
      *          3. when it is an audio packet then check if this client handler is responsible for this audio packet
      *          4. when it is not responsible then goto step 1. otherwise continue with the next step
@@ -74,197 +75,108 @@ private:
      * 1. if the column clientid is empty then allocate all audio units for this jobid and sourcestream for this clientid by updating the column clientid to this clientif of all rows for this jobid and sourcestream.
      * 2. if the clientid == this handler clientid then responsible=true
      */
-  db::ProcessUnit getProcessUnit(){
-    db::ProcessUnit result=db::ProcessUnit(_db);
-    bool audioProcessunitReceived=false;
-    bool responsible=false;
+    db::ProcessUnit getProcessUnit(){
+      db::ProcessUnit result=db::ProcessUnit(_db);
+      bool audioProcessunitReceived=false;
+      bool responsible=false;
 
-    std::string client_id=StringUtil::toString(_ep);
-    _db.query("begin exclusive");
-    litesql::DataSource<db::ProcessUnit> nextUnit=litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1);
-    litesql::Cursor<db::ProcessUnit>unit_cursor=nextUnit.orderBy(db::ProcessUnit::Id, true).cursor();
-    if(unit_cursor.rowsLeft()){
-      try{
-        do{
-          result=*unit_cursor;
-          LOGDEBUG("fetch next ProcessUnit:"<<result.codectype<<":id:"<<result.id)
-          if(result.codectype==db::ProcessUnit::Codectype::AUDIO){
+      std::string client_id=StringUtil::toString(_ep);
+      _db.query("begin exclusive");
+      litesql::DataSource<db::ProcessUnit> nextUnit=litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1);
+      litesql::Cursor<db::ProcessUnit>unit_cursor=nextUnit.orderBy(db::ProcessUnit::Id, true).cursor();
+      if(unit_cursor.rowsLeft()){
+        try{
+          do{
+            result=*unit_cursor;
+            LOGDEBUG("fetch next ProcessUnit:"<<result.codectype<<":id:"<<result.id)
+            if(result.codectype==db::ProcessUnit::Codectype::AUDIO){
 
-            if(((std::string)result.clientid).length()==0){
-              _db.query("UPDATE processunit_ set clientid_='"+client_id+"' where jobid_='"+result.jobid+"' and codectype_='AUDIO' AND sorcestream_="+result.sorcestream);
-              result.clientid=client_id;
-            }
-
-            if(((std::string)result.clientid).length()>0 && result.clientid==client_id){
-              responsible=true;
+              if(((std::string)result.clientid).length()==0){
+                _db.query("UPDATE processunit_ set clientid_='"+client_id+"' where jobid_='"+result.jobid+"' and codectype_='AUDIO' AND sorcestream_="+result.sorcestream);
+                result.clientid=client_id;
+              }
+              if(((std::string)result.clientid).length()>0 && result.clientid==client_id){
+                responsible=true;
+              }else{
+                unit_cursor++;
+              }
             }else{
-              unit_cursor++;
+              responsible=true;
             }
-          }else{
-            responsible=true;
-          }
-        }while(!responsible && unit_cursor.rowsLeft());
-      }catch(std::exception & ex){
-        LOGERROR("exception:"<<ex.what())
-      }
-
-      if(result.id>0){
-        result.send=litesql::DateTime();
-        result.deliverycount=result.deliverycount+1;
-        result.clientid=StringUtil::toString(_ep);
-        result.update();
-      }
-    }
-    _db.query("end");
-    return result;
-
-
-
-    litesql::DataSource<db::ProcessUnit> nextAudioUnit=litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1 && db::ProcessUnit::Codectype==db::ProcessUnit::Codectype::AUDIO);
-    /*check for audio processunits to process it before the video processunits*/
-    if(nextAudioUnit.count()){
-      litesql::Records recs = _db.query("select  max(clientid_),jobid_, sorcestream_ from processunit_ where codectype_='AUDIO' group by jobid_, sorcestream_ having count(*)>sum(send_>1) order by 1 desc");
-      //bool did_handle_previous_pu=false;
-      for (litesql::Records::iterator i = recs.begin(); i != recs.end(); i++){
-        if((*i)[0]==client_id){
-          /*found an previous audio encoding*/
-          litesql::DataSource<db::ProcessUnit> nextEncodedUnits=litesql::select<db::ProcessUnit > (
-                _db,
-                db::ProcessUnit::Jobid == (*i)[1] &&
-              db::ProcessUnit::Sorcestream == (*i)[2] &&
-              db::ProcessUnit::Send == 1
-              );
-          result=nextEncodedUnits.one();
-          break;
+          }while(!responsible && unit_cursor.rowsLeft());
+        }catch(std::exception & ex){
+          LOGERROR("exception:"<<ex.what())
         }
-        if((*i)[0].length()==0){
-          litesql::DataSource<db::ProcessUnit> nextEncodedUnits=litesql::select<db::ProcessUnit > (
-                _db,
-                db::ProcessUnit::Jobid == (*i)[1] &&
-              db::ProcessUnit::Sorcestream == (*i)[2] &&
-              db::ProcessUnit::Send == 1
-              );
-          result=nextEncodedUnits.one();
-          break;
+
+        if(result.id>0){
+          result.send=litesql::DateTime();
+          result.deliverycount=result.deliverycount+1;
+          result.clientid=StringUtil::toString(_ep);
+          result.update();
         }
       }
-      if(result.id>0){
-        result.send=litesql::DateTime();
-        result.deliverycount=result.deliverycount+1;
-        result.clientid=StringUtil::toString(_ep);
-        result.update();
-        audioProcessunitReceived=true;
-      }
+      _db.query("end");
+      return result;
     }
-    if(!audioProcessunitReceived && litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1 && db::ProcessUnit::Codectype==db::ProcessUnit::Codectype::VIDEO).count()){
-      result=litesql::select<db::ProcessUnit > (_db, db::ProcessUnit::Send == 1 && db::ProcessUnit::Codectype==db::ProcessUnit::Codectype::VIDEO).orderBy(db::ProcessUnit::Id, true).one();
-      result.send=litesql::DateTime();
-      result.deliverycount=result.deliverycount+1;
-      result.clientid=StringUtil::toString(_ep);
-      result.update();
-    }
-    _db.query("end");
-    return result;
-  }
 
-public:
+  public:
 
-  VideoDataHandler(InputStream * is, OutputStream * os, boost::asio::ip::tcp::endpoint e):
+    VideoDataHandler(InputStream * is, OutputStream * os, boost::asio::ip::tcp::endpoint e):
     _db(org::esb::hive::DatabaseService::getDatabase())
-  {
-    _ep=e;
-    _os=os;
-    _is=is;
-    _oos = new io::ObjectOutputStream(os);
-    _ois = new io::ObjectInputStream(is);
-    _own_id = e.address().to_string();
-    _own_id += ":";
-    _own_id += StringUtil::toString(e.port());
-    shutdown = false;
-    //con=new org::esb::mq::QueueConnection("localhost", 20202);
-    //read_q=con->getMessageQueue("read_q");
-    //write_q=con->getMessageQueue("write_q");
+    {
+      _ep=e;
+      _os=os;
+      _is=is;
+      _oos = new io::ObjectOutputStream(os);
+      _ois = new io::ObjectInputStream(is);
+      _own_id = e.address().to_string();
+      _own_id += ":";
+      _own_id += StringUtil::toString(e.port());
+      shutdown = false;
 
-    LOGDEBUG("endpoint:" << e);
-  }
-
-  /*
-  DataHandler(InputStream * is, OutputStream * os) {
-    _is = is;
-    _os = os;
-    //    t = new boost::asio::deadline_timer(io_timer, boost::posix_time::seconds(20));
-    //	    _pos=new PacketOutputStream(_os);
-    _oos = new io::ObjectOutputStream(_os);
-    _ois = new io::ObjectInputStream(_is);
-    //    _handler = new ClientHandler();
-    shutdown = false;
-    //    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
-    //    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
+      LOGDEBUG("endpoint:" << e);
+    }
 
 
-  }
-   */
-  ~VideoDataHandler() {
-    if(_current_unit){
-      _current_unit->send=1;
-      _current_unit->update();
-      //if(_current_unit->codectype==db::ProcessUnit::Codectype::AUDIO){
+    ~VideoDataHandler() {
+      if(_current_unit){
+        _current_unit->send=1;
+        _current_unit->update();
         litesql::Records recs = _db.query("select jobid_, sorcestream_ from processunit_ WHERE clientid_='"+StringUtil::toString(_ep)+"' AND codectype_='AUDIO' group by jobid_, sorcestream_ having count(*)>sum(send_>1) order by 1 desc");
         for (litesql::Records::iterator i = recs.begin(); i != recs.end(); i++){
           _db.query("UPDATE processunit_ set clientid_='', send_=1, recv_=1 where jobid_='"+(*i)[0]+"' and codectype_='AUDIO' AND clientid_='"+StringUtil::toString(_ep)+"'");
         }
-      //}
-    }
-    //partitionservice::PartitionManager::getInstance()->getInstance()->leavePartition("", _ep);
-    shutdown = true;
-    if (_oos)
-      delete _oos;
-    _oos = NULL;
-    if (_ois)
-      delete _ois;
-    _ois = NULL;
-  }
-
-  /*
-  DataHandler(TcpSocket * s) {
-    socket = s;
-    _is = socket->getInputStream();
-    _os = socket->getOutputStream();
-    _oos = new io::ObjectOutputStream(_os);
-    _ois = new io::ObjectInputStream(_is);
-    boost::asio::ip::tcp::endpoint ep = socket->getRemoteEndpoint();
-    _own_id = ep.address().to_string();
-    _own_id += ":";
-    _own_id += StringUtil::toString(ep.port());
-    shutdown = false;
-    //    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
-    //    boost::thread thread(boost::bind(&boost::asio::io_service::run, &io_timer));
-    //    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
-    //    io_timer.run();
-    LOGDEBUG("endpoint:" << ep);
-  }
-   */
-  int isResponsible(cmdId & cmid) {
-    return CMD_NA;
-  }
-
-  int isResponsible(char * command) {
-    if (
-        strcmp(command, GET_UNIT) == 0 ||
-        strcmp(command, PUT_UNIT) == 0
-        ) {
-      return CMD_PROCESS;
-    } else
-      if (strcmp(command, "help") == 0) {
-        return CMD_HELP;
       }
-    return CMD_NA;
-  }
+      shutdown = true;
+      if (_oos)
+        delete _oos;
+      _oos = NULL;
+      if (_ois)
+        delete _ois;
+      _ois = NULL;
+    }
 
-  void process(char * command) {
-    if (_oos == NULL || _ois == NULL)return;
-    if (strcmp(command, GET_UNIT) == 0) {
-      /*
+    int isResponsible(cmdId & cmid) {
+      return CMD_NA;
+    }
+
+    int isResponsible(char * command) {
+      if (
+      strcmp(command, GET_UNIT) == 0 ||
+      strcmp(command, PUT_UNIT) == 0
+      ) {
+        return CMD_PROCESS;
+      } else
+        if (strcmp(command, "help") == 0) {
+          return CMD_HELP;
+        }
+      return CMD_NA;
+    }
+
+    void process(char * command) {
+      if (_oos == NULL || _ois == NULL)return;
+      if (strcmp(command, GET_UNIT) == 0) {
+        /*
         //partitionservice::PartitionManager * man = partitionservice::PartitionManager::getInstance();
         org::esb::mq::ObjectMessage msg;
         //Ptr<safmq::MessageQueue> mq=getMessageQueue();
@@ -276,35 +188,35 @@ public:
         _oos->writeObject(un);
         */
 
-      db::ProcessUnit unit=getProcessUnit();
+        db::ProcessUnit unit=getProcessUnit();
 
-      /*something is going wrong on the client, resetting the processUnit*/
-      if(_current_unit){
-        _current_unit->send=1;
-        _current_unit->update();
-      }
-      _current_unit=new db::ProcessUnit(unit);
-
-
-      std::string d;
-
-      if(unit.id>0){
-        /*reading process units from the file system for delivery*/
-        std::string base = org::esb::config::Config::get("hive.data_path");
-        org::esb::io::File inputfile(base + "/"+unit.jobid+"/"+ unit.sendid);
-        if(inputfile.exists() && inputfile.isFile()){
-          FileInputStream inputstream(&inputfile);
-          inputstream.read(d);
-        }else{
-          LOGWARN("file not found:"<<inputfile.getFilePath())
-              _current_unit->recv=litesql::DateTime();
+        /*something is going wrong on the client, resetting the processUnit*/
+        if(_current_unit){
+          _current_unit->send=1;
           _current_unit->update();
+        }
+        _current_unit=new db::ProcessUnit(unit);
+
+
+        std::string d;
+
+        if(unit.id>0){
+          /*reading process units from the file system for delivery*/
+          std::string base = org::esb::config::Config::get("hive.data_path");
+          org::esb::io::File inputfile(base + "/"+unit.jobid+"/"+ unit.sendid);
+          if(inputfile.exists() && inputfile.isFile()){
+            FileInputStream inputstream(&inputfile);
+            inputstream.read(d);
+          }else{
+            LOGWARN("file not found:"<<inputfile.getFilePath())
+            _current_unit->recv=litesql::DateTime();
+            _current_unit->update();
+            _current_unit.reset();
+          }
+        }else{
           _current_unit.reset();
         }
-      }else{
-        _current_unit.reset();
-      }
-      /*
+        /*
         litesql::Blob blob2=unit.data.value();
         d.reserve(blob2.length());
         LOGDEBUG("start copying bytes:"+StringUtil::toString(blob2.length()))
@@ -314,49 +226,49 @@ public:
         }
         LOGDEBUG("finish copy")
         */
-      _os->write((char*) d.c_str(), d.length());
-      _os->flush();
+        _os->write((char*) d.c_str(), d.length());
+        _os->flush();
 
-    } else {
-      if (strcmp(command, PUT_UNIT) == 0) {
+      } else {
+        if (strcmp(command, PUT_UNIT) == 0) {
 
-        string data;
-        _is->read(data);
+          string data;
+          _is->read(data);
 
 
-        std::string recvid=org::esb::util::PUUID();
-        _current_unit->recvid=recvid;
-        /*writing process units to the file system for delivery*/
-        std::string base = org::esb::config::Config::get("hive.data_path");
-        org::esb::io::File outputfile(base + "/"+_current_unit->jobid+"/"+ recvid);
-        if(!File(outputfile.getParent()).exists()){
-          File(outputfile.getParent()).mkdirs();
-        }
-        FileOutputStream outstream(&outputfile);
-        outstream.write(data);
-        outstream.close();
+          std::string recvid=org::esb::util::PUUID();
+          _current_unit->recvid=recvid;
+          /*writing process units to the file system for delivery*/
+          std::string base = org::esb::config::Config::get("hive.data_path");
+          org::esb::io::File outputfile(base + "/"+_current_unit->jobid+"/"+ recvid);
+          if(!File(outputfile.getParent()).exists()){
+            File(outputfile.getParent()).mkdirs();
+          }
+          FileOutputStream outstream(&outputfile);
+          outstream.write(data);
+          outstream.close();
 
-        /*
+          /*
           litesql::Blob blob=litesql::Blob(data.c_str(),data.length());
           _current_unit->responseData=blob;
           */
 
-        _current_unit->recv=litesql::DateTime();
-        _current_unit->update();
+          _current_unit->recv=litesql::DateTime();
+          _current_unit->update();
 
-        Message msg;
-        msg.setProperty("processunit_encoded",_current_unit->id.value());
-        msg.setProperty("jobid",_current_unit->jobid.value());
-        msg.setProperty("sequence",_current_unit->sequence.value());
-        Messenger::getInstance().sendMessage(msg);
+          Message msg;
+          msg.setProperty("processunit_encoded",_current_unit->id.value());
+          msg.setProperty("jobid",_current_unit->jobid.value());
+          msg.setProperty("sequence",_current_unit->sequence.value());
+          Messenger::getInstance().sendMessage(msg);
 
-        _current_unit.reset();
-      } else {
-        LOGERROR("unknown command received:" << command);
+          _current_unit.reset();
+        } else {
+          LOGERROR("unknown command received:" << command);
+        }
       }
     }
-  }
 
-  void printHelp() {
-  }
+    void printHelp() {
+    }
 };

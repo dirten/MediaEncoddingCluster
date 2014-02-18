@@ -51,6 +51,7 @@ LINK_DIRECTORIES(${LITESQL_DIR}/lib/static)
 add_library (db 
   db/hivedb.cpp
   db/Functions.cpp
+  db/ProcessUnitDAO.cpp
 #  db/DatabaseConfigLoader.cpp
 #  db/DatabaseBootstrap.cpp
 #            av/FrameConverter.cpp

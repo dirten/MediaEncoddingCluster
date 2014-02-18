@@ -11,8 +11,8 @@ FilterFilterParameterRelation::Row::Row(const litesql::Database& db, const lites
     }
 }
 const std::string FilterFilterParameterRelation::table__("Filter_FilterParameter_");
-const litesql::FieldType FilterFilterParameterRelation::Filter("Filter1","INTEGER",table__);
-const litesql::FieldType FilterFilterParameterRelation::FilterParameter("FilterParameter2","INTEGER",table__);
+const litesql::FieldType FilterFilterParameterRelation::Filter("Filter1_",A_field_type_integer,table__);
+const litesql::FieldType FilterFilterParameterRelation::FilterParameter("FilterParameter2_",A_field_type_integer,table__);
 void FilterFilterParameterRelation::link(const litesql::Database& db, const db::Filter& o0, const db::FilterParameter& o1) {
     Record values;
     Split fields;
@@ -60,8 +60,8 @@ FilterMediaFileRelation::Row::Row(const litesql::Database& db, const litesql::Re
     }
 }
 const std::string FilterMediaFileRelation::table__("Filter_MediaFile_");
-const litesql::FieldType FilterMediaFileRelation::Filter("Filter1","INTEGER",table__);
-const litesql::FieldType FilterMediaFileRelation::MediaFile("MediaFile2","INTEGER",table__);
+const litesql::FieldType FilterMediaFileRelation::Filter("Filter1_",A_field_type_integer,table__);
+const litesql::FieldType FilterMediaFileRelation::MediaFile("MediaFile2_",A_field_type_integer,table__);
 void FilterMediaFileRelation::link(const litesql::Database& db, const db::Filter& o0, const db::MediaFile& o1) {
     Record values;
     Split fields;
@@ -109,8 +109,8 @@ FilterProjectRelation::Row::Row(const litesql::Database& db, const litesql::Reco
     }
 }
 const std::string FilterProjectRelation::table__("Filter_Project_");
-const litesql::FieldType FilterProjectRelation::Filter("Filter1","INTEGER",table__);
-const litesql::FieldType FilterProjectRelation::Project("Project2","INTEGER",table__);
+const litesql::FieldType FilterProjectRelation::Filter("Filter1_",A_field_type_integer,table__);
+const litesql::FieldType FilterProjectRelation::Project("Project2_",A_field_type_integer,table__);
 void FilterProjectRelation::link(const litesql::Database& db, const db::Filter& o0, const db::Project& o1) {
     Record values;
     Split fields;
@@ -158,8 +158,8 @@ MediaFileProjectRelation::Row::Row(const litesql::Database& db, const litesql::R
     }
 }
 const std::string MediaFileProjectRelation::table__("MediaFile_Project_");
-const litesql::FieldType MediaFileProjectRelation::MediaFile("MediaFile1","INTEGER",table__);
-const litesql::FieldType MediaFileProjectRelation::Project("Project2","INTEGER",table__);
+const litesql::FieldType MediaFileProjectRelation::MediaFile("MediaFile1_",A_field_type_integer,table__);
+const litesql::FieldType MediaFileProjectRelation::Project("Project2_",A_field_type_integer,table__);
 void MediaFileProjectRelation::link(const litesql::Database& db, const db::MediaFile& o0, const db::Project& o1) {
     Record values;
     Split fields;
@@ -207,8 +207,8 @@ PresetProjectRelation::Row::Row(const litesql::Database& db, const litesql::Reco
     }
 }
 const std::string PresetProjectRelation::table__("Preset_Project_");
-const litesql::FieldType PresetProjectRelation::Preset("Preset1","INTEGER",table__);
-const litesql::FieldType PresetProjectRelation::Project("Project2","INTEGER",table__);
+const litesql::FieldType PresetProjectRelation::Preset("Preset1_",A_field_type_integer,table__);
+const litesql::FieldType PresetProjectRelation::Project("Project2_",A_field_type_integer,table__);
 void PresetProjectRelation::link(const litesql::Database& db, const db::Preset& o0, const db::Project& o1) {
     Record values;
     Split fields;
@@ -256,8 +256,8 @@ PresetUserRelation::Row::Row(const litesql::Database& db, const litesql::Record&
     }
 }
 const std::string PresetUserRelation::table__("Preset_User_");
-const litesql::FieldType PresetUserRelation::Preset("Preset1","INTEGER",table__);
-const litesql::FieldType PresetUserRelation::User("User2","INTEGER",table__);
+const litesql::FieldType PresetUserRelation::Preset("Preset1_",A_field_type_integer,table__);
+const litesql::FieldType PresetUserRelation::User("User2_",A_field_type_integer,table__);
 void PresetUserRelation::link(const litesql::Database& db, const db::Preset& o0, const db::User& o1) {
     Record values;
     Split fields;
@@ -305,8 +305,8 @@ FilterProfileRelation::Row::Row(const litesql::Database& db, const litesql::Reco
     }
 }
 const std::string FilterProfileRelation::table__("Filter_Profile_");
-const litesql::FieldType FilterProfileRelation::Filter("Filter1","INTEGER",table__);
-const litesql::FieldType FilterProfileRelation::Profile("Profile2","INTEGER",table__);
+const litesql::FieldType FilterProfileRelation::Filter("Filter1_",A_field_type_integer,table__);
+const litesql::FieldType FilterProfileRelation::Profile("Profile2_",A_field_type_integer,table__);
 void FilterProfileRelation::link(const litesql::Database& db, const db::Filter& o0, const db::Profile& o1) {
     Record values;
     Split fields;
@@ -353,9 +353,9 @@ ProfileGroup2Profile::Row::Row(const litesql::Database& db, const litesql::Recor
         profile = rec[0];
     }
 }
-const std::string ProfileGroup2Profile::table__("_60a643d384d1f6c6ddeba5bb8ac0fc3e");
-const litesql::FieldType ProfileGroup2Profile::Profile("Profile1","INTEGER",table__);
-const litesql::FieldType ProfileGroup2Profile::ProfileGroup("ProfileGroup2","INTEGER",table__);
+const std::string ProfileGroup2Profile::table__("O60a643d384d1f6c6ddeba5bb8ac0f");
+const litesql::FieldType ProfileGroup2Profile::Profile("Profile1_",A_field_type_integer,table__);
+const litesql::FieldType ProfileGroup2Profile::ProfileGroup("ProfileGroup2_",A_field_type_integer,table__);
 void ProfileGroup2Profile::link(const litesql::Database& db, const db::Profile& o0, const db::ProfileGroup& o1) {
     Record values;
     Split fields;
@@ -402,9 +402,9 @@ ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::Row::Row(cons
         profileGroup1 = rec[0];
     }
 }
-const std::string ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::table__("_2d57c481daf84ed6d04cd9e705469b3f");
-const litesql::FieldType ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup1("ProfileGroup1","INTEGER",table__);
-const litesql::FieldType ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup2("ProfileGroup2","INTEGER",table__);
+const std::string ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::table__("O2d57c481daf84ed6d04cd9e705469");
+const litesql::FieldType ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup1("ProfileGroup1_",A_field_type_integer,table__);
+const litesql::FieldType ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup2("ProfileGroup2_",A_field_type_integer,table__);
 void ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::link(const litesql::Database& db, const db::ProfileGroup& o0, const db::ProfileGroup& o1) {
     Record values;
     Split fields;
@@ -452,8 +452,8 @@ ProfileProfileParameterRelation::Row::Row(const litesql::Database& db, const lit
     }
 }
 const std::string ProfileProfileParameterRelation::table__("Profile_ProfileParameter_");
-const litesql::FieldType ProfileProfileParameterRelation::Profile("Profile1","INTEGER",table__);
-const litesql::FieldType ProfileProfileParameterRelation::ProfileParameter("ProfileParameter2","INTEGER",table__);
+const litesql::FieldType ProfileProfileParameterRelation::Profile("Profile1_",A_field_type_integer,table__);
+const litesql::FieldType ProfileProfileParameterRelation::ProfileParameter("ProfileParameter2_",A_field_type_integer,table__);
 void ProfileProfileParameterRelation::link(const litesql::Database& db, const db::Profile& o0, const db::ProfileParameter& o1) {
     Record values;
     Split fields;
@@ -501,8 +501,8 @@ ProfileProjectRelation::Row::Row(const litesql::Database& db, const litesql::Rec
     }
 }
 const std::string ProfileProjectRelation::table__("Profile_Project_");
-const litesql::FieldType ProfileProjectRelation::Profile("Profile1","INTEGER",table__);
-const litesql::FieldType ProfileProjectRelation::Project("Project2","INTEGER",table__);
+const litesql::FieldType ProfileProjectRelation::Profile("Profile1_",A_field_type_integer,table__);
+const litesql::FieldType ProfileProjectRelation::Project("Project2_",A_field_type_integer,table__);
 void ProfileProjectRelation::link(const litesql::Database& db, const db::Profile& o0, const db::Project& o1) {
     Record values;
     Split fields;
@@ -550,8 +550,8 @@ StreamStreamParameterRelation::Row::Row(const litesql::Database& db, const lites
     }
 }
 const std::string StreamStreamParameterRelation::table__("Stream_StreamParameter_");
-const litesql::FieldType StreamStreamParameterRelation::Stream("Stream1","INTEGER",table__);
-const litesql::FieldType StreamStreamParameterRelation::StreamParameter("StreamParameter2","INTEGER",table__);
+const litesql::FieldType StreamStreamParameterRelation::Stream("Stream1_",A_field_type_integer,table__);
+const litesql::FieldType StreamStreamParameterRelation::StreamParameter("StreamParameter2_",A_field_type_integer,table__);
 void StreamStreamParameterRelation::link(const litesql::Database& db, const db::Stream& o0, const db::StreamParameter& o1) {
     Record values;
     Split fields;
@@ -599,8 +599,8 @@ FilterStreamRelation::Row::Row(const litesql::Database& db, const litesql::Recor
     }
 }
 const std::string FilterStreamRelation::table__("Filter_Stream_");
-const litesql::FieldType FilterStreamRelation::Filter("Filter1","INTEGER",table__);
-const litesql::FieldType FilterStreamRelation::Stream("Stream2","INTEGER",table__);
+const litesql::FieldType FilterStreamRelation::Filter("Filter1_",A_field_type_integer,table__);
+const litesql::FieldType FilterStreamRelation::Stream("Stream2_",A_field_type_integer,table__);
 void FilterStreamRelation::link(const litesql::Database& db, const db::Filter& o0, const db::Stream& o1) {
     Record values;
     Split fields;
@@ -648,8 +648,8 @@ MediaFileStreamRelation::Row::Row(const litesql::Database& db, const litesql::Re
     }
 }
 const std::string MediaFileStreamRelation::table__("MediaFile_Stream_");
-const litesql::FieldType MediaFileStreamRelation::MediaFile("MediaFile1","INTEGER",table__);
-const litesql::FieldType MediaFileStreamRelation::Stream("Stream2","INTEGER",table__);
+const litesql::FieldType MediaFileStreamRelation::MediaFile("MediaFile1_",A_field_type_integer,table__);
+const litesql::FieldType MediaFileStreamRelation::Stream("Stream2_",A_field_type_integer,table__);
 void MediaFileStreamRelation::link(const litesql::Database& db, const db::MediaFile& o0, const db::Stream& o1) {
     Record values;
     Split fields;
@@ -696,9 +696,9 @@ CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::Row::Row(const lit
         codecPreset = rec[0];
     }
 }
-const std::string CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::table__("_165bce89be0b4f99d8ddeba7a26a23a7");
-const litesql::FieldType CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::CodecPreset("CodecPreset1","INTEGER",table__);
-const litesql::FieldType CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::CodecPresetParameter("CodecPresetParameter2","INTEGER",table__);
+const std::string CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::table__("O165bce89be0b4f99d8ddeba7a26a2");
+const litesql::FieldType CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::CodecPreset("CodecPreset1_",A_field_type_integer,table__);
+const litesql::FieldType CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::CodecPresetParameter("CodecPresetParameter2_",A_field_type_integer,table__);
 void CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::link(const litesql::Database& db, const db::CodecPreset& o0, const db::CodecPresetParameter& o1) {
     Record values;
     Split fields;
@@ -745,9 +745,9 @@ CodecPresetProfileRelationVideoCodecPreset2Profile::Row::Row(const litesql::Data
         codecPreset = rec[0];
     }
 }
-const std::string CodecPresetProfileRelationVideoCodecPreset2Profile::table__("_b477e426317c3764439827c70cd95621");
-const litesql::FieldType CodecPresetProfileRelationVideoCodecPreset2Profile::CodecPreset("CodecPreset1","INTEGER",table__);
-const litesql::FieldType CodecPresetProfileRelationVideoCodecPreset2Profile::Profile("Profile2","INTEGER",table__);
+const std::string CodecPresetProfileRelationVideoCodecPreset2Profile::table__("Ob477e426317c3764439827c70cd95");
+const litesql::FieldType CodecPresetProfileRelationVideoCodecPreset2Profile::CodecPreset("CodecPreset1_",A_field_type_integer,table__);
+const litesql::FieldType CodecPresetProfileRelationVideoCodecPreset2Profile::Profile("Profile2_",A_field_type_integer,table__);
 void CodecPresetProfileRelationVideoCodecPreset2Profile::link(const litesql::Database& db, const db::CodecPreset& o0, const db::Profile& o1) {
     Record values;
     Split fields;
@@ -794,9 +794,9 @@ CodecPresetProfileRelationAudioCodecPreset2Profile::Row::Row(const litesql::Data
         codecPreset = rec[0];
     }
 }
-const std::string CodecPresetProfileRelationAudioCodecPreset2Profile::table__("_c47426250800c92cff81a427efb64c83");
-const litesql::FieldType CodecPresetProfileRelationAudioCodecPreset2Profile::CodecPreset("CodecPreset1","INTEGER",table__);
-const litesql::FieldType CodecPresetProfileRelationAudioCodecPreset2Profile::Profile("Profile2","INTEGER",table__);
+const std::string CodecPresetProfileRelationAudioCodecPreset2Profile::table__("Oc47426250800c92cff81a427efb64");
+const litesql::FieldType CodecPresetProfileRelationAudioCodecPreset2Profile::CodecPreset("CodecPreset1_",A_field_type_integer,table__);
+const litesql::FieldType CodecPresetProfileRelationAudioCodecPreset2Profile::Profile("Profile2_",A_field_type_integer,table__);
 void CodecPresetProfileRelationAudioCodecPreset2Profile::link(const litesql::Database& db, const db::CodecPreset& o0, const db::Profile& o1) {
     Record values;
     Split fields;
@@ -844,8 +844,8 @@ JobTaskRelationJobTask::Row::Row(const litesql::Database& db, const litesql::Rec
     }
 }
 const std::string JobTaskRelationJobTask::table__("Job_Task_JobTask");
-const litesql::FieldType JobTaskRelationJobTask::Job("Job1","INTEGER",table__);
-const litesql::FieldType JobTaskRelationJobTask::Task("Task2","INTEGER",table__);
+const litesql::FieldType JobTaskRelationJobTask::Job("Job1_",A_field_type_integer,table__);
+const litesql::FieldType JobTaskRelationJobTask::Task("Task2_",A_field_type_integer,table__);
 void JobTaskRelationJobTask::link(const litesql::Database& db, const db::Job& o0, const db::Task& o1) {
     Record values;
     Split fields;
@@ -893,8 +893,8 @@ GraphTaskRelationGraphTask::Row::Row(const litesql::Database& db, const litesql:
     }
 }
 const std::string GraphTaskRelationGraphTask::table__("Graph_Task_GraphTask");
-const litesql::FieldType GraphTaskRelationGraphTask::Graph("Graph1","INTEGER",table__);
-const litesql::FieldType GraphTaskRelationGraphTask::Task("Task2","INTEGER",table__);
+const litesql::FieldType GraphTaskRelationGraphTask::Graph("Graph1_",A_field_type_integer,table__);
+const litesql::FieldType GraphTaskRelationGraphTask::Task("Task2_",A_field_type_integer,table__);
 void GraphTaskRelationGraphTask::link(const litesql::Database& db, const db::Graph& o0, const db::Task& o1) {
     Record values;
     Split fields;
@@ -942,8 +942,8 @@ JobJobLogRelationJobJobLog::Row::Row(const litesql::Database& db, const litesql:
     }
 }
 const std::string JobJobLogRelationJobJobLog::table__("Job_JobLog_JobJobLog");
-const litesql::FieldType JobJobLogRelationJobJobLog::Job("Job1","INTEGER",table__);
-const litesql::FieldType JobJobLogRelationJobJobLog::JobLog("JobLog2","INTEGER",table__);
+const litesql::FieldType JobJobLogRelationJobJobLog::Job("Job1_",A_field_type_integer,table__);
+const litesql::FieldType JobJobLogRelationJobJobLog::JobLog("JobLog2_",A_field_type_integer,table__);
 void JobJobLogRelationJobJobLog::link(const litesql::Database& db, const db::Job& o0, const db::JobLog& o1) {
     Record values;
     Split fields;
@@ -991,8 +991,8 @@ JobMediaFileRelationJobInFile::Row::Row(const litesql::Database& db, const lites
     }
 }
 const std::string JobMediaFileRelationJobInFile::table__("Job_MediaFile_JobInFile");
-const litesql::FieldType JobMediaFileRelationJobInFile::Job("Job1","INTEGER",table__);
-const litesql::FieldType JobMediaFileRelationJobInFile::MediaFile("MediaFile2","INTEGER",table__);
+const litesql::FieldType JobMediaFileRelationJobInFile::Job("Job1_",A_field_type_integer,table__);
+const litesql::FieldType JobMediaFileRelationJobInFile::MediaFile("MediaFile2_",A_field_type_integer,table__);
 void JobMediaFileRelationJobInFile::link(const litesql::Database& db, const db::Job& o0, const db::MediaFile& o1) {
     Record values;
     Split fields;
@@ -1040,8 +1040,8 @@ JobMediaFileRelationJobOutFile::Row::Row(const litesql::Database& db, const lite
     }
 }
 const std::string JobMediaFileRelationJobOutFile::table__("Job_MediaFile_JobOutFile");
-const litesql::FieldType JobMediaFileRelationJobOutFile::Job("Job1","INTEGER",table__);
-const litesql::FieldType JobMediaFileRelationJobOutFile::MediaFile("MediaFile2","INTEGER",table__);
+const litesql::FieldType JobMediaFileRelationJobOutFile::Job("Job1_",A_field_type_integer,table__);
+const litesql::FieldType JobMediaFileRelationJobOutFile::MediaFile("MediaFile2_",A_field_type_integer,table__);
 void JobMediaFileRelationJobOutFile::link(const litesql::Database& db, const db::Job& o0, const db::MediaFile& o1) {
     Record values;
     Split fields;
@@ -1089,8 +1089,8 @@ JobPresetRelation::Row::Row(const litesql::Database& db, const litesql::Record& 
     }
 }
 const std::string JobPresetRelation::table__("Job_Preset_");
-const litesql::FieldType JobPresetRelation::Job("Job1","INTEGER",table__);
-const litesql::FieldType JobPresetRelation::Preset("Preset2","INTEGER",table__);
+const litesql::FieldType JobPresetRelation::Job("Job1_",A_field_type_integer,table__);
+const litesql::FieldType JobPresetRelation::Preset("Preset2_",A_field_type_integer,table__);
 void JobPresetRelation::link(const litesql::Database& db, const db::Job& o0, const db::Preset& o1) {
     Record values;
     Split fields;
@@ -1138,8 +1138,8 @@ JobJobDetailRelationJobJobDetail::Row::Row(const litesql::Database& db, const li
     }
 }
 const std::string JobJobDetailRelationJobJobDetail::table__("Job_JobDetail_JobJobDetail");
-const litesql::FieldType JobJobDetailRelationJobJobDetail::Job("Job1","INTEGER",table__);
-const litesql::FieldType JobJobDetailRelationJobJobDetail::JobDetail("JobDetail2","INTEGER",table__);
+const litesql::FieldType JobJobDetailRelationJobJobDetail::Job("Job1_",A_field_type_integer,table__);
+const litesql::FieldType JobJobDetailRelationJobJobDetail::JobDetail("JobDetail2_",A_field_type_integer,table__);
 void JobJobDetailRelationJobJobDetail::link(const litesql::Database& db, const db::Job& o0, const db::JobDetail& o1) {
     Record values;
     Split fields;
@@ -1187,8 +1187,8 @@ JobDetailStreamRelationJobOutStream::Row::Row(const litesql::Database& db, const
     }
 }
 const std::string JobDetailStreamRelationJobOutStream::table__("JobDetail_Stream_JobOutStream");
-const litesql::FieldType JobDetailStreamRelationJobOutStream::JobDetail("JobDetail1","INTEGER",table__);
-const litesql::FieldType JobDetailStreamRelationJobOutStream::Stream("Stream2","INTEGER",table__);
+const litesql::FieldType JobDetailStreamRelationJobOutStream::JobDetail("JobDetail1_",A_field_type_integer,table__);
+const litesql::FieldType JobDetailStreamRelationJobOutStream::Stream("Stream2_",A_field_type_integer,table__);
 void JobDetailStreamRelationJobOutStream::link(const litesql::Database& db, const db::JobDetail& o0, const db::Stream& o1) {
     Record values;
     Split fields;
@@ -1236,8 +1236,8 @@ JobDetailStreamRelationJobInStream::Row::Row(const litesql::Database& db, const 
     }
 }
 const std::string JobDetailStreamRelationJobInStream::table__("JobDetail_Stream_JobInStream");
-const litesql::FieldType JobDetailStreamRelationJobInStream::JobDetail("JobDetail1","INTEGER",table__);
-const litesql::FieldType JobDetailStreamRelationJobInStream::Stream("Stream2","INTEGER",table__);
+const litesql::FieldType JobDetailStreamRelationJobInStream::JobDetail("JobDetail1_",A_field_type_integer,table__);
+const litesql::FieldType JobDetailStreamRelationJobInStream::Stream("Stream2_",A_field_type_integer,table__);
 void JobDetailStreamRelationJobInStream::link(const litesql::Database& db, const db::JobDetail& o0, const db::Stream& o1) {
     Record values;
     Split fields;
@@ -1285,8 +1285,8 @@ JobProcessUnitRelationProcessUnitJob::Row::Row(const litesql::Database& db, cons
     }
 }
 const std::string JobProcessUnitRelationProcessUnitJob::table__("Job_ProcessUnit_ProcessUnitJob");
-const litesql::FieldType JobProcessUnitRelationProcessUnitJob::Job("Job1","INTEGER",table__);
-const litesql::FieldType JobProcessUnitRelationProcessUnitJob::ProcessUnit("ProcessUnit2","INTEGER",table__);
+const litesql::FieldType JobProcessUnitRelationProcessUnitJob::Job("Job1_",A_field_type_integer,table__);
+const litesql::FieldType JobProcessUnitRelationProcessUnitJob::ProcessUnit("ProcessUnit2_",A_field_type_integer,table__);
 void JobProcessUnitRelationProcessUnitJob::link(const litesql::Database& db, const db::Job& o0, const db::ProcessUnit& o1) {
     Record values;
     Split fields;
@@ -1334,8 +1334,8 @@ UserUserGroupRelationUser2UserGroup::Row::Row(const litesql::Database& db, const
     }
 }
 const std::string UserUserGroupRelationUser2UserGroup::table__("User_UserGroup_User2UserGroup");
-const litesql::FieldType UserUserGroupRelationUser2UserGroup::User("User1","INTEGER",table__);
-const litesql::FieldType UserUserGroupRelationUser2UserGroup::UserGroup("UserGroup2","INTEGER",table__);
+const litesql::FieldType UserUserGroupRelationUser2UserGroup::User("User1_",A_field_type_integer,table__);
+const litesql::FieldType UserUserGroupRelationUser2UserGroup::UserGroup("UserGroup2_",A_field_type_integer,table__);
 void UserUserGroupRelationUser2UserGroup::link(const litesql::Database& db, const db::User& o0, const db::UserGroup& o1) {
     Record values;
     Split fields;
@@ -1383,8 +1383,8 @@ JobPartitionRelationJob2Partition::Row::Row(const litesql::Database& db, const l
     }
 }
 const std::string JobPartitionRelationJob2Partition::table__("Job_Partition_Job2Partition");
-const litesql::FieldType JobPartitionRelationJob2Partition::Job("Job1","INTEGER",table__);
-const litesql::FieldType JobPartitionRelationJob2Partition::Partition("Partition2","INTEGER",table__);
+const litesql::FieldType JobPartitionRelationJob2Partition::Job("Job1_",A_field_type_integer,table__);
+const litesql::FieldType JobPartitionRelationJob2Partition::Partition("Partition2_",A_field_type_integer,table__);
 void JobPartitionRelationJob2Partition::link(const litesql::Database& db, const db::Job& o0, const db::Partition& o1) {
     Record values;
     Split fields;
@@ -1432,8 +1432,8 @@ JobQueueRelationJob2Queue::Row::Row(const litesql::Database& db, const litesql::
     }
 }
 const std::string JobQueueRelationJob2Queue::table__("Job_Queue_Job2Queue");
-const litesql::FieldType JobQueueRelationJob2Queue::Job("Job1","INTEGER",table__);
-const litesql::FieldType JobQueueRelationJob2Queue::Queue("Queue2","INTEGER",table__);
+const litesql::FieldType JobQueueRelationJob2Queue::Job("Job1_",A_field_type_integer,table__);
+const litesql::FieldType JobQueueRelationJob2Queue::Queue("Queue2_",A_field_type_integer,table__);
 void JobQueueRelationJob2Queue::link(const litesql::Database& db, const db::Job& o0, const db::Queue& o1) {
     Record values;
     Split fields;
@@ -1471,7 +1471,7 @@ template <> litesql::DataSource<db::Queue> JobQueueRelationJob2Queue::get(const 
     sel.where(srcExpr);
     return DataSource<db::Queue>(db, db::Queue::Id.in(sel) && expr);
 }
-const litesql::FieldType Project::Own::Id("id_","INTEGER","Project_");
+const litesql::FieldType Project::Own::Id("id_",A_field_type_integer,"Project_");
 Project::FilterHandle::FilterHandle(const Project& owner)
          : litesql::RelationHandle<Project>(owner) {
 }
@@ -1547,14 +1547,14 @@ litesql::DataSource<ProfileProjectRelation::Row> Project::ProfilesHandle::getRow
 const std::string Project::type__("Project");
 const std::string Project::table__("Project_");
 const std::string Project::sequence__("Project_seq");
-const litesql::FieldType Project::Id("id_","INTEGER",table__);
-const litesql::FieldType Project::Type("type_","TEXT",table__);
-const litesql::FieldType Project::Name("name_","TEXT",table__);
-const litesql::FieldType Project::Outdirectory("outdirectory_","TEXT",table__);
-const litesql::FieldType Project::Status("status_","TEXT",table__);
-const litesql::FieldType Project::Created("created_","INTEGER",table__);
-const litesql::FieldType Project::Started("started_","INTEGER",table__);
-const litesql::FieldType Project::Completed("completed_","INTEGER",table__);
+const litesql::FieldType Project::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType Project::Type("type_",A_field_type_string,table__);
+const litesql::FieldType Project::Name("name_",A_field_type_string,table__);
+const litesql::FieldType Project::Outdirectory("outdirectory_",A_field_type_string,table__);
+const litesql::FieldType Project::Status("status_",A_field_type_string,table__);
+const litesql::FieldType Project::Created("created_",A_field_type_date,table__);
+const litesql::FieldType Project::Started("started_",A_field_type_date,table__);
+const litesql::FieldType Project::Completed("completed_",A_field_type_date,table__);
 void Project::defaults() {
     id = 0;
     created = 0;
@@ -1705,24 +1705,25 @@ void Project::update() {
     oldKey = id;
 }
 void Project::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<Project> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool Project::typeIsCorrect() {
+bool Project::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Project> Project::upcast() {
+std::auto_ptr<Project> Project::upcast() const {
     return auto_ptr<Project>(new Project(*this));
 }
-std::auto_ptr<Project> Project::upcastCopy() {
+std::auto_ptr<Project> Project::upcastCopy() const {
     Project* np = new Project(*this);
     np->id = id;
     np->type = type;
@@ -1748,7 +1749,7 @@ std::ostream & operator<<(std::ostream& os, Project o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType Filter::Own::Id("id_","INTEGER","Filter_");
+const litesql::FieldType Filter::Own::Id("id_",A_field_type_integer,"Filter_");
 Filter::ParameterHandle::ParameterHandle(const Filter& owner)
          : litesql::RelationHandle<Filter>(owner) {
 }
@@ -1842,10 +1843,10 @@ litesql::DataSource<FilterStreamRelation::Row> Filter::StreamHandle::getRows(con
 const std::string Filter::type__("Filter");
 const std::string Filter::table__("Filter_");
 const std::string Filter::sequence__("Filter_seq");
-const litesql::FieldType Filter::Id("id_","INTEGER",table__);
-const litesql::FieldType Filter::Type("type_","TEXT",table__);
-const litesql::FieldType Filter::Filtername("filtername_","TEXT",table__);
-const litesql::FieldType Filter::Filterid("filterid_","TEXT",table__);
+const litesql::FieldType Filter::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType Filter::Type("type_",A_field_type_string,table__);
+const litesql::FieldType Filter::Filtername("filtername_",A_field_type_string,table__);
+const litesql::FieldType Filter::Filterid("filterid_",A_field_type_string,table__);
 void Filter::defaults() {
     id = 0;
 }
@@ -1965,24 +1966,25 @@ void Filter::update() {
     oldKey = id;
 }
 void Filter::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<Filter> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool Filter::typeIsCorrect() {
+bool Filter::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Filter> Filter::upcast() {
+std::auto_ptr<Filter> Filter::upcast() const {
     return auto_ptr<Filter>(new Filter(*this));
 }
-std::auto_ptr<Filter> Filter::upcastCopy() {
+std::auto_ptr<Filter> Filter::upcastCopy() const {
     Filter* np = new Filter(*this);
     np->id = id;
     np->type = type;
@@ -2000,7 +2002,7 @@ std::ostream & operator<<(std::ostream& os, Filter o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType FilterParameter::Own::Id("id_","INTEGER","FilterParameter_");
+const litesql::FieldType FilterParameter::Own::Id("id_",A_field_type_integer,"FilterParameter_");
 FilterParameter::FilterHandle::FilterHandle(const FilterParameter& owner)
          : litesql::RelationHandle<FilterParameter>(owner) {
 }
@@ -2022,10 +2024,10 @@ litesql::DataSource<FilterFilterParameterRelation::Row> FilterParameter::FilterH
 const std::string FilterParameter::type__("FilterParameter");
 const std::string FilterParameter::table__("FilterParameter_");
 const std::string FilterParameter::sequence__("FilterParameter_seq");
-const litesql::FieldType FilterParameter::Id("id_","INTEGER",table__);
-const litesql::FieldType FilterParameter::Type("type_","TEXT",table__);
-const litesql::FieldType FilterParameter::Fkey("fkey_","TEXT",table__);
-const litesql::FieldType FilterParameter::Fval("fval_","TEXT",table__);
+const litesql::FieldType FilterParameter::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType FilterParameter::Type("type_",A_field_type_string,table__);
+const litesql::FieldType FilterParameter::Fkey("fkey_",A_field_type_string,table__);
+const litesql::FieldType FilterParameter::Fval("fval_",A_field_type_string,table__);
 void FilterParameter::defaults() {
     id = 0;
 }
@@ -2129,24 +2131,25 @@ void FilterParameter::update() {
     oldKey = id;
 }
 void FilterParameter::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<FilterParameter> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool FilterParameter::typeIsCorrect() {
+bool FilterParameter::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<FilterParameter> FilterParameter::upcast() {
+std::auto_ptr<FilterParameter> FilterParameter::upcast() const {
     return auto_ptr<FilterParameter>(new FilterParameter(*this));
 }
-std::auto_ptr<FilterParameter> FilterParameter::upcastCopy() {
+std::auto_ptr<FilterParameter> FilterParameter::upcastCopy() const {
     FilterParameter* np = new FilterParameter(*this);
     np->id = id;
     np->type = type;
@@ -2164,7 +2167,7 @@ std::ostream & operator<<(std::ostream& os, FilterParameter o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType MediaFile::Own::Id("id_","INTEGER","MediaFile_");
+const litesql::FieldType MediaFile::Own::Id("id_",A_field_type_integer,"MediaFile_");
 MediaFile::FilterHandle::FilterHandle(const MediaFile& owner)
          : litesql::RelationHandle<MediaFile>(owner) {
 }
@@ -2258,27 +2261,27 @@ litesql::DataSource<JobMediaFileRelationJobOutFile::Row> MediaFile::JobsoutHandl
 const std::string MediaFile::type__("MediaFile");
 const std::string MediaFile::table__("MediaFile_");
 const std::string MediaFile::sequence__("MediaFile_seq");
-const litesql::FieldType MediaFile::Id("id_","INTEGER",table__);
-const litesql::FieldType MediaFile::Type("type_","TEXT",table__);
-const litesql::FieldType MediaFile::Filename("filename_","TEXT",table__);
-const litesql::FieldType MediaFile::Path("path_","TEXT",table__);
-const litesql::FieldType MediaFile::Filesize("filesize_","DOUBLE",table__);
-const litesql::FieldType MediaFile::Streamcount("streamcount_","INTEGER",table__);
-const litesql::FieldType MediaFile::Containertype("containertype_","TEXT",table__);
-const litesql::FieldType MediaFile::Duration("duration_","DOUBLE",table__);
-const litesql::FieldType MediaFile::Starttime("starttime_","DOUBLE",table__);
-const litesql::FieldType MediaFile::Bitrate("bitrate_","INTEGER",table__);
-const litesql::FieldType MediaFile::Created("created_","INTEGER",table__);
-const litesql::FieldType MediaFile::Filetype("filetype_","INTEGER",table__);
-const litesql::FieldType MediaFile::Parent("parent_","INTEGER",table__);
-const litesql::FieldType MediaFile::Metatitle("metatitle_","TEXT",table__);
-const litesql::FieldType MediaFile::Metaauthor("metaauthor_","TEXT",table__);
-const litesql::FieldType MediaFile::Metacopyright("metacopyright_","TEXT",table__);
-const litesql::FieldType MediaFile::Metacomment("metacomment_","TEXT",table__);
-const litesql::FieldType MediaFile::Metaalbum("metaalbum_","TEXT",table__);
-const litesql::FieldType MediaFile::Metayear("metayear_","INTEGER",table__);
-const litesql::FieldType MediaFile::Metatrack("metatrack_","INTEGER",table__);
-const litesql::FieldType MediaFile::Metagenre("metagenre_","INTEGER",table__);
+const litesql::FieldType MediaFile::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType MediaFile::Type("type_",A_field_type_string,table__);
+const litesql::FieldType MediaFile::Filename("filename_",A_field_type_string,table__);
+const litesql::FieldType MediaFile::Path("path_",A_field_type_string,table__);
+const litesql::FieldType MediaFile::Filesize("filesize_",A_field_type_double,table__);
+const litesql::FieldType MediaFile::Streamcount("streamcount_",A_field_type_integer,table__);
+const litesql::FieldType MediaFile::Containertype("containertype_",A_field_type_string,table__);
+const litesql::FieldType MediaFile::Duration("duration_",A_field_type_double,table__);
+const litesql::FieldType MediaFile::Starttime("starttime_",A_field_type_double,table__);
+const litesql::FieldType MediaFile::Bitrate("bitrate_",A_field_type_integer,table__);
+const litesql::FieldType MediaFile::Created("created_",A_field_type_datetime,table__);
+const litesql::FieldType MediaFile::Filetype("filetype_",A_field_type_integer,table__);
+const litesql::FieldType MediaFile::Parent("parent_",A_field_type_integer,table__);
+const litesql::FieldType MediaFile::Metatitle("metatitle_",A_field_type_string,table__);
+const litesql::FieldType MediaFile::Metaauthor("metaauthor_",A_field_type_string,table__);
+const litesql::FieldType MediaFile::Metacopyright("metacopyright_",A_field_type_string,table__);
+const litesql::FieldType MediaFile::Metacomment("metacomment_",A_field_type_string,table__);
+const litesql::FieldType MediaFile::Metaalbum("metaalbum_",A_field_type_string,table__);
+const litesql::FieldType MediaFile::Metayear("metayear_",A_field_type_integer,table__);
+const litesql::FieldType MediaFile::Metatrack("metatrack_",A_field_type_integer,table__);
+const litesql::FieldType MediaFile::Metagenre("metagenre_",A_field_type_integer,table__);
 void MediaFile::defaults() {
     id = 0;
     filesize = 0.0;
@@ -2545,24 +2548,25 @@ void MediaFile::update() {
     oldKey = id;
 }
 void MediaFile::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<MediaFile> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool MediaFile::typeIsCorrect() {
+bool MediaFile::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<MediaFile> MediaFile::upcast() {
+std::auto_ptr<MediaFile> MediaFile::upcast() const {
     return auto_ptr<MediaFile>(new MediaFile(*this));
 }
-std::auto_ptr<MediaFile> MediaFile::upcastCopy() {
+std::auto_ptr<MediaFile> MediaFile::upcastCopy() const {
     MediaFile* np = new MediaFile(*this);
     np->id = id;
     np->type = type;
@@ -2614,12 +2618,12 @@ std::ostream & operator<<(std::ostream& os, MediaFile o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType OutputFile::Own::Id("id_","INTEGER","OutputFile_");
+const litesql::FieldType OutputFile::Own::Id("id_",A_field_type_integer,"OutputFile_");
 const std::string OutputFile::StatusType::Waiting("WAITING");
 const std::string OutputFile::StatusType::Processing("PROCESSING");
 const std::string OutputFile::StatusType::Error("ERROR");
 const std::string OutputFile::StatusType::Completed("COMPLETED");
-OutputFile::StatusType::StatusType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals)
+OutputFile::StatusType::StatusType(const std::string& n, AT_field_type t, const std::string& tbl, const litesql::FieldType::Values& vals)
          : litesql::FieldType(n,t,tbl,vals) {
 }
 const std::string OutputFile::Status::Waiting("WAITING");
@@ -2629,14 +2633,14 @@ const std::string OutputFile::Status::Completed("COMPLETED");
 const std::string OutputFile::type__("OutputFile");
 const std::string OutputFile::table__("OutputFile_");
 const std::string OutputFile::sequence__("OutputFile_seq");
-const litesql::FieldType OutputFile::Id("id_","INTEGER",table__);
-const litesql::FieldType OutputFile::Type("type_","TEXT",table__);
-const litesql::FieldType OutputFile::Filename("filename_","TEXT",table__);
-const litesql::FieldType OutputFile::Path("path_","TEXT",table__);
-const litesql::FieldType OutputFile::Jobid("jobid_","TEXT",table__);
-const litesql::FieldType OutputFile::Outfiledata("outfiledata_","TEXT",table__);
+const litesql::FieldType OutputFile::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType OutputFile::Type("type_",A_field_type_string,table__);
+const litesql::FieldType OutputFile::Filename("filename_",A_field_type_string,table__);
+const litesql::FieldType OutputFile::Path("path_",A_field_type_string,table__);
+const litesql::FieldType OutputFile::Jobid("jobid_",A_field_type_string,table__);
+const litesql::FieldType OutputFile::Outfiledata("outfiledata_",A_field_type_string,table__);
 std::vector < std::pair< std::string, std::string > > OutputFile::status_values;
-const OutputFile::StatusType OutputFile::Status("status_","TEXT",table__,status_values);
+const OutputFile::StatusType OutputFile::Status("status_",A_field_type_string,table__,status_values);
 void OutputFile::initValues() {
     status_values.clear();
     status_values.push_back(make_pair<std::string, std::string>("Waiting","WAITING"));
@@ -2767,24 +2771,25 @@ void OutputFile::update() {
     oldKey = id;
 }
 void OutputFile::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<OutputFile> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool OutputFile::typeIsCorrect() {
+bool OutputFile::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<OutputFile> OutputFile::upcast() {
+std::auto_ptr<OutputFile> OutputFile::upcast() const {
     return auto_ptr<OutputFile>(new OutputFile(*this));
 }
-std::auto_ptr<OutputFile> OutputFile::upcastCopy() {
+std::auto_ptr<OutputFile> OutputFile::upcastCopy() const {
     OutputFile* np = new OutputFile(*this);
     np->id = id;
     np->type = type;
@@ -2808,7 +2813,7 @@ std::ostream & operator<<(std::ostream& os, OutputFile o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType ProfileGroup::Own::Id("id_","INTEGER","ProfileGroup_");
+const litesql::FieldType ProfileGroup::Own::Id("id_",A_field_type_integer,"ProfileGroup_");
 ProfileGroup::ProfilesHandle::ProfilesHandle(const ProfileGroup& owner)
          : litesql::RelationHandle<ProfileGroup>(owner) {
 }
@@ -2866,9 +2871,9 @@ litesql::DataSource<ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChi
 const std::string ProfileGroup::type__("ProfileGroup");
 const std::string ProfileGroup::table__("ProfileGroup_");
 const std::string ProfileGroup::sequence__("ProfileGroup_seq");
-const litesql::FieldType ProfileGroup::Id("id_","INTEGER",table__);
-const litesql::FieldType ProfileGroup::Type("type_","TEXT",table__);
-const litesql::FieldType ProfileGroup::Name("name_","TEXT",table__);
+const litesql::FieldType ProfileGroup::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType ProfileGroup::Type("type_",A_field_type_string,table__);
+const litesql::FieldType ProfileGroup::Name("name_",A_field_type_string,table__);
 void ProfileGroup::defaults() {
     id = 0;
 }
@@ -2971,24 +2976,25 @@ void ProfileGroup::update() {
     oldKey = id;
 }
 void ProfileGroup::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<ProfileGroup> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool ProfileGroup::typeIsCorrect() {
+bool ProfileGroup::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<ProfileGroup> ProfileGroup::upcast() {
+std::auto_ptr<ProfileGroup> ProfileGroup::upcast() const {
     return auto_ptr<ProfileGroup>(new ProfileGroup(*this));
 }
-std::auto_ptr<ProfileGroup> ProfileGroup::upcastCopy() {
+std::auto_ptr<ProfileGroup> ProfileGroup::upcastCopy() const {
     ProfileGroup* np = new ProfileGroup(*this);
     np->id = id;
     np->type = type;
@@ -3004,7 +3010,7 @@ std::ostream & operator<<(std::ostream& os, ProfileGroup o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType Profile::Own::Id("id_","INTEGER","Profile_");
+const litesql::FieldType Profile::Own::Id("id_",A_field_type_integer,"Profile_");
 Profile::FilterHandle::FilterHandle(const Profile& owner)
          : litesql::RelationHandle<Profile>(owner) {
 }
@@ -3116,25 +3122,25 @@ litesql::DataSource<CodecPresetProfileRelationAudioCodecPreset2Profile::Row> Pro
 const std::string Profile::type__("Profile");
 const std::string Profile::table__("Profile_");
 const std::string Profile::sequence__("Profile_seq");
-const litesql::FieldType Profile::Id("id_","INTEGER",table__);
-const litesql::FieldType Profile::Type("type_","TEXT",table__);
-const litesql::FieldType Profile::Name("name_","TEXT",table__);
-const litesql::FieldType Profile::Created("created_","INTEGER",table__);
-const litesql::FieldType Profile::Format("format_","TEXT",table__);
-const litesql::FieldType Profile::Formatext("formatext_","TEXT",table__);
-const litesql::FieldType Profile::Vcodec("vcodec_","INTEGER",table__);
-const litesql::FieldType Profile::Vbitrate("vbitrate_","INTEGER",table__);
-const litesql::FieldType Profile::Vframerate("vframerate_","TEXT",table__);
-const litesql::FieldType Profile::Vwidth("vwidth_","INTEGER",table__);
-const litesql::FieldType Profile::Vheight("vheight_","INTEGER",table__);
-const litesql::FieldType Profile::Vextra("vextra_","TEXT",table__);
-const litesql::FieldType Profile::Achannels("achannels_","INTEGER",table__);
-const litesql::FieldType Profile::Acodec("acodec_","INTEGER",table__);
-const litesql::FieldType Profile::Abitrate("abitrate_","INTEGER",table__);
-const litesql::FieldType Profile::Asamplerate("asamplerate_","INTEGER",table__);
-const litesql::FieldType Profile::Aextra("aextra_","TEXT",table__);
-const litesql::FieldType Profile::Profiletype("profiletype_","INTEGER",table__);
-const litesql::FieldType Profile::Deinterlace("deinterlace_","INTEGER",table__);
+const litesql::FieldType Profile::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType Profile::Type("type_",A_field_type_string,table__);
+const litesql::FieldType Profile::Name("name_",A_field_type_string,table__);
+const litesql::FieldType Profile::Created("created_",A_field_type_datetime,table__);
+const litesql::FieldType Profile::Format("format_",A_field_type_string,table__);
+const litesql::FieldType Profile::Formatext("formatext_",A_field_type_string,table__);
+const litesql::FieldType Profile::Vcodec("vcodec_",A_field_type_integer,table__);
+const litesql::FieldType Profile::Vbitrate("vbitrate_",A_field_type_integer,table__);
+const litesql::FieldType Profile::Vframerate("vframerate_",A_field_type_string,table__);
+const litesql::FieldType Profile::Vwidth("vwidth_",A_field_type_integer,table__);
+const litesql::FieldType Profile::Vheight("vheight_",A_field_type_integer,table__);
+const litesql::FieldType Profile::Vextra("vextra_",A_field_type_string,table__);
+const litesql::FieldType Profile::Achannels("achannels_",A_field_type_integer,table__);
+const litesql::FieldType Profile::Acodec("acodec_",A_field_type_integer,table__);
+const litesql::FieldType Profile::Abitrate("abitrate_",A_field_type_integer,table__);
+const litesql::FieldType Profile::Asamplerate("asamplerate_",A_field_type_integer,table__);
+const litesql::FieldType Profile::Aextra("aextra_",A_field_type_string,table__);
+const litesql::FieldType Profile::Profiletype("profiletype_",A_field_type_integer,table__);
+const litesql::FieldType Profile::Deinterlace("deinterlace_",A_field_type_integer,table__);
 void Profile::defaults() {
     id = 0;
     created = 0;
@@ -3389,24 +3395,25 @@ void Profile::update() {
     oldKey = id;
 }
 void Profile::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<Profile> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool Profile::typeIsCorrect() {
+bool Profile::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Profile> Profile::upcast() {
+std::auto_ptr<Profile> Profile::upcast() const {
     return auto_ptr<Profile>(new Profile(*this));
 }
-std::auto_ptr<Profile> Profile::upcastCopy() {
+std::auto_ptr<Profile> Profile::upcastCopy() const {
     Profile* np = new Profile(*this);
     np->id = id;
     np->type = type;
@@ -3454,7 +3461,7 @@ std::ostream & operator<<(std::ostream& os, Profile o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType Preset::Own::Id("id_","INTEGER","Preset_");
+const litesql::FieldType Preset::Own::Id("id_",A_field_type_integer,"Preset_");
 Preset::ProjectHandle::ProjectHandle(const Preset& owner)
          : litesql::RelationHandle<Preset>(owner) {
 }
@@ -3512,12 +3519,12 @@ litesql::DataSource<JobPresetRelation::Row> Preset::JobHandle::getRows(const lit
 const std::string Preset::type__("Preset");
 const std::string Preset::table__("Preset_");
 const std::string Preset::sequence__("Preset_seq");
-const litesql::FieldType Preset::Id("id_","INTEGER",table__);
-const litesql::FieldType Preset::Type("type_","TEXT",table__);
-const litesql::FieldType Preset::Uuid("uuid_","TEXT",table__);
-const litesql::FieldType Preset::Name("name_","TEXT",table__);
-const litesql::FieldType Preset::Filename("filename_","TEXT",table__);
-const litesql::FieldType Preset::Data("data_","TEXT",table__);
+const litesql::FieldType Preset::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType Preset::Type("type_",A_field_type_string,table__);
+const litesql::FieldType Preset::Uuid("uuid_",A_field_type_string,table__);
+const litesql::FieldType Preset::Name("name_",A_field_type_string,table__);
+const litesql::FieldType Preset::Filename("filename_",A_field_type_string,table__);
+const litesql::FieldType Preset::Data("data_",A_field_type_string,table__);
 void Preset::defaults() {
     id = 0;
 }
@@ -3645,24 +3652,25 @@ void Preset::update() {
     oldKey = id;
 }
 void Preset::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<Preset> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool Preset::typeIsCorrect() {
+bool Preset::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Preset> Preset::upcast() {
+std::auto_ptr<Preset> Preset::upcast() const {
     return auto_ptr<Preset>(new Preset(*this));
 }
-std::auto_ptr<Preset> Preset::upcastCopy() {
+std::auto_ptr<Preset> Preset::upcastCopy() const {
     Preset* np = new Preset(*this);
     np->id = id;
     np->type = type;
@@ -3684,7 +3692,7 @@ std::ostream & operator<<(std::ostream& os, Preset o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType ProfileParameter::Own::Id("id_","INTEGER","ProfileParameter_");
+const litesql::FieldType ProfileParameter::Own::Id("id_",A_field_type_integer,"ProfileParameter_");
 ProfileParameter::ProfileHandle::ProfileHandle(const ProfileParameter& owner)
          : litesql::RelationHandle<ProfileParameter>(owner) {
 }
@@ -3706,11 +3714,11 @@ litesql::DataSource<ProfileProfileParameterRelation::Row> ProfileParameter::Prof
 const std::string ProfileParameter::type__("ProfileParameter");
 const std::string ProfileParameter::table__("ProfileParameter_");
 const std::string ProfileParameter::sequence__("ProfileParameter_seq");
-const litesql::FieldType ProfileParameter::Id("id_","INTEGER",table__);
-const litesql::FieldType ProfileParameter::Type("type_","TEXT",table__);
-const litesql::FieldType ProfileParameter::Name("name_","TEXT",table__);
-const litesql::FieldType ProfileParameter::Val("val_","TEXT",table__);
-const litesql::FieldType ProfileParameter::Mediatype("mediatype_","INTEGER",table__);
+const litesql::FieldType ProfileParameter::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType ProfileParameter::Type("type_",A_field_type_string,table__);
+const litesql::FieldType ProfileParameter::Name("name_",A_field_type_string,table__);
+const litesql::FieldType ProfileParameter::Val("val_",A_field_type_string,table__);
+const litesql::FieldType ProfileParameter::Mediatype("mediatype_",A_field_type_integer,table__);
 void ProfileParameter::defaults() {
     id = 0;
     mediatype = 0;
@@ -3823,24 +3831,25 @@ void ProfileParameter::update() {
     oldKey = id;
 }
 void ProfileParameter::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<ProfileParameter> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool ProfileParameter::typeIsCorrect() {
+bool ProfileParameter::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<ProfileParameter> ProfileParameter::upcast() {
+std::auto_ptr<ProfileParameter> ProfileParameter::upcast() const {
     return auto_ptr<ProfileParameter>(new ProfileParameter(*this));
 }
-std::auto_ptr<ProfileParameter> ProfileParameter::upcastCopy() {
+std::auto_ptr<ProfileParameter> ProfileParameter::upcastCopy() const {
     ProfileParameter* np = new ProfileParameter(*this);
     np->id = id;
     np->type = type;
@@ -3860,7 +3869,7 @@ std::ostream & operator<<(std::ostream& os, ProfileParameter o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType Stream::Own::Id("id_","INTEGER","Stream_");
+const litesql::FieldType Stream::Own::Id("id_",A_field_type_integer,"Stream_");
 Stream::ParamsHandle::ParamsHandle(const Stream& owner)
          : litesql::RelationHandle<Stream>(owner) {
 }
@@ -3954,40 +3963,40 @@ litesql::DataSource<JobDetailStreamRelationJobInStream::Row> Stream::JobsinHandl
 const std::string Stream::type__("Stream");
 const std::string Stream::table__("Stream_");
 const std::string Stream::sequence__("Stream_seq");
-const litesql::FieldType Stream::Id("id_","INTEGER",table__);
-const litesql::FieldType Stream::Type("type_","TEXT",table__);
-const litesql::FieldType Stream::Streamindex("streamindex_","INTEGER",table__);
-const litesql::FieldType Stream::Streamtype("streamtype_","INTEGER",table__);
-const litesql::FieldType Stream::Codecid("codecid_","INTEGER",table__);
-const litesql::FieldType Stream::Codecname("codecname_","TEXT",table__);
-const litesql::FieldType Stream::Frameratenum("frameratenum_","INTEGER",table__);
-const litesql::FieldType Stream::Framerateden("framerateden_","INTEGER",table__);
-const litesql::FieldType Stream::Streamtimebasenum("streamtimebasenum_","INTEGER",table__);
-const litesql::FieldType Stream::Streamtimebaseden("streamtimebaseden_","INTEGER",table__);
-const litesql::FieldType Stream::Codectimebasenum("codectimebasenum_","INTEGER",table__);
-const litesql::FieldType Stream::Codectimebaseden("codectimebaseden_","INTEGER",table__);
-const litesql::FieldType Stream::Firstpts("firstpts_","DOUBLE",table__);
-const litesql::FieldType Stream::Firstdts("firstdts_","DOUBLE",table__);
-const litesql::FieldType Stream::Duration("duration_","DOUBLE",table__);
-const litesql::FieldType Stream::Nbframes("nbframes_","DOUBLE",table__);
-const litesql::FieldType Stream::Ticksperframe("ticksperframe_","INTEGER",table__);
-const litesql::FieldType Stream::Framecount("framecount_","INTEGER",table__);
-const litesql::FieldType Stream::Width("width_","INTEGER",table__);
-const litesql::FieldType Stream::Height("height_","INTEGER",table__);
-const litesql::FieldType Stream::Gopsize("gopsize_","INTEGER",table__);
-const litesql::FieldType Stream::Pixfmt("pixfmt_","INTEGER",table__);
-const litesql::FieldType Stream::Bitrate("bitrate_","INTEGER",table__);
-const litesql::FieldType Stream::Samplerate("samplerate_","INTEGER",table__);
-const litesql::FieldType Stream::Samplefmt("samplefmt_","INTEGER",table__);
-const litesql::FieldType Stream::Channels("channels_","INTEGER",table__);
-const litesql::FieldType Stream::Bitspercodedsample("bitspercodedsample_","INTEGER",table__);
-const litesql::FieldType Stream::Privdatasize("privdatasize_","INTEGER",table__);
-const litesql::FieldType Stream::Privdata("privdata_","TEXT",table__);
-const litesql::FieldType Stream::Extradatasize("extradatasize_","INTEGER",table__);
-const litesql::FieldType Stream::Extradata("extradata_","BLOB",table__);
-const litesql::FieldType Stream::Aspectratio("aspectratio_","TEXT",table__);
-const litesql::FieldType Stream::Flags("flags_","INTEGER",table__);
-const litesql::FieldType Stream::Extraprofileflags("extraprofileflags_","TEXT",table__);
+const litesql::FieldType Stream::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Type("type_",A_field_type_string,table__);
+const litesql::FieldType Stream::Streamindex("streamindex_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Streamtype("streamtype_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Codecid("codecid_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Codecname("codecname_",A_field_type_string,table__);
+const litesql::FieldType Stream::Frameratenum("frameratenum_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Framerateden("framerateden_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Streamtimebasenum("streamtimebasenum_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Streamtimebaseden("streamtimebaseden_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Codectimebasenum("codectimebasenum_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Codectimebaseden("codectimebaseden_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Firstpts("firstpts_",A_field_type_double,table__);
+const litesql::FieldType Stream::Firstdts("firstdts_",A_field_type_double,table__);
+const litesql::FieldType Stream::Duration("duration_",A_field_type_double,table__);
+const litesql::FieldType Stream::Nbframes("nbframes_",A_field_type_double,table__);
+const litesql::FieldType Stream::Ticksperframe("ticksperframe_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Framecount("framecount_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Width("width_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Height("height_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Gopsize("gopsize_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Pixfmt("pixfmt_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Bitrate("bitrate_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Samplerate("samplerate_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Samplefmt("samplefmt_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Channels("channels_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Bitspercodedsample("bitspercodedsample_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Privdatasize("privdatasize_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Privdata("privdata_",A_field_type_string,table__);
+const litesql::FieldType Stream::Extradatasize("extradatasize_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Extradata("extradata_",A_field_type_blob,table__);
+const litesql::FieldType Stream::Aspectratio("aspectratio_",A_field_type_string,table__);
+const litesql::FieldType Stream::Flags("flags_",A_field_type_integer,table__);
+const litesql::FieldType Stream::Extraprofileflags("extraprofileflags_",A_field_type_string,table__);
 void Stream::defaults() {
     id = 0;
     streamindex = 0;
@@ -4375,24 +4384,25 @@ void Stream::update() {
     oldKey = id;
 }
 void Stream::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<Stream> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool Stream::typeIsCorrect() {
+bool Stream::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Stream> Stream::upcast() {
+std::auto_ptr<Stream> Stream::upcast() const {
     return auto_ptr<Stream>(new Stream(*this));
 }
-std::auto_ptr<Stream> Stream::upcastCopy() {
+std::auto_ptr<Stream> Stream::upcastCopy() const {
     Stream* np = new Stream(*this);
     np->id = id;
     np->type = type;
@@ -4470,7 +4480,7 @@ std::ostream & operator<<(std::ostream& os, Stream o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType StreamParameter::Own::Id("id_","INTEGER","StreamParameter_");
+const litesql::FieldType StreamParameter::Own::Id("id_",A_field_type_integer,"StreamParameter_");
 StreamParameter::StreamHandle::StreamHandle(const StreamParameter& owner)
          : litesql::RelationHandle<StreamParameter>(owner) {
 }
@@ -4492,10 +4502,10 @@ litesql::DataSource<StreamStreamParameterRelation::Row> StreamParameter::StreamH
 const std::string StreamParameter::type__("StreamParameter");
 const std::string StreamParameter::table__("StreamParameter_");
 const std::string StreamParameter::sequence__("StreamParameter_seq");
-const litesql::FieldType StreamParameter::Id("id_","INTEGER",table__);
-const litesql::FieldType StreamParameter::Type("type_","TEXT",table__);
-const litesql::FieldType StreamParameter::Name("name_","TEXT",table__);
-const litesql::FieldType StreamParameter::Val("val_","TEXT",table__);
+const litesql::FieldType StreamParameter::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType StreamParameter::Type("type_",A_field_type_string,table__);
+const litesql::FieldType StreamParameter::Name("name_",A_field_type_string,table__);
+const litesql::FieldType StreamParameter::Val("val_",A_field_type_string,table__);
 void StreamParameter::defaults() {
     id = 0;
 }
@@ -4599,24 +4609,25 @@ void StreamParameter::update() {
     oldKey = id;
 }
 void StreamParameter::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<StreamParameter> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool StreamParameter::typeIsCorrect() {
+bool StreamParameter::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<StreamParameter> StreamParameter::upcast() {
+std::auto_ptr<StreamParameter> StreamParameter::upcast() const {
     return auto_ptr<StreamParameter>(new StreamParameter(*this));
 }
-std::auto_ptr<StreamParameter> StreamParameter::upcastCopy() {
+std::auto_ptr<StreamParameter> StreamParameter::upcastCopy() const {
     StreamParameter* np = new StreamParameter(*this);
     np->id = id;
     np->type = type;
@@ -4634,7 +4645,7 @@ std::ostream & operator<<(std::ostream& os, StreamParameter o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType CodecPreset::Own::Id("id_","INTEGER","CodecPreset_");
+const litesql::FieldType CodecPreset::Own::Id("id_",A_field_type_integer,"CodecPreset_");
 CodecPreset::ParamsHandle::ParamsHandle(const CodecPreset& owner)
          : litesql::RelationHandle<CodecPreset>(owner) {
 }
@@ -4692,12 +4703,12 @@ litesql::DataSource<CodecPresetProfileRelationAudioCodecPreset2Profile::Row> Cod
 const std::string CodecPreset::type__("CodecPreset");
 const std::string CodecPreset::table__("CodecPreset_");
 const std::string CodecPreset::sequence__("CodecPreset_seq");
-const litesql::FieldType CodecPreset::Id("id_","INTEGER",table__);
-const litesql::FieldType CodecPreset::Type("type_","TEXT",table__);
-const litesql::FieldType CodecPreset::Name("name_","TEXT",table__);
-const litesql::FieldType CodecPreset::Created("created_","INTEGER",table__);
-const litesql::FieldType CodecPreset::Codecid("codecid_","INTEGER",table__);
-const litesql::FieldType CodecPreset::Preset("preset_","TEXT",table__);
+const litesql::FieldType CodecPreset::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType CodecPreset::Type("type_",A_field_type_string,table__);
+const litesql::FieldType CodecPreset::Name("name_",A_field_type_string,table__);
+const litesql::FieldType CodecPreset::Created("created_",A_field_type_date,table__);
+const litesql::FieldType CodecPreset::Codecid("codecid_",A_field_type_integer,table__);
+const litesql::FieldType CodecPreset::Preset("preset_",A_field_type_string,table__);
 void CodecPreset::defaults() {
     id = 0;
     created = 0;
@@ -4827,24 +4838,25 @@ void CodecPreset::update() {
     oldKey = id;
 }
 void CodecPreset::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<CodecPreset> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool CodecPreset::typeIsCorrect() {
+bool CodecPreset::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<CodecPreset> CodecPreset::upcast() {
+std::auto_ptr<CodecPreset> CodecPreset::upcast() const {
     return auto_ptr<CodecPreset>(new CodecPreset(*this));
 }
-std::auto_ptr<CodecPreset> CodecPreset::upcastCopy() {
+std::auto_ptr<CodecPreset> CodecPreset::upcastCopy() const {
     CodecPreset* np = new CodecPreset(*this);
     np->id = id;
     np->type = type;
@@ -4866,7 +4878,7 @@ std::ostream & operator<<(std::ostream& os, CodecPreset o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType CodecPresetParameter::Own::Id("id_","INTEGER","CodecPresetParameter_");
+const litesql::FieldType CodecPresetParameter::Own::Id("id_",A_field_type_integer,"CodecPresetParameter_");
 CodecPresetParameter::PresetHandle::PresetHandle(const CodecPresetParameter& owner)
          : litesql::RelationHandle<CodecPresetParameter>(owner) {
 }
@@ -4888,10 +4900,10 @@ litesql::DataSource<CodecPresetCodecPresetParameterRelationCodecPreset2Parameter
 const std::string CodecPresetParameter::type__("CodecPresetParameter");
 const std::string CodecPresetParameter::table__("CodecPresetParameter_");
 const std::string CodecPresetParameter::sequence__("CodecPresetParameter_seq");
-const litesql::FieldType CodecPresetParameter::Id("id_","INTEGER",table__);
-const litesql::FieldType CodecPresetParameter::Type("type_","TEXT",table__);
-const litesql::FieldType CodecPresetParameter::Name("name_","TEXT",table__);
-const litesql::FieldType CodecPresetParameter::Val("val_","TEXT",table__);
+const litesql::FieldType CodecPresetParameter::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType CodecPresetParameter::Type("type_",A_field_type_string,table__);
+const litesql::FieldType CodecPresetParameter::Name("name_",A_field_type_string,table__);
+const litesql::FieldType CodecPresetParameter::Val("val_",A_field_type_string,table__);
 void CodecPresetParameter::defaults() {
     id = 0;
 }
@@ -4995,24 +5007,25 @@ void CodecPresetParameter::update() {
     oldKey = id;
 }
 void CodecPresetParameter::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<CodecPresetParameter> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool CodecPresetParameter::typeIsCorrect() {
+bool CodecPresetParameter::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<CodecPresetParameter> CodecPresetParameter::upcast() {
+std::auto_ptr<CodecPresetParameter> CodecPresetParameter::upcast() const {
     return auto_ptr<CodecPresetParameter>(new CodecPresetParameter(*this));
 }
-std::auto_ptr<CodecPresetParameter> CodecPresetParameter::upcastCopy() {
+std::auto_ptr<CodecPresetParameter> CodecPresetParameter::upcastCopy() const {
     CodecPresetParameter* np = new CodecPresetParameter(*this);
     np->id = id;
     np->type = type;
@@ -5030,14 +5043,14 @@ std::ostream & operator<<(std::ostream& os, CodecPresetParameter o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType Config::Own::Id("id_","INTEGER","Config_");
+const litesql::FieldType Config::Own::Id("id_",A_field_type_integer,"Config_");
 const std::string Config::type__("Config");
 const std::string Config::table__("Config_");
 const std::string Config::sequence__("Config_seq");
-const litesql::FieldType Config::Id("id_","INTEGER",table__);
-const litesql::FieldType Config::Type("type_","TEXT",table__);
-const litesql::FieldType Config::Configkey("configkey_","TEXT",table__);
-const litesql::FieldType Config::Configval("configval_","TEXT",table__);
+const litesql::FieldType Config::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType Config::Type("type_",A_field_type_string,table__);
+const litesql::FieldType Config::Configkey("configkey_",A_field_type_string,table__);
+const litesql::FieldType Config::Configval("configval_",A_field_type_string,table__);
 void Config::defaults() {
     id = 0;
 }
@@ -5137,24 +5150,25 @@ void Config::update() {
     oldKey = id;
 }
 void Config::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<Config> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool Config::typeIsCorrect() {
+bool Config::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Config> Config::upcast() {
+std::auto_ptr<Config> Config::upcast() const {
     return auto_ptr<Config>(new Config(*this));
 }
-std::auto_ptr<Config> Config::upcastCopy() {
+std::auto_ptr<Config> Config::upcastCopy() const {
     Config* np = new Config(*this);
     np->id = id;
     np->type = type;
@@ -5172,7 +5186,7 @@ std::ostream & operator<<(std::ostream& os, Config o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType Job::Own::Id("id_","INTEGER","Job_");
+const litesql::FieldType Job::Own::Id("id_",A_field_type_integer,"Job_");
 const int Job::StatusType::Waiting(0);
 const int Job::StatusType::Processing(1);
 const int Job::StatusType::Error(2);
@@ -5182,7 +5196,7 @@ const int Job::StatusType::Exporting(5);
 const int Job::StatusType::Completed(6);
 const int Job::StatusType::Deleted(7);
 const int Job::StatusType::CompletedWithError(8);
-Job::StatusType::StatusType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals)
+Job::StatusType::StatusType(const std::string& n, AT_field_type t, const std::string& tbl, const litesql::FieldType::Values& vals)
          : litesql::FieldType(n,t,tbl,vals) {
 }
 const int Job::Status::Waiting(0);
@@ -5359,26 +5373,26 @@ litesql::DataSource<JobQueueRelationJob2Queue::Row> Job::QueuesHandle::getRows(c
 const std::string Job::type__("Job");
 const std::string Job::table__("Job_");
 const std::string Job::sequence__("Job_seq");
-const litesql::FieldType Job::Id("id_","INTEGER",table__);
-const litesql::FieldType Job::Type("type_","TEXT",table__);
-const litesql::FieldType Job::Uuid("uuid_","TEXT",table__);
-const litesql::FieldType Job::Created("created_","INTEGER",table__);
-const litesql::FieldType Job::Begintime("begintime_","INTEGER",table__);
-const litesql::FieldType Job::Endtime("endtime_","INTEGER",table__);
+const litesql::FieldType Job::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType Job::Type("type_",A_field_type_string,table__);
+const litesql::FieldType Job::Uuid("uuid_",A_field_type_string,table__);
+const litesql::FieldType Job::Created("created_",A_field_type_datetime,table__);
+const litesql::FieldType Job::Begintime("begintime_",A_field_type_datetime,table__);
+const litesql::FieldType Job::Endtime("endtime_",A_field_type_datetime,table__);
 std::vector < std::pair< std::string, std::string > > Job::status_values;
-const Job::StatusType Job::Status("status_","INTEGER",table__,status_values);
-const Job::StatusType Job::Infile("infile_","TEXT",table__);
-const Job::StatusType Job::Outfile("outfile_","TEXT",table__);
-const Job::StatusType Job::Starttime("starttime_","DOUBLE",table__);
-const Job::StatusType Job::Duration("duration_","DOUBLE",table__);
-const Job::StatusType Job::Progress("progress_","INTEGER",table__);
-const Job::StatusType Job::Fps("fps_","INTEGER",table__);
-const Job::StatusType Job::Data("data_","TEXT",table__);
-const Job::StatusType Job::Deleted("deleted_","INTEGER",table__);
-const Job::StatusType Job::Partitionname("partitionname_","TEXT",table__);
-const Job::StatusType Job::Graph("graph_","TEXT",table__);
-const Job::StatusType Job::Graphstatus("graphstatus_","TEXT",table__);
-const Job::StatusType Job::Graphname("graphname_","TEXT",table__);
+const Job::StatusType Job::Status("status_",A_field_type_integer,table__,status_values);
+const Job::StatusType Job::Infile("infile_",A_field_type_string,table__);
+const Job::StatusType Job::Outfile("outfile_",A_field_type_string,table__);
+const Job::StatusType Job::Starttime("starttime_",A_field_type_double,table__);
+const Job::StatusType Job::Duration("duration_",A_field_type_double,table__);
+const Job::StatusType Job::Progress("progress_",A_field_type_integer,table__);
+const Job::StatusType Job::Fps("fps_",A_field_type_integer,table__);
+const Job::StatusType Job::Data("data_",A_field_type_string,table__);
+const Job::StatusType Job::Deleted("deleted_",A_field_type_integer,table__);
+const Job::StatusType Job::Partitionname("partitionname_",A_field_type_string,table__);
+const Job::StatusType Job::Graph("graph_",A_field_type_string,table__);
+const Job::StatusType Job::Graphstatus("graphstatus_",A_field_type_string,table__);
+const Job::StatusType Job::Graphname("graphname_",A_field_type_string,table__);
 void Job::initValues() {
     status_values.clear();
     status_values.push_back(make_pair<std::string, std::string>("Waiting","0"));
@@ -5655,24 +5669,25 @@ void Job::update() {
     oldKey = id;
 }
 void Job::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<Job> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool Job::typeIsCorrect() {
+bool Job::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Job> Job::upcast() {
+std::auto_ptr<Job> Job::upcast() const {
     return auto_ptr<Job>(new Job(*this));
 }
-std::auto_ptr<Job> Job::upcastCopy() {
+std::auto_ptr<Job> Job::upcastCopy() const {
     Job* np = new Job(*this);
     np->id = id;
     np->type = type;
@@ -5720,12 +5735,12 @@ std::ostream & operator<<(std::ostream& os, Job o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType Task::Own::Id("id_","INTEGER","Task_");
+const litesql::FieldType Task::Own::Id("id_",A_field_type_integer,"Task_");
 const int Task::StatusType::Waiting(0);
 const int Task::StatusType::Error(1);
 const int Task::StatusType::Complete(2);
 const int Task::StatusType::Processing(3);
-Task::StatusType::StatusType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals)
+Task::StatusType::StatusType(const std::string& n, AT_field_type t, const std::string& tbl, const litesql::FieldType::Values& vals)
          : litesql::FieldType(n,t,tbl,vals) {
 }
 const int Task::Status::Waiting(0);
@@ -5771,16 +5786,16 @@ litesql::DataSource<GraphTaskRelationGraphTask::Row> Task::JobTaskHandle::getRow
 const std::string Task::type__("Task");
 const std::string Task::table__("Task_");
 const std::string Task::sequence__("Task_seq");
-const litesql::FieldType Task::Id("id_","INTEGER",table__);
-const litesql::FieldType Task::Type("type_","TEXT",table__);
-const litesql::FieldType Task::Uuid("uuid_","TEXT",table__);
-const litesql::FieldType Task::Name("name_","TEXT",table__);
-const litesql::FieldType Task::Parameter("parameter_","TEXT",table__);
-const litesql::FieldType Task::Statustext("statustext_","TEXT",table__);
-const litesql::FieldType Task::Progress("progress_","INTEGER",table__);
+const litesql::FieldType Task::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType Task::Type("type_",A_field_type_string,table__);
+const litesql::FieldType Task::Uuid("uuid_",A_field_type_string,table__);
+const litesql::FieldType Task::Name("name_",A_field_type_string,table__);
+const litesql::FieldType Task::Parameter("parameter_",A_field_type_string,table__);
+const litesql::FieldType Task::Statustext("statustext_",A_field_type_string,table__);
+const litesql::FieldType Task::Progress("progress_",A_field_type_integer,table__);
 std::vector < std::pair< std::string, std::string > > Task::status_values;
-const Task::StatusType Task::Status("status_","INTEGER",table__,status_values);
-const Task::StatusType Task::Sortorder("sortorder_","INTEGER",table__);
+const Task::StatusType Task::Status("status_",A_field_type_integer,table__,status_values);
+const Task::StatusType Task::Sortorder("sortorder_",A_field_type_integer,table__);
 void Task::initValues() {
     status_values.clear();
     status_values.push_back(make_pair<std::string, std::string>("Waiting","0"));
@@ -5938,24 +5953,25 @@ void Task::update() {
     oldKey = id;
 }
 void Task::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<Task> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool Task::typeIsCorrect() {
+bool Task::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Task> Task::upcast() {
+std::auto_ptr<Task> Task::upcast() const {
     return auto_ptr<Task>(new Task(*this));
 }
-std::auto_ptr<Task> Task::upcastCopy() {
+std::auto_ptr<Task> Task::upcastCopy() const {
     Task* np = new Task(*this);
     np->id = id;
     np->type = type;
@@ -5983,7 +5999,7 @@ std::ostream & operator<<(std::ostream& os, Task o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType JobLog::Own::Id("id_","INTEGER","JobLog_");
+const litesql::FieldType JobLog::Own::Id("id_",A_field_type_integer,"JobLog_");
 JobLog::LogjobHandle::LogjobHandle(const JobLog& owner)
          : litesql::RelationHandle<JobLog>(owner) {
 }
@@ -6005,10 +6021,10 @@ litesql::DataSource<JobJobLogRelationJobJobLog::Row> JobLog::LogjobHandle::getRo
 const std::string JobLog::type__("JobLog");
 const std::string JobLog::table__("JobLog_");
 const std::string JobLog::sequence__("JobLog_seq");
-const litesql::FieldType JobLog::Id("id_","INTEGER",table__);
-const litesql::FieldType JobLog::Type("type_","TEXT",table__);
-const litesql::FieldType JobLog::Created("created_","INTEGER",table__);
-const litesql::FieldType JobLog::Message("message_","TEXT",table__);
+const litesql::FieldType JobLog::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType JobLog::Type("type_",A_field_type_string,table__);
+const litesql::FieldType JobLog::Created("created_",A_field_type_datetime,table__);
+const litesql::FieldType JobLog::Message("message_",A_field_type_string,table__);
 void JobLog::defaults() {
     id = 0;
     created = 0;
@@ -6113,24 +6129,25 @@ void JobLog::update() {
     oldKey = id;
 }
 void JobLog::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<JobLog> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool JobLog::typeIsCorrect() {
+bool JobLog::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<JobLog> JobLog::upcast() {
+std::auto_ptr<JobLog> JobLog::upcast() const {
     return auto_ptr<JobLog>(new JobLog(*this));
 }
-std::auto_ptr<JobLog> JobLog::upcastCopy() {
+std::auto_ptr<JobLog> JobLog::upcastCopy() const {
     JobLog* np = new JobLog(*this);
     np->id = id;
     np->type = type;
@@ -6148,7 +6165,7 @@ std::ostream & operator<<(std::ostream& os, JobLog o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType JobDetail::Own::Id("id_","INTEGER","JobDetail_");
+const litesql::FieldType JobDetail::Own::Id("id_",A_field_type_integer,"JobDetail_");
 JobDetail::JobHandle::JobHandle(const JobDetail& owner)
          : litesql::RelationHandle<JobDetail>(owner) {
 }
@@ -6206,11 +6223,11 @@ litesql::DataSource<JobDetailStreamRelationJobInStream::Row> JobDetail::Inputstr
 const std::string JobDetail::type__("JobDetail");
 const std::string JobDetail::table__("JobDetail_");
 const std::string JobDetail::sequence__("JobDetail_seq");
-const litesql::FieldType JobDetail::Id("id_","INTEGER",table__);
-const litesql::FieldType JobDetail::Type("type_","TEXT",table__);
-const litesql::FieldType JobDetail::Lastpts("lastpts_","DOUBLE",table__);
-const litesql::FieldType JobDetail::Lastdts("lastdts_","DOUBLE",table__);
-const litesql::FieldType JobDetail::Deinterlace("deinterlace_","INTEGER",table__);
+const litesql::FieldType JobDetail::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType JobDetail::Type("type_",A_field_type_string,table__);
+const litesql::FieldType JobDetail::Lastpts("lastpts_",A_field_type_double,table__);
+const litesql::FieldType JobDetail::Lastdts("lastdts_",A_field_type_double,table__);
+const litesql::FieldType JobDetail::Deinterlace("deinterlace_",A_field_type_integer,table__);
 void JobDetail::defaults() {
     id = 0;
     lastpts = 0.0;
@@ -6333,24 +6350,25 @@ void JobDetail::update() {
     oldKey = id;
 }
 void JobDetail::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<JobDetail> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool JobDetail::typeIsCorrect() {
+bool JobDetail::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<JobDetail> JobDetail::upcast() {
+std::auto_ptr<JobDetail> JobDetail::upcast() const {
     return auto_ptr<JobDetail>(new JobDetail(*this));
 }
-std::auto_ptr<JobDetail> JobDetail::upcastCopy() {
+std::auto_ptr<JobDetail> JobDetail::upcastCopy() const {
     JobDetail* np = new JobDetail(*this);
     np->id = id;
     np->type = type;
@@ -6370,19 +6388,19 @@ std::ostream & operator<<(std::ostream& os, JobDetail o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType Watchfolder::Own::Id("id_","INTEGER","Watchfolder_");
+const litesql::FieldType Watchfolder::Own::Id("id_",A_field_type_integer,"Watchfolder_");
 const std::string Watchfolder::type__("Watchfolder");
 const std::string Watchfolder::table__("Watchfolder_");
 const std::string Watchfolder::sequence__("Watchfolder_seq");
-const litesql::FieldType Watchfolder::Id("id_","INTEGER",table__);
-const litesql::FieldType Watchfolder::Type("type_","TEXT",table__);
-const litesql::FieldType Watchfolder::Folder("folder_","TEXT",table__);
-const litesql::FieldType Watchfolder::Filefilter("filefilter_","TEXT",table__);
-const litesql::FieldType Watchfolder::Subdirs("subdirs_","INTEGER",table__);
-const litesql::FieldType Watchfolder::Flowuuid("flowuuid_","TEXT",table__);
-const litesql::FieldType Watchfolder::Interval("interval_","INTEGER",table__);
-const litesql::FieldType Watchfolder::Start("start_","INTEGER",table__);
-const litesql::FieldType Watchfolder::End("end_","INTEGER",table__);
+const litesql::FieldType Watchfolder::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType Watchfolder::Type("type_",A_field_type_string,table__);
+const litesql::FieldType Watchfolder::Folder("folder_",A_field_type_string,table__);
+const litesql::FieldType Watchfolder::Filefilter("filefilter_",A_field_type_string,table__);
+const litesql::FieldType Watchfolder::Subdirs("subdirs_",A_field_type_integer,table__);
+const litesql::FieldType Watchfolder::Flowuuid("flowuuid_",A_field_type_string,table__);
+const litesql::FieldType Watchfolder::Interval("interval_",A_field_type_integer,table__);
+const litesql::FieldType Watchfolder::Start("start_",A_field_type_datetime,table__);
+const litesql::FieldType Watchfolder::End("end_",A_field_type_datetime,table__);
 void Watchfolder::defaults() {
     id = 0;
     subdirs = 0;
@@ -6526,24 +6544,25 @@ void Watchfolder::update() {
     oldKey = id;
 }
 void Watchfolder::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<Watchfolder> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool Watchfolder::typeIsCorrect() {
+bool Watchfolder::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Watchfolder> Watchfolder::upcast() {
+std::auto_ptr<Watchfolder> Watchfolder::upcast() const {
     return auto_ptr<Watchfolder>(new Watchfolder(*this));
 }
-std::auto_ptr<Watchfolder> Watchfolder::upcastCopy() {
+std::auto_ptr<Watchfolder> Watchfolder::upcastCopy() const {
     Watchfolder* np = new Watchfolder(*this);
     np->id = id;
     np->type = type;
@@ -6571,18 +6590,18 @@ std::ostream & operator<<(std::ostream& os, Watchfolder o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType Process::Own::Id("id_","INTEGER","Process_");
+const litesql::FieldType Process::Own::Id("id_",A_field_type_integer,"Process_");
 const std::string Process::type__("Process");
 const std::string Process::table__("Process_");
 const std::string Process::sequence__("Process_seq");
-const litesql::FieldType Process::Id("id_","INTEGER",table__);
-const litesql::FieldType Process::Type("type_","TEXT",table__);
-const litesql::FieldType Process::Executable("executable_","TEXT",table__);
-const litesql::FieldType Process::Arguments("arguments_","TEXT",table__);
-const litesql::FieldType Process::Name("name_","TEXT",table__);
-const litesql::FieldType Process::Pid("pid_","INTEGER",table__);
-const litesql::FieldType Process::Started("started_","INTEGER",table__);
-const litesql::FieldType Process::Stopped("stopped_","INTEGER",table__);
+const litesql::FieldType Process::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType Process::Type("type_",A_field_type_string,table__);
+const litesql::FieldType Process::Executable("executable_",A_field_type_string,table__);
+const litesql::FieldType Process::Arguments("arguments_",A_field_type_string,table__);
+const litesql::FieldType Process::Name("name_",A_field_type_string,table__);
+const litesql::FieldType Process::Pid("pid_",A_field_type_integer,table__);
+const litesql::FieldType Process::Started("started_",A_field_type_datetime,table__);
+const litesql::FieldType Process::Stopped("stopped_",A_field_type_datetime,table__);
 void Process::defaults() {
     id = 0;
     pid = 0;
@@ -6717,24 +6736,25 @@ void Process::update() {
     oldKey = id;
 }
 void Process::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<Process> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool Process::typeIsCorrect() {
+bool Process::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Process> Process::upcast() {
+std::auto_ptr<Process> Process::upcast() const {
     return auto_ptr<Process>(new Process(*this));
 }
-std::auto_ptr<Process> Process::upcastCopy() {
+std::auto_ptr<Process> Process::upcastCopy() const {
     Process* np = new Process(*this);
     np->id = id;
     np->type = type;
@@ -6760,10 +6780,10 @@ std::ostream & operator<<(std::ostream& os, Process o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType ProcessUnit::Own::Id("id_","INTEGER","ProcessUnit_");
+const litesql::FieldType ProcessUnit::Own::Id("id_",A_field_type_integer,"ProcessUnit_");
 const std::string ProcessUnit::CodectypeType::AUDIO("AUDIO");
 const std::string ProcessUnit::CodectypeType::VIDEO("VIDEO");
-ProcessUnit::CodectypeType::CodectypeType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals)
+ProcessUnit::CodectypeType::CodectypeType(const std::string& n, AT_field_type t, const std::string& tbl, const litesql::FieldType::Values& vals)
          : litesql::FieldType(n,t,tbl,vals) {
 }
 const std::string ProcessUnit::Codectype::AUDIO("AUDIO");
@@ -6789,28 +6809,28 @@ litesql::DataSource<JobProcessUnitRelationProcessUnitJob::Row> ProcessUnit::JobH
 const std::string ProcessUnit::type__("ProcessUnit");
 const std::string ProcessUnit::table__("ProcessUnit_");
 const std::string ProcessUnit::sequence__("ProcessUnit_seq");
-const litesql::FieldType ProcessUnit::Id("id_","INTEGER",table__);
-const litesql::FieldType ProcessUnit::Type("type_","TEXT",table__);
-const litesql::FieldType ProcessUnit::Sorcestream("sorcestream_","INTEGER",table__);
-const litesql::FieldType ProcessUnit::Targetstream("targetstream_","INTEGER",table__);
-const litesql::FieldType ProcessUnit::Timebasenum("timebasenum_","INTEGER",table__);
-const litesql::FieldType ProcessUnit::Timebaseden("timebaseden_","INTEGER",table__);
-const litesql::FieldType ProcessUnit::Startts("startts_","DOUBLE",table__);
-const litesql::FieldType ProcessUnit::Endts("endts_","DOUBLE",table__);
-const litesql::FieldType ProcessUnit::Framecount("framecount_","INTEGER",table__);
-const litesql::FieldType ProcessUnit::Send("send_","INTEGER",table__);
-const litesql::FieldType ProcessUnit::Recv("recv_","INTEGER",table__);
-const litesql::FieldType ProcessUnit::Sendid("sendid_","TEXT",table__);
-const litesql::FieldType ProcessUnit::Recvid("recvid_","TEXT",table__);
-const litesql::FieldType ProcessUnit::Data("data_","BLOB",table__);
-const litesql::FieldType ProcessUnit::ResponseData("responseData_","BLOB",table__);
-const litesql::FieldType ProcessUnit::Clientid("clientid_","TEXT",table__);
-const litesql::FieldType ProcessUnit::Deliverycount("deliverycount_","INTEGER",table__);
-const litesql::FieldType ProcessUnit::Jobid("jobid_","TEXT",table__);
-const litesql::FieldType ProcessUnit::Group("group_","TEXT",table__);
-const litesql::FieldType ProcessUnit::Sequence("sequence_","INTEGER",table__);
+const litesql::FieldType ProcessUnit::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType ProcessUnit::Type("type_",A_field_type_string,table__);
+const litesql::FieldType ProcessUnit::Sorcestream("sorcestream_",A_field_type_integer,table__);
+const litesql::FieldType ProcessUnit::Targetstream("targetstream_",A_field_type_integer,table__);
+const litesql::FieldType ProcessUnit::Timebasenum("timebasenum_",A_field_type_integer,table__);
+const litesql::FieldType ProcessUnit::Timebaseden("timebaseden_",A_field_type_integer,table__);
+const litesql::FieldType ProcessUnit::Startts("startts_",A_field_type_double,table__);
+const litesql::FieldType ProcessUnit::Endts("endts_",A_field_type_double,table__);
+const litesql::FieldType ProcessUnit::Framecount("framecount_",A_field_type_integer,table__);
+const litesql::FieldType ProcessUnit::Send("send_",A_field_type_datetime,table__);
+const litesql::FieldType ProcessUnit::Recv("recv_",A_field_type_datetime,table__);
+const litesql::FieldType ProcessUnit::Sendid("sendid_",A_field_type_string,table__);
+const litesql::FieldType ProcessUnit::Recvid("recvid_",A_field_type_string,table__);
+const litesql::FieldType ProcessUnit::Data("data_",A_field_type_blob,table__);
+const litesql::FieldType ProcessUnit::ResponseData("responseData_",A_field_type_blob,table__);
+const litesql::FieldType ProcessUnit::Clientid("clientid_",A_field_type_string,table__);
+const litesql::FieldType ProcessUnit::Deliverycount("deliverycount_",A_field_type_integer,table__);
+const litesql::FieldType ProcessUnit::Jobid("jobid_",A_field_type_string,table__);
+const litesql::FieldType ProcessUnit::Group("group_",A_field_type_string,table__);
+const litesql::FieldType ProcessUnit::Sequence("sequence_",A_field_type_integer,table__);
 std::vector < std::pair< std::string, std::string > > ProcessUnit::codectype_values;
-const ProcessUnit::CodectypeType ProcessUnit::Codectype("codectype_","TEXT",table__,codectype_values);
+const ProcessUnit::CodectypeType ProcessUnit::Codectype("codectype_",A_field_type_string,table__,codectype_values);
 void ProcessUnit::initValues() {
     codectype_values.clear();
     codectype_values.push_back(make_pair<std::string, std::string>("AUDIO","AUDIO"));
@@ -7069,24 +7089,25 @@ void ProcessUnit::update() {
     oldKey = id;
 }
 void ProcessUnit::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<ProcessUnit> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool ProcessUnit::typeIsCorrect() {
+bool ProcessUnit::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<ProcessUnit> ProcessUnit::upcast() {
+std::auto_ptr<ProcessUnit> ProcessUnit::upcast() const {
     return auto_ptr<ProcessUnit>(new ProcessUnit(*this));
 }
-std::auto_ptr<ProcessUnit> ProcessUnit::upcastCopy() {
+std::auto_ptr<ProcessUnit> ProcessUnit::upcastCopy() const {
     ProcessUnit* np = new ProcessUnit(*this);
     np->id = id;
     np->type = type;
@@ -7138,7 +7159,7 @@ std::ostream & operator<<(std::ostream& os, ProcessUnit o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType User::Own::Id("id_","INTEGER","User_");
+const litesql::FieldType User::Own::Id("id_",A_field_type_integer,"User_");
 User::PresetsHandle::PresetsHandle(const User& owner)
          : litesql::RelationHandle<User>(owner) {
 }
@@ -7178,27 +7199,27 @@ litesql::DataSource<UserUserGroupRelationUser2UserGroup::Row> User::UserGroupHan
 const std::string User::type__("User");
 const std::string User::table__("User_");
 const std::string User::sequence__("User_seq");
-const litesql::FieldType User::Id("id_","INTEGER",table__);
-const litesql::FieldType User::Type("type_","TEXT",table__);
-const litesql::FieldType User::Authname("authname_","TEXT",table__);
-const litesql::FieldType User::Authpass("authpass_","TEXT",table__);
-const litesql::FieldType User::Company("company_","TEXT",table__);
-const litesql::FieldType User::Firstname("firstname_","TEXT",table__);
-const litesql::FieldType User::Lastname("lastname_","TEXT",table__);
-const litesql::FieldType User::Street("street_","TEXT",table__);
-const litesql::FieldType User::City("city_","TEXT",table__);
-const litesql::FieldType User::Zip("zip_","TEXT",table__);
-const litesql::FieldType User::Country("country_","TEXT",table__);
-const litesql::FieldType User::State("state_","TEXT",table__);
-const litesql::FieldType User::Telefone("telefone_","TEXT",table__);
-const litesql::FieldType User::Fax("fax_","TEXT",table__);
-const litesql::FieldType User::Email("email_","TEXT",table__);
-const litesql::FieldType User::Www("www_","TEXT",table__);
-const litesql::FieldType User::Language("language_","TEXT",table__);
-const litesql::FieldType User::Licensekey("licensekey_","TEXT",table__);
-const litesql::FieldType User::Apikey("apikey_","TEXT",table__);
-const litesql::FieldType User::Registered("registered_","INTEGER",table__);
-const litesql::FieldType User::Fileroot("fileroot_","TEXT",table__);
+const litesql::FieldType User::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType User::Type("type_",A_field_type_string,table__);
+const litesql::FieldType User::Authname("authname_",A_field_type_string,table__);
+const litesql::FieldType User::Authpass("authpass_",A_field_type_string,table__);
+const litesql::FieldType User::Company("company_",A_field_type_string,table__);
+const litesql::FieldType User::Firstname("firstname_",A_field_type_string,table__);
+const litesql::FieldType User::Lastname("lastname_",A_field_type_string,table__);
+const litesql::FieldType User::Street("street_",A_field_type_string,table__);
+const litesql::FieldType User::City("city_",A_field_type_string,table__);
+const litesql::FieldType User::Zip("zip_",A_field_type_string,table__);
+const litesql::FieldType User::Country("country_",A_field_type_string,table__);
+const litesql::FieldType User::State("state_",A_field_type_string,table__);
+const litesql::FieldType User::Telefone("telefone_",A_field_type_string,table__);
+const litesql::FieldType User::Fax("fax_",A_field_type_string,table__);
+const litesql::FieldType User::Email("email_",A_field_type_string,table__);
+const litesql::FieldType User::Www("www_",A_field_type_string,table__);
+const litesql::FieldType User::Language("language_",A_field_type_string,table__);
+const litesql::FieldType User::Licensekey("licensekey_",A_field_type_string,table__);
+const litesql::FieldType User::Apikey("apikey_",A_field_type_string,table__);
+const litesql::FieldType User::Registered("registered_",A_field_type_date,table__);
+const litesql::FieldType User::Fileroot("fileroot_",A_field_type_string,table__);
 void User::defaults() {
     id = 0;
     registered = 0;
@@ -7443,24 +7464,25 @@ void User::update() {
     oldKey = id;
 }
 void User::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<User> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool User::typeIsCorrect() {
+bool User::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<User> User::upcast() {
+std::auto_ptr<User> User::upcast() const {
     return auto_ptr<User>(new User(*this));
 }
-std::auto_ptr<User> User::upcastCopy() {
+std::auto_ptr<User> User::upcastCopy() const {
     User* np = new User(*this);
     np->id = id;
     np->type = type;
@@ -7512,7 +7534,7 @@ std::ostream & operator<<(std::ostream& os, User o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType UserGroup::Own::Id("id_","INTEGER","UserGroup_");
+const litesql::FieldType UserGroup::Own::Id("id_",A_field_type_integer,"UserGroup_");
 UserGroup::UserHandle::UserHandle(const UserGroup& owner)
          : litesql::RelationHandle<UserGroup>(owner) {
 }
@@ -7534,10 +7556,10 @@ litesql::DataSource<UserUserGroupRelationUser2UserGroup::Row> UserGroup::UserHan
 const std::string UserGroup::type__("UserGroup");
 const std::string UserGroup::table__("UserGroup_");
 const std::string UserGroup::sequence__("UserGroup_seq");
-const litesql::FieldType UserGroup::Id("id_","INTEGER",table__);
-const litesql::FieldType UserGroup::Type("type_","TEXT",table__);
-const litesql::FieldType UserGroup::Name("name_","INTEGER",table__);
-const litesql::FieldType UserGroup::Nodecount("nodecount_","INTEGER",table__);
+const litesql::FieldType UserGroup::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType UserGroup::Type("type_",A_field_type_string,table__);
+const litesql::FieldType UserGroup::Name("name_",A_field_type_date,table__);
+const litesql::FieldType UserGroup::Nodecount("nodecount_",A_field_type_integer,table__);
 void UserGroup::defaults() {
     id = 0;
     name = 0;
@@ -7643,24 +7665,25 @@ void UserGroup::update() {
     oldKey = id;
 }
 void UserGroup::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<UserGroup> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool UserGroup::typeIsCorrect() {
+bool UserGroup::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<UserGroup> UserGroup::upcast() {
+std::auto_ptr<UserGroup> UserGroup::upcast() const {
     return auto_ptr<UserGroup>(new UserGroup(*this));
 }
-std::auto_ptr<UserGroup> UserGroup::upcastCopy() {
+std::auto_ptr<UserGroup> UserGroup::upcastCopy() const {
     UserGroup* np = new UserGroup(*this);
     np->id = id;
     np->type = type;
@@ -7678,18 +7701,18 @@ std::ostream & operator<<(std::ostream& os, UserGroup o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType Request::Own::Id("id_","INTEGER","Request_");
+const litesql::FieldType Request::Own::Id("id_",A_field_type_integer,"Request_");
 const std::string Request::type__("Request");
 const std::string Request::table__("Request_");
 const std::string Request::sequence__("Request_seq");
-const litesql::FieldType Request::Id("id_","INTEGER",table__);
-const litesql::FieldType Request::Type("type_","TEXT",table__);
-const litesql::FieldType Request::RequestId("requestId_","TEXT",table__);
-const litesql::FieldType Request::RequestType("requestType_","TEXT",table__);
-const litesql::FieldType Request::Uri("uri_","TEXT",table__);
-const litesql::FieldType Request::Query("query_","TEXT",table__);
-const litesql::FieldType Request::Data("data_","TEXT",table__);
-const litesql::FieldType Request::Response("response_","TEXT",table__);
+const litesql::FieldType Request::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType Request::Type("type_",A_field_type_string,table__);
+const litesql::FieldType Request::RequestId("requestId_",A_field_type_string,table__);
+const litesql::FieldType Request::RequestType("requestType_",A_field_type_string,table__);
+const litesql::FieldType Request::Uri("uri_",A_field_type_string,table__);
+const litesql::FieldType Request::Query("query_",A_field_type_string,table__);
+const litesql::FieldType Request::Data("data_",A_field_type_string,table__);
+const litesql::FieldType Request::Response("response_",A_field_type_string,table__);
 void Request::defaults() {
     id = 0;
 }
@@ -7821,24 +7844,25 @@ void Request::update() {
     oldKey = id;
 }
 void Request::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<Request> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool Request::typeIsCorrect() {
+bool Request::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Request> Request::upcast() {
+std::auto_ptr<Request> Request::upcast() const {
     return auto_ptr<Request>(new Request(*this));
 }
-std::auto_ptr<Request> Request::upcastCopy() {
+std::auto_ptr<Request> Request::upcastCopy() const {
     Request* np = new Request(*this);
     np->id = id;
     np->type = type;
@@ -7864,7 +7888,7 @@ std::ostream & operator<<(std::ostream& os, Request o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType Partition::Own::Id("id_","INTEGER","Partition_");
+const litesql::FieldType Partition::Own::Id("id_",A_field_type_integer,"Partition_");
 Partition::JobHandle::JobHandle(const Partition& owner)
          : litesql::RelationHandle<Partition>(owner) {
 }
@@ -7886,10 +7910,10 @@ litesql::DataSource<JobPartitionRelationJob2Partition::Row> Partition::JobHandle
 const std::string Partition::type__("Partition");
 const std::string Partition::table__("Partition_");
 const std::string Partition::sequence__("Partition_seq");
-const litesql::FieldType Partition::Id("id_","INTEGER",table__);
-const litesql::FieldType Partition::Type("type_","TEXT",table__);
-const litesql::FieldType Partition::Name("name_","TEXT",table__);
-const litesql::FieldType Partition::Partitionsize("partitionsize_","INTEGER",table__);
+const litesql::FieldType Partition::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType Partition::Type("type_",A_field_type_string,table__);
+const litesql::FieldType Partition::Name("name_",A_field_type_string,table__);
+const litesql::FieldType Partition::Partitionsize("partitionsize_",A_field_type_integer,table__);
 void Partition::defaults() {
     id = 0;
     partitionsize = 0;
@@ -7994,24 +8018,25 @@ void Partition::update() {
     oldKey = id;
 }
 void Partition::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<Partition> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool Partition::typeIsCorrect() {
+bool Partition::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Partition> Partition::upcast() {
+std::auto_ptr<Partition> Partition::upcast() const {
     return auto_ptr<Partition>(new Partition(*this));
 }
-std::auto_ptr<Partition> Partition::upcastCopy() {
+std::auto_ptr<Partition> Partition::upcastCopy() const {
     Partition* np = new Partition(*this);
     np->id = id;
     np->type = type;
@@ -8029,7 +8054,7 @@ std::ostream & operator<<(std::ostream& os, Partition o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType Graph::Own::Id("id_","INTEGER","Graph_");
+const litesql::FieldType Graph::Own::Id("id_",A_field_type_integer,"Graph_");
 Graph::TasksHandle::TasksHandle(const Graph& owner)
          : litesql::RelationHandle<Graph>(owner) {
 }
@@ -8051,11 +8076,11 @@ litesql::DataSource<GraphTaskRelationGraphTask::Row> Graph::TasksHandle::getRows
 const std::string Graph::type__("Graph");
 const std::string Graph::table__("Graph_");
 const std::string Graph::sequence__("Graph_seq");
-const litesql::FieldType Graph::Id("id_","INTEGER",table__);
-const litesql::FieldType Graph::Type("type_","TEXT",table__);
-const litesql::FieldType Graph::Uuid("uuid_","TEXT",table__);
-const litesql::FieldType Graph::Name("name_","TEXT",table__);
-const litesql::FieldType Graph::Data("data_","TEXT",table__);
+const litesql::FieldType Graph::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType Graph::Type("type_",A_field_type_string,table__);
+const litesql::FieldType Graph::Uuid("uuid_",A_field_type_string,table__);
+const litesql::FieldType Graph::Name("name_",A_field_type_string,table__);
+const litesql::FieldType Graph::Data("data_",A_field_type_string,table__);
 void Graph::defaults() {
     id = 0;
 }
@@ -8167,24 +8192,25 @@ void Graph::update() {
     oldKey = id;
 }
 void Graph::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<Graph> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool Graph::typeIsCorrect() {
+bool Graph::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Graph> Graph::upcast() {
+std::auto_ptr<Graph> Graph::upcast() const {
     return auto_ptr<Graph>(new Graph(*this));
 }
-std::auto_ptr<Graph> Graph::upcastCopy() {
+std::auto_ptr<Graph> Graph::upcastCopy() const {
     Graph* np = new Graph(*this);
     np->id = id;
     np->type = type;
@@ -8204,15 +8230,15 @@ std::ostream & operator<<(std::ostream& os, Graph o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType Location::Own::Id("id_","INTEGER","Location_");
+const litesql::FieldType Location::Own::Id("id_",A_field_type_integer,"Location_");
 const std::string Location::type__("Location");
 const std::string Location::table__("Location_");
 const std::string Location::sequence__("Location_seq");
-const litesql::FieldType Location::Id("id_","INTEGER",table__);
-const litesql::FieldType Location::Type("type_","TEXT",table__);
-const litesql::FieldType Location::Uuid("uuid_","TEXT",table__);
-const litesql::FieldType Location::Name("name_","TEXT",table__);
-const litesql::FieldType Location::Data("data_","TEXT",table__);
+const litesql::FieldType Location::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType Location::Type("type_",A_field_type_string,table__);
+const litesql::FieldType Location::Uuid("uuid_",A_field_type_string,table__);
+const litesql::FieldType Location::Name("name_",A_field_type_string,table__);
+const litesql::FieldType Location::Data("data_",A_field_type_string,table__);
 void Location::defaults() {
     id = 0;
 }
@@ -8320,24 +8346,25 @@ void Location::update() {
     oldKey = id;
 }
 void Location::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<Location> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool Location::typeIsCorrect() {
+bool Location::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Location> Location::upcast() {
+std::auto_ptr<Location> Location::upcast() const {
     return auto_ptr<Location>(new Location(*this));
 }
-std::auto_ptr<Location> Location::upcastCopy() {
+std::auto_ptr<Location> Location::upcastCopy() const {
     Location* np = new Location(*this);
     np->id = id;
     np->type = type;
@@ -8357,10 +8384,10 @@ std::ostream & operator<<(std::ostream& os, Location o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType Queue::Own::Id("id_","INTEGER","Queue_");
+const litesql::FieldType Queue::Own::Id("id_",A_field_type_integer,"Queue_");
 const int Queue::QtypeType::ONE2ONE(0);
 const int Queue::QtypeType::ONE4ALL(1);
-Queue::QtypeType::QtypeType(const std::string& n, const std::string& t, const std::string& tbl, const litesql::FieldType::Values& vals)
+Queue::QtypeType::QtypeType(const std::string& n, AT_field_type t, const std::string& tbl, const litesql::FieldType::Values& vals)
          : litesql::FieldType(n,t,tbl,vals) {
 }
 const int Queue::Qtype::ONE2ONE(0);
@@ -8386,13 +8413,13 @@ litesql::DataSource<JobQueueRelationJob2Queue::Row> Queue::JobHandle::getRows(co
 const std::string Queue::type__("Queue");
 const std::string Queue::table__("Queue_");
 const std::string Queue::sequence__("Queue_seq");
-const litesql::FieldType Queue::Id("id_","INTEGER",table__);
-const litesql::FieldType Queue::Type("type_","TEXT",table__);
-const litesql::FieldType Queue::Uuid("uuid_","TEXT",table__);
-const litesql::FieldType Queue::Outputname("outputname_","TEXT",table__);
-const litesql::FieldType Queue::Inputname("inputname_","TEXT",table__);
+const litesql::FieldType Queue::Id("id_",A_field_type_integer,table__);
+const litesql::FieldType Queue::Type("type_",A_field_type_string,table__);
+const litesql::FieldType Queue::Uuid("uuid_",A_field_type_string,table__);
+const litesql::FieldType Queue::Outputname("outputname_",A_field_type_string,table__);
+const litesql::FieldType Queue::Inputname("inputname_",A_field_type_string,table__);
 std::vector < std::pair< std::string, std::string > > Queue::qtype_values;
-const Queue::QtypeType Queue::Qtype("qtype_","INTEGER",table__,qtype_values);
+const Queue::QtypeType Queue::Qtype("qtype_",A_field_type_integer,table__,qtype_values);
 void Queue::initValues() {
     qtype_values.clear();
     qtype_values.push_back(make_pair<std::string, std::string>("ONE2ONE","0"));
@@ -8518,24 +8545,25 @@ void Queue::update() {
     oldKey = id;
 }
 void Queue::del() {
-    if (typeIsCorrect() == false) {
+    if (!typeIsCorrect()) {
         std::auto_ptr<Queue> p(upcastCopy());
         p->delRelations();
         p->onDelete();
         p->delRecord();
     } else {
+        delRelations();
         onDelete();
         delRecord();
     }
     inDatabase = false;
 }
-bool Queue::typeIsCorrect() {
+bool Queue::typeIsCorrect() const {
     return type == type__;
 }
-std::auto_ptr<Queue> Queue::upcast() {
+std::auto_ptr<Queue> Queue::upcast() const {
     return auto_ptr<Queue>(new Queue(*this));
 }
-std::auto_ptr<Queue> Queue::upcastCopy() {
+std::auto_ptr<Queue> Queue::upcastCopy() const {
     Queue* np = new Queue(*this);
     np->id = id;
     np->type = type;
@@ -8563,189 +8591,219 @@ HiveDb::HiveDb(std::string backendType, std::string connInfo)
 }
 std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     vector<Database::SchemaItem> res;
-    res.push_back(Database::SchemaItem("schema_","table","CREATE TABLE schema_ (name_ TEXT, type_ TEXT, sql_ TEXT);"));
+    string TEXT = backend->getSQLType(A_field_type_string);
+    string rowIdType = backend->getRowIDType();
+    res.push_back(Database::SchemaItem("schema_","table","CREATE TABLE schema_ (name_ "+TEXT+", type_ "+TEXT+", sql_ "+TEXT+")"));
     if (backend->supportsSequences()) {
-        res.push_back(Database::SchemaItem("Project_seq","sequence","CREATE SEQUENCE Project_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("Filter_seq","sequence","CREATE SEQUENCE Filter_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("FilterParameter_seq","sequence","CREATE SEQUENCE FilterParameter_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("MediaFile_seq","sequence","CREATE SEQUENCE MediaFile_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("OutputFile_seq","sequence","CREATE SEQUENCE OutputFile_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("ProfileGroup_seq","sequence","CREATE SEQUENCE ProfileGroup_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("Profile_seq","sequence","CREATE SEQUENCE Profile_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("Preset_seq","sequence","CREATE SEQUENCE Preset_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("ProfileParameter_seq","sequence","CREATE SEQUENCE ProfileParameter_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("Stream_seq","sequence","CREATE SEQUENCE Stream_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("StreamParameter_seq","sequence","CREATE SEQUENCE StreamParameter_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("CodecPreset_seq","sequence","CREATE SEQUENCE CodecPreset_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("CodecPresetParameter_seq","sequence","CREATE SEQUENCE CodecPresetParameter_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("Config_seq","sequence","CREATE SEQUENCE Config_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("Job_seq","sequence","CREATE SEQUENCE Job_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("Task_seq","sequence","CREATE SEQUENCE Task_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("JobLog_seq","sequence","CREATE SEQUENCE JobLog_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("JobDetail_seq","sequence","CREATE SEQUENCE JobDetail_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("Watchfolder_seq","sequence","CREATE SEQUENCE Watchfolder_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("Process_seq","sequence","CREATE SEQUENCE Process_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("ProcessUnit_seq","sequence","CREATE SEQUENCE ProcessUnit_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("User_seq","sequence","CREATE SEQUENCE User_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("UserGroup_seq","sequence","CREATE SEQUENCE UserGroup_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("Request_seq","sequence","CREATE SEQUENCE Request_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("Partition_seq","sequence","CREATE SEQUENCE Partition_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("Graph_seq","sequence","CREATE SEQUENCE Graph_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("Location_seq","sequence","CREATE SEQUENCE Location_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("Queue_seq","sequence","CREATE SEQUENCE Queue_seq START 1 INCREMENT 1"));
+        res.push_back(Database::SchemaItem("Project_seq","sequence",backend->getCreateSequenceSQL("Project_seq")));
+        res.push_back(Database::SchemaItem("Filter_seq","sequence",backend->getCreateSequenceSQL("Filter_seq")));
+        res.push_back(Database::SchemaItem("FilterParameter_seq","sequence",backend->getCreateSequenceSQL("FilterParameter_seq")));
+        res.push_back(Database::SchemaItem("MediaFile_seq","sequence",backend->getCreateSequenceSQL("MediaFile_seq")));
+        res.push_back(Database::SchemaItem("OutputFile_seq","sequence",backend->getCreateSequenceSQL("OutputFile_seq")));
+        res.push_back(Database::SchemaItem("ProfileGroup_seq","sequence",backend->getCreateSequenceSQL("ProfileGroup_seq")));
+        res.push_back(Database::SchemaItem("Profile_seq","sequence",backend->getCreateSequenceSQL("Profile_seq")));
+        res.push_back(Database::SchemaItem("Preset_seq","sequence",backend->getCreateSequenceSQL("Preset_seq")));
+        res.push_back(Database::SchemaItem("ProfileParameter_seq","sequence",backend->getCreateSequenceSQL("ProfileParameter_seq")));
+        res.push_back(Database::SchemaItem("Stream_seq","sequence",backend->getCreateSequenceSQL("Stream_seq")));
+        res.push_back(Database::SchemaItem("StreamParameter_seq","sequence",backend->getCreateSequenceSQL("StreamParameter_seq")));
+        res.push_back(Database::SchemaItem("CodecPreset_seq","sequence",backend->getCreateSequenceSQL("CodecPreset_seq")));
+        res.push_back(Database::SchemaItem("CodecPresetParameter_seq","sequence",backend->getCreateSequenceSQL("CodecPresetParameter_seq")));
+        res.push_back(Database::SchemaItem("Config_seq","sequence",backend->getCreateSequenceSQL("Config_seq")));
+        res.push_back(Database::SchemaItem("Job_seq","sequence",backend->getCreateSequenceSQL("Job_seq")));
+        res.push_back(Database::SchemaItem("Task_seq","sequence",backend->getCreateSequenceSQL("Task_seq")));
+        res.push_back(Database::SchemaItem("JobLog_seq","sequence",backend->getCreateSequenceSQL("JobLog_seq")));
+        res.push_back(Database::SchemaItem("JobDetail_seq","sequence",backend->getCreateSequenceSQL("JobDetail_seq")));
+        res.push_back(Database::SchemaItem("Watchfolder_seq","sequence",backend->getCreateSequenceSQL("Watchfolder_seq")));
+        res.push_back(Database::SchemaItem("Process_seq","sequence",backend->getCreateSequenceSQL("Process_seq")));
+        res.push_back(Database::SchemaItem("ProcessUnit_seq","sequence",backend->getCreateSequenceSQL("ProcessUnit_seq")));
+        res.push_back(Database::SchemaItem("User_seq","sequence",backend->getCreateSequenceSQL("User_seq")));
+        res.push_back(Database::SchemaItem("UserGroup_seq","sequence",backend->getCreateSequenceSQL("UserGroup_seq")));
+        res.push_back(Database::SchemaItem("Request_seq","sequence",backend->getCreateSequenceSQL("Request_seq")));
+        res.push_back(Database::SchemaItem("Partition_seq","sequence",backend->getCreateSequenceSQL("Partition_seq")));
+        res.push_back(Database::SchemaItem("Graph_seq","sequence",backend->getCreateSequenceSQL("Graph_seq")));
+        res.push_back(Database::SchemaItem("Location_seq","sequence",backend->getCreateSequenceSQL("Location_seq")));
+        res.push_back(Database::SchemaItem("Queue_seq","sequence",backend->getCreateSequenceSQL("Queue_seq")));
     }
-    res.push_back(Database::SchemaItem("Project_","table","CREATE TABLE Project_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,outdirectory_ TEXT,status_ TEXT,created_ INTEGER,started_ INTEGER,completed_ INTEGER)"));
-    res.push_back(Database::SchemaItem("Filter_","table","CREATE TABLE Filter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filtername_ TEXT,filterid_ TEXT)"));
-    res.push_back(Database::SchemaItem("FilterParameter_","table","CREATE TABLE FilterParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,fkey_ TEXT,fval_ TEXT)"));
-    res.push_back(Database::SchemaItem("MediaFile_","table","CREATE TABLE MediaFile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filename_ TEXT,path_ TEXT,filesize_ DOUBLE,streamcount_ INTEGER,containertype_ TEXT,duration_ DOUBLE,starttime_ DOUBLE,bitrate_ INTEGER,created_ INTEGER,filetype_ INTEGER,parent_ INTEGER,metatitle_ TEXT,metaauthor_ TEXT,metacopyright_ TEXT,metacomment_ TEXT,metaalbum_ TEXT,metayear_ INTEGER,metatrack_ INTEGER,metagenre_ INTEGER)"));
-    res.push_back(Database::SchemaItem("OutputFile_","table","CREATE TABLE OutputFile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filename_ TEXT,path_ TEXT,jobid_ TEXT,outfiledata_ TEXT,status_ TEXT)"));
-    res.push_back(Database::SchemaItem("ProfileGroup_","table","CREATE TABLE ProfileGroup_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT)"));
-    res.push_back(Database::SchemaItem("Profile_","table","CREATE TABLE Profile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,format_ TEXT,formatext_ TEXT,vcodec_ INTEGER,vbitrate_ INTEGER,vframerate_ TEXT,vwidth_ INTEGER,vheight_ INTEGER,vextra_ TEXT,achannels_ INTEGER,acodec_ INTEGER,abitrate_ INTEGER,asamplerate_ INTEGER,aextra_ TEXT,profiletype_ INTEGER,deinterlace_ INTEGER)"));
-    res.push_back(Database::SchemaItem("Preset_","table","CREATE TABLE Preset_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,name_ TEXT,filename_ TEXT,data_ TEXT)"));
-    res.push_back(Database::SchemaItem("ProfileParameter_","table","CREATE TABLE ProfileParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT,mediatype_ INTEGER)"));
-    res.push_back(Database::SchemaItem("Stream_","table","CREATE TABLE Stream_ (id_ " + backend->getRowIDType() + ",type_ TEXT,streamindex_ INTEGER,streamtype_ INTEGER,codecid_ INTEGER,codecname_ TEXT,frameratenum_ INTEGER,framerateden_ INTEGER,streamtimebasenum_ INTEGER,streamtimebaseden_ INTEGER,codectimebasenum_ INTEGER,codectimebaseden_ INTEGER,firstpts_ DOUBLE,firstdts_ DOUBLE,duration_ DOUBLE,nbframes_ DOUBLE,ticksperframe_ INTEGER,framecount_ INTEGER,width_ INTEGER,height_ INTEGER,gopsize_ INTEGER,pixfmt_ INTEGER,bitrate_ INTEGER,samplerate_ INTEGER,samplefmt_ INTEGER,channels_ INTEGER,bitspercodedsample_ INTEGER,privdatasize_ INTEGER,privdata_ TEXT,extradatasize_ INTEGER,extradata_ BLOB,aspectratio_ TEXT,flags_ INTEGER,extraprofileflags_ TEXT)"));
-    res.push_back(Database::SchemaItem("StreamParameter_","table","CREATE TABLE StreamParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT)"));
-    res.push_back(Database::SchemaItem("CodecPreset_","table","CREATE TABLE CodecPreset_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,codecid_ INTEGER,preset_ TEXT)"));
-    res.push_back(Database::SchemaItem("CodecPresetParameter_","table","CREATE TABLE CodecPresetParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT)"));
-    res.push_back(Database::SchemaItem("Config_","table","CREATE TABLE Config_ (id_ " + backend->getRowIDType() + ",type_ TEXT,configkey_ TEXT,configval_ TEXT)"));
-    res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,created_ INTEGER,begintime_ INTEGER,endtime_ INTEGER,status_ INTEGER,infile_ TEXT,outfile_ TEXT,starttime_ DOUBLE,duration_ DOUBLE,progress_ INTEGER,fps_ INTEGER,data_ TEXT,deleted_ INTEGER,partitionname_ TEXT,graph_ TEXT,graphstatus_ TEXT,graphname_ TEXT)"));
-    res.push_back(Database::SchemaItem("Task_","table","CREATE TABLE Task_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,name_ TEXT,parameter_ TEXT,statustext_ TEXT,progress_ INTEGER,status_ INTEGER,sortorder_ INTEGER)"));
-    res.push_back(Database::SchemaItem("JobLog_","table","CREATE TABLE JobLog_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,message_ TEXT)"));
-    res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + backend->getRowIDType() + ",type_ TEXT,lastpts_ DOUBLE,lastdts_ DOUBLE,deinterlace_ INTEGER)"));
-    res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,folder_ TEXT,filefilter_ TEXT,subdirs_ INTEGER,flowuuid_ TEXT,interval_ INTEGER,start_ INTEGER,end_ INTEGER)"));
-    res.push_back(Database::SchemaItem("Process_","table","CREATE TABLE Process_ (id_ " + backend->getRowIDType() + ",type_ TEXT,executable_ TEXT,arguments_ TEXT,name_ TEXT,pid_ INTEGER,started_ INTEGER,stopped_ INTEGER)"));
-    res.push_back(Database::SchemaItem("ProcessUnit_","table","CREATE TABLE ProcessUnit_ (id_ " + backend->getRowIDType() + ",type_ TEXT,sorcestream_ INTEGER,targetstream_ INTEGER,timebasenum_ INTEGER,timebaseden_ INTEGER,startts_ DOUBLE,endts_ DOUBLE,framecount_ INTEGER,send_ INTEGER,recv_ INTEGER,sendid_ TEXT,recvid_ TEXT,data_ BLOB,responseData_ BLOB,clientid_ TEXT,deliverycount_ INTEGER,jobid_ TEXT,group_ TEXT,sequence_ INTEGER,codectype_ TEXT)"));
-    res.push_back(Database::SchemaItem("User_","table","CREATE TABLE User_ (id_ " + backend->getRowIDType() + ",type_ TEXT,authname_ TEXT,authpass_ TEXT,company_ TEXT,firstname_ TEXT,lastname_ TEXT,street_ TEXT,city_ TEXT,zip_ TEXT,country_ TEXT,state_ TEXT,telefone_ TEXT,fax_ TEXT,email_ TEXT,www_ TEXT,language_ TEXT,licensekey_ TEXT,apikey_ TEXT,registered_ INTEGER,fileroot_ TEXT)"));
-    res.push_back(Database::SchemaItem("UserGroup_","table","CREATE TABLE UserGroup_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ INTEGER,nodecount_ INTEGER)"));
-    res.push_back(Database::SchemaItem("Request_","table","CREATE TABLE Request_ (id_ " + backend->getRowIDType() + ",type_ TEXT,requestId_ TEXT,requestType_ TEXT,uri_ TEXT,query_ TEXT,data_ TEXT,response_ TEXT)"));
-    res.push_back(Database::SchemaItem("Partition_","table","CREATE TABLE Partition_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,partitionsize_ INTEGER)"));
-    res.push_back(Database::SchemaItem("Graph_","table","CREATE TABLE Graph_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,name_ TEXT,data_ TEXT)"));
-    res.push_back(Database::SchemaItem("Location_","table","CREATE TABLE Location_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,name_ TEXT,data_ TEXT)"));
-    res.push_back(Database::SchemaItem("Queue_","table","CREATE TABLE Queue_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,outputname_ TEXT,inputname_ TEXT,qtype_ INTEGER)"));
-    res.push_back(Database::SchemaItem("Filter_FilterParameter_","table","CREATE TABLE Filter_FilterParameter_ (Filter1 INTEGER,FilterParameter2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Filter_MediaFile_","table","CREATE TABLE Filter_MediaFile_ (Filter1 INTEGER,MediaFile2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Filter_Project_","table","CREATE TABLE Filter_Project_ (Filter1 INTEGER,Project2 INTEGER)"));
-    res.push_back(Database::SchemaItem("MediaFile_Project_","table","CREATE TABLE MediaFile_Project_ (MediaFile1 INTEGER,Project2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Preset_Project_","table","CREATE TABLE Preset_Project_ (Preset1 INTEGER,Project2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Preset_User_","table","CREATE TABLE Preset_User_ (Preset1 INTEGER,User2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Filter_Profile_","table","CREATE TABLE Filter_Profile_ (Filter1 INTEGER,Profile2 INTEGER)"));
-    res.push_back(Database::SchemaItem("_60a643d384d1f6c6ddeba5bb8ac0fc3e","table","CREATE TABLE _60a643d384d1f6c6ddeba5bb8ac0fc3e (Profile1 INTEGER,ProfileGroup2 INTEGER)"));
-    res.push_back(Database::SchemaItem("_2d57c481daf84ed6d04cd9e705469b3f","table","CREATE TABLE _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup1 INTEGER,ProfileGroup2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Profile_ProfileParameter_","table","CREATE TABLE Profile_ProfileParameter_ (Profile1 INTEGER,ProfileParameter2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Profile_Project_","table","CREATE TABLE Profile_Project_ (Profile1 INTEGER,Project2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Stream_StreamParameter_","table","CREATE TABLE Stream_StreamParameter_ (Stream1 INTEGER,StreamParameter2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Filter_Stream_","table","CREATE TABLE Filter_Stream_ (Filter1 INTEGER,Stream2 INTEGER)"));
-    res.push_back(Database::SchemaItem("MediaFile_Stream_","table","CREATE TABLE MediaFile_Stream_ (MediaFile1 INTEGER,Stream2 INTEGER UNIQUE)"));
-    res.push_back(Database::SchemaItem("_165bce89be0b4f99d8ddeba7a26a23a7","table","CREATE TABLE _165bce89be0b4f99d8ddeba7a26a23a7 (CodecPreset1 INTEGER,CodecPresetParameter2 INTEGER)"));
-    res.push_back(Database::SchemaItem("_b477e426317c3764439827c70cd95621","table","CREATE TABLE _b477e426317c3764439827c70cd95621 (CodecPreset1 INTEGER,Profile2 INTEGER)"));
-    res.push_back(Database::SchemaItem("_c47426250800c92cff81a427efb64c83","table","CREATE TABLE _c47426250800c92cff81a427efb64c83 (CodecPreset1 INTEGER,Profile2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Job_Task_JobTask","table","CREATE TABLE Job_Task_JobTask (Job1 INTEGER,Task2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Graph_Task_GraphTask","table","CREATE TABLE Graph_Task_GraphTask (Graph1 INTEGER,Task2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Job_JobLog_JobJobLog","table","CREATE TABLE Job_JobLog_JobJobLog (Job1 INTEGER,JobLog2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Job_MediaFile_JobInFile","table","CREATE TABLE Job_MediaFile_JobInFile (Job1 INTEGER,MediaFile2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Job_MediaFile_JobOutFile","table","CREATE TABLE Job_MediaFile_JobOutFile (Job1 INTEGER,MediaFile2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Job_Preset_","table","CREATE TABLE Job_Preset_ (Job1 INTEGER,Preset2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Job_JobDetail_JobJobDetail","table","CREATE TABLE Job_JobDetail_JobJobDetail (Job1 INTEGER,JobDetail2 INTEGER)"));
-    res.push_back(Database::SchemaItem("JobDetail_Stream_JobOutStream","table","CREATE TABLE JobDetail_Stream_JobOutStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
-    res.push_back(Database::SchemaItem("JobDetail_Stream_JobInStream","table","CREATE TABLE JobDetail_Stream_JobInStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Job_ProcessUnit_ProcessUnitJob","table","CREATE TABLE Job_ProcessUnit_ProcessUnitJob (Job1 INTEGER,ProcessUnit2 INTEGER)"));
-    res.push_back(Database::SchemaItem("User_UserGroup_User2UserGroup","table","CREATE TABLE User_UserGroup_User2UserGroup (User1 INTEGER,UserGroup2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Job_Partition_Job2Partition","table","CREATE TABLE Job_Partition_Job2Partition (Job1 INTEGER,Partition2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Job_Queue_Job2Queue","table","CREATE TABLE Job_Queue_Job2Queue (Job1 INTEGER,Queue2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Project_","table","CREATE TABLE Project_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +",outdirectory_ " + backend->getSQLType(A_field_type_string,"") + "" +",status_ " + backend->getSQLType(A_field_type_string,"") + "" +",created_ " + backend->getSQLType(A_field_type_date,"") + "" +",started_ " + backend->getSQLType(A_field_type_date,"") + "" +",completed_ " + backend->getSQLType(A_field_type_date,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Filter_","table","CREATE TABLE Filter_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",filtername_ " + backend->getSQLType(A_field_type_string,"") + "" +",filterid_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("FilterParameter_","table","CREATE TABLE FilterParameter_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",fkey_ " + backend->getSQLType(A_field_type_string,"") + "" +",fval_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("MediaFile_","table","CREATE TABLE MediaFile_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",filename_ " + backend->getSQLType(A_field_type_string,"") + "" +",path_ " + backend->getSQLType(A_field_type_string,"") + "" +",filesize_ " + backend->getSQLType(A_field_type_double,"") + "" +",streamcount_ " + backend->getSQLType(A_field_type_integer,"") + "" +",containertype_ " + backend->getSQLType(A_field_type_string,"") + "" +",duration_ " + backend->getSQLType(A_field_type_double,"") + "" +",starttime_ " + backend->getSQLType(A_field_type_double,"") + "" +",bitrate_ " + backend->getSQLType(A_field_type_integer,"") + "" +",created_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",filetype_ " + backend->getSQLType(A_field_type_integer,"") + "" +",parent_ " + backend->getSQLType(A_field_type_integer,"") + "" +",metatitle_ " + backend->getSQLType(A_field_type_string,"") + "" +",metaauthor_ " + backend->getSQLType(A_field_type_string,"") + "" +",metacopyright_ " + backend->getSQLType(A_field_type_string,"") + "" +",metacomment_ " + backend->getSQLType(A_field_type_string,"") + "" +",metaalbum_ " + backend->getSQLType(A_field_type_string,"") + "" +",metayear_ " + backend->getSQLType(A_field_type_integer,"") + "" +",metatrack_ " + backend->getSQLType(A_field_type_integer,"") + "" +",metagenre_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("OutputFile_","table","CREATE TABLE OutputFile_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",filename_ " + backend->getSQLType(A_field_type_string,"") + "" +",path_ " + backend->getSQLType(A_field_type_string,"") + "" +",jobid_ " + backend->getSQLType(A_field_type_string,"") + "" +",outfiledata_ " + backend->getSQLType(A_field_type_string,"") + "" +",status_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("ProfileGroup_","table","CREATE TABLE ProfileGroup_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Profile_","table","CREATE TABLE Profile_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +",created_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",format_ " + backend->getSQLType(A_field_type_string,"") + "" +",formatext_ " + backend->getSQLType(A_field_type_string,"") + "" +",vcodec_ " + backend->getSQLType(A_field_type_integer,"") + "" +",vbitrate_ " + backend->getSQLType(A_field_type_integer,"") + "" +",vframerate_ " + backend->getSQLType(A_field_type_string,"") + "" +",vwidth_ " + backend->getSQLType(A_field_type_integer,"") + "" +",vheight_ " + backend->getSQLType(A_field_type_integer,"") + "" +",vextra_ " + backend->getSQLType(A_field_type_string,"") + "" +",achannels_ " + backend->getSQLType(A_field_type_integer,"") + "" +",acodec_ " + backend->getSQLType(A_field_type_integer,"") + "" +",abitrate_ " + backend->getSQLType(A_field_type_integer,"") + "" +",asamplerate_ " + backend->getSQLType(A_field_type_integer,"") + "" +",aextra_ " + backend->getSQLType(A_field_type_string,"") + "" +",profiletype_ " + backend->getSQLType(A_field_type_integer,"") + "" +",deinterlace_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Preset_","table","CREATE TABLE Preset_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",uuid_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +",filename_ " + backend->getSQLType(A_field_type_string,"") + "" +",data_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("ProfileParameter_","table","CREATE TABLE ProfileParameter_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +",val_ " + backend->getSQLType(A_field_type_string,"") + "" +",mediatype_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Stream_","table","CREATE TABLE Stream_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",streamindex_ " + backend->getSQLType(A_field_type_integer,"") + "" +",streamtype_ " + backend->getSQLType(A_field_type_integer,"") + "" +",codecid_ " + backend->getSQLType(A_field_type_integer,"") + "" +",codecname_ " + backend->getSQLType(A_field_type_string,"") + "" +",frameratenum_ " + backend->getSQLType(A_field_type_integer,"") + "" +",framerateden_ " + backend->getSQLType(A_field_type_integer,"") + "" +",streamtimebasenum_ " + backend->getSQLType(A_field_type_integer,"") + "" +",streamtimebaseden_ " + backend->getSQLType(A_field_type_integer,"") + "" +",codectimebasenum_ " + backend->getSQLType(A_field_type_integer,"") + "" +",codectimebaseden_ " + backend->getSQLType(A_field_type_integer,"") + "" +",firstpts_ " + backend->getSQLType(A_field_type_double,"") + "" +",firstdts_ " + backend->getSQLType(A_field_type_double,"") + "" +",duration_ " + backend->getSQLType(A_field_type_double,"") + "" +",nbframes_ " + backend->getSQLType(A_field_type_double,"") + "" +",ticksperframe_ " + backend->getSQLType(A_field_type_integer,"") + "" +",framecount_ " + backend->getSQLType(A_field_type_integer,"") + "" +",width_ " + backend->getSQLType(A_field_type_integer,"") + "" +",height_ " + backend->getSQLType(A_field_type_integer,"") + "" +",gopsize_ " + backend->getSQLType(A_field_type_integer,"") + "" +",pixfmt_ " + backend->getSQLType(A_field_type_integer,"") + "" +",bitrate_ " + backend->getSQLType(A_field_type_integer,"") + "" +",samplerate_ " + backend->getSQLType(A_field_type_integer,"") + "" +",samplefmt_ " + backend->getSQLType(A_field_type_integer,"") + "" +",channels_ " + backend->getSQLType(A_field_type_integer,"") + "" +",bitspercodedsample_ " + backend->getSQLType(A_field_type_integer,"") + "" +",privdatasize_ " + backend->getSQLType(A_field_type_integer,"") + "" +",privdata_ " + backend->getSQLType(A_field_type_string,"") + "" +",extradatasize_ " + backend->getSQLType(A_field_type_integer,"") + "" +",extradata_ " + backend->getSQLType(A_field_type_blob,"") + "" +",aspectratio_ " + backend->getSQLType(A_field_type_string,"") + "" +",flags_ " + backend->getSQLType(A_field_type_integer,"") + "" +",extraprofileflags_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("StreamParameter_","table","CREATE TABLE StreamParameter_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +",val_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("CodecPreset_","table","CREATE TABLE CodecPreset_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +",created_ " + backend->getSQLType(A_field_type_date,"") + "" +",codecid_ " + backend->getSQLType(A_field_type_integer,"") + "" +",preset_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("CodecPresetParameter_","table","CREATE TABLE CodecPresetParameter_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +",val_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Config_","table","CREATE TABLE Config_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",configkey_ " + backend->getSQLType(A_field_type_string,"") + "" +",configval_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",uuid_ " + backend->getSQLType(A_field_type_string,"") + "" +",created_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",begintime_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",endtime_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",status_ " + backend->getSQLType(A_field_type_integer,"") + "" +",infile_ " + backend->getSQLType(A_field_type_string,"") + "" +",outfile_ " + backend->getSQLType(A_field_type_string,"") + "" +",starttime_ " + backend->getSQLType(A_field_type_double,"") + "" +",duration_ " + backend->getSQLType(A_field_type_double,"") + "" +",progress_ " + backend->getSQLType(A_field_type_integer,"") + "" +",fps_ " + backend->getSQLType(A_field_type_integer,"") + "" +",data_ " + backend->getSQLType(A_field_type_string,"") + "" +",deleted_ " + backend->getSQLType(A_field_type_integer,"") + "" +",partitionname_ " + backend->getSQLType(A_field_type_string,"") + "" +",graph_ " + backend->getSQLType(A_field_type_string,"") + "" +",graphstatus_ " + backend->getSQLType(A_field_type_string,"") + "" +",graphname_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Task_","table","CREATE TABLE Task_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",uuid_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +",parameter_ " + backend->getSQLType(A_field_type_string,"") + "" +",statustext_ " + backend->getSQLType(A_field_type_string,"") + "" +",progress_ " + backend->getSQLType(A_field_type_integer,"") + "" +",status_ " + backend->getSQLType(A_field_type_integer,"") + "" +",sortorder_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("JobLog_","table","CREATE TABLE JobLog_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",created_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",message_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",lastpts_ " + backend->getSQLType(A_field_type_double,"") + "" +",lastdts_ " + backend->getSQLType(A_field_type_double,"") + "" +",deinterlace_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",folder_ " + backend->getSQLType(A_field_type_string,"") + "" +",filefilter_ " + backend->getSQLType(A_field_type_string,"") + "" +",subdirs_ " + backend->getSQLType(A_field_type_integer,"") + "" +",flowuuid_ " + backend->getSQLType(A_field_type_string,"") + "" +",interval_ " + backend->getSQLType(A_field_type_integer,"") + "" +",start_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",end_ " + backend->getSQLType(A_field_type_datetime,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Process_","table","CREATE TABLE Process_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",executable_ " + backend->getSQLType(A_field_type_string,"") + "" +",arguments_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +",pid_ " + backend->getSQLType(A_field_type_integer,"") + "" +",started_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",stopped_ " + backend->getSQLType(A_field_type_datetime,"") + "" +")"));
+    res.push_back(Database::SchemaItem("ProcessUnit_","table","CREATE TABLE ProcessUnit_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",sorcestream_ " + backend->getSQLType(A_field_type_integer,"") + "" +",targetstream_ " + backend->getSQLType(A_field_type_integer,"") + "" +",timebasenum_ " + backend->getSQLType(A_field_type_integer,"") + "" +",timebaseden_ " + backend->getSQLType(A_field_type_integer,"") + "" +",startts_ " + backend->getSQLType(A_field_type_double,"") + "" +",endts_ " + backend->getSQLType(A_field_type_double,"") + "" +",framecount_ " + backend->getSQLType(A_field_type_integer,"") + "" +",send_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",recv_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",sendid_ " + backend->getSQLType(A_field_type_string,"") + "" +",recvid_ " + backend->getSQLType(A_field_type_string,"") + "" +",data_ " + backend->getSQLType(A_field_type_blob,"") + "" +",responseData_ " + backend->getSQLType(A_field_type_blob,"") + "" +",clientid_ " + backend->getSQLType(A_field_type_string,"") + "" +",deliverycount_ " + backend->getSQLType(A_field_type_integer,"") + "" +",jobid_ " + backend->getSQLType(A_field_type_string,"") + "" +",group_ " + backend->getSQLType(A_field_type_string,"") + "" +",sequence_ " + backend->getSQLType(A_field_type_integer,"") + "" +",codectype_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("User_","table","CREATE TABLE User_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",authname_ " + backend->getSQLType(A_field_type_string,"") + "" +",authpass_ " + backend->getSQLType(A_field_type_string,"") + "" +",company_ " + backend->getSQLType(A_field_type_string,"") + "" +",firstname_ " + backend->getSQLType(A_field_type_string,"") + "" +",lastname_ " + backend->getSQLType(A_field_type_string,"") + "" +",street_ " + backend->getSQLType(A_field_type_string,"") + "" +",city_ " + backend->getSQLType(A_field_type_string,"") + "" +",zip_ " + backend->getSQLType(A_field_type_string,"") + "" +",country_ " + backend->getSQLType(A_field_type_string,"") + "" +",state_ " + backend->getSQLType(A_field_type_string,"") + "" +",telefone_ " + backend->getSQLType(A_field_type_string,"") + "" +",fax_ " + backend->getSQLType(A_field_type_string,"") + "" +",email_ " + backend->getSQLType(A_field_type_string,"") + "" +",www_ " + backend->getSQLType(A_field_type_string,"") + "" +",language_ " + backend->getSQLType(A_field_type_string,"") + "" +",licensekey_ " + backend->getSQLType(A_field_type_string,"") + "" +",apikey_ " + backend->getSQLType(A_field_type_string,"") + "" +",registered_ " + backend->getSQLType(A_field_type_date,"") + "" +",fileroot_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("UserGroup_","table","CREATE TABLE UserGroup_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_date,"") + "" +",nodecount_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Request_","table","CREATE TABLE Request_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",requestId_ " + backend->getSQLType(A_field_type_string,"") + "" +",requestType_ " + backend->getSQLType(A_field_type_string,"") + "" +",uri_ " + backend->getSQLType(A_field_type_string,"") + "" +",query_ " + backend->getSQLType(A_field_type_string,"") + "" +",data_ " + backend->getSQLType(A_field_type_string,"") + "" +",response_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Partition_","table","CREATE TABLE Partition_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +",partitionsize_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Graph_","table","CREATE TABLE Graph_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",uuid_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +",data_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Location_","table","CREATE TABLE Location_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",uuid_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +",data_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Queue_","table","CREATE TABLE Queue_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",uuid_ " + backend->getSQLType(A_field_type_string,"") + "" +",outputname_ " + backend->getSQLType(A_field_type_string,"") + "" +",inputname_ " + backend->getSQLType(A_field_type_string,"") + "" +",qtype_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Filter_FilterParameter_","table","CREATE TABLE Filter_FilterParameter_ (Filter1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",FilterParameter2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Filter_MediaFile_","table","CREATE TABLE Filter_MediaFile_ (Filter1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",MediaFile2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Filter_Project_","table","CREATE TABLE Filter_Project_ (Filter1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",Project2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("MediaFile_Project_","table","CREATE TABLE MediaFile_Project_ (MediaFile1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",Project2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Preset_Project_","table","CREATE TABLE Preset_Project_ (Preset1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",Project2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Preset_User_","table","CREATE TABLE Preset_User_ (Preset1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",User2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Filter_Profile_","table","CREATE TABLE Filter_Profile_ (Filter1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",Profile2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("O60a643d384d1f6c6ddeba5bb8ac0f","table","CREATE TABLE O60a643d384d1f6c6ddeba5bb8ac0f (Profile1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",ProfileGroup2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("O2d57c481daf84ed6d04cd9e705469","table","CREATE TABLE O2d57c481daf84ed6d04cd9e705469 (ProfileGroup1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",ProfileGroup2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Profile_ProfileParameter_","table","CREATE TABLE Profile_ProfileParameter_ (Profile1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",ProfileParameter2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Profile_Project_","table","CREATE TABLE Profile_Project_ (Profile1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",Project2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Stream_StreamParameter_","table","CREATE TABLE Stream_StreamParameter_ (Stream1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",StreamParameter2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Filter_Stream_","table","CREATE TABLE Filter_Stream_ (Filter1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",Stream2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("MediaFile_Stream_","table","CREATE TABLE MediaFile_Stream_ (MediaFile1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",Stream2_ " + backend->getSQLType(A_field_type_integer,"") + " UNIQUE" +")"));
+    res.push_back(Database::SchemaItem("O165bce89be0b4f99d8ddeba7a26a2","table","CREATE TABLE O165bce89be0b4f99d8ddeba7a26a2 (CodecPreset1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",CodecPresetParameter2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Ob477e426317c3764439827c70cd95","table","CREATE TABLE Ob477e426317c3764439827c70cd95 (CodecPreset1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",Profile2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Oc47426250800c92cff81a427efb64","table","CREATE TABLE Oc47426250800c92cff81a427efb64 (CodecPreset1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",Profile2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Job_Task_JobTask","table","CREATE TABLE Job_Task_JobTask (Job1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",Task2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Graph_Task_GraphTask","table","CREATE TABLE Graph_Task_GraphTask (Graph1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",Task2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Job_JobLog_JobJobLog","table","CREATE TABLE Job_JobLog_JobJobLog (Job1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",JobLog2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Job_MediaFile_JobInFile","table","CREATE TABLE Job_MediaFile_JobInFile (Job1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",MediaFile2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Job_MediaFile_JobOutFile","table","CREATE TABLE Job_MediaFile_JobOutFile (Job1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",MediaFile2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Job_Preset_","table","CREATE TABLE Job_Preset_ (Job1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",Preset2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Job_JobDetail_JobJobDetail","table","CREATE TABLE Job_JobDetail_JobJobDetail (Job1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",JobDetail2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("JobDetail_Stream_JobOutStream","table","CREATE TABLE JobDetail_Stream_JobOutStream (JobDetail1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",Stream2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("JobDetail_Stream_JobInStream","table","CREATE TABLE JobDetail_Stream_JobInStream (JobDetail1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",Stream2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Job_ProcessUnit_ProcessUnitJob","table","CREATE TABLE Job_ProcessUnit_ProcessUnitJob (Job1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",ProcessUnit2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("User_UserGroup_User2UserGroup","table","CREATE TABLE User_UserGroup_User2UserGroup (User1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",UserGroup2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Job_Partition_Job2Partition","table","CREATE TABLE Job_Partition_Job2Partition (Job1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",Partition2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Job_Queue_Job2Queue","table","CREATE TABLE Job_Queue_Job2Queue (Job1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",Queue2_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Project_id_idx","index","CREATE INDEX Project_id_idx ON Project_ (id_)"));
+    res.push_back(Database::SchemaItem("Filter_id_idx","index","CREATE INDEX Filter_id_idx ON Filter_ (id_)"));
+    res.push_back(Database::SchemaItem("FilterParameter_id_idx","index","CREATE INDEX FilterParameter_id_idx ON FilterParameter_ (id_)"));
+    res.push_back(Database::SchemaItem("MediaFile_id_idx","index","CREATE INDEX MediaFile_id_idx ON MediaFile_ (id_)"));
+    res.push_back(Database::SchemaItem("OutputFile_id_idx","index","CREATE INDEX OutputFile_id_idx ON OutputFile_ (id_)"));
     res.push_back(Database::SchemaItem("OutputFile_status_idx","index","CREATE INDEX OutputFile_status_idx ON OutputFile_ (status_)"));
+    res.push_back(Database::SchemaItem("ProfileGroup_id_idx","index","CREATE INDEX ProfileGroup_id_idx ON ProfileGroup_ (id_)"));
+    res.push_back(Database::SchemaItem("Profile_id_idx","index","CREATE INDEX Profile_id_idx ON Profile_ (id_)"));
+    res.push_back(Database::SchemaItem("Preset_id_idx","index","CREATE INDEX Preset_id_idx ON Preset_ (id_)"));
+    res.push_back(Database::SchemaItem("ProfileParameter_id_idx","index","CREATE INDEX ProfileParameter_id_idx ON ProfileParameter_ (id_)"));
+    res.push_back(Database::SchemaItem("Stream_id_idx","index","CREATE INDEX Stream_id_idx ON Stream_ (id_)"));
+    res.push_back(Database::SchemaItem("StreamParameter_id_idx","index","CREATE INDEX StreamParameter_id_idx ON StreamParameter_ (id_)"));
+    res.push_back(Database::SchemaItem("CodecPreset_id_idx","index","CREATE INDEX CodecPreset_id_idx ON CodecPreset_ (id_)"));
+    res.push_back(Database::SchemaItem("CodecPresetParameter_id_idx","index","CREATE INDEX CodecPresetParameter_id_idx ON CodecPresetParameter_ (id_)"));
+    res.push_back(Database::SchemaItem("Config_id_idx","index","CREATE INDEX Config_id_idx ON Config_ (id_)"));
+    res.push_back(Database::SchemaItem("Job_id_idx","index","CREATE INDEX Job_id_idx ON Job_ (id_)"));
+    res.push_back(Database::SchemaItem("Task_id_idx","index","CREATE INDEX Task_id_idx ON Task_ (id_)"));
+    res.push_back(Database::SchemaItem("JobLog_id_idx","index","CREATE INDEX JobLog_id_idx ON JobLog_ (id_)"));
+    res.push_back(Database::SchemaItem("JobDetail_id_idx","index","CREATE INDEX JobDetail_id_idx ON JobDetail_ (id_)"));
+    res.push_back(Database::SchemaItem("Watchfolder_id_idx","index","CREATE INDEX Watchfolder_id_idx ON Watchfolder_ (id_)"));
+    res.push_back(Database::SchemaItem("Process_id_idx","index","CREATE INDEX Process_id_idx ON Process_ (id_)"));
+    res.push_back(Database::SchemaItem("ProcessUnit_id_idx","index","CREATE INDEX ProcessUnit_id_idx ON ProcessUnit_ (id_)"));
     res.push_back(Database::SchemaItem("ProcessUnit_send_idx","index","CREATE INDEX ProcessUnit_send_idx ON ProcessUnit_ (send_)"));
     res.push_back(Database::SchemaItem("ProcessUnit_recv_idx","index","CREATE INDEX ProcessUnit_recv_idx ON ProcessUnit_ (recv_)"));
     res.push_back(Database::SchemaItem("ProcessUnit_jobid_idx","index","CREATE INDEX ProcessUnit_jobid_idx ON ProcessUnit_ (jobid_)"));
-    res.push_back(Database::SchemaItem("_864f17f6c9c6e1560a3b610198ace17e","index","CREATE INDEX _864f17f6c9c6e1560a3b610198ace17e ON Filter_FilterParameter_ (Filter1)"));
-    res.push_back(Database::SchemaItem("_ebb60e0eabfba5df99ab088688ea3579","index","CREATE INDEX _ebb60e0eabfba5df99ab088688ea3579 ON Filter_FilterParameter_ (FilterParameter2)"));
-    res.push_back(Database::SchemaItem("Filter_FilterParameter__all_idx","index","CREATE INDEX Filter_FilterParameter__all_idx ON Filter_FilterParameter_ (Filter1,FilterParameter2)"));
-    res.push_back(Database::SchemaItem("Filter_MediaFile_Filter1idx","index","CREATE INDEX Filter_MediaFile_Filter1idx ON Filter_MediaFile_ (Filter1)"));
-    res.push_back(Database::SchemaItem("Filter_MediaFile_MediaFile2idx","index","CREATE INDEX Filter_MediaFile_MediaFile2idx ON Filter_MediaFile_ (MediaFile2)"));
-    res.push_back(Database::SchemaItem("Filter_MediaFile__all_idx","index","CREATE INDEX Filter_MediaFile__all_idx ON Filter_MediaFile_ (Filter1,MediaFile2)"));
-    res.push_back(Database::SchemaItem("Filter_Project_Filter1idx","index","CREATE INDEX Filter_Project_Filter1idx ON Filter_Project_ (Filter1)"));
-    res.push_back(Database::SchemaItem("Filter_Project_Project2idx","index","CREATE INDEX Filter_Project_Project2idx ON Filter_Project_ (Project2)"));
-    res.push_back(Database::SchemaItem("Filter_Project__all_idx","index","CREATE INDEX Filter_Project__all_idx ON Filter_Project_ (Filter1,Project2)"));
-    res.push_back(Database::SchemaItem("MediaFile_Project_MediaFile1idx","index","CREATE INDEX MediaFile_Project_MediaFile1idx ON MediaFile_Project_ (MediaFile1)"));
-    res.push_back(Database::SchemaItem("MediaFile_Project_Project2idx","index","CREATE INDEX MediaFile_Project_Project2idx ON MediaFile_Project_ (Project2)"));
-    res.push_back(Database::SchemaItem("MediaFile_Project__all_idx","index","CREATE INDEX MediaFile_Project__all_idx ON MediaFile_Project_ (MediaFile1,Project2)"));
-    res.push_back(Database::SchemaItem("Preset_Project_Preset1idx","index","CREATE INDEX Preset_Project_Preset1idx ON Preset_Project_ (Preset1)"));
-    res.push_back(Database::SchemaItem("Preset_Project_Project2idx","index","CREATE INDEX Preset_Project_Project2idx ON Preset_Project_ (Project2)"));
-    res.push_back(Database::SchemaItem("Preset_Project__all_idx","index","CREATE INDEX Preset_Project__all_idx ON Preset_Project_ (Preset1,Project2)"));
-    res.push_back(Database::SchemaItem("Preset_User_Preset1idx","index","CREATE INDEX Preset_User_Preset1idx ON Preset_User_ (Preset1)"));
-    res.push_back(Database::SchemaItem("Preset_User_User2idx","index","CREATE INDEX Preset_User_User2idx ON Preset_User_ (User2)"));
-    res.push_back(Database::SchemaItem("Preset_User__all_idx","index","CREATE INDEX Preset_User__all_idx ON Preset_User_ (Preset1,User2)"));
-    res.push_back(Database::SchemaItem("Filter_Profile_Filter1idx","index","CREATE INDEX Filter_Profile_Filter1idx ON Filter_Profile_ (Filter1)"));
-    res.push_back(Database::SchemaItem("Filter_Profile_Profile2idx","index","CREATE INDEX Filter_Profile_Profile2idx ON Filter_Profile_ (Profile2)"));
-    res.push_back(Database::SchemaItem("Filter_Profile__all_idx","index","CREATE INDEX Filter_Profile__all_idx ON Filter_Profile_ (Filter1,Profile2)"));
-    res.push_back(Database::SchemaItem("_45a47288d87922bc777077268af27020","index","CREATE INDEX _45a47288d87922bc777077268af27020 ON _60a643d384d1f6c6ddeba5bb8ac0fc3e (Profile1)"));
-    res.push_back(Database::SchemaItem("_6a97b2aa9540e958c966e2f87f06e44e","index","CREATE INDEX _6a97b2aa9540e958c966e2f87f06e44e ON _60a643d384d1f6c6ddeba5bb8ac0fc3e (ProfileGroup2)"));
-    res.push_back(Database::SchemaItem("_8908dcab0ecb35cd3b5541aedac93a26","index","CREATE INDEX _8908dcab0ecb35cd3b5541aedac93a26 ON _60a643d384d1f6c6ddeba5bb8ac0fc3e (Profile1,ProfileGroup2)"));
-    res.push_back(Database::SchemaItem("_d033fe244fc6121cb707149536449c0a","index","CREATE INDEX _d033fe244fc6121cb707149536449c0a ON _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup1)"));
-    res.push_back(Database::SchemaItem("_5a70b3265b33aac73fe8210afa3ad2d5","index","CREATE INDEX _5a70b3265b33aac73fe8210afa3ad2d5 ON _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup2)"));
-    res.push_back(Database::SchemaItem("_9bf4a7c83dd76c8ecc83bccd327d7d17","index","CREATE INDEX _9bf4a7c83dd76c8ecc83bccd327d7d17 ON _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup1,ProfileGroup2)"));
-    res.push_back(Database::SchemaItem("_5b0f6997cb61137fb1d90143364b343c","index","CREATE INDEX _5b0f6997cb61137fb1d90143364b343c ON Profile_ProfileParameter_ (Profile1)"));
-    res.push_back(Database::SchemaItem("_6ca171948a9b22f1822facae47f47f6c","index","CREATE INDEX _6ca171948a9b22f1822facae47f47f6c ON Profile_ProfileParameter_ (ProfileParameter2)"));
-    res.push_back(Database::SchemaItem("_511e5af2def498717dc8291922087d47","index","CREATE INDEX _511e5af2def498717dc8291922087d47 ON Profile_ProfileParameter_ (Profile1,ProfileParameter2)"));
-    res.push_back(Database::SchemaItem("Profile_Project_Profile1idx","index","CREATE INDEX Profile_Project_Profile1idx ON Profile_Project_ (Profile1)"));
-    res.push_back(Database::SchemaItem("Profile_Project_Project2idx","index","CREATE INDEX Profile_Project_Project2idx ON Profile_Project_ (Project2)"));
-    res.push_back(Database::SchemaItem("Profile_Project__all_idx","index","CREATE INDEX Profile_Project__all_idx ON Profile_Project_ (Profile1,Project2)"));
-    res.push_back(Database::SchemaItem("_eb5384d2471a9430428b71b05ad67df2","index","CREATE INDEX _eb5384d2471a9430428b71b05ad67df2 ON Stream_StreamParameter_ (Stream1)"));
-    res.push_back(Database::SchemaItem("_fa13711a6fd2c1b03d436f1959beb886","index","CREATE INDEX _fa13711a6fd2c1b03d436f1959beb886 ON Stream_StreamParameter_ (StreamParameter2)"));
-    res.push_back(Database::SchemaItem("Stream_StreamParameter__all_idx","index","CREATE INDEX Stream_StreamParameter__all_idx ON Stream_StreamParameter_ (Stream1,StreamParameter2)"));
-    res.push_back(Database::SchemaItem("Filter_Stream_Filter1idx","index","CREATE INDEX Filter_Stream_Filter1idx ON Filter_Stream_ (Filter1)"));
-    res.push_back(Database::SchemaItem("Filter_Stream_Stream2idx","index","CREATE INDEX Filter_Stream_Stream2idx ON Filter_Stream_ (Stream2)"));
-    res.push_back(Database::SchemaItem("Filter_Stream__all_idx","index","CREATE INDEX Filter_Stream__all_idx ON Filter_Stream_ (Filter1,Stream2)"));
-    res.push_back(Database::SchemaItem("MediaFile_Stream_MediaFile1idx","index","CREATE INDEX MediaFile_Stream_MediaFile1idx ON MediaFile_Stream_ (MediaFile1)"));
-    res.push_back(Database::SchemaItem("MediaFile_Stream_Stream2idx","index","CREATE INDEX MediaFile_Stream_Stream2idx ON MediaFile_Stream_ (Stream2)"));
-    res.push_back(Database::SchemaItem("MediaFile_Stream__all_idx","index","CREATE INDEX MediaFile_Stream__all_idx ON MediaFile_Stream_ (MediaFile1,Stream2)"));
-    res.push_back(Database::SchemaItem("_5697497d506d6edf93e83e3fbf0a0ee9","index","CREATE INDEX _5697497d506d6edf93e83e3fbf0a0ee9 ON _165bce89be0b4f99d8ddeba7a26a23a7 (CodecPreset1)"));
-    res.push_back(Database::SchemaItem("_d4cde276820154e4e61105dcbcfbe40e","index","CREATE INDEX _d4cde276820154e4e61105dcbcfbe40e ON _165bce89be0b4f99d8ddeba7a26a23a7 (CodecPresetParameter2)"));
-    res.push_back(Database::SchemaItem("_42ff4e66c92a6178a970678924797e73","index","CREATE INDEX _42ff4e66c92a6178a970678924797e73 ON _165bce89be0b4f99d8ddeba7a26a23a7 (CodecPreset1,CodecPresetParameter2)"));
-    res.push_back(Database::SchemaItem("_e948e228c256df8f173e4c449809f8cb","index","CREATE INDEX _e948e228c256df8f173e4c449809f8cb ON _b477e426317c3764439827c70cd95621 (CodecPreset1)"));
-    res.push_back(Database::SchemaItem("_6a8fa36e548d1af747073ed110e7cea4","index","CREATE INDEX _6a8fa36e548d1af747073ed110e7cea4 ON _b477e426317c3764439827c70cd95621 (Profile2)"));
-    res.push_back(Database::SchemaItem("_9f5803a6308e06a00ee8c60d76e40ca5","index","CREATE INDEX _9f5803a6308e06a00ee8c60d76e40ca5 ON _b477e426317c3764439827c70cd95621 (CodecPreset1,Profile2)"));
-    res.push_back(Database::SchemaItem("_efe8a74240af68bddaa5a9c3ba3b73ed","index","CREATE INDEX _efe8a74240af68bddaa5a9c3ba3b73ed ON _c47426250800c92cff81a427efb64c83 (CodecPreset1)"));
-    res.push_back(Database::SchemaItem("_09971e97639d319f4ec1431219d6bd95","index","CREATE INDEX _09971e97639d319f4ec1431219d6bd95 ON _c47426250800c92cff81a427efb64c83 (Profile2)"));
-    res.push_back(Database::SchemaItem("_28d7cd21f284513124537c322d33330b","index","CREATE INDEX _28d7cd21f284513124537c322d33330b ON _c47426250800c92cff81a427efb64c83 (CodecPreset1,Profile2)"));
-    res.push_back(Database::SchemaItem("Job_Task_JobTaskJob1idx","index","CREATE INDEX Job_Task_JobTaskJob1idx ON Job_Task_JobTask (Job1)"));
-    res.push_back(Database::SchemaItem("Job_Task_JobTaskTask2idx","index","CREATE INDEX Job_Task_JobTaskTask2idx ON Job_Task_JobTask (Task2)"));
-    res.push_back(Database::SchemaItem("Job_Task_JobTask_all_idx","index","CREATE INDEX Job_Task_JobTask_all_idx ON Job_Task_JobTask (Job1,Task2)"));
-    res.push_back(Database::SchemaItem("Graph_Task_GraphTaskGraph1idx","index","CREATE INDEX Graph_Task_GraphTaskGraph1idx ON Graph_Task_GraphTask (Graph1)"));
-    res.push_back(Database::SchemaItem("Graph_Task_GraphTaskTask2idx","index","CREATE INDEX Graph_Task_GraphTaskTask2idx ON Graph_Task_GraphTask (Task2)"));
-    res.push_back(Database::SchemaItem("Graph_Task_GraphTask_all_idx","index","CREATE INDEX Graph_Task_GraphTask_all_idx ON Graph_Task_GraphTask (Graph1,Task2)"));
-    res.push_back(Database::SchemaItem("Job_JobLog_JobJobLogJob1idx","index","CREATE INDEX Job_JobLog_JobJobLogJob1idx ON Job_JobLog_JobJobLog (Job1)"));
-    res.push_back(Database::SchemaItem("Job_JobLog_JobJobLogJobLog2idx","index","CREATE INDEX Job_JobLog_JobJobLogJobLog2idx ON Job_JobLog_JobJobLog (JobLog2)"));
-    res.push_back(Database::SchemaItem("Job_JobLog_JobJobLog_all_idx","index","CREATE INDEX Job_JobLog_JobJobLog_all_idx ON Job_JobLog_JobJobLog (Job1,JobLog2)"));
-    res.push_back(Database::SchemaItem("Job_MediaFile_JobInFileJob1idx","index","CREATE INDEX Job_MediaFile_JobInFileJob1idx ON Job_MediaFile_JobInFile (Job1)"));
-    res.push_back(Database::SchemaItem("_75bd42a54265ee2791a61f8bfd916820","index","CREATE INDEX _75bd42a54265ee2791a61f8bfd916820 ON Job_MediaFile_JobInFile (MediaFile2)"));
-    res.push_back(Database::SchemaItem("Job_MediaFile_JobInFile_all_idx","index","CREATE INDEX Job_MediaFile_JobInFile_all_idx ON Job_MediaFile_JobInFile (Job1,MediaFile2)"));
-    res.push_back(Database::SchemaItem("Job_MediaFile_JobOutFileJob1idx","index","CREATE INDEX Job_MediaFile_JobOutFileJob1idx ON Job_MediaFile_JobOutFile (Job1)"));
-    res.push_back(Database::SchemaItem("_25cc5418e8e8e4440a05457be79c6e6c","index","CREATE INDEX _25cc5418e8e8e4440a05457be79c6e6c ON Job_MediaFile_JobOutFile (MediaFile2)"));
-    res.push_back(Database::SchemaItem("_d9d2d6c9fa1fb063c88ce1c8efda4f10","index","CREATE INDEX _d9d2d6c9fa1fb063c88ce1c8efda4f10 ON Job_MediaFile_JobOutFile (Job1,MediaFile2)"));
-    res.push_back(Database::SchemaItem("Job_Preset_Job1idx","index","CREATE INDEX Job_Preset_Job1idx ON Job_Preset_ (Job1)"));
-    res.push_back(Database::SchemaItem("Job_Preset_Preset2idx","index","CREATE INDEX Job_Preset_Preset2idx ON Job_Preset_ (Preset2)"));
-    res.push_back(Database::SchemaItem("Job_Preset__all_idx","index","CREATE INDEX Job_Preset__all_idx ON Job_Preset_ (Job1,Preset2)"));
-    res.push_back(Database::SchemaItem("_d42e07c973df5c1aa22424f96e07d102","index","CREATE INDEX _d42e07c973df5c1aa22424f96e07d102 ON Job_JobDetail_JobJobDetail (Job1)"));
-    res.push_back(Database::SchemaItem("_f7ff1861fc4c003b6fc460836dea52b3","index","CREATE INDEX _f7ff1861fc4c003b6fc460836dea52b3 ON Job_JobDetail_JobJobDetail (JobDetail2)"));
-    res.push_back(Database::SchemaItem("_cce4f09c9234ab0eb75047f7dd450a33","index","CREATE INDEX _cce4f09c9234ab0eb75047f7dd450a33 ON Job_JobDetail_JobJobDetail (Job1,JobDetail2)"));
-    res.push_back(Database::SchemaItem("_9a6828d784e55ba8bb73831d4bf76738","index","CREATE INDEX _9a6828d784e55ba8bb73831d4bf76738 ON JobDetail_Stream_JobOutStream (JobDetail1)"));
-    res.push_back(Database::SchemaItem("_47ba6e36c3117f932ca6ec94c3ba96fa","index","CREATE INDEX _47ba6e36c3117f932ca6ec94c3ba96fa ON JobDetail_Stream_JobOutStream (Stream2)"));
-    res.push_back(Database::SchemaItem("_379b3c10ff7858af2b7df3132c35bae0","index","CREATE INDEX _379b3c10ff7858af2b7df3132c35bae0 ON JobDetail_Stream_JobOutStream (JobDetail1,Stream2)"));
-    res.push_back(Database::SchemaItem("_b5fcb088a1d00510d53f08a2da9d354c","index","CREATE INDEX _b5fcb088a1d00510d53f08a2da9d354c ON JobDetail_Stream_JobInStream (JobDetail1)"));
-    res.push_back(Database::SchemaItem("_3020cd32e6cb495b9b457666f03f8a53","index","CREATE INDEX _3020cd32e6cb495b9b457666f03f8a53 ON JobDetail_Stream_JobInStream (Stream2)"));
-    res.push_back(Database::SchemaItem("_55609d0353fe020d7d52815110be116e","index","CREATE INDEX _55609d0353fe020d7d52815110be116e ON JobDetail_Stream_JobInStream (JobDetail1,Stream2)"));
-    res.push_back(Database::SchemaItem("_9f8888b43cecb8b250e2fd4abb15139c","index","CREATE INDEX _9f8888b43cecb8b250e2fd4abb15139c ON Job_ProcessUnit_ProcessUnitJob (Job1)"));
-    res.push_back(Database::SchemaItem("_8b431085e85ff3115326e1168a6f12b0","index","CREATE INDEX _8b431085e85ff3115326e1168a6f12b0 ON Job_ProcessUnit_ProcessUnitJob (ProcessUnit2)"));
-    res.push_back(Database::SchemaItem("_0a3fce10cdd119bf165601c22bf632b5","index","CREATE INDEX _0a3fce10cdd119bf165601c22bf632b5 ON Job_ProcessUnit_ProcessUnitJob (Job1,ProcessUnit2)"));
-    res.push_back(Database::SchemaItem("_7d9412c26ff790b82599d91e1132a1dc","index","CREATE INDEX _7d9412c26ff790b82599d91e1132a1dc ON User_UserGroup_User2UserGroup (User1)"));
-    res.push_back(Database::SchemaItem("_40cd0fdddf07c1c128bb446a7faa6e3e","index","CREATE INDEX _40cd0fdddf07c1c128bb446a7faa6e3e ON User_UserGroup_User2UserGroup (UserGroup2)"));
-    res.push_back(Database::SchemaItem("_5db0c50747293a6fc42d73635c3adb01","index","CREATE INDEX _5db0c50747293a6fc42d73635c3adb01 ON User_UserGroup_User2UserGroup (User1,UserGroup2)"));
-    res.push_back(Database::SchemaItem("_8b87518093ef8ca0378aa75ac2742ba7","index","CREATE INDEX _8b87518093ef8ca0378aa75ac2742ba7 ON Job_Partition_Job2Partition (Job1)"));
-    res.push_back(Database::SchemaItem("_08b820cafd62f4965f0ebbc29665606b","index","CREATE INDEX _08b820cafd62f4965f0ebbc29665606b ON Job_Partition_Job2Partition (Partition2)"));
-    res.push_back(Database::SchemaItem("_4347eaf0398ab15250636ca7669f7d16","index","CREATE INDEX _4347eaf0398ab15250636ca7669f7d16 ON Job_Partition_Job2Partition (Job1,Partition2)"));
-    res.push_back(Database::SchemaItem("Job_Queue_Job2QueueJob1idx","index","CREATE INDEX Job_Queue_Job2QueueJob1idx ON Job_Queue_Job2Queue (Job1)"));
-    res.push_back(Database::SchemaItem("Job_Queue_Job2QueueQueue2idx","index","CREATE INDEX Job_Queue_Job2QueueQueue2idx ON Job_Queue_Job2Queue (Queue2)"));
-    res.push_back(Database::SchemaItem("Job_Queue_Job2Queue_all_idx","index","CREATE INDEX Job_Queue_Job2Queue_all_idx ON Job_Queue_Job2Queue (Job1,Queue2)"));
+    res.push_back(Database::SchemaItem("User_id_idx","index","CREATE INDEX User_id_idx ON User_ (id_)"));
+    res.push_back(Database::SchemaItem("UserGroup_id_idx","index","CREATE INDEX UserGroup_id_idx ON UserGroup_ (id_)"));
+    res.push_back(Database::SchemaItem("Request_id_idx","index","CREATE INDEX Request_id_idx ON Request_ (id_)"));
+    res.push_back(Database::SchemaItem("Partition_id_idx","index","CREATE INDEX Partition_id_idx ON Partition_ (id_)"));
+    res.push_back(Database::SchemaItem("Graph_id_idx","index","CREATE INDEX Graph_id_idx ON Graph_ (id_)"));
+    res.push_back(Database::SchemaItem("Location_id_idx","index","CREATE INDEX Location_id_idx ON Location_ (id_)"));
+    res.push_back(Database::SchemaItem("Queue_id_idx","index","CREATE INDEX Queue_id_idx ON Queue_ (id_)"));
+    res.push_back(Database::SchemaItem("O31bc02ae6378692311b53a67f5827","index","CREATE INDEX O31bc02ae6378692311b53a67f5827 ON Filter_FilterParameter_ (Filter1_)"));
+    res.push_back(Database::SchemaItem("O2014ef88d528f2929ec192b395d91","index","CREATE INDEX O2014ef88d528f2929ec192b395d91 ON Filter_FilterParameter_ (FilterParameter2_)"));
+    res.push_back(Database::SchemaItem("O856202d949b3ed9064656a27f198c","index","CREATE INDEX O856202d949b3ed9064656a27f198c ON Filter_FilterParameter_ (Filter1_,FilterParameter2_)"));
+    res.push_back(Database::SchemaItem("Filter_MediaFile_Filter1_idx","index","CREATE INDEX Filter_MediaFile_Filter1_idx ON Filter_MediaFile_ (Filter1_)"));
+    res.push_back(Database::SchemaItem("Od0b73dbf04f278921d4d9aca86fe1","index","CREATE INDEX Od0b73dbf04f278921d4d9aca86fe1 ON Filter_MediaFile_ (MediaFile2_)"));
+    res.push_back(Database::SchemaItem("Filter_MediaFile__all_idx","index","CREATE INDEX Filter_MediaFile__all_idx ON Filter_MediaFile_ (Filter1_,MediaFile2_)"));
+    res.push_back(Database::SchemaItem("Filter_Project_Filter1_idx","index","CREATE INDEX Filter_Project_Filter1_idx ON Filter_Project_ (Filter1_)"));
+    res.push_back(Database::SchemaItem("Filter_Project_Project2_idx","index","CREATE INDEX Filter_Project_Project2_idx ON Filter_Project_ (Project2_)"));
+    res.push_back(Database::SchemaItem("Filter_Project__all_idx","index","CREATE INDEX Filter_Project__all_idx ON Filter_Project_ (Filter1_,Project2_)"));
+    res.push_back(Database::SchemaItem("O0d98700600d7f936bfc0a9815149f","index","CREATE INDEX O0d98700600d7f936bfc0a9815149f ON MediaFile_Project_ (MediaFile1_)"));
+    res.push_back(Database::SchemaItem("MediaFile_Project_Project2_idx","index","CREATE INDEX MediaFile_Project_Project2_idx ON MediaFile_Project_ (Project2_)"));
+    res.push_back(Database::SchemaItem("MediaFile_Project__all_idx","index","CREATE INDEX MediaFile_Project__all_idx ON MediaFile_Project_ (MediaFile1_,Project2_)"));
+    res.push_back(Database::SchemaItem("Preset_Project_Preset1_idx","index","CREATE INDEX Preset_Project_Preset1_idx ON Preset_Project_ (Preset1_)"));
+    res.push_back(Database::SchemaItem("Preset_Project_Project2_idx","index","CREATE INDEX Preset_Project_Project2_idx ON Preset_Project_ (Project2_)"));
+    res.push_back(Database::SchemaItem("Preset_Project__all_idx","index","CREATE INDEX Preset_Project__all_idx ON Preset_Project_ (Preset1_,Project2_)"));
+    res.push_back(Database::SchemaItem("Preset_User_Preset1_idx","index","CREATE INDEX Preset_User_Preset1_idx ON Preset_User_ (Preset1_)"));
+    res.push_back(Database::SchemaItem("Preset_User_User2_idx","index","CREATE INDEX Preset_User_User2_idx ON Preset_User_ (User2_)"));
+    res.push_back(Database::SchemaItem("Preset_User__all_idx","index","CREATE INDEX Preset_User__all_idx ON Preset_User_ (Preset1_,User2_)"));
+    res.push_back(Database::SchemaItem("Filter_Profile_Filter1_idx","index","CREATE INDEX Filter_Profile_Filter1_idx ON Filter_Profile_ (Filter1_)"));
+    res.push_back(Database::SchemaItem("Filter_Profile_Profile2_idx","index","CREATE INDEX Filter_Profile_Profile2_idx ON Filter_Profile_ (Profile2_)"));
+    res.push_back(Database::SchemaItem("Filter_Profile__all_idx","index","CREATE INDEX Filter_Profile__all_idx ON Filter_Profile_ (Filter1_,Profile2_)"));
+    res.push_back(Database::SchemaItem("O79737c1f5eb08516d34194787512a","index","CREATE INDEX O79737c1f5eb08516d34194787512a ON O60a643d384d1f6c6ddeba5bb8ac0f (Profile1_)"));
+    res.push_back(Database::SchemaItem("O8a50cd09b66a24a77724c5b5b8262","index","CREATE INDEX O8a50cd09b66a24a77724c5b5b8262 ON O60a643d384d1f6c6ddeba5bb8ac0f (ProfileGroup2_)"));
+    res.push_back(Database::SchemaItem("Of33741e78c92c054fb5c1f1d26259","index","CREATE INDEX Of33741e78c92c054fb5c1f1d26259 ON O60a643d384d1f6c6ddeba5bb8ac0f (Profile1_,ProfileGroup2_)"));
+    res.push_back(Database::SchemaItem("Obe205b2098fadc7bc7c404386eed4","index","CREATE INDEX Obe205b2098fadc7bc7c404386eed4 ON O2d57c481daf84ed6d04cd9e705469 (ProfileGroup1_)"));
+    res.push_back(Database::SchemaItem("O01c0d590e61409de75847deaaff42","index","CREATE INDEX O01c0d590e61409de75847deaaff42 ON O2d57c481daf84ed6d04cd9e705469 (ProfileGroup2_)"));
+    res.push_back(Database::SchemaItem("O87743db8b7790aa5011db7d78c064","index","CREATE INDEX O87743db8b7790aa5011db7d78c064 ON O2d57c481daf84ed6d04cd9e705469 (ProfileGroup1_,ProfileGroup2_)"));
+    res.push_back(Database::SchemaItem("O1e2bfddca9fca28b91deba705a874","index","CREATE INDEX O1e2bfddca9fca28b91deba705a874 ON Profile_ProfileParameter_ (Profile1_)"));
+    res.push_back(Database::SchemaItem("O82775ff79ddf9bab85e7f6a49b600","index","CREATE INDEX O82775ff79ddf9bab85e7f6a49b600 ON Profile_ProfileParameter_ (ProfileParameter2_)"));
+    res.push_back(Database::SchemaItem("O511e5af2def498717dc8291922087","index","CREATE INDEX O511e5af2def498717dc8291922087 ON Profile_ProfileParameter_ (Profile1_,ProfileParameter2_)"));
+    res.push_back(Database::SchemaItem("Profile_Project_Profile1_idx","index","CREATE INDEX Profile_Project_Profile1_idx ON Profile_Project_ (Profile1_)"));
+    res.push_back(Database::SchemaItem("Profile_Project_Project2_idx","index","CREATE INDEX Profile_Project_Project2_idx ON Profile_Project_ (Project2_)"));
+    res.push_back(Database::SchemaItem("Profile_Project__all_idx","index","CREATE INDEX Profile_Project__all_idx ON Profile_Project_ (Profile1_,Project2_)"));
+    res.push_back(Database::SchemaItem("O3db941b2c1bdd66bc4b5a7340076f","index","CREATE INDEX O3db941b2c1bdd66bc4b5a7340076f ON Stream_StreamParameter_ (Stream1_)"));
+    res.push_back(Database::SchemaItem("O673d2f8a05604d79a15b24dbd5ba3","index","CREATE INDEX O673d2f8a05604d79a15b24dbd5ba3 ON Stream_StreamParameter_ (StreamParameter2_)"));
+    res.push_back(Database::SchemaItem("O65e9a986eede10413106be0835411","index","CREATE INDEX O65e9a986eede10413106be0835411 ON Stream_StreamParameter_ (Stream1_,StreamParameter2_)"));
+    res.push_back(Database::SchemaItem("Filter_Stream_Filter1_idx","index","CREATE INDEX Filter_Stream_Filter1_idx ON Filter_Stream_ (Filter1_)"));
+    res.push_back(Database::SchemaItem("Filter_Stream_Stream2_idx","index","CREATE INDEX Filter_Stream_Stream2_idx ON Filter_Stream_ (Stream2_)"));
+    res.push_back(Database::SchemaItem("Filter_Stream__all_idx","index","CREATE INDEX Filter_Stream__all_idx ON Filter_Stream_ (Filter1_,Stream2_)"));
+    res.push_back(Database::SchemaItem("O59c35c10c26768c7f59083424f1cd","index","CREATE INDEX O59c35c10c26768c7f59083424f1cd ON MediaFile_Stream_ (MediaFile1_)"));
+    res.push_back(Database::SchemaItem("MediaFile_Stream_Stream2_idx","index","CREATE INDEX MediaFile_Stream_Stream2_idx ON MediaFile_Stream_ (Stream2_)"));
+    res.push_back(Database::SchemaItem("MediaFile_Stream__all_idx","index","CREATE INDEX MediaFile_Stream__all_idx ON MediaFile_Stream_ (MediaFile1_,Stream2_)"));
+    res.push_back(Database::SchemaItem("O55446a480dd7ff767b098761a6704","index","CREATE INDEX O55446a480dd7ff767b098761a6704 ON O165bce89be0b4f99d8ddeba7a26a2 (CodecPreset1_)"));
+    res.push_back(Database::SchemaItem("Ocd7c4bdb0241622679d73cecda322","index","CREATE INDEX Ocd7c4bdb0241622679d73cecda322 ON O165bce89be0b4f99d8ddeba7a26a2 (CodecPresetParameter2_)"));
+    res.push_back(Database::SchemaItem("O8d965a562afac855c69593367ebb4","index","CREATE INDEX O8d965a562afac855c69593367ebb4 ON O165bce89be0b4f99d8ddeba7a26a2 (CodecPreset1_,CodecPresetParameter2_)"));
+    res.push_back(Database::SchemaItem("Oc8e474817e965890acca2b6dd56be","index","CREATE INDEX Oc8e474817e965890acca2b6dd56be ON Ob477e426317c3764439827c70cd95 (CodecPreset1_)"));
+    res.push_back(Database::SchemaItem("O747b7bc33250887fdcbd6a51d3026","index","CREATE INDEX O747b7bc33250887fdcbd6a51d3026 ON Ob477e426317c3764439827c70cd95 (Profile2_)"));
+    res.push_back(Database::SchemaItem("O0b6de5d92e1109e0ab073510344e8","index","CREATE INDEX O0b6de5d92e1109e0ab073510344e8 ON Ob477e426317c3764439827c70cd95 (CodecPreset1_,Profile2_)"));
+    res.push_back(Database::SchemaItem("O64fd619663b0087dc75a48d163c34","index","CREATE INDEX O64fd619663b0087dc75a48d163c34 ON Oc47426250800c92cff81a427efb64 (CodecPreset1_)"));
+    res.push_back(Database::SchemaItem("O7941657e8f0fd5f689eb646281984","index","CREATE INDEX O7941657e8f0fd5f689eb646281984 ON Oc47426250800c92cff81a427efb64 (Profile2_)"));
+    res.push_back(Database::SchemaItem("Oc27373e559ace4e156f6dee00bcfa","index","CREATE INDEX Oc27373e559ace4e156f6dee00bcfa ON Oc47426250800c92cff81a427efb64 (CodecPreset1_,Profile2_)"));
+    res.push_back(Database::SchemaItem("Job_Task_JobTaskJob1_idx","index","CREATE INDEX Job_Task_JobTaskJob1_idx ON Job_Task_JobTask (Job1_)"));
+    res.push_back(Database::SchemaItem("Job_Task_JobTaskTask2_idx","index","CREATE INDEX Job_Task_JobTaskTask2_idx ON Job_Task_JobTask (Task2_)"));
+    res.push_back(Database::SchemaItem("Job_Task_JobTask_all_idx","index","CREATE INDEX Job_Task_JobTask_all_idx ON Job_Task_JobTask (Job1_,Task2_)"));
+    res.push_back(Database::SchemaItem("Graph_Task_GraphTaskGraph1_idx","index","CREATE INDEX Graph_Task_GraphTaskGraph1_idx ON Graph_Task_GraphTask (Graph1_)"));
+    res.push_back(Database::SchemaItem("Graph_Task_GraphTaskTask2_idx","index","CREATE INDEX Graph_Task_GraphTaskTask2_idx ON Graph_Task_GraphTask (Task2_)"));
+    res.push_back(Database::SchemaItem("Graph_Task_GraphTask_all_idx","index","CREATE INDEX Graph_Task_GraphTask_all_idx ON Graph_Task_GraphTask (Graph1_,Task2_)"));
+    res.push_back(Database::SchemaItem("Job_JobLog_JobJobLogJob1_idx","index","CREATE INDEX Job_JobLog_JobJobLogJob1_idx ON Job_JobLog_JobJobLog (Job1_)"));
+    res.push_back(Database::SchemaItem("Oc9e847a88b3a0b0d5e4753601554a","index","CREATE INDEX Oc9e847a88b3a0b0d5e4753601554a ON Job_JobLog_JobJobLog (JobLog2_)"));
+    res.push_back(Database::SchemaItem("Job_JobLog_JobJobLog_all_idx","index","CREATE INDEX Job_JobLog_JobJobLog_all_idx ON Job_JobLog_JobJobLog (Job1_,JobLog2_)"));
+    res.push_back(Database::SchemaItem("Oae2570e4eb6dd44168da7566e665c","index","CREATE INDEX Oae2570e4eb6dd44168da7566e665c ON Job_MediaFile_JobInFile (Job1_)"));
+    res.push_back(Database::SchemaItem("Oe85eee8608a5beef1a555fa755f3f","index","CREATE INDEX Oe85eee8608a5beef1a555fa755f3f ON Job_MediaFile_JobInFile (MediaFile2_)"));
+    res.push_back(Database::SchemaItem("Odf67e1ff5a62ac6fa96f1213e8b82","index","CREATE INDEX Odf67e1ff5a62ac6fa96f1213e8b82 ON Job_MediaFile_JobInFile (Job1_,MediaFile2_)"));
+    res.push_back(Database::SchemaItem("Occb41d354e20ce72ed765acae37e0","index","CREATE INDEX Occb41d354e20ce72ed765acae37e0 ON Job_MediaFile_JobOutFile (Job1_)"));
+    res.push_back(Database::SchemaItem("O7139d754cc76b3fee40c054be6406","index","CREATE INDEX O7139d754cc76b3fee40c054be6406 ON Job_MediaFile_JobOutFile (MediaFile2_)"));
+    res.push_back(Database::SchemaItem("Od9d2d6c9fa1fb063c88ce1c8efda4","index","CREATE INDEX Od9d2d6c9fa1fb063c88ce1c8efda4 ON Job_MediaFile_JobOutFile (Job1_,MediaFile2_)"));
+    res.push_back(Database::SchemaItem("Job_Preset_Job1_idx","index","CREATE INDEX Job_Preset_Job1_idx ON Job_Preset_ (Job1_)"));
+    res.push_back(Database::SchemaItem("Job_Preset_Preset2_idx","index","CREATE INDEX Job_Preset_Preset2_idx ON Job_Preset_ (Preset2_)"));
+    res.push_back(Database::SchemaItem("Job_Preset__all_idx","index","CREATE INDEX Job_Preset__all_idx ON Job_Preset_ (Job1_,Preset2_)"));
+    res.push_back(Database::SchemaItem("Oc3465791d883177f5f8e1eca6fe8e","index","CREATE INDEX Oc3465791d883177f5f8e1eca6fe8e ON Job_JobDetail_JobJobDetail (Job1_)"));
+    res.push_back(Database::SchemaItem("O60a494939a5a9e676760baf8b3f68","index","CREATE INDEX O60a494939a5a9e676760baf8b3f68 ON Job_JobDetail_JobJobDetail (JobDetail2_)"));
+    res.push_back(Database::SchemaItem("Occe4f09c9234ab0eb75047f7dd450","index","CREATE INDEX Occe4f09c9234ab0eb75047f7dd450 ON Job_JobDetail_JobJobDetail (Job1_,JobDetail2_)"));
+    res.push_back(Database::SchemaItem("Oafebf3f48f2ac1cb49f5bd7f5a5b9","index","CREATE INDEX Oafebf3f48f2ac1cb49f5bd7f5a5b9 ON JobDetail_Stream_JobOutStream (JobDetail1_)"));
+    res.push_back(Database::SchemaItem("Oc645e43ea9ea28e55a87bbb3cfe85","index","CREATE INDEX Oc645e43ea9ea28e55a87bbb3cfe85 ON JobDetail_Stream_JobOutStream (Stream2_)"));
+    res.push_back(Database::SchemaItem("O379b3c10ff7858af2b7df3132c35b","index","CREATE INDEX O379b3c10ff7858af2b7df3132c35b ON JobDetail_Stream_JobOutStream (JobDetail1_,Stream2_)"));
+    res.push_back(Database::SchemaItem("O0c5aec68307641ff8c598c19c11d1","index","CREATE INDEX O0c5aec68307641ff8c598c19c11d1 ON JobDetail_Stream_JobInStream (JobDetail1_)"));
+    res.push_back(Database::SchemaItem("O56427caf92c562c07f2b954de966b","index","CREATE INDEX O56427caf92c562c07f2b954de966b ON JobDetail_Stream_JobInStream (Stream2_)"));
+    res.push_back(Database::SchemaItem("O55609d0353fe020d7d52815110be1","index","CREATE INDEX O55609d0353fe020d7d52815110be1 ON JobDetail_Stream_JobInStream (JobDetail1_,Stream2_)"));
+    res.push_back(Database::SchemaItem("Ofea04ea61288d59bff12282f521b2","index","CREATE INDEX Ofea04ea61288d59bff12282f521b2 ON Job_ProcessUnit_ProcessUnitJob (Job1_)"));
+    res.push_back(Database::SchemaItem("Oced1d255b23b48639e40e6285b9f1","index","CREATE INDEX Oced1d255b23b48639e40e6285b9f1 ON Job_ProcessUnit_ProcessUnitJob (ProcessUnit2_)"));
+    res.push_back(Database::SchemaItem("O0a3fce10cdd119bf165601c22bf63","index","CREATE INDEX O0a3fce10cdd119bf165601c22bf63 ON Job_ProcessUnit_ProcessUnitJob (Job1_,ProcessUnit2_)"));
+    res.push_back(Database::SchemaItem("Oce96f93da35b06cfb92be3b1dc1b9","index","CREATE INDEX Oce96f93da35b06cfb92be3b1dc1b9 ON User_UserGroup_User2UserGroup (User1_)"));
+    res.push_back(Database::SchemaItem("Oa72b47e3f1ed23207a43635c7dba2","index","CREATE INDEX Oa72b47e3f1ed23207a43635c7dba2 ON User_UserGroup_User2UserGroup (UserGroup2_)"));
+    res.push_back(Database::SchemaItem("O5db0c50747293a6fc42d73635c3ad","index","CREATE INDEX O5db0c50747293a6fc42d73635c3ad ON User_UserGroup_User2UserGroup (User1_,UserGroup2_)"));
+    res.push_back(Database::SchemaItem("O36936b54601ae855bb8e94cf833bb","index","CREATE INDEX O36936b54601ae855bb8e94cf833bb ON Job_Partition_Job2Partition (Job1_)"));
+    res.push_back(Database::SchemaItem("O1d40df53340df5cda1dbdf9272451","index","CREATE INDEX O1d40df53340df5cda1dbdf9272451 ON Job_Partition_Job2Partition (Partition2_)"));
+    res.push_back(Database::SchemaItem("O4347eaf0398ab15250636ca7669f7","index","CREATE INDEX O4347eaf0398ab15250636ca7669f7 ON Job_Partition_Job2Partition (Job1_,Partition2_)"));
+    res.push_back(Database::SchemaItem("Job_Queue_Job2QueueJob1_idx","index","CREATE INDEX Job_Queue_Job2QueueJob1_idx ON Job_Queue_Job2Queue (Job1_)"));
+    res.push_back(Database::SchemaItem("Job_Queue_Job2QueueQueue2_idx","index","CREATE INDEX Job_Queue_Job2QueueQueue2_idx ON Job_Queue_Job2Queue (Queue2_)"));
+    res.push_back(Database::SchemaItem("Job_Queue_Job2Queue_all_idx","index","CREATE INDEX Job_Queue_Job2Queue_all_idx ON Job_Queue_Job2Queue (Job1_,Queue2_)"));
     return res;
 }
 void HiveDb::initialize() {

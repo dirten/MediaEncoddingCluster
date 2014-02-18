@@ -1,7 +1,7 @@
-/* 
+/*
  * File:   ApiService.cpp
  * Author: HoelscJ
- * 
+ *
  * Created on 4. April 2011, 15:05
  */
 
@@ -15,31 +15,31 @@ namespace org {
       }
 
       void ApiServiceImpl::authenticate(::google::protobuf::RpcController* controller,
-              const ::org::esb::rpc::User* request,
-              ::org::esb::rpc::AuthToken* response,
-              ::google::protobuf::Closure* done){
+      const ::org::esb::rpc::User* request,
+      ::org::esb::rpc::AuthToken* response,
+      ::google::protobuf::Closure* done){
         _authtoken="bla";
         response->set_token(_authtoken);
       }
 
       void ApiServiceImpl::getMediafile(::google::protobuf::RpcController* controller,
-              const ::org::esb::rpc::MediafileRequest* request,
-              ::org::esb::rpc::MediafileResponse* response,
-              ::google::protobuf::Closure* done) {
+      const ::org::esb::rpc::MediafileRequest* request,
+      ::org::esb::rpc::MediafileResponse* response,
+      ::google::protobuf::Closure* done) {
 
       }
 
       void ApiServiceImpl::addMediafile(::google::protobuf::RpcController* controller,
-              const ::org::esb::rpc::MediafileRequest* request,
-              ::org::esb::rpc::MediafileResponse* response,
-              ::google::protobuf::Closure* done) {
+      const ::org::esb::rpc::MediafileRequest* request,
+      ::org::esb::rpc::MediafileResponse* response,
+      ::google::protobuf::Closure* done) {
 
       }
 
       void ApiServiceImpl::getMediafileList(::google::protobuf::RpcController* controller,
-              const ::org::esb::rpc::MediafileRequest* request,
-              ::org::esb::rpc::MediafileResponse* response,
-              ::google::protobuf::Closure* done) {
+      const ::org::esb::rpc::MediafileRequest* request,
+      ::org::esb::rpc::MediafileResponse* response,
+      ::google::protobuf::Closure* done) {
         if(_authtoken.length()==0){
           controller->SetFailed("not authenticated");
           return;

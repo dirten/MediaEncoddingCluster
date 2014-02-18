@@ -68,12 +68,9 @@ namespace org {
         litesql::Cursor<db::ProcessUnit> cur=source.cursor();
         for (;cur.rowsLeft(); cur++){
           db::ProcessUnit out=(*cur);
-          LOGDEBUG("aborted ProcessUnit found, restart it:"<<out)
           out.send=1;
           out.clientid="";
-          out.sendid="";
           out.update();
-          LOGDEBUG("changed to:"<<out)
         }
         litesql::Records recs = getContext()->database->query("select jobid_, sorcestream_ from processunit_ where codectype_='AUDIO' group by jobid_, sorcestream_ having count(*)>sum(send_>1) order by 1 desc");
         for (litesql::Records::iterator i = recs.begin(); i != recs.end(); i++){
