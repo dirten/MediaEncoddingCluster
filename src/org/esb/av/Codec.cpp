@@ -562,7 +562,7 @@ namespace org {
           //ctx->refcounted_frames=1;
           //ctx->channel_layout=AV_CH_LAYOUT_STEREO;
 
-          if (avcodec_open2(ctx, _codec,&_dict) < 0) {
+          if (avcodec_open2(ctx, _codec, &_dict) < 0) {
             LOGERROR("error in openning Codec (" << ctx->codec_id << ")");
           } else {
             std::string codec_mode = (_mode == ENCODER) ? "Encoder" : "Decoder";
