@@ -87,6 +87,7 @@ int main(int argc, char** argv) {
     _sdata[i].filter=NULL;
     _sdata[i].dec = new Decoder(fis.getAVStream(i));
     _sdata[i].dec->setStreamIndex(i);
+    _sdata[i].dec->open();
     _sdata[i].start_dts = fis.getStreamInfo(i)->getFirstDts();
     _sdata[i].enc = new Encoder();
     _sdata[i].more_frames = true;
@@ -221,7 +222,6 @@ int main(int argc, char** argv) {
       _sdata[i].enc->setFlag(CODEC_FLAG_GLOBAL_HEADER);
 
 
-    _sdata[i].dec->open();
     _sdata[i].enc->open();
 
     if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_AUDIO){

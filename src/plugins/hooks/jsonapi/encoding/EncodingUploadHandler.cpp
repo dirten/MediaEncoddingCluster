@@ -120,7 +120,7 @@ private:
 };
 
 class JSONAPI_EXPORT EncodingUploadHandler : public org::esb::core::WebHookPlugin {
-  org::esb::core::Graph * graphobj;
+  //org::esb::core::Graph * graphobj;
   db::HiveDb _db;
 public:
   EncodingUploadHandler() : _db(db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"))){

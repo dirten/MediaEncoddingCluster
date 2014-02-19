@@ -7,6 +7,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <assert.h>
 #include "org/esb/av/TimeStamp.h"
 #include "org/esb/util/Log.h"
 using namespace std;

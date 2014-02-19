@@ -194,7 +194,7 @@ ELSEIF(WIN32)
   SET(LIB_EXT .dll)
   SET(LIB_PRE)
 ENDIF(NOT WIN32)
-TARGET_LINK_LIBRARIES(util log4cplus )
+#TARGET_LINK_LIBRARIES(util log4cplus )
 
 IF(WIN32)
   TARGET_LINK_LIBRARIES(util wsock32 ws2_32 advapi32 iphlpapi)
@@ -318,7 +318,7 @@ add_library (hive SHARED
 #	hive/CommandOutputStream.cpp 
 #	hive/PacketCollector.cpp
 #	hive/CodecFactory.cpp 
-#	hive/job/Job.cpp
+#	hve/job/Job.cpp
 #	hive/job/JobDetail.cpp
 #	hive/job/JobHandler.cpp 
 #	hive/job/JobWatcher.cpp 
@@ -355,7 +355,7 @@ add_library (hive SHARED
 #  hive/xml/Project.cpp
 #  hive/xml/JobCreator.cpp
   config/config.cpp
-  hive/TestLogAppender.cpp
+  #hive/TestLogAppender.cpp
   hive/Environment.cpp
 #  hive/EncodingClientHandler.cpp
 #  hive/ClientStream.cpp

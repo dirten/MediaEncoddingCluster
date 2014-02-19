@@ -46,6 +46,12 @@
 
 #include "Poco/Process.h"
 
+//logging header
+#include "Poco/Logger.h"
+#include "Poco/SimpleFileChannel.h"
+#include "Poco/PatternFormatter.h"
+#include "Poco/FormattingChannel.h"
+
 using org::esb::hive::Environment;
 using org::esb::core::PluginRegistry;
 using org::esb::core::OptionsDescription;
@@ -53,12 +59,32 @@ using org::esb::signal::Messenger;
 using org::esb::util::StringUtil;
 using org::esb::lang::ProcessSupervisor;
 
+using Poco::Logger;
+using Poco::SimpleFileChannel;
+using Poco::PatternFormatter;
+using Poco::FormattingChannel;
 namespace po = boost::program_options;
 
 
 int main(int argc, char * argv[]) {
   std::cout << "test"<<std::endl;
   org::esb::hive::Environment::build(argc, argv);
+
+  /*initializing new logging*/
+  SimpleFileChannel * fileChannel=new SimpleFileChannel();
+  fileChannel->setProperty("path",Environment::get("log.path")+"/pocotest.log");
+  fileChannel->setProperty("rotation","10 M");
+
+  PatternFormatter * formater=new PatternFormatter();
+  //formater->setProperty("pattern","%Y-%m-%d %H:%M:%S.%i [%I][%p][%U:%u] %s: %t");
+  formater->setProperty("pattern","%Y-%m-%d %H:%M:%S.%i [%I][%p] %s: %t");
+  FormattingChannel * formatChannel=new FormattingChannel(formater, fileChannel);
+
+
+  Logger::root().setChannel(formatChannel);
+  Logger::root().setLevel("trace");
+  Logger::get("test.main").debug("test log");
+  poco_debug(Logger::get("test.main"), "test log");
   //return 0;
 
 
@@ -93,12 +119,13 @@ int main(int argc, char * argv[]) {
         ("docroot,d", po::value<std::string > (), "webserver document root");
     po::options_description all("all");
 
+    /*
     log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT(Environment::get("hive.config_path") + "/logging.properties"));
     log4cplus::helpers::Properties & props = const_cast<log4cplus::helpers::Properties&> (config.getProperties());
     props.setProperty(LOG4CPLUS_TEXT("appender.MAIN.File"), LOG4CPLUS_TEXT(Environment::get("log.path") + "/mhive-debug.log"));
     props.setProperty(LOG4CPLUS_TEXT("appender.ERROR.File"), LOG4CPLUS_TEXT(Environment::get("log.path") + "/mhive-error.log"));
     config.configure();
-
+    */
     /*this initialize the ffmpeg library*/
     org::esb::av::FormatBaseStream::initialize();
 
@@ -234,10 +261,12 @@ int main(int argc, char * argv[]) {
     }
 
     if (vm.count("client")&& !vm.count("supervisor")) {
+      /*
       log4cplus::helpers::Properties & props = const_cast<log4cplus::helpers::Properties&> (config.getProperties());
       props.setProperty(LOG4CPLUS_TEXT("appender.MAIN.File"), LOG4CPLUS_TEXT(Environment::get("log.path") + "/mhive-client-debug.log"));
       props.setProperty(LOG4CPLUS_TEXT("appender.ERROR.File"), LOG4CPLUS_TEXT(Environment::get("log.path") + "/mhive-client-error.log"));
       config.configure();
+      */
       Environment::set("mode", "client");
       PluginRegistry::getInstance()->startClientServices();
       org::esb::lang::CtrlCHitWaiter::wait();
@@ -251,6 +280,7 @@ int main(int argc, char * argv[]) {
 
     if (vm.count("waitonctrlc")) {
       org::esb::lang::CtrlCHitWaiter::wait();
+      std::cout <<"exit"<<std::endl;
     }
 
     if (vm.count("version")) {

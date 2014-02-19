@@ -12,9 +12,6 @@
 
 
 using namespace std;
-
-#include <log4cplus/logger.h>
-#include <log4cplus/configurator.h>
 #include <iostream>
 
 using namespace std;

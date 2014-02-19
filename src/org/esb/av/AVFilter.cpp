@@ -336,10 +336,12 @@ namespace org {
           */
         AVFrame * frame=NULL;
         if(p){
-          if(_type==VIDEO){
+          outFrame->setDuration(p->getDuration());
+          frame=av_frame_clone(p->getAVFrame());
+          if(frame && _type==VIDEO){
 
           }
-          if(_type==AUDIO){
+          if(frame && _type==AUDIO){
             int64_t filter_ch_layout=atoi((_input_params["channel_layout"]).c_str());
             int64_t frame_ch_layout=av_frame_get_channel_layout(p->getAVFrame());
             if(filter_ch_layout!=frame_ch_layout){
@@ -348,9 +350,6 @@ namespace org {
             }
           }
 
-          outFrame->setDuration(p->getDuration());
-          frame=av_frame_clone(p->getAVFrame());
-          //frame=p->getAVFrame();
         }
         if(!frame){
           LOGDEBUG("flush filter")

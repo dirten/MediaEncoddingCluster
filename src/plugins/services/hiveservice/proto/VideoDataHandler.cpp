@@ -260,7 +260,7 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
           msg.setProperty("processunit_encoded",_current_unit->id.value());
           msg.setProperty("jobid",_current_unit->jobid.value());
           msg.setProperty("sequence",_current_unit->sequence.value());
-          Messenger::getInstance().sendMessage(msg);
+          Messenger::getInstance().sendRequest(msg);
 
           _current_unit.reset();
         } else {

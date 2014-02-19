@@ -92,7 +92,7 @@ namespace org {
         _bytes_discard = 0;
 
         const AVOption * option = NULL;
-        while (option = av_opt_next(s->codec, option)) {
+        while ((option = av_opt_next(s->codec, option))) {
           if (option->offset > 0) {
 
             /*jump over deprecated options*/
@@ -436,8 +436,6 @@ namespace org {
 
       AVCodec * Codec::findCodecByName(std::string name, int mode) {
         AVCodec* result = NULL;
-        //        if(_codec_resolved)return result;
-        //        logdebug("try to find " << (mode == DECODER ? "Decoder" : "Encoder") << " with id:" << _codec_id);
         if (mode == DECODER) {
           result = avcodec_find_decoder_by_name(name.c_str());
           if (result == NULL) {

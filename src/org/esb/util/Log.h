@@ -3,6 +3,7 @@
 #ifndef ORG_ESB_UTIL_LOGGER_H
 #define ORG_ESB_UTIL_LOGGER_H
 #define WIN32_LEAN_AND_MEAN
+#define _DEBUG
 //#include "cxxtools/log.h"
 //#include "cxxtools/loginit.h"
 //#include "boost/date_time/gregorian/gregorian.hpp"
@@ -12,43 +13,77 @@
 #include <fstream>
 #include <sstream>
 #include <ostream>
-#include <log4cplus/logger.h>
-#include <log4cplus/loggingmacros.h>
-#include <log4cplus/spi/factory.h>
-#include <log4cplus/configurator.h>
+//#include <log4cplus/logger.h>
+//#include <log4cplus/loggingmacros.h>
+//#include <log4cplus/spi/factory.h>
+//#include <log4cplus/configurator.h>
 #include "org/esb/util/exports.h"
 
+//logging header
+#include "Poco/Logger.h"
+#include "Poco/SimpleFileChannel.h"
+#include "Poco/PatternFormatter.h"
+#include "Poco/FormattingChannel.h"
 
+using Poco::Logger;
+
+typedef std::ostringstream tostringstream;
 
 #define loginit(file)/*log_init(file)*/
-#define classlogger(name)static inline log4cplus::Logger getLogger(){return log4cplus::Logger::getInstance(name);}
-#define classlogger2(CLASS,name) log4cplus::Logger CLASS##::getLogger(){return log4cplus::Logger::getInstance(name);}
+//#define classlogger(name)static inline log4cplus::Logger getLogger(){return log4cplus::Logger::getInstance(name);}
+#define classlogger(name)static inline Poco::Logger & getLogger(){try{return Poco::Logger::get(name);}catch(...){}}
+//#define classlogger2(CLASS,name) log4cplus::Logger CLASS##::getLogger(){return log4cplus::Logger::getInstance(name);}
 //#define logger(name)static inline std::string getLoggerName(){return name;}
 
 //#define logfatal(o1)LOG4CPLUS_FATAL(getLogger(),o1);//loglevel(o1, "fatal")/*log_fatal(o1)*/
-#define LOGFATAL(o2)LOG4CPLUS_FATAL(getLogger(),o2);//loglevel(o1, "fatal")/*log_fatal(o1)*/
+//#define LOGFATAL(o2)LOG4CPLUS_FATAL(getLogger(),o2);//loglevel(o1, "fatal")/*log_fatal(o1)*/
+#define LOGFATAL(o2)poco_fatal(getLogger(),o2);//loglevel(o1, "fatal")/*log_fatal(o1)*/
 
 //#define logerror(o1)LOG4CPLUS_ERROR(getLogger(),o1);//loglevel(o1, "error")/*log_error(o1)*/
-#define LOGERROR(o2)LOG4CPLUS_ERROR(getLogger(),o2);//loglevel(o1, "error")/*log_error(o1)*/
+//#define LOGERROR(o2)LOG4CPLUS_ERROR(getLogger(),o2);//loglevel(o1, "error")/*log_error(o1)*/
+#define LOGERROR(o2) \
+  {tostringstream ostr; \
+  ostr << o2; \
+  poco_error(getLogger(),ostr.str());}
 
 //#define logwarn(o1)LOG4CPLUS_WARN(getLogger(),o1);//loglevel(o1, "warn")/*log_warn(o1)*/
-#define LOGWARN(o2)LOG4CPLUS_WARN(getLogger(),o2);//loglevel(o1, "warn")/*log_warn(o1)*/
+//#define LOGWARN(o2)LOG4CPLUS_WARN(getLogger(),o2);//loglevel(o1, "warn")/*log_warn(o1)*/
+#define LOGWARN(o2) \
+  {tostringstream ostr; \
+  ostr << o2; \
+  poco_warning(getLogger(),ostr.str());}
+
 
 //#define loginfo(o1)LOG4CPLUS_INFO(getLogger(),o1);//loglevel(o1, "info")/*log_info(o1)*/
-#define LOGINFO(o2)LOG4CPLUS_INFO(getLogger(),o2);//loglevel(o1, "warn")/*log_warn(o1)*/
+//#define LOGINFO(o2)LOG4CPLUS_INFO(getLogger(),o2);//loglevel(o1, "warn")/*log_warn(o1)*/
+#define LOGINFO(o2) \
+{tostringstream ostr; \
+ ostr << o2; \
+ poco_information(getLogger(),ostr.str());}
 
 //#define logdebug(o1)LOG4CPLUS_DEBUG(getLogger(),o1);//loglevel(o1, "debug")/*log_debug(o1)*/
-#define LOGDEBUG(o2)LOG4CPLUS_DEBUG(getLogger(),o2);//loglevel(o1, "warn")/*log_warn(o1)*/
-#define LOGDEBUG2(o2)LOG4CPLUS_DEBUG(log4cplus::Logger::getInstance(getLoggerName()),o2);//loglevel(o1, "warn")/*log_warn(o1)*/
+//#define LOGDEBUG(o2)LOG4CPLUS_DEBUG(getLogger(),o2);//loglevel(o1, "warn")/*log_warn(o1)*/
+#define LOGDEBUG(o2) \
+ {tostringstream ostr; \
+  ostr << o2; \
+  poco_debug(getLogger(),ostr.str());}
+
+//#define LOGDEBUG2(o2)LOG4CPLUS_DEBUG(log4cplus::Logger::getInstance(getLoggerName()),o2);//loglevel(o1, "warn")/*log_warn(o1)*/
 
 //#define logtrace(o1)LOG4CPLUS_TRACE(getLogger(),o1);//loglevel(o1, "trace")/*log_debug(o1)*/
-#define LOGTRACE(o2)LOG4CPLUS_TRACE(getLogger(),o2);//loglevel(o1, "warn")/*log_warn(o1)*/
+#define LOGTRACE(o2) \
+  {tostringstream ostr; \
+ ostr << o2; \
+ poco_trace(getLogger(),ostr.str());}
 
 //#define logtracemethod(o1)LOG4CPLUS_TRACE_METHOD(getLogger(),o1);//loglevel(o1, "trace")/*log_debug(o1)*/
-#define LOGTRACEMETHOD(o2)LOG4CPLUS_TRACE_METHOD(getLogger(),o2);//loglevel(o1, "warn")/*log_warn(o1)*/
+#define LOGTRACEMETHOD(o2) \
+  {tostringstream ostr; \
+  ostr << o2; \
+  poco_trace(getLogger(),ostr.str());}
 
 #include <iostream>
-static log4cplus::Logger getLogger(){return log4cplus::Logger::getInstance(LOG4CPLUS_TEXT("global"));}
+static Poco::Logger & getLogger(){try{return Poco::Logger::get("global");}catch(...){}}
 namespace org{
   namespace esb{
     namespace util{
@@ -70,6 +105,7 @@ public:
 	void log(std::string level, std::stringstream & s, const char * file, int line );
     ~Log();
 private:
+        /*
 	log4cplus::Logger trace_logger;
 	log4cplus::Logger debug_logger;
 	log4cplus::Logger info_logger;
@@ -78,6 +114,7 @@ private:
 	log4cplus::Logger fatal_logger;
 	log4cplus::Logger unknown_logger;
         log4cplus::ConfigureAndWatchThread * configureThread;
+        */
     Log();
     std::ofstream _myfile;
 };
