@@ -11,13 +11,14 @@ URL http://www.sqlite.org/sqlite-amalgamation-3.7.2.tar.gz
 CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} ${USER_CONFIG} --enable-static --disable-shared --with-pic
 BUILD_IN_SOURCE 1
 )
+
 SET(SQLITE_DIR "${BUILD_DIR}")
-SET(SQLITE_LIBRARY ${BUILD_DIR}/lib/libsqlite3${LIBRARY_SUFFIX})
+#SET(SQLITE_LIBRARY ${BUILD_DIR}/lib/libsqlite3.a)
 
 
 #add_definitions(-fPIC)
 ExternalProject_Add(litesqldep
-DEPENDS sqlitedep
+#DEPENDS sqlitedep
 #URL http://downloads.sourceforge.net/project/litesql/litesql/0.3.9/litesql-src-0.3.9.tar.gz
 URL http://downloads.sourceforge.net/project/litesql/litesql/0.3.16/litesql-src-0.3.16.tar.gz
 #PATCH_COMMAND chmod +x <SOURCE_DIR>/configure && chmod +x <SOURCE_DIR>/install-sh && cd <SOURCE_DIR> && patch -p1  < ${PROJECT_SOURCE_DIR}/src/patch/litesql.patch && cp ${PROJECT_SOURCE_DIR}/src/patch/litesql-CMakeLists.txt <SOURCE_DIR>/CMakeLists.txt
