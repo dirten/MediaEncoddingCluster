@@ -61,6 +61,8 @@ if(APPLE)
 #add_definitions(-arch i386)
 #SET (CMAKE_EXE_LINKER_FLAGS "-arch i386")
   add_definitions(-ftemplate-depth=200)
+# add_definitions(-std=c++11)
+
 ENDIF(APPLE)
 
 SET(SOCORRO_HOST localhost CACHE PATH "Socorro Host")

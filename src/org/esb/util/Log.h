@@ -3,7 +3,7 @@
 #ifndef ORG_ESB_UTIL_LOGGER_H
 #define ORG_ESB_UTIL_LOGGER_H
 #define WIN32_LEAN_AND_MEAN
-#define _DEBUG
+//#define _DEBUG
 //#include "cxxtools/log.h"
 //#include "cxxtools/loginit.h"
 //#include "boost/date_time/gregorian/gregorian.hpp"
