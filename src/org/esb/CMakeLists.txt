@@ -37,7 +37,7 @@ include_directories (${MEC_SOURCE_DIR}target/dependency/include)
 
 #link_directories (/c/bruteripper/target/dependency/lib)
 
-LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
+LINK_DIRECTORIES(${BOOST_DIR}/lib)
 
 LINK_DIRECTORIES(${LITESQL_DIR}/lib/static)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
@@ -74,7 +74,7 @@ add_library (db
 )
 TARGET_LINK_LIBRARIES(db )
 IF(NOT WIN32)
-  TARGET_LINK_LIBRARIES(db litesql litesql-util litesql_sqlite)
+  TARGET_LINK_LIBRARIES(db litesql litesql-util litesql_sqlite sqlite3)
 ELSEIF(WIN32)
   IF(CMAKE_BUILD_TYPE MATCHES "debug")
     TARGET_LINK_LIBRARIES(db litesqld litesql-utild litesql_sqlited)

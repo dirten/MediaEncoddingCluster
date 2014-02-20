@@ -9,9 +9,6 @@ ENDIF(NOT MINGW)
 INCLUDE(ExternalProject)
 INCLUDE(cmake/CMakeExternalsBoost.txt)
 INCLUDE(cmake/CMakeExternalsPoco.txt)
-INCLUDE(cmake/CMakeExternalsLog4CPlus.txt)
-#INCLUDE(cmake/CMakeExternalsSafmq.txt)
-#INCLUDE(cmake/CMakeExternalsZeromq.txt)
 INCLUDE(cmake/CMakeExternalsLitesql.txt)
 INCLUDE(cmake/CMakeExternalsFFMpeg.txt)
 ##temporary disabled until it will compile under mingw/linux(cross)
@@ -21,6 +18,12 @@ INCLUDE(cmake/CMakeExternalsFFMpeg.txt)
 #INCLUDE(cmake/CMakeExternalsGTest.txt)
 #INCLUDE(cmake/CMakeExternalsMochaui.txt)
 #INCLUDE(cmake/CMakeExternalsActiveMQ.txt)
+##log4cplus not longer needed, logging is now implemented with poco
+#INCLUDE(cmake/CMakeExternalsLog4CPlus.txt)
+
+#INCLUDE(cmake/CMakeExternalsSafmq.txt)
+#INCLUDE(cmake/CMakeExternalsZeromq.txt)
+
 
 set(BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build")
 set(DEPS_LIB_DIR "${BUILD_DIR}/lib")

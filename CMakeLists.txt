@@ -27,6 +27,8 @@ INCLUDE(cmake/HiveFindGo.txt)
 INCLUDE(cmake/Go.cmake)
 #INCLUDE(cmake/DownloadDeps.txt)
 
+LINK_DIRECTORIES(${BOOST_DIR}/lib)
+
 add_definitions(-DPOCO_NO_AUTOMATIC_LIBS)
 add_definitions(-DFF_API_ALLOC_CONTEXT)
 add_definitions(-DFF_API_AVCODEC_OPEN)
