@@ -31,7 +31,7 @@ typedef std::ostringstream tostringstream;
 
 #define loginit(file)/*log_init(file)*/
 //#define classlogger(name)static inline log4cplus::Logger getLogger(){return log4cplus::Logger::getInstance(name);}
-#define classlogger(name)static inline Poco::Logger & getLogger(){try{return Poco::Logger::get(name);}catch(...){}}
+#define classlogger(name)static inline Poco::Logger & getLogger(){try{return Poco::Logger::get(name);}catch(...){};return Poco::Logger::root();}
 //#define classlogger2(CLASS,name) log4cplus::Logger CLASS##::getLogger(){return log4cplus::Logger::getInstance(name);}
 //#define logger(name)static inline std::string getLoggerName(){return name;}
 
@@ -83,7 +83,7 @@ typedef std::ostringstream tostringstream;
   poco_trace(getLogger(),ostr.str());}
 
 #include <iostream>
-static Poco::Logger & getLogger(){try{return Poco::Logger::get("global");}catch(...){}}
+static Poco::Logger & getLogger(){try{return Poco::Logger::get("global");}catch(...){};return Poco::Logger::root();}
 namespace org{
   namespace esb{
     namespace util{

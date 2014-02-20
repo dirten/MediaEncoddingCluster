@@ -36,7 +36,7 @@ add_definitions(-DFF_API_CODEC_ID)
 #add_definitions(-Weffc++)
 #add_definitions(-Wall)
 
-
+#CMAKE_OSX_DEPLOYMENT_TARGET(10.6)
 IF(NOT WIN32)
   add_definitions(-fPIC)
   set(CMAKE_CXX_FLAGS "-D_REENTRANT")
@@ -61,8 +61,10 @@ if(APPLE)
 #add_definitions(-arch i386)
 #SET (CMAKE_EXE_LINKER_FLAGS "-arch i386")
   add_definitions(-ftemplate-depth=200)
-# add_definitions(-std=c++11)
+  #add_definitions(-std=c++11)
 
+  #set(CMAKE_CXX_FLAGS "-mmacosx-version-min=10.9")
+  #set(CMAKE_C_FLAGS "-mmacosx-version-min=10.9")
 ENDIF(APPLE)
 
 SET(SOCORRO_HOST localhost CACHE PATH "Socorro Host")

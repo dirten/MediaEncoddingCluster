@@ -28,6 +28,7 @@ namespace org {
       const std::string Environment::SYSTEM="hive.arch";
       const std::string Environment::DB_URL="db.url";
 
+
       Environment::Environment() {
       }
 
