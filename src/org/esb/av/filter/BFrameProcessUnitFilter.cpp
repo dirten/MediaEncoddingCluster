@@ -5,16 +5,16 @@ namespace org {
   namespace esb {
     namespace av {
 
-      BFrameProcessUnitFilter::BFrameProcessUnitFilter(): AVFilter(VIDEO,""){
-
+      BFrameProcessUnitFilter::BFrameProcessUnitFilter(): AVFilter(VIDEO,"")
+      {
       }
 
-      BFrameProcessUnitFilter::~BFrameProcessUnitFilter(){
-
+      BFrameProcessUnitFilter::~BFrameProcessUnitFilter()
+      {
       }
 
-      bool BFrameProcessUnitFilter::newFrame(Ptr<Frame> p){
-
+      bool BFrameProcessUnitFilter::newFrame(Ptr<Frame> p)
+      {
         if(!p){
           if(!previousFrame || previousFrame->getAVFrame()->pict_type==AV_PICTURE_TYPE_I){
             return pushFrame(Ptr<Frame>());
