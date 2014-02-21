@@ -420,8 +420,6 @@ namespace encodingtask {
     pu.sendid=unit->uuid;
     pu.jobid=_task_uuid;
     pu.sequence=unit->_sequence;
-    pu.timebasenum=unit->_decoder->getTimeBase().num*unit->_decoder->ctx->ticks_per_frame;
-    pu.timebaseden=unit->_decoder->getTimeBase().den;
     if(unit->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO){
       pu.codectype=db::ProcessUnit::Codectype::VIDEO;
     }
@@ -433,8 +431,10 @@ namespace encodingtask {
     if (unit->_input_packets.size() > 0) {
       boost::shared_ptr<org::esb::av::Packet> first_packet = unit->_input_packets.front();
       boost::shared_ptr<org::esb::av::Packet> last_packet = unit->_input_packets.back();
-      pu.startts=(double)first_packet->getDts();
-      pu.endts=(double)last_packet->getDts();
+      pu.startts=(double)first_packet->getDtsTimeStamp().getTime();
+      pu.endts=(double)last_packet->getDtsTimeStamp().getTime();
+      pu.timebasenum=first_packet->getDtsTimeStamp().getTimeBase().num;
+      pu.timebaseden=first_packet->getDtsTimeStamp().getTimeBase().den;
       pu.framecount=(int)unit->_input_packets.size();
     }
     //std::string data=serializeProcessUnit(unit);

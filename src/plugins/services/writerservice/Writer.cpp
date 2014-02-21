@@ -59,7 +59,8 @@ namespace plugin {
       _encoderList.push_back((*it).second);
       (*it).second->open();
       _pos->setEncoder(*(*it).second.get(),a);
-      _stream_timestamps[a]=AV_NOPTS_VALUE;
+      //_stream_timestamps[a]=AV_NOPTS_VALUE;
+      _stream_timestamps[a]=0;
     }
 
     if(!_pos->init()){
@@ -106,8 +107,8 @@ namespace plugin {
 
   Writer::~Writer()
   {
-    LOGDEBUG("~Writer()");
-    LOGDEBUG("cleanup");
+    //LOGDEBUG("~Writer()");
+    //LOGDEBUG("cleanup");
 
     if(_pos)
       _pos->close();
