@@ -38,7 +38,8 @@ add_definitions(-DFF_API_CODEC_ID)
 #add_definitions(-Weffc++)
 #add_definitions(-Wall)
 
-#CMAKE_OSX_DEPLOYMENT_TARGET(10.6)
+#SET(CMAKE_OSX_DEPLOYMENT_TARGET 10.6)
+
 IF(NOT WIN32)
   add_definitions(-fPIC)
   set(CMAKE_CXX_FLAGS "-D_REENTRANT")

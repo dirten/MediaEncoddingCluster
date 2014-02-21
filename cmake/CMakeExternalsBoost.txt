@@ -7,6 +7,10 @@ IF(MINGW)
   SET(SPECIAL_ARGS "toolset=gcc-mingw" "target-os=windows" "threadapi=win32")
 ENDIF(MINGW)
 
+IF(APPLE)
+  #SET(SPECIAL_ARGS ${SPECIAL_ARGS} cxxflags='-mmacosx-version-min=10.7')
+ENDIF(APPLE)
+
 IF(DEBUG)
   SET(SPECIAL_ARGS ${SPECIAL_ARGS} "variant=debug")
 ELSE(DEBUG)

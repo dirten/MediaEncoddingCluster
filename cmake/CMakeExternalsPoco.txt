@@ -11,7 +11,7 @@ ExternalProject_Add(poco
   CONFIGURE_COMMAND CFLAGS=-fPIC && CXXFLAGS=-fPIC && <SOURCE_DIR>/configure --prefix=${BUILD_DIR} ${USER_CONFIG} --static --no-tests --no-samples --cflags=-fPIC --omit=Data/ODBC,Data/MySQL,NetSSL_OpenSSL,Crypto,PageCompiler
   BUILD_IN_SOURCE 1
 )
-
+#--cflags=-mmacosx-version-min=10.7 
 IF(MINGW)
   ExternalProject_Add_Step(poco setup_poco_config_mingw
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/cmake/MinGW-w64 <SOURCE_DIR>/build/config/MinGW-w64
