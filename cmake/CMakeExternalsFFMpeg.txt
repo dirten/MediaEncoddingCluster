@@ -83,13 +83,13 @@ BUILD_IN_SOURCE 1
 
 
 
-#ExternalProject_Add(xviddep
-#URL http://downloads.xvid.org/downloads/xvidcore-${xvid_version}.tar.gz
-#CONFIGURE_COMMAND cd <SOURCE_DIR>/build/generic/  && CFLAGS=-fPIC && ./configure --prefix=${BUILD_DIR} ${USER_CONFIG} --enable-static --disable-shared
-#BUILD_COMMAND cd <SOURCE_DIR>/build/generic && make
-#INSTALL_COMMAND cd <SOURCE_DIR>/build/generic && make install
-#BUILD_IN_SOURCE 1
-#)
+ExternalProject_Add(xviddep
+URL http://downloads.xvid.org/downloads/xvidcore-${xvid_version}.tar.gz
+CONFIGURE_COMMAND cd <SOURCE_DIR>/build/generic/  && CFLAGS=-fPIC && ./configure --prefix=${BUILD_DIR} ${USER_CONFIG} --enable-static --disable-shared
+BUILD_COMMAND cd <SOURCE_DIR>/build/generic && make
+INSTALL_COMMAND cd <SOURCE_DIR>/build/generic && make install
+BUILD_IN_SOURCE 1
+)
 
 ExternalProject_Add(libvpxdep
 DEPENDS yasm nasm
