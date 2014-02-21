@@ -41,8 +41,6 @@ add_library (core SHARED
 MESSAGE("PocoLinkLibarayUtil"  ${POCO_LIB_NET_UTIL})
 
 TARGET_LINK_LIBRARIES(core 
-  #${POCO_LIB_NET}
-  #${POCO_LIB_NET_UTIL}
   #${POCO_LIB_FOUNDATION}
   #json
   #db
@@ -53,20 +51,24 @@ TARGET_LINK_LIBRARIES(core
   #${Boost_LIBRARIES}
   #lang
   #io
+#  iphlpapi
   hive
   #db
   #util
   #core_http
   grid
+#  ${POCO_LIB_NET}
+#  ${POCO_LIB_NET_UTIL}
 )
 
 if(MINGW)
   TARGET_LINK_LIBRARIES(core
-    iphlpapi
     #ws2_32
     #wsock32
     #gdi32
   )
+  TARGET_LINK_LIBRARIES(core wsock32 ws2_32 advapi32 iphlpapi)
+
 ENDIF(MINGW)
 
 SET_TARGET_PROPERTIES( core PROPERTIES PREFIX "libmhive-")

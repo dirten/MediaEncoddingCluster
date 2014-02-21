@@ -3,12 +3,13 @@
 
 
 #include "../AVFilter.h"
+#include "../exports.h"
 
 namespace org {
   namespace esb {
     namespace av {
 
-      class BFrameProcessUnitFilter : public AVFilter {
+      class AV_EXPORT BFrameProcessUnitFilter : public AVFilter {
         public:
           BFrameProcessUnitFilter();
           ~BFrameProcessUnitFilter();

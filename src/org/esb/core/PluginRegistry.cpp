@@ -6,6 +6,7 @@
  */
 
 #include "org/esb/db/hivedb.hpp"
+#include "org/esb/grid/GridRegistry.h"
 
 #include "PluginRegistry.h"
 #include "ServicePlugin.h"
@@ -22,7 +23,6 @@
 #include "Poco/Net/FTPStreamFactory.h"
 #include "WebHookHandlerFactory.h"
 #include "org/esb/hive/Environment.h"
-#include "org/esb/grid/GridRegistry.h"
 
 #include <string.h>
 //#include "org/esb/api/ApiWebServer.h"

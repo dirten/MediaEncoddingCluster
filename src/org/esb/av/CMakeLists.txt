@@ -53,12 +53,11 @@ add_library (av SHARED
   filter/BFrameProcessUnitFilter.cpp
 )
 TARGET_LINK_LIBRARIES(av
-  ${FFMPEG_SWSCALE_LIBRARY}
-  ${FFMPEG_AVUTIL_LIBRARY}
+  ${FFMPEG_AVFILTER_LIBRARY}
   ${FFMPEG_AVCODEC_LIBRARY}
   ${FFMPEG_AVFORMAT_LIBRARY}
+  ${FFMPEG_SWSCALE_LIBRARY}
   ${FFMPEG_SWRESAMPLE_LIBRARY}
-  ${FFMPEG_AVFILTER_LIBRARY}
 #  ${FFMPEG_AVCORE_LIBRARY}
   ${BZ2_LIB}
   util
@@ -71,6 +70,7 @@ TARGET_LINK_LIBRARIES(av
   vorbis
   vorbisenc
   postproc
+  ${FFMPEG_AVUTIL_LIBRARY}
 )
 IF(NOT WIN32)
 #	target_link_libraries (av x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora theoraenc theoradec z )
