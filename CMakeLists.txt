@@ -7,6 +7,7 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 project (MEC)
 
+
 ############################################################
 #
 # Setup the version for MHive
@@ -19,8 +20,17 @@ SET(MINOR_PATCH_VERSION 0)
 SET(REV ${SVN_VERSION})
 
 
-INCLUDE(cmake/CMakeListExternals.txt)
 
+
+if(NOT CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE MATCHES "")
+  message(STATUS "Setting build type to 'Debug' as none was specified.")
+  set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build." FORCE)
+  # Set the possible values of build type for cmake-gui
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+endif()
+
+
+INCLUDE(cmake/CMakeListExternals.txt)
 INCLUDE(CTest)
 INCLUDE(cmake/HiveFindGo.txt)
 #INCLUDE(cmake/CMakeListExternals.txt)
@@ -154,6 +164,8 @@ set(BOOST_ROOT ${BOOST_DIR})
 # Build Type Options
 #
 ############################################################
+
+
 
 IF(CMAKE_BUILD_TYPE MATCHES "Debug")
   ADD_DEFINITIONS(-DDEBUG)

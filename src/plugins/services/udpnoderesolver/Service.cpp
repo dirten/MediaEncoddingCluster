@@ -62,7 +62,6 @@ namespace udpnoderesolver {
   }
 
   Service::~Service() {
-    LOGDEBUG("Service::~Service()");
     delete _resolver;
     _resolver = NULL;
     delete _agent;

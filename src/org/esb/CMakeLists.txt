@@ -76,11 +76,11 @@ TARGET_LINK_LIBRARIES(db )
 IF(NOT WIN32)
   TARGET_LINK_LIBRARIES(db litesql litesql-util litesql_sqlite sqlite3)
 ELSEIF(WIN32)
-  IF(CMAKE_BUILD_TYPE MATCHES "debug")
-    TARGET_LINK_LIBRARIES(db litesqld litesql-utild litesql_sqlited)
-    ELSE()
-    TARGET_LINK_LIBRARIES(db litesql litesql-util litesql_sqlite)
-  ENDIF()
+#  IF(CMAKE_BUILD_TYPE MATCHES "debug")
+#    TARGET_LINK_LIBRARIES(db litesqld litesql-utild litesql_sqlited)
+#    ELSE()
+    TARGET_LINK_LIBRARIES(db litesql litesql-util litesql_sqlite sqlite3)
+#  ENDIF()
 ENDIF(NOT WIN32)
 IF(BUILD_SHARED_LIBS)
   INSTALL(TARGETS db
@@ -373,7 +373,17 @@ TARGET_LINK_LIBRARIES(hive
   ${POCO_LIB_ZIP}
   ${POCO_LIB_NET}
   ${POCO_LIB_FOUNDATION}
+
 )
+if(MINGW)
+  TARGET_LINK_LIBRARIES(hive
+  iphlpapi
+  ws2_32
+    #wsock32
+    #gdi32
+  )
+ENDIF(MINGW)
+
 
 INSTALL(TARGETS hive
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}

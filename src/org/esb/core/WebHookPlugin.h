@@ -7,11 +7,11 @@
 
 #ifndef WEBHOOKPLUGIN_H
 #define	WEBHOOKPLUGIN_H
+#include "http/HTTPServerRequest.h"
+#include "http/HTTPServerResponse.h"
 #include "Plugin.h"
 #include "PluginRegistry.h"
 #include "HookNotificationCenter.h"
-#include "http/HTTPServerRequest.h"
-#include "http/HTTPServerResponse.h"
 
 namespace org {
   namespace esb {
