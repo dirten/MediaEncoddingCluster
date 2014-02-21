@@ -35,7 +35,7 @@ namespace org {
       class Packet;
       class Frame;
 /**
-  * @TODO : think about the need of the shared / plain pointer
+  * @TODO : think about the need of the shared / plain pointer in addTarget
   *
 */
       class AV_EXPORT AVPipe
