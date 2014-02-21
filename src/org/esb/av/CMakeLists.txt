@@ -63,6 +63,14 @@ TARGET_LINK_LIBRARIES(av
   ${BZ2_LIB}
   util
   io
+  mp3lame
+  x264
+  vpx
+  theora
+  ogg
+  vorbis
+  vorbisenc
+  postproc
 )
 IF(NOT WIN32)
 #	target_link_libraries (av x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora theoraenc theoradec z )
