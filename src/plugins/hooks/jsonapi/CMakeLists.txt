@@ -64,8 +64,8 @@ add_library (jsonapi SHARED
 TARGET_LINK_LIBRARIES(jsonapi
   core
   json
-  av
   streamsource
+  av
   ${POCO_LIB_NET}
   ${POCO_LIB_FOUNDATION}
 

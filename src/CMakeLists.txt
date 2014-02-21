@@ -72,9 +72,9 @@ target_link_libraries (mhive
 )
 IF(WIN32)
   IF(CMAKE_BUILD_TYPE MATCHES "debug")
-    TARGET_LINK_LIBRARIES(mhive log4cplusd)
+    #TARGET_LINK_LIBRARIES(mhive log4cplusd)
   ELSE()
-    TARGET_LINK_LIBRARIES(mhive log4cplus)
+    #TARGET_LINK_LIBRARIES(mhive log4cplus)
   ENDIF()
 ELSEIF(APPLE)
 

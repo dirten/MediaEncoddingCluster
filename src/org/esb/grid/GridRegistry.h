@@ -1,13 +1,14 @@
 #ifndef GRIDREGISTRY_H
 #define GRIDREGISTRY_H
 
+#include "GridNode.h"
+
 #include "org/esb/signal/Message.h"
 #include "org/esb/signal/MessageListener.h"
 #include "org/esb/signal/Messenger.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/lang/Ptr.h"
 
-#include "GridNode.h"
 #include "list"
 namespace org{
   namespace esb{
