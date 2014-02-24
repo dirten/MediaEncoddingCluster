@@ -34,24 +34,24 @@ using namespace org::esb::av;
 namespace encodingtask {
 
   class StreamPacketizerPacketSink : public AVPipe {
-    public:
-      StreamPacketizerPacketSink():AVPipe() {
-      }
+  public:
+    StreamPacketizerPacketSink():AVPipe() {
+    }
 
-      bool newFrame(Ptr<Frame>){return false;}
+    bool newFrame(Ptr<Frame>){return false;}
 
-      bool newPacket(Ptr<Packet> p){
-        pkts.push_back(p);
+    bool newPacket(Ptr<Packet> p){
+      pkts.push_back(p);
 
-        return true;
-      }
+      return true;
+    }
 
-      std::list<boost::shared_ptr<Packet> > getList() {
-        return pkts;
-      }
+    std::list<boost::shared_ptr<Packet> > getList() {
+      return pkts;
+    }
 
-    private:
-      std::list<boost::shared_ptr<Packet> > pkts;
+  private:
+    std::list<boost::shared_ptr<Packet> > pkts;
   };
 
   /**
@@ -59,6 +59,27 @@ namespace encodingtask {
   */
   StreamPacketizer::StreamPacketizer()
   {
+  }
+
+  StreamPacketizer::StreamPacketizer(org::esb::av::Encoder * encoder, Ptr<org::esb::av::Decoder> decoder){
+    _codec_min_packets[AVMEDIA_TYPE_VIDEO] = MIN_VIDEO_PACKETS;
+    _codec_min_packets[AVMEDIA_TYPE_AUDIO] = MIN_AUDIO_PACKETS;
+
+    /**
+         * init internal streams data
+         */
+    if (!decoder)
+      LOGERROR("Decoder is NULL");
+    if (!encoder)
+      LOGERROR("Encoder is NULL");
+    //LOGDEBUG("CodecId:"<<decoder->getCodecId());
+    _decoder=decoder;
+    encoder_sample_rate=encoder->getSampleRate();
+    encoder_frame_size=encoder->ctx->frame_size;
+    //_encoder=encoder;
+    _stream.min_packet_count = 0;// _codec_min_packets[decoder->getCodecType()];
+    _stream.state = STATE_NOP;
+    delay=0;
   }
 
   StreamPacketizer::StreamPacketizer(int size, Ptr<Decoder> decoder) {
@@ -93,6 +114,7 @@ namespace encodingtask {
     if (_codec_overlap.find(_decoder->getCodecId()) == _codec_overlap.end()) {
       _codec_overlap[_decoder->getCodecId()] = 0;
     }
+    calulatePUSizeForPacket(ptr);
     result = processPacket(ptr);
     return result;
   }
@@ -137,6 +159,38 @@ namespace encodingtask {
     _stream.packets.clear();
     _overlap_queue.clear();
   }
+  int StreamPacketizer::euklid(int a, int b)
+  {
+    if (b == 0)
+      return a;
+     else
+      return euklid(b, a % b);
+
+  }
+
+  void StreamPacketizer::calulatePUSizeForPacket(org::esb::av::PacketPtr p){
+    if(_stream.min_packet_count==0){
+      if(_decoder->getCodecType()==AVMEDIA_TYPE_AUDIO){
+        /*calculation the frame boundaries*/
+        int dec_frame_size=_decoder->ctx->frame_size;
+        /*sometimes the decoder frame size will be zero, then calculate the frame size from packet*/
+        if(dec_frame_size==0){
+          dec_frame_size=p->getDuration();
+          dec_frame_size=av_rescale_q(dec_frame_size, p->getTimeBase(), Rational(1,_decoder->getSampleRate()));
+        }
+        /*calculate the decoder framesize for the other sample rate*/
+        dec_frame_size=av_rescale(dec_frame_size,  encoder_sample_rate, _decoder->getSampleRate());
+
+        //int enc_frame_size=_encoder->ctx->frame_size;
+        int gcd=euklid(dec_frame_size, encoder_frame_size);
+        int gcd_base=std::max(dec_frame_size, encoder_frame_size);
+        _stream.min_packet_count=gcd_base/gcd;
+      }
+      if(_decoder->getCodecType()==AVMEDIA_TYPE_VIDEO){
+        _stream.min_packet_count=MIN_VIDEO_PACKETS;
+      }
+    }
+  }
 
   /***
        * this function packetizes the GOPs in chunks between the IFrames
@@ -179,7 +233,7 @@ namespace encodingtask {
 
     if(_stream.state == STATE_END_I_FRAME && (_decoder->getCodecOption("has_b_frames") == "1")){
       LOGDEBUG("has a bframe")
-      PacketPtr iFrame=_overlap_queue.front();
+          PacketPtr iFrame=_overlap_queue.front();
       delay++;
       //if(delay>=3){
 
@@ -223,15 +277,15 @@ namespace encodingtask {
           //Frame  :
           if(frame->getAVFrame()->pict_type== AV_PICTURE_TYPE_P){
             LOGDEBUG("Prediction Picture with delay of "<<delay)
-            //IBBPBBPBBP
-            //   IBBP
-            //LOGDEBUG("frame type = "+ org::esb::util::StringUtil::toString(frame->getAVFrame()->pict_type));
-            /*in the first roundtrip the stream packets look like this, the first B Frames are not removed*/
-            /*_streams[stream_idx].packets =IBBPBBPBBPBB*/
-            /*in the following roundtrip the stream packets look like this*/
-            /*_streams[stream_idx].packets =IPBBPBBPBB*/
-            /*_overlap_queue[stream_idx]   =IBBP*/
-            _stream.state = STATE_START_I_FRAME;
+                //IBBPBBPBBP
+                //   IBBP
+                //LOGDEBUG("frame type = "+ org::esb::util::StringUtil::toString(frame->getAVFrame()->pict_type));
+                /*in the first roundtrip the stream packets look like this, the first B Frames are not removed*/
+                /*_streams[stream_idx].packets =IBBPBBPBBPBB*/
+                /*in the following roundtrip the stream packets look like this*/
+                /*_streams[stream_idx].packets =IPBBPBBPBB*/
+                /*_overlap_queue[stream_idx]   =IBBP*/
+                _stream.state = STATE_START_I_FRAME;
             /**
            * appending the next IBB from the IBBP order to the actual packet_list
            * */
@@ -295,6 +349,6 @@ namespace encodingtask {
       }
     return result;
   }
-}
+  }
 
 

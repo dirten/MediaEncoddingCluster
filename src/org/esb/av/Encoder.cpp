@@ -104,7 +104,7 @@ bool Encoder::newFrame(Ptr<Frame> f){
       return encode();
     }else{
       LOGDEBUG("flush audio")
-      return false;
+        return encodeAudio2(NULL);
     }
   }
 }
@@ -358,13 +358,17 @@ void Encoder::setSink(Sink * sink) {
   _sink = sink;
 }
 int Encoder::encodeAudio2(Frame & frame) {
+  encodeAudio2(frame.getAVFrame());
+}
+
+int Encoder::encodeAudio2(AVFrame * frame) {
   // LOGDEBUG("EncodeAudio2:"<<frame.toString());
   Ptr<Packet> pak=new Packet();
   int got_packet;
   int out_size = avcodec_encode_audio2(
         ctx,
         pak->getAVPacket(),
-        frame.getAVFrame(),
+        frame,
         &got_packet
         );
 
@@ -380,8 +384,9 @@ int Encoder::encodeAudio2(Frame & frame) {
   }
   _last_dts += pak->getDuration();
   LOGDEBUG("EncodeAudio2:"<<pak->toString());
-  return pushPacket(pak);
-
+  if(got_packet)
+    return pushPacket(pak);
+  return false;
   if (_pos != NULL)
     _pos->writePacket(*pak);
   if (_sink != NULL)

@@ -97,6 +97,7 @@ namespace encodingtask {
 
 
 
+
     /*
     template<typename T>
     std::string serializeProcessUnit(const T &object) {

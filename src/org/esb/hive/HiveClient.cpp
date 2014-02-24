@@ -144,7 +144,8 @@ namespace org {
                * clear the input packets, they are no more nedded
                * they only consumes Network bandwidth and cpu on the server
                */
-              unit->_input_packets.clear();
+              if(unit)
+                unit->_input_packets.clear();
 
               char * text_out = const_cast<char*> ("put process_unit");
               try {
@@ -192,7 +193,7 @@ namespace org {
         std::string stream_id=unit->getJobId();
         stream_id+=StringUtil::toString(unit->_source_stream);
 
-        if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+        if (false && unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
 
 
           LOGDEBUG("special handling audio")
@@ -218,7 +219,7 @@ namespace org {
           LOGDEBUG("no audio codec");
         }
         unit->process();
-        if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+        if (false && unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
           if (_swap_codec_list[stream_id]) {
             LOGDEBUG("swap back to hold the data");
             _decoder_list[stream_id] = unit->_decoder;
@@ -226,9 +227,6 @@ namespace org {
             _converter_list[stream_id] = unit->_converter;
             _filter_list[stream_id] = unit->getFilter();
           }
-        }
-        if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
-
           if (unit->_last_process_unit) {
             LOGDEBUG("Last ProcessUnit for Audio received, clear out");
             _swap_codec_list.clear();

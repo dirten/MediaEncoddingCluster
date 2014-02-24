@@ -81,6 +81,9 @@ namespace encodingtask {
       std::map<int, Ptr<org::esb::av::Decoder> >::iterator it = tmp.begin();
 
       for (int a=0; it != tmp.end(); it++) {
+        if((*it).second->getCodecType() != AVMEDIA_TYPE_AUDIO && (*it).second->getCodecType() != AVMEDIA_TYPE_VIDEO){
+          continue;
+        }
         if ((*it).second->getCodecType() == AVMEDIA_TYPE_VIDEO) {
           /*special prepare of the encoder for using the input width/heigth*/
           if (_codecs["video"].count("width") == 0 ||
@@ -105,6 +108,7 @@ namespace encodingtask {
             throw org::esb::core::TaskException("could not open Video Encoder");
           }
         }
+
         if ((*it).second->getCodecType() == AVMEDIA_TYPE_AUDIO) {
           _encs[(*it).first]=new Encoder(_codecs["audio"]);
           _encs[(*it).first]->setStreamIndex(a++);
@@ -118,8 +122,11 @@ namespace encodingtask {
         sd.last_timestamp = 0;
         //sd.out_stream_index = a;
         //sd.stream_type = data.second->getCodecType();
+        /*calculate the audio pu size*/
 
-        _packetizer[(*it).first] = StreamPacketizer(0, (*it).second);
+
+        //_packetizer[(*it).first] = StreamPacketizer(0, (*it).second);
+        _packetizer[(*it).first] = StreamPacketizer(_encs[(*it).first].get(), (*it).second);
         _spu[(*it).first]=StreamProcessUnitBuilder();
         //std::string qReadName=_task_uuid+"#read#"+StringUtil::toString( (*it).first );
         //std::string qWriteName=_task_uuid+"#write#"+StringUtil::toString( (*it).first );

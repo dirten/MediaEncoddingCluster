@@ -50,6 +50,7 @@ namespace encodingtask {
     public:
       StreamPacketizer();
       StreamPacketizer(int size, Ptr<org::esb::av::Decoder>);
+      StreamPacketizer(org::esb::av::Encoder *, Ptr<org::esb::av::Decoder>);
       ~StreamPacketizer();
       bool putPacket(org::esb::av::PacketPtr);
       void flushStreams();
@@ -61,6 +62,9 @@ namespace encodingtask {
       bool processPacket(org::esb::av::PacketPtr);
       StreamData _stream;
       Ptr<org::esb::av::Decoder> _decoder;
+      int encoder_sample_rate;
+      int encoder_frame_size;
+      //Ptr<org::esb::av::Encoder> _encoder;
 
       std::list<org::esb::av::PacketListPtr> _packet_list;
 
@@ -73,6 +77,8 @@ namespace encodingtask {
       std::map<AVMediaType, int> _codec_min_packets;
 
       int delay;
+      int euklid(int a, int b);
+      void calulatePUSizeForPacket(org::esb::av::PacketPtr);
 
   };
 }

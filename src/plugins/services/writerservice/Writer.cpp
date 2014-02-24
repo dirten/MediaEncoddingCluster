@@ -233,7 +233,7 @@ namespace plugin {
     /*mark completed*/
     _outputfile->status=db::OutputFile::Status::Completed;
     _outputfile->update();
-
+    return;
     /*cleanup files*/
     if(_outputfile->jobid.value().length()>0){ //not to delete accidentally "data directory"
       std::string base = org::esb::config::Config::get("hive.data_path");

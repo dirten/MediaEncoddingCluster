@@ -89,7 +89,7 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
           do{
             result=*unit_cursor;
             LOGDEBUG("fetch next ProcessUnit:"<<result.codectype<<":id:"<<result.id)
-            if(result.codectype==db::ProcessUnit::Codectype::AUDIO){
+            if(false && result.codectype==db::ProcessUnit::Codectype::AUDIO){
 
               if(((std::string)result.clientid).length()==0){
                 _db.query("UPDATE processunit_ set clientid_='"+client_id+"' where jobid_='"+result.jobid+"' and codectype_='AUDIO' AND sorcestream_="+result.sorcestream);

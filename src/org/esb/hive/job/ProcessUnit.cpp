@@ -233,7 +233,7 @@ void ProcessUnit::processInternal2() {
     _decoder->newPacket(p);
   }
 
-  if(_decoder->getCodecType()==AVMEDIA_TYPE_VIDEO){
+  //if(_decoder->getCodecType()==AVMEDIA_TYPE_VIDEO){
     LOGDEBUG("flush");
 
     /*sending an empty packet is implicit a flush for the pipe*/
@@ -243,8 +243,9 @@ void ProcessUnit::processInternal2() {
     //while(filter->newPacket(new Packet()));
     //while(filter->newFrame(new Frame()));
     //}
-  }
-  _decoder->clearTargets();
+  //}
+
+    _decoder->clearTargets();
   _filter->clearTargets();
   _encoder->clearTargets();
 

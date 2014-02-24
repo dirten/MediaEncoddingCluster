@@ -58,7 +58,7 @@ namespace org {
         static void dropTables();
         static void loadPresets();
         static void bootstrap();
-        static ::db::HiveDb getDatabase();
+        static ::db::HiveDb & getDatabase();
       private:
         static bool _running;
         static std::string _base_path;

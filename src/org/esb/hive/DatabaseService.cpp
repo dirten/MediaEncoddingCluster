@@ -244,7 +244,7 @@ namespace org {
         p1.start();
       }
 
-      db::HiveDb DatabaseService::getDatabase() {
+      db::HiveDb & DatabaseService::getDatabase() {
         if (!_running) {
           start();
         }
