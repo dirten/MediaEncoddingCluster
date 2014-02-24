@@ -171,20 +171,16 @@ namespace encodingtask {
   void StreamPacketizer::calulatePUSizeForPacket(org::esb::av::PacketPtr p){
     if(_stream.min_packet_count==0){
       if(_decoder->getCodecType()==AVMEDIA_TYPE_AUDIO){
-        /*calculation the frame boundaries*/
-        int dec_frame_size=_decoder->ctx->frame_size;
-        /*sometimes the decoder frame size will be zero, then calculate the frame size from packet*/
-        if(dec_frame_size==0){
-          dec_frame_size=p->getDuration();
-          dec_frame_size=av_rescale_q(dec_frame_size, p->getTimeBase(), Rational(1,_decoder->getSampleRate()));
-        }
-        /*calculate the decoder framesize for the other sample rate*/
-        dec_frame_size=av_rescale(dec_frame_size,  encoder_sample_rate, _decoder->getSampleRate());
 
-        //int enc_frame_size=_encoder->ctx->frame_size;
-        int gcd=euklid(dec_frame_size, encoder_frame_size);
-        int gcd_base=std::max(dec_frame_size, encoder_frame_size);
-        _stream.min_packet_count=gcd_base/gcd;
+        /*calculation the frame boundaries*/
+        int dec_frame_size=p->getDuration();
+        dec_frame_size*=10;
+        dec_frame_size=av_rescale_q(dec_frame_size, p->getTimeBase(), Rational(1,encoder_sample_rate));
+
+        int gcd=av_gcd(dec_frame_size, encoder_frame_size);
+        int lcm=(dec_frame_size*encoder_frame_size*10)/gcd;
+
+        _stream.min_packet_count=(lcm*10)/dec_frame_size;
       }
       if(_decoder->getCodecType()==AVMEDIA_TYPE_VIDEO){
         _stream.min_packet_count=MIN_VIDEO_PACKETS;

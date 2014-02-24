@@ -16,7 +16,7 @@ target_link_libraries (TestFileQueue lang util io ${Boost_LIBRARIES})
 target_link_libraries (TestBoostQueue lang util )
 target_link_libraries (PropertyTreeTest lang util )
 #target_link_libraries (RapidXmlTest lang util io)
-target_link_libraries (DecimalTest util)
+target_link_libraries (DecimalTest util av)
 #target_link_libraries (ChannelTest lang util)
 #target_link_libraries (LogTest util )
 

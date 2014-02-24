@@ -42,7 +42,7 @@ namespace util{
    * floating point is used in the conversion, and the result is an
    * approximation.
    */
-  class Decimal
+  class UTIL_EXPORT Decimal
   {
   public:
     typedef unsigned long long int MantissaType;

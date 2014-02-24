@@ -250,6 +250,12 @@ void ProcessUnit::processInternal2() {
   _encoder->clearTargets();
 
   _output_packets = sink.getList();
+
+  /*for testing purpose only, need to calculate the real packet count to cut out the end*/
+  if(_decoder->getCodecType()==AVMEDIA_TYPE_AUDIO){
+    _output_packets.pop_back();
+  }
+
   if(_decoder->getCodecId()==AV_CODEC_ID_MPEG2VIDEO){
     //_output_packets.pop_back();
   }

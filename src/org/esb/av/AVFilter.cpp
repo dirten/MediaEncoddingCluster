@@ -97,7 +97,7 @@ namespace org {
           av_log(NULL, AV_LOG_ERROR, "Cannot create audio buffer source with arguments\n%s", args);
           throw Exception(__FILE__, __LINE__,"Cannot create audio buffer source with arguments\n%s", args);
         }
-        av_log(NULL, AV_LOG_INFO, "created audio buffer source with arguments\n%s", args);
+        //av_log(NULL, AV_LOG_INFO, "created audio buffer source with arguments\n%s", args);
 
         if(_output_params.find("channel_layout")==_output_params.end()){
           throw Exception(__FILE__, __LINE__,"output channel_layout not set");
@@ -121,7 +121,7 @@ namespace org {
         //av_get_channel_layout(_output_params["channel_layout"].c_str());
         int64_t ch_layout=atoi((_output_params["channel_layout"]).c_str());//av_get_channel_layout((_output_params["channel_layout"]).c_str());
 
-        LOGDEBUG("channel layout :"<<ch_layout)
+        //LOGDEBUG("channel layout :"<<ch_layout)
         int frame_size=atoi(_output_params["frame_size"].c_str());
 
         AVSampleFormat sample_format=av_get_sample_fmt(_output_params["sample_format"].c_str());
@@ -261,7 +261,7 @@ namespace org {
         if (ret < 0) {
           throw Exception(__FILE__, __LINE__,"Cannot create video buffer source with arguments\n%s", args);
         }
-        av_log(NULL, AV_LOG_INFO, "created video buffer source with arguments\n%s", args);
+       // av_log(NULL, AV_LOG_INFO, "created video buffer source with arguments\n%s", args);
 
         std::map<std::string, std::string>::iterator it=_output_params.begin();
         for(;it!=_output_params.end();it++){

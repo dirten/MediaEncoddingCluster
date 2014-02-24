@@ -142,10 +142,11 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
       if(_current_unit){
         _current_unit->send=1;
         _current_unit->update();
+        /*
         litesql::Records recs = _db.query("select jobid_, sorcestream_ from processunit_ WHERE clientid_='"+StringUtil::toString(_ep)+"' AND codectype_='AUDIO' group by jobid_, sorcestream_ having count(*)>sum(send_>1) order by 1 desc");
         for (litesql::Records::iterator i = recs.begin(); i != recs.end(); i++){
           _db.query("UPDATE processunit_ set clientid_='', send_=1, recv_=1 where jobid_='"+(*i)[0]+"' and codectype_='AUDIO' AND clientid_='"+StringUtil::toString(_ep)+"'");
-        }
+        }*/
       }
       shutdown = true;
       if (_oos)
