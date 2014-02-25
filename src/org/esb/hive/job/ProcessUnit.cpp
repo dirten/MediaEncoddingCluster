@@ -245,7 +245,7 @@ void ProcessUnit::processInternal2() {
     //}
   //}
 
-    _decoder->clearTargets();
+  _decoder->clearTargets();
   _filter->clearTargets();
   _encoder->clearTargets();
 
@@ -253,7 +253,9 @@ void ProcessUnit::processInternal2() {
 
   /*for testing purpose only, need to calculate the real packet count to cut out the end*/
   if(_decoder->getCodecType()==AVMEDIA_TYPE_AUDIO){
-    _output_packets.pop_back();
+    std::cout << "expected frame count:"<<_expected_frame_count<<" real frame count:"<<_output_packets.size()<<std::endl;
+    while(_output_packets.size()>_expected_frame_count)
+      _output_packets.pop_back();
   }
 
   if(_decoder->getCodecId()==AV_CODEC_ID_MPEG2VIDEO){

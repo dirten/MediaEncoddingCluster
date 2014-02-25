@@ -91,7 +91,18 @@ namespace encodingtask {
       int rest = raw_out_samples % (output_framesize > 0 ? output_framesize : 1);
       double out;
       double delta = modf(raw_out_samples / (output_framesize > 0 ? output_framesize : 1), &out);
-      u->_expected_frame_count = -1; //static_cast<int> (out);
+
+      /*calculation the frame boundaries*/
+      int dec_frame_size=p->getDuration();
+      dec_frame_size*=10;
+      dec_frame_size=av_rescale_q(dec_frame_size, p->getTimeBase(), Rational(1,enc->getSampleRate()));
+
+      int gcd=av_gcd(dec_frame_size, enc->ctx->frame_size);
+      int lcm=(dec_frame_size*enc->ctx->frame_size*10)/gcd;
+
+      u->_expected_frame_count =(lcm)/enc->ctx->frame_size;
+      //u->_expected_frame_count = -1; //static_cast<int> (out);
+
       frameRateCompensateBase = rest;
       //            LOGDEBUG(rest);
     }
