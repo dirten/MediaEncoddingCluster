@@ -31,6 +31,7 @@
 #include "org/esb/av/Encoder.h"
 #include "org/esb/av/AVFilter.h"
 #include "org/esb/av/filter/BFrameProcessUnitFilter.h"
+#include "org/esb/av/filter/MaxPacketCountFilter.h"
 
 #include "org/esb/av/Sink.h"
 #include "org/esb/av/AVPipe.h"
@@ -43,7 +44,7 @@
 
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
-
+using org::esb::av::MaxPacketCountFilter;
 using org::esb::av::AVPipe;
 bool toDebug = false;
 
@@ -175,6 +176,8 @@ void ProcessUnit::processInternal2() {
 
   //org::esb::av::AVFilter * filter=NULL;
   if(!_filter){
+
+    /*create a standard filter for resampling the audio*/
     if(_decoder->getCodecType()==AVMEDIA_TYPE_AUDIO){
       _filter=new org::esb::av::AVFilter(AUDIO,"aresample=%sample_rate%,aformat=sample_fmts=%sample_format%:channel_layouts=0x%channel_layout%");
 
@@ -190,6 +193,7 @@ void ProcessUnit::processInternal2() {
       _filter->setOutputParameter("frame_size",StringUtil::toString(_encoder->ctx->frame_size));
     }
 
+    /*create a standard filter for resizing the frame size*/
     if(_decoder->getCodecType()==AVMEDIA_TYPE_VIDEO){
       _filter=new org::esb::av::AVFilter(VIDEO,"scale=%width%:%height%");
 
@@ -224,7 +228,15 @@ void ProcessUnit::processInternal2() {
   }
 
   _filter->addTarget(_encoder.get());
-  _encoder->addTarget(&sink);
+  Ptr<org::esb::av::AVPipe> maxFilter;
+  if(_decoder->getCodecType()==AVMEDIA_TYPE_AUDIO){
+    maxFilter=new MaxPacketCountFilter(_expected_frame_count);
+    _encoder->addTarget(maxFilter.get());
+    maxFilter->addTarget(&sink);
+  }else{
+    _encoder->addTarget(&sink);
+  }
+
 
   list<boost::shared_ptr<Packet> >::iterator it = _input_packets.begin();
 
@@ -233,17 +245,8 @@ void ProcessUnit::processInternal2() {
     _decoder->newPacket(p);
   }
 
-  //if(_decoder->getCodecType()==AVMEDIA_TYPE_VIDEO){
-    LOGDEBUG("flush");
-
-    /*sending an empty packet is implicit a flush for the pipe*/
-    //if(_decoder->getCodecId()!=AV_CODEC_ID_MPEG2VIDEO && _decoder->getCodecOption("has_b_frames") != "1"){
-    while(_decoder->newPacket(new Packet()));
-    //}else{
-    //while(filter->newPacket(new Packet()));
-    //while(filter->newFrame(new Frame()));
-    //}
-  //}
+  /*sending an empty packet is implicit a flush for the pipe*/
+  while(_decoder->newPacket(new Packet()));
 
   _decoder->clearTargets();
   _filter->clearTargets();
@@ -251,17 +254,15 @@ void ProcessUnit::processInternal2() {
 
   _output_packets = sink.getList();
 
-  /*for testing purpose only, need to calculate the real packet count to cut out the end*/
-  if(_decoder->getCodecType()==AVMEDIA_TYPE_AUDIO){
+  /*@TODO: this could be replaced by a maximum packet filter*/
+  if(false && _decoder->getCodecType()==AVMEDIA_TYPE_AUDIO){
     std::cout << "expected frame count:"<<_expected_frame_count<<" real frame count:"<<_output_packets.size()<<std::endl;
-    while(_output_packets.size()>_expected_frame_count)
-      _output_packets.pop_back();
-  }
-
-  if(_decoder->getCodecId()==AV_CODEC_ID_MPEG2VIDEO){
-    //_output_packets.pop_back();
+    while(_output_packets.size()>_expected_frame_count){
+      _output_packets.pop_front();
+    }
   }
 }
+
 Ptr<org::esb::av::AVFilter> ProcessUnit::getFilter(){
   return _filter;
 }

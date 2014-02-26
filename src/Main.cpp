@@ -67,7 +67,6 @@ namespace po = boost::program_options;
 
 
 int main(int argc, char * argv[]) {
-  std::cout << "test"<<std::endl;
   org::esb::hive::Environment::build(argc, argv);
 
   /*initializing new logging*/
