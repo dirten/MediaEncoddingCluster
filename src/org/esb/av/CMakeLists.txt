@@ -51,6 +51,7 @@ add_library (av SHARED
   #Building all the filters
   AVFilter.cpp
   filter/BFrameProcessUnitFilter.cpp
+  filter/MaxPacketCountFilter.cpp
 )
 TARGET_LINK_LIBRARIES(av
   ${FFMPEG_AVFILTER_LIBRARY}

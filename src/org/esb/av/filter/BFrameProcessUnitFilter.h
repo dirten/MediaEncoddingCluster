@@ -13,9 +13,9 @@ namespace org {
         public:
           BFrameProcessUnitFilter();
           ~BFrameProcessUnitFilter();
-          bool newFrame(Ptr<Frame> p);
           void init(){/*NOP*/}
         private:
+          bool newFrame(Ptr<Frame> p);
           Ptr<Frame> previousFrame;
       };
     }
