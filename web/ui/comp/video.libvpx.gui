@@ -46,95 +46,28 @@
 	    {"id":"width", "type":"string","title":"Width","group":"picture_settings","unit":"pic","control":{"type":"TextBox", "default":"720"}},
 	    {"id":"height", "type":"string","title":"Height","group":"picture_settings","unit":"pic","control":{"type":"TextBox", "default":"576"}},
 
-	    {"id":"b", "type":"string","title":"Bitrate","group":"rate_settings","unit":"fps","control":{"type":"TextBox", "default":"250000"}},
+	    {"id":"b", "type":"string","title":"Bitrate(KBit)","group":"rate_settings","unit":"fps","control":{"type":"TextBox", "default":"2000"}},
 
 	    {"id":"g", "type":"string","title":"Group of Picture","group":"frametype_settings","unit":"pic","control":{"type":"TextBox", "default":"250"}},
 	    {"id":"keyint_min", "type":"string","title":"Min. GoP Length","group":"frametype_settings","unit":"","control":{"type":"TextBox", "default":"200"}},
 	    {"id":"keyint_max", "type":"string","title":"Min. GoP Length","group":"frametype_settings","unit":"","control":{"type":"TextBox", "default":"300"}},
-	    {"id":"sc_threshold", "type":"string","title":"Scenecut detection","group":"frametype_settings","unit":"","control":{"type":"TextBox", "default":"40"}},
-	    {"id":"bf", "type":"string","title":"B-Frames","group":"frametype_settings","unit":"","control":{"type":"TextBox", "default":"16"}},
-	    {"id":"bframebias", "type":"string","title":"B-Frame Bias","group":"frametype_settings","unit":"","control":{"type":"TextBox", "default":"0"}},
-	    {"id":"b_strategy", "type":"string","title":"B-Frame strategy","group":"frametype_settings","unit":"",
-		"control":{
-		    "type":"ComboBox",
-		    "default":"2",
-		    "items":[
-			{"key":"Very Fast","value":"0"},
-			{"key":"Fast","value":"1"},
-			{"key":"Accurate","value":"2"}
-		    ]
-		}
-	    },
-	    {"id":"bpyramid", "type":"string","title":"B-Frame Pyramid","group":"frametype_settings","unit":"","control":{"type":"CheckBox", "default":"false"}},
-	    {"id":"coder", "type":"string","title":"Entropy","group":"frametype_settings","unit":"",
-		"control":{
-		    "type":"ComboBox",
-		    "default":"1",
-		    "items":[
-			{"key":"CAVLC","value":"0"},
-			{"key":"CABAC","value":"1"}
-		    ]
-		}
-	    },
-	    {"id":"refs", "type":"string","title":"Reference Frames","group":"frametype_settings","unit":"","control":{"type":"Slider", "default":"6","min":"0", "max":"16"}},
-	    {"id":"bf", "type":"string","title":"B-Frames","group":"frametype_settings","unit":"","control":{"type":"TextBox", "default":"16"}},
 	    {"id":"profile", "type":"string","title":"Profile","group":"preset_settings","unit":"",
 		"control":{
 		    "type":"ComboBox",
-		    "default":"main",
+		    "default":"0",
 		    "items":[
-			{"key":"Baseline","value":"baseline"},
-			{"key":"Main","value":"main"},
-			{"key":"High","value":"high"},
-			{"key":"High 10","value":"high10"},
-			{"key":"High 422","value":"high422"},
-			{"key":"High 444","value":"high444"}
+			{"key":"Normal","value":"0"},
+			{"key":"Fast","value":"1"},
+			{"key":"Faster","value":"2"},
+			{"key":"Fastest","value":"3"}
 		    ]
 		}
 	    },
-	    {"id":"preset", "type":"string","title":"Preset","group":"preset_settings","unit":"",
-		"control":{
-		    "type":"ComboBox",
-		    "default":"",
-		    "items":[
-			{"key":"None","value":""},
-			{"key":"Ultrafast","value":"ultrafast"},
-			{"key":"Superfast","value":"superfast"},
-			{"key":"Veryfast","value":"veryfast"},
-			{"key":"Faster","value":"faster"},
-			{"key":"Fast","value":"fast"},
-			{"key":"Medium","value":"medium"},
-			{"key":"Slow","value":"slow"},
-			{"key":"Slower","value":"slower"},
-			{"key":"Veryslow","value":"veryslow"},
-			{"key":"Placebo","value":"placebo"}
-		    ]
-		}
-	    },
-	    {"id":"tune", "type":"string","title":"Tune","group":"preset_settings","unit":"",
-		"control":{
-		    "type":"ComboBox",
-		    "default":"",
-		    "items":[
-			{"key":"None","value":""},
-			{"key":"Film","value":"film"},
-			{"key":"Animation","value":"animation"},
-			{"key":"Grain","value":"grain"},
-			{"key":"Stillimage","value":"stillimage"},
-			{"key":"psnr","value":"psnr"},
-			{"key":"ssim","value":"ssim"},
-			{"key":"Fastdecode","value":"fastdecode"},
-			{"key":"Zerolatency","value":"zerolatency"}
-		    ]
-		}
-	    },
-	    {"id":"me_range", "type":"string","title":"Prediction Range","group":"frametype_settings","unit":"","control":{"type":"TextBox", "default":"6"}},
 	    {"id":"qmin", "type":"string","title":"QP Min.","group":"rate_settings","unit":"","control":{"type":"TextBox", "default":"0"}},
 	    {"id":"qmax", "type":"string","title":"QP Max.","group":"rate_settings","unit":"","control":{"type":"TextBox", "default":"51"}},
 	    {"id":"qdiff", "type":"string","title":"QP Diff.","group":"rate_settings","unit":"","control":{"type":"TextBox", "default":"2"}},
 	    {"id":"qcompress", "type":"string","title":"QCompress","group":"rate_settings","unit":"","control":{"type":"TextBox", "default":"0.6"}},
 	    {"id":"global_headers", "type":"string","title":"Global Headers","group":"rate_settings","unit":"","control":{"type":"TextBox", "default":"1"}}
-
 	]
     }
 }

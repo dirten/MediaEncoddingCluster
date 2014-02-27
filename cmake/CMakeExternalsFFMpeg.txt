@@ -93,6 +93,7 @@ BUILD_IN_SOURCE 1
 
 ExternalProject_Add(libvpxdep
 DEPENDS yasm nasm
+#GIT_REPOSITORY https://chromium.googlesource.com/webm/libvpx
 URL http://webm.googlecode.com/files/libvpx-v${vpx_version}.tar.bz2
 CONFIGURE_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && ${USER_VPX_ENV} <SOURCE_DIR>/configure --prefix=${BUILD_DIR} ${USER_VPX_CONFIG} --disable-unit-tests --enable-static --disable-shared --enable-pic
 BUILD_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && make

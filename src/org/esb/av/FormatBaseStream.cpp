@@ -24,8 +24,8 @@ namespace org {
         static int print_prefix = 1;
         static int count;
         static char line[4096], prev[4096];
-        char ptrString[10];
-        char ptrLine[4096];
+        //char ptrString[10];
+        //char ptrLine[4096];
         AVClass* avc = ptr ? *(AVClass**) ptr : NULL;
 #undef fprintf
 #ifdef __WIN32__
@@ -33,24 +33,26 @@ namespace org {
 #endif
         if (print_prefix && avc) {
           snprintf(line, sizeof (line), "[%s @ %p]", avc->item_name(ptr), ptr);
-          snprintf(ptrString, sizeof (ptrString), "%p", ptr);
+          //snprintf(ptrString, sizeof (ptrString), "%p", ptr);
         } else {
           line[0] = 0;
-          ptrString[0] = 0;
+          //ptrString[0] = 0;
           return;
         }
 
         vsnprintf(line + strlen(line), sizeof (line) - strlen(line), fmt, vl);
         std::string msg = org::esb::util::StringUtil::trim(line, "\n");
-        std::string msgPtr = org::esb::util::StringUtil::trim(line, "\n");
+        //std::string msgPtr = org::esb::util::StringUtil::trim(line, "\n");
+        /*
         if (logMap.count(ptrString)) {
           if (logMap[ptrString].size() > MAX_HISTORY) {
             logMap[ptrString].erase(--logMap[ptrString].end());
           }
         }
         logMap[ptrString].push_front(msgPtr);
-
+        */
         /*filter out unwanted messages by loglevel*/
+        try{
         if(level>av_log_get_level())return;
         switch (level) {
         case AV_LOG_DEBUG:
@@ -75,6 +77,10 @@ namespace org {
           LOGERROR("Unknown LogLevel:" << level << " - " << msg);
           break;
         }
+        }catch(Poco::AssertionViolationException & ex){
+          std::cout << "error logging"<< ex.displayText() <<std::endl;
+        //LOGERROR("error in logging")
+      }
       }
 
       std::list<std::string> FormatBaseStream::getLastAvMessage(void * ptr) {
@@ -119,7 +125,7 @@ namespace org {
 
           /*setup own logging callback*/
           av_log_set_callback(FormatBaseStream::mhive_log_default_callback);
-          av_log_set_level(AV_LOG_INFO);
+          av_log_set_level(AV_LOG_DEBUG);
 
           /* install my own lock manager
            * this is needed for multithreaded environment
