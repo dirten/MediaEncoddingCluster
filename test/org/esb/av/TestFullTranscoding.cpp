@@ -171,7 +171,6 @@ int main(int argc, char** argv) {
 
       _sdata[i].filter->setOutputParameter("width",StringUtil::toString(_sdata[i].enc->getWidth()));
       _sdata[i].filter->setOutputParameter("height",StringUtil::toString(_sdata[i].enc->getHeight()));
-      _sdata[i].filter->setOutputParameter("pixel_format",StringUtil::toString(_sdata[i].enc->getPixelFormat()));
       //_sdata[i].filter->setOutputParameter("pixel_format",StringUtil::toString(0));
 
 
@@ -228,6 +227,13 @@ int main(int argc, char** argv) {
       _sdata[i].filter->setOutputParameter("sample_format", av_get_sample_fmt_name(_sdata[i].enc->getSampleFormat()));
       _sdata[i].filter->setOutputParameter("frame_size",StringUtil::toString(_sdata[i].enc->ctx->frame_size));
     }
+
+    if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_VIDEO){
+      _sdata[i].filter->setOutputParameter("pixel_format",StringUtil::toString(_sdata[i].enc->getPixelFormat()));
+
+    }
+
+
     _smap[i] = s++;
     //if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_VIDEO)
     //if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_VIDEO)

@@ -29,6 +29,9 @@ namespace plugin {
     for (int a = 0; a < scount; a++) {
       /*getting the input stream from the file to extract the decoders*/
       org::esb::av::AVInputStream* is = _fis->getAVStream(a);
+      if(is->codec->codec_type != AVMEDIA_TYPE_AUDIO && is->codec->codec_type != AVMEDIA_TYPE_VIDEO){
+        continue;
+      }
       _decs[is->index]=new org::esb::av::Decoder(is);
       _decs[is->index]->setStreamIndex(a);
       _decs[is->index]->open();
@@ -44,11 +47,13 @@ namespace plugin {
     org::esb::av::Packet * packet;
     while((packet = pis.readPacket()) != NULL){
       Ptr<org::esb::av::Packet> pPacket(packet);
-      Ptr<org::esb::av::Decoder>dec=_decs[packet->getStreamIndex()];
-      if(dec->getCodecType() != AVMEDIA_TYPE_AUDIO && dec->getCodecType() != AVMEDIA_TYPE_VIDEO){
-        continue;
+      if(_decs.size()>packet->getStreamIndex()){
+        Ptr<org::esb::av::Decoder>dec=_decs[packet->getStreamIndex()];
+        if(dec->getCodecType() != AVMEDIA_TYPE_AUDIO && dec->getCodecType() != AVMEDIA_TYPE_VIDEO){
+          continue;
+        }
+        Task::pushBuffer(pPacket);
       }
-      Task::pushBuffer(pPacket);
     }
     Task::pushBuffer(Ptr<org::esb::av::Packet>(NULL));
 

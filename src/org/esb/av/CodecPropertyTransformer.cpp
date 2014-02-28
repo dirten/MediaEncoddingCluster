@@ -94,7 +94,9 @@ namespace org {
         _result["width"] = "0";
         _result["height"] = "0";
         const AVOption * option = NULL;
-        AVCodecContext * codec = avcodec_alloc_context2(AVMEDIA_TYPE_UNKNOWN);
+        //AVCodecContext * codec = avcodec_alloc_context2(AVMEDIA_TYPE_UNKNOWN);
+
+        AVCodecContext * codec = avcodec_alloc_context3(NULL);
         std::map<std::string, std::string> unit2name;
         while (option = av_next_option(codec, option)) {
           if (option->flags & AV_OPT_FLAG_ENCODING_PARAM || option->flags == 0) {

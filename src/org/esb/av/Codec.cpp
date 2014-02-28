@@ -76,11 +76,14 @@ namespace org {
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         LOGWARN("!!!PLEASE DONT USE THIS CONSTRUCTOR!!!");
         //ctx = s->codec;
-        ctx = avcodec_alloc_context();
+        _codec=findCodecById(s->codec->codec_id, mode);
+
+
+        ctx = avcodec_alloc_context3(_codec);
         avcodec_copy_context(ctx, s->codec);
         _mode = mode;
         ctx->codec_id=s->codec->codec_id;//codec->id;
-        findCodec(mode);
+        //findCodec(mode);
         //        ctx->codec = _codec;
         _opened = false;
         _pre_allocated = false;
@@ -104,15 +107,18 @@ namespace org {
             strcmp(option->name, "sub_charenc") == 0 ||
             strcmp(option->name, "lpc_type") == 0 ||
             strcmp(option->name, "drc_scale") == 0 ||
-            strcmp(option->name, "lpc_passes") == 0
-            )continue;
+            strcmp(option->name, "lpc_passes") == 0 ||
+            strcmp(option->name, "timecode_frame_start")==0
+            )
+              continue;
 
             int len = 1000;
-            char data[1000];
-            av_get_string(s->codec, option->name, NULL, data, len);
-            if (strlen(data) > 0&&atoi(data)>=0) {
+            uint8_t * data=NULL;
+            int optlen=av_opt_get(s->codec, option->name, NULL, &data);
+            if (optlen>=0) {
               //LOGDEBUG("Setting Context Option "<<option->name<<"="<<data);
-              _options[option->name] = std::string(data);
+              char * dstr=reinterpret_cast<char*>(data);
+              _options[option->name] = std::string(dstr);
             } else {
               LOGDEBUG("No data for Context Option " << option->name);
             }
@@ -127,13 +133,12 @@ namespace org {
         //		_codec_resolved=false;
       }
 
+      /*this is the default serialization constructor, called by the entire de/encoder*/
       Codec::Codec(int mode) : _mode(mode) {
         _stream_index=-1;
-
         _dict=NULL;
-        //        logdebug("Codec::Codec()");
-        ctx = avcodec_alloc_context();
-        setContextDefaults();
+        ctx = avcodec_alloc_context3(NULL);
+        _codec=NULL;
         _opened = false;
         _codec_resolved = false;
         _pre_allocated = false;
@@ -157,13 +162,13 @@ namespace org {
 
         setCodecOption("codec_name", data["codec_id"]);
         LOGDEBUG("Search for codec:"<<data["codec_id"]);
-        ctx = avcodec_alloc_context();
         _codec = findCodecByName(data["codec_id"], mode);
+        ctx = avcodec_alloc_context3(_codec);
         if (_codec) {
           LOGDEBUG("Code Name:" << _codec->name);
-          avcodec_get_context_defaults2(ctx, _codec->type);
+          //avcodec_get_context_defaults2(ctx, _codec->type);
           ctx->codec_id = _codec->id;
-          setContextDefaults();
+          //setContextDefaults();
         }else{
           LOGERROR("Codec Not Found:"<<data["codec_id"]);
         }
@@ -201,7 +206,7 @@ namespace org {
         _dict=NULL;
         _codec_resolved = false;
         _opened = false;
-        ctx = avcodec_alloc_context();
+        ctx = avcodec_alloc_context3(NULL);
         ctx->codec_id=cp.ctx->codec_id;
         _mode=cp._mode;
         ctx->flags=cp.ctx->flags;
@@ -244,13 +249,13 @@ namespace org {
         _opened = false;
         _mode = mode;
         setCodecOption("codec_name", codec_name);
-        ctx = avcodec_alloc_context();
         _codec = findCodecByName(codec_name, mode);
+        ctx = avcodec_alloc_context3(_codec);
         if (_codec) {
           LOGDEBUG("Code Name:" << _codec->name);
-          avcodec_get_context_defaults2(ctx, _codec->type);
-          ctx->codec_id = _codec->id;
-          setContextDefaults();
+          //avcodec_get_context_defaults2(ctx, _codec->type);
+          //ctx->codec_id = _codec->id;
+          //setContextDefaults();
         }
         fifo = NULL;
         _pre_allocated = false;
@@ -261,30 +266,31 @@ namespace org {
 
       }
 
-      Codec::Codec(const CodecID codecId, int mode) {
+      Codec::Codec(const AVCodecID codecId, int mode) {
         _stream_index=-1;
         emptyFrameIsEOF=false;
-
         _dict=NULL;
         //        logdebug("Codec::Codec(const CodecID codecId=" << codecId << ", int mode=" << mode << ")");
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         _codec_resolved = false;
         _mode = mode;
         _opened = false;
-        ctx = avcodec_alloc_context();
+        _codec=findCodecById(codecId, mode);
+        ctx = avcodec_alloc_context3(_codec);
         //return;
         ctx->codec_id = codecId;
         if (codecId>-1) {
-          findCodec(mode);
+          //findCodec(mode);
           if (_codec_resolved) {
             //avcodec_get_context_defaults3(ctx, _codec);
-            avcodec_get_context_defaults2(ctx, _codec->type);
+            //avcodec_get_context_defaults2(ctx, _codec->type);
             //LOGERROR("error in setting defaults for the codec");
 
           }
           ctx->codec_id = codecId;
-          setContextDefaults();
+          //setContextDefaults();
         }
+
 
         /*
          * special handling of the test decoder,
@@ -300,8 +306,12 @@ namespace org {
         fifo = NULL;
       }
 
-      void Codec::setCodecId(CodecID id) {
-        ctx->codec_id = id;
+      void Codec::setCodecId(CodecID codecId) {
+        _codec=findCodecById(codecId, _mode);
+        if(ctx){
+          av_free(ctx);
+        }
+        ctx = avcodec_alloc_context3(_codec);
       }
 
       int Codec::setCodecOption(std::string opt, std::string arg) {
@@ -393,7 +403,7 @@ namespace org {
       }
 
       AVMediaType Codec::getCodecType() {
-        return ctx->codec_type;
+        return _codec->type;
       }
 
       const char *Codec::getCodecName() {
@@ -401,7 +411,10 @@ namespace org {
       }
 
       CodecID Codec::getCodecId() {
-        return ctx->codec_id;
+        if(_codec!=NULL){
+          return _codec->id;
+        }
+        return AV_CODEC_ID_NONE;
       }
 
       bool Codec::findCodec(int mode) {
@@ -451,11 +464,30 @@ namespace org {
             LOGERROR("Mode not set for Codec");
           }
         if (result) {
-          ctx->codec_type = result->type;
+          //ctx->codec_type = result->type;
           _codec_resolved = true;
         } else {
           LOGERROR("in resolving codec id:" << ctx->codec_id);
         }
+        return result;
+      }
+
+      AVCodec * Codec::findCodecById(const AVCodecID codecId, int mode){
+        AVCodec* result = NULL;
+        if (mode == DECODER) {
+          result = avcodec_find_decoder(codecId);
+        } else if (mode == ENCODER) {
+          result = avcodec_find_encoder(codecId);
+        } else {
+          LOGERROR("Mode not set for Codec");
+        }
+
+        if (result == NULL) {
+          LOGERROR("in resolving codec id:" << codecId);
+        }else{
+          _codec_resolved = true;
+        }
+
         return result;
       }
 
@@ -489,18 +521,29 @@ namespace org {
       }
 
       bool Codec::open() {
+        /*
+        if(ctx==NULL){
+          ctx = avcodec_alloc_context3(_codec);
+        }
+        */
+
+
         ctx->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
         if (_opened) {
           LOGINFO("Codec is allready openned! codec id"<<getCodecId());
           return _opened;
         }
-
+        /*
         if (_options.count("codec_name")==0) {
           findCodec(_mode);
         } else {
           _codec = findCodecByName(_options["codec_name"], _mode);
         }
+        */
 
+        if(!_codec){
+          setCodecId(ctx->codec_id);
+        }
         if (!_codec) {
           LOGERROR("_codec not initialized!");
           return false;

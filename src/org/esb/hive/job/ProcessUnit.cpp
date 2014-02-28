@@ -153,13 +153,14 @@ void ProcessUnit::process() {
   if(statsfile.exists()){
     statsfile.deleteFile();
   }
+  /*
   if(_encoder->getCodecType()==AVMEDIA_TYPE_VIDEO && _output_packets.size()>0){
     time_duration diff = _end - _start;
     if(diff.total_seconds()>0)
       _fps=_input_packets.size()/diff.total_seconds();
     else
       _fps=_input_packets.size();
-  }
+  }*/
 }
 
 void ProcessUnit::processInternal2() {

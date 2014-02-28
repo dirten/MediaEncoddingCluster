@@ -57,7 +57,7 @@ class SampleFormat;*/
         const static int ENCODER = 1;
         const static int DECODER = 2;
         Codec(std::string codec_name, int mode = DECODER);
-        Codec(const CodecID codecId, int mode = DECODER);
+        Codec(const AVCodecID codecId, int mode = DECODER);
         Codec(AVStream * stream, int mode = DECODER);
         Codec(int mode = DECODER);
         Codec(std::map<std::string, std::string>,int mode = DECODER);
@@ -170,7 +170,7 @@ class SampleFormat;*/
           ar & _stream_index;
           if (_mode == Codec::DECODER) {
             ar & ctx->extradata_size;
-            if (ctx->extradata_size > 0) {
+            if (ctx->extradata_size > 0 && ctx->extradata) {
               ar & boost::serialization::make_binary_object(ctx->extradata, ctx->extradata_size);
             }
           }
@@ -181,7 +181,7 @@ class SampleFormat;*/
         template<class Archive>
         void load(Archive & ar, const unsigned int version) {
           
-          //LOGTRACE("serialization load");
+          LOGDEBUG("serialization load");
           ar & ctx->codec_id;
           ar & _mode;
           ar & ctx->flags;
@@ -224,6 +224,7 @@ class SampleFormat;*/
         AVDictionary * _codec_opts;
         bool findCodec(int mode);
         AVCodec * findCodecByName(std::string name, int mode);
+        AVCodec * findCodecById(const AVCodecID codecId, int mode);
 
         int _mode;
         AVCodecContext * ctx;
@@ -250,6 +251,7 @@ class SampleFormat;*/
         static boost::mutex open_close_mutex;
         std::map<std::string, std::string> _options;
         AVDictionary * _dict;
+        int flags;
       };
     }
   }
