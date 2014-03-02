@@ -25,6 +25,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#include <stdint.h>
 #include "exports.h"
 
 namespace org{
@@ -268,15 +269,15 @@ namespace util{
     /// decimal mantissa and base 10 exponent.
     /// @param num decimal mantissa integer value to set this Decimal number to.
     /// @param exp base 10 exponent.
-    void setDecimalInt64(long long int num, int exp)
-      { setDecimalInteger<long long int>(num, exp); }
+   // void setDecimalInt64(long long int num, int exp)
+    //  { setDecimalInteger<int64_t>(num, exp); }
 
     /// Set this this tntdb::Decimal object to the value of the given uint64_t
     /// decimal mantissa and base 10 exponent.
     /// @param num decimal mantissa integer value to set this Decimal number to.
     /// @param exp base 10 exponent.
-    void setDecimalUnsigned64(unsigned long long int num, int exp)
-      { setDecimalInteger<long long int>(num, exp); }
+    //void setDecimalUnsigned64(unsigned long long int num, int exp)
+    //  { setDecimalInteger<long long int>(num, exp); }
 
     /// Set this this tntdb::Decimal object to the value of the given float.
     /// @param num float value to set this Decimal number to.

@@ -1,22 +1,23 @@
 
 set(BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build")
 
+SET(BOOST_BUILD_COMMAND <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} ${USER_CONFIG} --with-date_time --with-thread --with-system --with-program_options --with-filesystem --with-serialization --with-signals --with-test link=static threading=multi define=BOOST_USE_WINDOWS_H cxxflags=-fPIC)
+
 IF(MINGW)
   MESSAGE("build boost with mingw")
-  SET(USER_CONFIG "--user-config=user-config.jam")
-  SET(SPECIAL_ARGS "toolset=gcc-mingw" "target-os=windows" "threadapi=win32")
+  SET(BOOST_BUILD_COMMAND ${BOOST_BUILD_COMMAND} --user-config=user-config.jam toolset=gcc-mingw target-os=windows threadapi=win32)
 ENDIF(MINGW)
 
 IF(APPLE)
-  #SET(SPECIAL_ARGS ${SPECIAL_ARGS} cxxflags='-mmacosx-version-min=10.7')
+  SET(BOOST_BUILD_COMMAND ${BOOST_BUILD_COMMAND} macosx-version-min=${MAC_OSX_MIN_VERSION})
 ENDIF(APPLE)
 
 string(TOLOWER ${CMAKE_BUILD_TYPE} LOWERCASE_CMAKE_BUILD_TYPE)
 IF(LOWERCASE_CMAKE_BUILD_TYPE STREQUAL "debug")
   message("debug mode")
-  SET(SPECIAL_ARGS ${SPECIAL_ARGS} "variant=debug")
+  SET(BOOST_BUILD_COMMAND ${BOOST_BUILD_COMMAND} variant=debug)
 ELSE(LOWERCASE_CMAKE_BUILD_TYPE STREQUAL "debug")
-  SET(SPECIAL_ARGS ${SPECIAL_ARGS} "variant=release")
+  SET(BOOST_BUILD_COMMAND ${BOOST_BUILD_COMMAND} variant=release)
 ENDIF(LOWERCASE_CMAKE_BUILD_TYPE STREQUAL "debug")
 
 
@@ -25,7 +26,7 @@ ExternalProject_Add(boost
   UPDATE_COMMAND <SOURCE_DIR>/bootstrap.sh
   CONFIGURE_COMMAND ""
   INSTALL_COMMAND ""
-  BUILD_COMMAND <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} ${USER_CONFIG} --with-date_time --with-thread --with-system --with-program_options --with-filesystem --with-serialization --with-signals --with-test ${SPECIAL_ARGS} link=static threading=multi define=BOOST_USE_WINDOWS_H cxxflags='-fPIC' install
+  BUILD_COMMAND ${BOOST_BUILD_COMMAND} install
   #BUILD_COMMAND ${CMAKE_COMMAND} -E echo <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} ${USER_CONFIG} --with-date_time --with-thread --with-system --with-program_options --with-filesystem --with-serialization --with-signals ${SPECIAL_ARGS} variant=${CMAKE_BUILD_TYPE} link=static threading=multi cxxflags='-fPIC' install
   #BUILD_COMMAND <SOURCE_DIR>/bjam --prefix=${BUILD_DIR} --without-wave --without-context --without-graph link=static threading=multi address-model=32_64 install
   BUILD_IN_SOURCE 1

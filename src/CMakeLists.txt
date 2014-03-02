@@ -9,7 +9,7 @@ SET(PRESETS_INSTALL_DIR ${MHIVE_VERSION}/presets)
 
 
 IF(WIN32)
-    SET(LIB_INSTALL_DIR bin)
+    SET(LIB_INSTALL_DIR ${MHIVE_VERSION}/bin)
 #    SET(BIN_INSTALL_DIR bin)
 #    SET(WEB_INSTALL_DIR web)
 #    SET(RES_INSTALL_DIR res)
@@ -130,15 +130,15 @@ IF(NOT WIN32)
 ENDIF(NOT WIN32)
 
 IF(WIN32)
-  INSTALL(FILES
-      ${FFMPEG_DIR}/${FFMPEG_LIB_DIR}/avcodec-55.dll
+#  INSTALL(FILES
+#      ${FFMPEG_DIR}/${FFMPEG_LIB_DIR}/avcodec-55.dll
 #      ${FFMPEG_DIR}/${FFMPEG_LIB_DIR}/avcore.dll
-      ${FFMPEG_DIR}/${FFMPEG_LIB_DIR}/avdevice-55.dll
-      ${FFMPEG_DIR}/${FFMPEG_LIB_DIR}/avformat-55.dll
-      ${FFMPEG_DIR}/${FFMPEG_LIB_DIR}/avutil-52.dll
-      ${FFMPEG_DIR}/${FFMPEG_LIB_DIR}/swscale-2.dll
-    DESTINATION ${LIB_INSTALL_DIR}
-    )
+#      ${FFMPEG_DIR}/${FFMPEG_LIB_DIR}/avdevice-55.dll
+#      ${FFMPEG_DIR}/${FFMPEG_LIB_DIR}/avformat-55.dll
+#      ${FFMPEG_DIR}/${FFMPEG_LIB_DIR}/avutil-52.dll
+#      ${FFMPEG_DIR}/${FFMPEG_LIB_DIR}/swscale-2.dll
+#    DESTINATION ${LIB_INSTALL_DIR}
+#    )
 ELSEIF(APPLE)
   INSTALL(DIRECTORY ${FFMPEG_DIR}/lib/
     DESTINATION ${LIB_INSTALL_DIR}
@@ -146,18 +146,18 @@ ELSEIF(APPLE)
     PATTERN ".svn" EXCLUDE
   )
 
-  INSTALL(FILES
-      ${FFMPEG_DIR}/lib/libavcodec.dylib
+#  INSTALL(FILES
+#      ${FFMPEG_DIR}/lib/libavcodec.dylib
 #      ${FFMPEG_DIR}/lib/libavcore.dylib
-      ${FFMPEG_DIR}/lib/libavdevice.dylib
-      ${FFMPEG_DIR}/lib/libavformat.dylib
-      ${FFMPEG_DIR}/lib/libavutil.dylib
-      ${FFMPEG_DIR}/lib/libavfilter.dylib
-      ${FFMPEG_DIR}/lib/libswscale.dylib
-      ${FFMPEG_DIR}/lib/libswresample.dylib
-    DESTINATION ${LIB_INSTALL_DIR}
+#      ${FFMPEG_DIR}/lib/libavdevice.dylib
+#      ${FFMPEG_DIR}/lib/libavformat.dylib
+#      ${FFMPEG_DIR}/lib/libavutil.dylib
+#      ${FFMPEG_DIR}/lib/libavfilter.dylib
+#      ${FFMPEG_DIR}/lib/libswscale.dylib
+#      ${FFMPEG_DIR}/lib/libswresample.dylib
+#    DESTINATION ${LIB_INSTALL_DIR}
 #    COMPONENT libraries
-  )
+#  )
   SET_SOURCE_FILES_PROPERTIES(
   ${PROJECT_SOURCE_DIR}/src/mectl
   PROPERTIES
@@ -171,25 +171,25 @@ ELSEIF(APPLE)
   #INSTALL(CODE "EXECUTE_PROCESS(COMMAND cp ${PROJECT_SOURCE_DIR}/Info.plist ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/../../Resources/res/tmp.list)")
 #  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/debug/label/mac/trunk/source/build/ffmpeg/lib/libavcore.dylib @executable_path/../lib/libavcore.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
 
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${FFMPEG_DIR}/lib/libavcodec.55.dylib libavcodec.55.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${FFMPEG_DIR}/lib/libavdevice.55.dylib libavdevice.55.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${FFMPEG_DIR}/lib/libavutil.52.dylib libavutil.52.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${FFMPEG_DIR}/lib/libavformat.55.dylib libavformat.55.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${FFMPEG_DIR}/lib/libswresample.0.dylib libswresample.0.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${FFMPEG_DIR}/lib/libswscale.2.dylib libswscale.2.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${FFMPEG_DIR}/lib/libavfilter.3.dylib libavfilter.3.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
+  #INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${FFMPEG_DIR}/lib/libavcodec.55.dylib libavcodec.55.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
+  #INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${FFMPEG_DIR}/lib/libavdevice.55.dylib libavdevice.55.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
+  #INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${FFMPEG_DIR}/lib/libavutil.52.dylib libavutil.52.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
+  #INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${FFMPEG_DIR}/lib/libavformat.55.dylib libavformat.55.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
+  #INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${FFMPEG_DIR}/lib/libswresample.0.dylib libswresample.0.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
+  #INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${FFMPEG_DIR}/lib/libswscale.2.dylib libswscale.2.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
+  #INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${FFMPEG_DIR}/lib/libavfilter.3.dylib libavfilter.3.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
 
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${FFMPEG_DIR}/lib/libavcodec.55.dylib libavcodec.55.dylib ${FFMPEG_DIR}/lib/libavcodec.55.dylib)")
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${FFMPEG_DIR}/lib/libavutil.52.dylib libavutil.52.dylib ${FFMPEG_DIR}/lib/libavcodec.55.dylib)")
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/release/label/mac/trunk/source/build/ffmpeg/lib/libavutil.dylib @executable_path/../lib/libavutil.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/release/label/mac/trunk/source/build/ffmpeg/lib/libswscale.dylib @executable_path/../lib/libswscale.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/release/label/mac/trunk/source/build/ffmpeg/lib/libavcodec.dylib @executable_path/../lib/libavcodec.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libavformat.dylib)")
+  #INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${FFMPEG_DIR}/lib/libavcodec.55.dylib libavcodec.55.dylib ${FFMPEG_DIR}/lib/libavcodec.55.dylib)")
+  #INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${FFMPEG_DIR}/lib/libavutil.52.dylib libavutil.52.dylib ${FFMPEG_DIR}/lib/libavcodec.55.dylib)")
+  #INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/release/label/mac/trunk/source/build/ffmpeg/lib/libavutil.dylib @executable_path/../lib/libavutil.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
+  #INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/release/label/mac/trunk/source/build/ffmpeg/lib/libswscale.dylib @executable_path/../lib/libswscale.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
+  #INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/release/label/mac/trunk/source/build/ffmpeg/lib/libavcodec.dylib @executable_path/../lib/libavcodec.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libavformat.dylib)")
 #  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/release/label/mac/trunk/source/build/ffmpeg/lib/libavcore.dylib @executable_path/../lib/libavcore.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libavformat.dylib)")
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/release/label/mac/trunk/source/build/ffmpeg/lib/libavutil.dylib @executable_path/../lib/libavutil.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libavformat.dylib)")
+  #INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/release/label/mac/trunk/source/build/ffmpeg/lib/libavutil.dylib @executable_path/../lib/libavutil.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libavformat.dylib)")
 #  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/release/label/mac/trunk/source/build/ffmpeg/lib/libavcore.dylib @executable_path/../lib/libavcore.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libavcodec.dylib)")
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/release/label/mac/trunk/source/build/ffmpeg/lib/libavutil.dylib @executable_path/../lib/libavutil.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libavcodec.dylib)")
+  #INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/release/label/mac/trunk/source/build/ffmpeg/lib/libavutil.dylib @executable_path/../lib/libavutil.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libavcodec.dylib)")
 #  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/release/label/mac/trunk/source/build/ffmpeg/lib/libavutil.dylib @executable_path/../lib/libavutil.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libavcore.dylib)")
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/release/label/mac/trunk/source/build/ffmpeg/lib/libavutil.dylib @executable_path/../lib/libavutil.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libswscale.dylib)")
+  #INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/release/label/mac/trunk/source/build/ffmpeg/lib/libavutil.dylib @executable_path/../lib/libavutil.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libswscale.dylib)")
 #  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change libmhive-util.dylib @executable_path/../lib/libmhive-util.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
 #  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change libmhive-signal.dylib @executable_path/../lib/libmhive-signal.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
 #  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change libmhive-io.dylib @executable_path/../lib/libmhive-io.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")

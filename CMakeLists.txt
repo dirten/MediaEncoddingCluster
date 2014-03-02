@@ -18,6 +18,7 @@ SET(MINOR_VERSION 5)
 SET(PATCH_VERSION 2)
 SET(MINOR_PATCH_VERSION 0)
 SET(REV ${SVN_VERSION})
+SET(MAC_OSX_MIN_VERSION 10.7)
 
 
 
@@ -74,10 +75,13 @@ if(APPLE)
 #add_definitions(-arch i386)
 #SET (CMAKE_EXE_LINKER_FLAGS "-arch i386")
   add_definitions(-ftemplate-depth=200)
+  add_definitions(-mmacosx-version-min=10.7)
   #add_definitions(-std=c++11)
 
-  #set(CMAKE_CXX_FLAGS "-mmacosx-version-min=10.9")
-  #set(CMAKE_C_FLAGS "-mmacosx-version-min=10.9")
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -mmacosx-version-min=${MAC_OSX_MIN_VERSION})
+  set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} -mmacosx-version-min=${MAC_OSX_MIN_VERSION})
+  set(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} -mmacosx-version-min=${MAC_OSX_MIN_VERSION})
+  set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} -mmacosx-version-min=${MAC_OSX_MIN_VERSION})
 ENDIF(APPLE)
 
 SET(SOCORRO_HOST localhost CACHE PATH "Socorro Host")

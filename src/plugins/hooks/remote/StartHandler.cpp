@@ -1,4 +1,6 @@
 
+#include "org/esb/grid/GridRegistry.h"
+#include "org/esb/grid/GridNode.h"
 #include "org/esb/core/WebHookPlugin.h"
 #include "org/esb/core/PluginRegistry.h"
 #include "org/esb/libjson/JSONResult.h"
@@ -7,8 +9,6 @@
 #include "Poco/URI.h"
 #include "Poco/Net/NameValueCollection.h"
 #include "RemoteController.h"
-#include "org/esb/grid/GridRegistry.h"
-#include "org/esb/grid/GridNode.h"
 #include "org/esb/util/Foreach.h"
 #include "Poco/Net/HTTPClientSession.h"
 #include "Poco/Net/HTTPRequest.h"

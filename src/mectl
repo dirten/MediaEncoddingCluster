@@ -36,11 +36,11 @@ MHIVE_BASE=$BASE_PATH
 #when we are on a mac then all is installed into the Resource subdirectory
 if [ `uname` == Darwin ]
 then
-    MHIVE_BASE=$MHIVE_BASE/Resources
-    export DYLD_LIBRARY_PATH=$MHIVE_BASE/lib:$MHIVE_BASE/plugins
+    #MHIVE_BASE=$MHIVE_BASE/Resources
+    export DYLD_LIBRARY_PATH=$MHIVE_BASE/lib:$MHIVE_BASE/plugin
     
 fi
-    export LD_LIBRARY_PATH=$MHIVE_BASE/lib:$MHIVE_BASE/plugins
+    export LD_LIBRARY_PATH=$MHIVE_BASE/lib:$MHIVE_BASE/plugin
 
 if [ ! -d /usr/bin ]
 then                    # /usr not mounted
@@ -108,7 +108,7 @@ start_server(){
       #$MHIVE_BASE/bin/mhive -r > $MHIVE_BASE/logs/startup.log&
      # $term = find_terminal
      echo "terminal" $term
-      $term $MHIVE_BASE/bin/mhive -c
+      $MHIVE_BASE/bin/mhive -r
       #sleep 3
       #open http://localhost:8080
       STATUS=$?

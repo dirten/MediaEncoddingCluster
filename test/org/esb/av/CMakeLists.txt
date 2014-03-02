@@ -13,7 +13,7 @@ include_directories (${XUGGLE}/include)
 
 
 
-MESSAGE("FFMPeg dir "${FFMPEG_DIR}/lib)
+MESSAGE("FFMPeg dir " ${FFMPEG_DIR}/lib)
 LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
 LINK_DIRECTORIES(${GTEST_DIR})
 

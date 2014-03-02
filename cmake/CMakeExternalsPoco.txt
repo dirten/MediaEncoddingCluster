@@ -1,14 +1,23 @@
 
-set(BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build")
+SET(BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build")
 
+SET(POCO_CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --static --no-tests --no-samples --omit=Data/ODBC,Data/MySQL,NetSSL_OpenSSL,Crypto,PageCompiler)
 
 IF(MINGW)
-  SET(USER_CONFIG "--config=MinGW-w64")
+  SET(POCO_CONFIGURE_COMMAND ${POCO_CONFIGURE_COMMAND} --config=MinGW-w64)
 ENDIF(MINGW)
+
+IF(APPLE)
+  SET(POCO_CONFIGURE_COMMAND ${POCO_CONFIGURE_COMMAND} --cflags=-mmacosx-version-min=${MAC_OSX_MIN_VERSION})
+ENDIF(APPLE)
+
+IF(LINUX)
+  SET(POCO_CONFIGURE_COMMAND ${POCO_CONFIGURE_COMMAND} --cflags=-fPIC)
+ENDIF(LINUX)
 
 ExternalProject_Add(poco
   URL http://pocoproject.org/releases/poco-1.4.6/poco-1.4.6p2-all.tar.gz
-  CONFIGURE_COMMAND CFLAGS=-fPIC && CXXFLAGS=-fPIC && <SOURCE_DIR>/configure --prefix=${BUILD_DIR} ${USER_CONFIG} --static --no-tests --no-samples --cflags=-fPIC --omit=Data/ODBC,Data/MySQL,NetSSL_OpenSSL,Crypto,PageCompiler
+  CONFIGURE_COMMAND ${POCO_CONFIGURE_COMMAND}
   BUILD_IN_SOURCE 1
 )
 #--cflags=-mmacosx-version-min=10.7 

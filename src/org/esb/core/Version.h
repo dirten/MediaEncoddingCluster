@@ -1,11 +1,12 @@
 #ifndef VERSION_H
 #define VERSION_H
 #include <string>
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace core {
 
-      class Version
+      class CORE_EXPORT Version
       {
       public:
         Version();
