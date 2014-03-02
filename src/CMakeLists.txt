@@ -30,8 +30,6 @@ ENDIF(WIN32)
 
 
 ADD_DEFINITIONS(-D__STDC_LIMIT_MACROS)
-ADD_DEFINITIONS(-DPOCO_NO_AUTOMATIC_LIBS)
-ADD_DEFINITIONS(-DPOCO_STATIC)
 #ADD_DEFINITIONS("-Wl,--allow-multiple-definition")
 
 
@@ -202,19 +200,19 @@ INSTALL(DIRECTORY ${FFMPEG_DIR}/lib/
   PATTERN ".svn" EXCLUDE
 )
 
-  INSTALL(FILES
-      ${FFMPEG_DIR}/lib/libavcodec.so.55
-      ${FFMPEG_DIR}/lib/libavdevice.so.55
-      ${FFMPEG_DIR}/lib/libavformat.so.55
-      ${FFMPEG_DIR}/lib/libavutil.so.52
-      ${FFMPEG_DIR}/lib/libavfilter.so.3
+#  INSTALL(FILES
+#      ${FFMPEG_DIR}/lib/libavcodec.so.55
+#      ${FFMPEG_DIR}/lib/libavdevice.so.55
+#      ${FFMPEG_DIR}/lib/libavformat.so.55
+#      ${FFMPEG_DIR}/lib/libavutil.so.52
+#      ${FFMPEG_DIR}/lib/libavfilter.so.3
 #      ${FFMPEG_DIR}/lib/libavcore.so
-      ${FFMPEG_DIR}/lib/libswscale.so.2
-      ${FFMPEG_DIR}/lib/libswresample.so.0
+#      ${FFMPEG_DIR}/lib/libswscale.so.2
+#      ${FFMPEG_DIR}/lib/libswresample.so.0
 #      ${FFMPEG_DIR}/lib/libPocoNet.so.11
 #      ${FFMPEG_DIR}/lib/libPocoFoundation.so.11
-    DESTINATION ${LIB_INSTALL_DIR}
-    )
+#    DESTINATION ${LIB_INSTALL_DIR}
+#    )
     #INSTALL(CODE "CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/mectl ${CMAKE_INSTALL_PREFIX}/bin/mectl)")
 
 ENDIF(WIN32)

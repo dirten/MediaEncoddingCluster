@@ -4,9 +4,9 @@
  * 
  * Created on 10. Oktober 2011, 11:30
  */
-#include "org/esb/db/hivedb.hpp"
-#include "org/esb/core/PluginContext.h"
 #include "org/esb/core/PluginRegistry.h"
+#include "org/esb/core/PluginContext.h"
+#include "org/esb/db/hivedb.hpp"
 
 #include "Service.h"
 #include "org/esb/lang/Process.h"

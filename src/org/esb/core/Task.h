@@ -7,8 +7,8 @@
 
 #ifndef TASK_H
 #define	TASK_H
-#include "Plugin.h"
 #include "PluginRegistry.h"
+#include "Plugin.h"
 #include "org/esb/lang/Ptr.h"
 #include "exports.h"
 #include "boost/function.hpp"

@@ -1,7 +1,7 @@
 #ifndef WRITERSERVICE_H
 #define WRITERSERVICE_H
-#include "org/esb/signal/MessageListener.h"
 #include "org/esb/core/ServicePlugin.h"
+#include "org/esb/signal/MessageListener.h"
 
 namespace plugin {
   class WriterService : public org::esb::core::ServicePlugin

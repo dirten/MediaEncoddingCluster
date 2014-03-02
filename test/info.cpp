@@ -1,10 +1,10 @@
 
+#include "org/esb/util/Log.h"
 #include "org/esb/io/File.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/Decoder.h"
-#include "org/esb/util/Log.h"
 #include "org/esb/util/StringUtil.h"
 #include <vector>
 #include <limits>
@@ -14,7 +14,7 @@ using namespace org::esb::av;
 using namespace org::esb::util;
 namespace bla {
 
-  classlogger("info")
+  //classlogger("info")
   int main(int argc, char ** argv) {
     Log::open("");
     //avcodec_init();

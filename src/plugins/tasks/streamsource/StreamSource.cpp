@@ -59,7 +59,7 @@ namespace plugin {
   }
 
   org::esb::core::OptionsDescription StreamSource::getOptionsDescription(){
-    org::esb::core::OptionsDescription result("httppullsource");
+    org::esb::core::OptionsDescription result("streamsource");
     return result;
   }
   REGISTER_TASK("StreamSource", StreamSource)

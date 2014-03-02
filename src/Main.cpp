@@ -84,6 +84,7 @@ int main(int argc, char * argv[]) {
   Logger::root().setLevel("trace");
   Logger::get("test.main").debug("test log");
   poco_debug(Logger::get("test.main"), "test log");
+  LOGDEBUG("Init main");
   //return 0;
 
 

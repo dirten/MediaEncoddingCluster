@@ -7,8 +7,8 @@
 
 #ifndef SERVICEPLUGIN_H
 #define	SERVICEPLUGIN_H
-#include "Plugin.h"
 #include "PluginRegistry.h"
+#include "Plugin.h"
 #ifdef SERVICE_TYPE_ALL
 #undef SERVICE_TYPE_ALL
 #endif

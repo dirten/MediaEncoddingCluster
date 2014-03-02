@@ -6,8 +6,8 @@
  */
 
 #include <cstdlib>
-#include "org/esb/core/HookNotificationCenter.h"
 #include "org/esb/core/HookPlugin.h"
+#include "org/esb/core/HookNotificationCenter.h"
 #include <boost/bind.hpp>
 #include <iostream>
 #include "org/esb/core/Request.h"

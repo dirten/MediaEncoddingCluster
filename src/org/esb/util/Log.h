@@ -66,7 +66,7 @@ typedef std::ostringstream tostringstream;
 #define LOGDEBUG(o2) \
  {tostringstream ostr; \
   ostr << o2; \
-  poco_debug(getLogger(),ostr.str());}
+  if ((getLogger()).debug()) (getLogger()).debug(ostr.str(), __FILE__, __LINE__); else (void) 0;}
 
 //#define LOGDEBUG2(o2)LOG4CPLUS_DEBUG(log4cplus::Logger::getInstance(getLoggerName()),o2);//loglevel(o1, "warn")/*log_warn(o1)*/
 
@@ -74,13 +74,13 @@ typedef std::ostringstream tostringstream;
 #define LOGTRACE(o2) \
   {tostringstream ostr; \
  ostr << o2; \
- poco_trace(getLogger(),ostr.str());}
+ if ((getLogger()).trace()) (getLogger()).trace(ostr.str(), __FILE__, __LINE__); else (void) 0;}
 
 //#define logtracemethod(o1)LOG4CPLUS_TRACE_METHOD(getLogger(),o1);//loglevel(o1, "trace")/*log_debug(o1)*/
 #define LOGTRACEMETHOD(o2) \
   {tostringstream ostr; \
   ostr << o2; \
-  poco_trace(getLogger(),ostr.str());}
+  if ((getLogger()).trace()) (getLogger()).trace(ostr.str(), __FILE__, __LINE__); else (void) 0;}
 
 #include <iostream>
 static Poco::Logger & getLogger(){try{return Poco::Logger::get("global");}catch(...){};return Poco::Logger::root();}

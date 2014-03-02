@@ -5,9 +5,9 @@
  * Created on 19. Oktober 2011, 11:41
  */
 
+#include "OutputTask.h"
 #include "org/esb/core/PluginContext.h"
 #include "org/esb/core/TaskException.h"
-#include "OutputTask.h"
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/libjson/libjson.h"
 #include "Poco/URI.h"

@@ -146,13 +146,14 @@ add_executable (mytest test.cpp)
 #add_executable(amqc AMQConsumerTest.cpp)
 
 target_link_libraries (info
-  hive
+  lang
   av
   util
   signal
   io
   net
-  lang
+  core
+  hive
   )
 target_link_libraries (pu
   hive

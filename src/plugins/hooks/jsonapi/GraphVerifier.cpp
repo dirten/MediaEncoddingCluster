@@ -5,12 +5,12 @@
  * Created on 6. Dezember 2011, 13:08
  */
 
+#include "org/esb/core/Task.h"
 #include "GraphVerifier.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/util/Foreach.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/lang/Ptr.h"
-#include "org/esb/core/Task.h"
 #include "org/esb/util/UUID.h"
 namespace graph {
   GraphVerifier * GraphVerifier::_instance = 0;

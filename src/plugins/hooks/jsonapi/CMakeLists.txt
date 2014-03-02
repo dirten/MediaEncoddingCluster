@@ -60,6 +60,11 @@ add_library (jsonapi SHARED
   watchfolder/WatchfolderCreateHandler.cpp
 
 )
+# @TODO: this is only a hack for the linker, this is needed to be fixed asap
+IF(WIN32)
+  #SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wl,--allow-multiple-definition" )
+  SET( CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_SHARED_LINKER_FLAGS}  -Wl,--allow-multiple-definition" )
+ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES(jsonapi
   streamsource

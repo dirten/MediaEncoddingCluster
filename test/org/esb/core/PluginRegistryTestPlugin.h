@@ -8,8 +8,8 @@
 #ifndef PLUGINREGISTRYTESTPLUGIN_H
 #define	PLUGINREGISTRYTESTPLUGIN_H
 
-#include "org/esb/core/Plugin.h"
 #include "org/esb/core/ServicePlugin.h"
+#include "org/esb/core/Plugin.h"
 #include "org/esb/core/WebservicePlugin.h"
 #include "org/esb/core/HookPlugin.h"
 #include "org/esb/core/HookProvider.h"

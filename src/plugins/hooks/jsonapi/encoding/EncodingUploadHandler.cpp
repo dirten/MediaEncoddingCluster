@@ -80,7 +80,7 @@ public:
       if (el->getParents().size() == 0) {
         LOGDEBUG("Element:"<<el->name);
         StreamSource * source=static_cast<StreamSource*>(el->task.get());
-        source->setSource(Ptr<FormatInputStream>(new FormatInputStream(stream)));
+        //source->setSource(Ptr<FormatInputStream>(new FormatInputStream(stream)));
       }
     }
     /*
