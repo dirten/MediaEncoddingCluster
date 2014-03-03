@@ -30,6 +30,9 @@ if(NOT CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE MATCHES "")
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
+IF(UNIX)
+  SET(LINUX)
+ENDIF(UNIX)
 
 INCLUDE(cmake/CMakeListExternals.txt)
 INCLUDE(CTest)

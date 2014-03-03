@@ -4,8 +4,8 @@ include_directories (${BREAKPAD_INCLUDE_DIR})
 LINK_DIRECTORIES(${BREAKPAD_LIB_DIR})
 
 SET(lang_source
-    Byte.cpp
-    String.cpp
+#    Byte.cpp
+#    String.cpp
     Thread.cpp
     Exception.cpp
 #    StackDumper.cpp
@@ -15,7 +15,7 @@ SET(lang_source
     ProcessListener.cpp
     ProcessSupervisor.cpp
     NotFoundException.cpp
-    Object.cpp
+#    Object.cpp
 )
 IF(NOT WIN32)
   SET(lang_source
