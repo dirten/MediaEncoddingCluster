@@ -60,6 +60,13 @@ target_link_libraries (mhive
   core
   av
   io
+  lang
+  json
+  db
+  net
+  util
+  grid
+  signal
   #${POCO_LIB_FOUNDATION}
   #${POCO_LIB_FOUNDATION}
 )
