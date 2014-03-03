@@ -50,10 +50,11 @@ MESSAGE("PocoLinkLibarayUtil"  ${POCO_LIB_NET_UTIL})
 
 TARGET_LINK_LIBRARIES(core 
   #${POCO_LIB_FOUNDATION}
-  json
-  db
-  net
-  grid
+  #json
+  #db
+  #net
+  #grid
+
   #signal
   #lang
   #util

@@ -3,7 +3,7 @@ include_directories (${MEC_SOURCE_DIR})
 include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${FFMPEG_INCLUDE_DIR})
 
-add_library (json
+add_library (json SHARED
     JSONChildren.cpp
     JSONDebug.cpp
     JSONIterators.cpp

@@ -29,7 +29,7 @@ add_library (io ${IO_LINK_TYPE}
 #MESSAGE("Boost Libraries in io " ${Boost_LIBRARIES})
 
 TARGET_LINK_LIBRARIES(io
-  lang
+  #lang
   #${Boost_LIBRARIES}
     #mq
     #lang
