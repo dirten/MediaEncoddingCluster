@@ -62,6 +62,8 @@ TARGET_LINK_LIBRARIES(av
   ${FFMPEG_AVUTIL_LIBRARY}
 #  ${FFMPEG_AVCORE_LIBRARY}
 #  signal
+  util
+  io
   mp3lame
   x264
   vpx

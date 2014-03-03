@@ -166,7 +166,7 @@ add_library (util ${UTIL_LINK_TYPE}
   util/UUID.cpp
 )
 
-#TARGET_LINK_LIBRARIES(util io)
+TARGET_LINK_LIBRARIES(util lang)
 
 IF(UNIX AND NOT APPLE)
   TARGET_LINK_LIBRARIES(util rt)
@@ -220,7 +220,7 @@ add_library (signal ${SIGNAL_LINK_TYPE}
   signal/Messenger.cpp
   signal/Message.cpp
 )
-#TARGET_LINK_LIBRARIES(signal util)
+TARGET_LINK_LIBRARIES(signal util)
 SET_TARGET_PROPERTIES( signal PROPERTIES PREFIX "libmhive-")
 IF(SHARED_SIGNAL)
 INSTALL(TARGETS signal
@@ -260,7 +260,7 @@ add_library (net SHARED
 #      net/TcpSocketOutputStream.cpp
 )
 SET_TARGET_PROPERTIES( net PROPERTIES PREFIX "libmhive-")
-#TARGET_LINK_LIBRARIES(net signal)
+TARGET_LINK_LIBRARIES(net util io)
   INSTALL(TARGETS net
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}

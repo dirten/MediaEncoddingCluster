@@ -57,8 +57,14 @@ TARGET_LINK_LIBRARIES(core
 
   #signal
   #lang
-  #util
-  #io
+  util
+  io
+  net
+  grid
+  json
+  db
+  av
+  signal
   #${POCO_LIB_XML}
   #${Boost_LIBRARIES}
   #lang
