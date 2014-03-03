@@ -212,10 +212,10 @@ public:
                  * @exception  IOException  if an I/O error occurs.
                  */
                 virtual void skip(long bytes) {}
-                ;
+
 
                 virtual ~InputStream() {}
-                ;
+
             };
         }
     }

@@ -1,11 +1,6 @@
 
 include_directories (${MEC_SOURCE_DIR})
 
-add_executable (DatabaseBootstrapTest db/DatabaseBootstrapTest.cpp)
-
-target_link_libraries (DatabaseBootstrapTest hive )
-ADD_TEST(db.DatabaseBootstrapTest ${EXECUTABLE_OUTPUT_PATH}/DatabaseBootstrapTest)
-set_tests_properties(db.DatabaseBootstrapTest PROPERTIES ENVIRONMENT "MYSQLD_BIN=${MEC_SOURCE_DIR}/target/dependency/bin/mysqld")
 
 add_subdirectory (lang)
 add_subdirectory (core)

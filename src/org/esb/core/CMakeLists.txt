@@ -24,6 +24,14 @@ SET(core_source
   #http/HTTPServerRequest.cpp
   #http/HTTPServerResponse.cpp
   #http/RootRequestHandler.cpp
+  ../hive/job/ProcessUnit.cpp
+  ../hive/DatabaseService.cpp
+  ../hive/HiveClient.cpp
+  ../hive/HiveException.cpp
+  ../hive/PresetReaderJson.cpp
+  ../config/config.cpp
+  ../hive/Environment.cpp
+
 )
 
 SET(core_http_source
@@ -42,8 +50,11 @@ MESSAGE("PocoLinkLibarayUtil"  ${POCO_LIB_NET_UTIL})
 
 TARGET_LINK_LIBRARIES(core 
   #${POCO_LIB_FOUNDATION}
-  #json
-  #db
+  json
+  db
+  net
+  grid
+  #signal
   #lang
   #util
   #io
@@ -52,11 +63,10 @@ TARGET_LINK_LIBRARIES(core
   #lang
   #io
 #  iphlpapi
-  hive
+#  hive
   #db
   #util
   #core_http
-  grid
 #  ${POCO_LIB_NET}
 #  ${POCO_LIB_NET_UTIL}
 )

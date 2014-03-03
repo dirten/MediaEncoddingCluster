@@ -11,6 +11,7 @@ class JSONAPI_EXPORT CodecListHandler : public org::esb::core::WebHookPlugin {
 public:
 
   void handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res) {
+
     JSONResult result(req);
     JSONNode c(JSON_ARRAY);
     c.set_name("data");

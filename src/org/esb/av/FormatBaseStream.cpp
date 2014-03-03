@@ -7,15 +7,12 @@
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/util/Foreach.h"
-#include "boost/thread/mutex.hpp"
 
 namespace org {
   namespace esb {
     namespace av {
-      boost::mutex log_mutex;
-
-      bool isInitialized = false;
-
+      boost::mutex FormatBaseStream::log_mutex;
+      bool FormatBaseStream::isInitialized=false;
       std::map<std::string, std::list<std::string> > FormatBaseStream::logMap;
 
       void FormatBaseStream::mhive_log_default_callback(void* ptr, int level, const char* fmt, va_list vl) {

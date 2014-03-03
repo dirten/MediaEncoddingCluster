@@ -7,9 +7,8 @@
 
 #ifndef DOWNLOADTASK_H
 #define	DOWNLOADTASK_H
-#include "org/esb/db/hivedb.hpp"
-
 #include "org/esb/core/Task.h"
+#include "org/esb/db/hivedb.hpp"
 #include "ProcessUnitData.h"
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/av/Packet.h"

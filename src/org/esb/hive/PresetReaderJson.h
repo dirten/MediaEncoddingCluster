@@ -10,12 +10,12 @@
 
 #include <string>
 #include <map>
-#include "exports.h"
+#include "../core/exports.h"
 namespace org {
   namespace esb {
     namespace hive {
 
-      class HIVE_EXPORT PresetReaderJson {
+      class CORE_EXPORT PresetReaderJson {
       public:
         typedef std::map<std::string, std::map<std::string, std::string> > CodecList;
         typedef CodecList FilterList;

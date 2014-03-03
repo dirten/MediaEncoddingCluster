@@ -9,13 +9,13 @@
 #define	ENVIRONMENT_H
 #include <map>
 #include <vector>
-#include "exports.h"
+#include "../core/exports.h"
 
 namespace org {
   namespace esb {
     namespace hive {
 
-      class HIVE_EXPORT Environment {
+      class CORE_EXPORT Environment {
         public:
           enum SYSTEM_TYPE{
             UNKNOWN ,

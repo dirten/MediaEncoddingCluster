@@ -20,9 +20,9 @@ add_library (hiveservice SHARED
  )
 
 TARGET_LINK_LIBRARIES(hiveservice
-  net
+
   core
-  partitionservice
+
 )
 
 SET_TARGET_PROPERTIES( hiveservice PROPERTIES PREFIX "")

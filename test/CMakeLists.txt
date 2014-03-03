@@ -146,33 +146,14 @@ add_executable (mytest test.cpp)
 #add_executable(amqc AMQConsumerTest.cpp)
 
 target_link_libraries (info
-  lang
-  av
-  util
-  signal
-  io
-  net
   core
-  hive
   )
 target_link_libraries (pu
-  hive
-  av
-  util
-  io
-  net
-  signal
-  lang
-  )
+  core
+)
 target_link_libraries (pc
-  hive
-  av
-  util
-  io
-  net
-  signal
-  lang
-  )
+  core
+)
 #target_link_libraries(zeromq
 #  zmq
 #)

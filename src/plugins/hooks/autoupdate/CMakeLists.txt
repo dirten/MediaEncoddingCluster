@@ -9,7 +9,6 @@ add_library (autoupdate SHARED
 
 TARGET_LINK_LIBRARIES(autoupdate
   core
-  json
 )
 SET_TARGET_PROPERTIES( autoupdate PROPERTIES PREFIX "")
 

@@ -68,13 +68,8 @@ ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES(jsonapi
   streamsource
-  core
-  json
-  av
+#  core
 #  av
-  ${POCO_LIB_NET}
-  ${POCO_LIB_FOUNDATION}
-
 )
 SET_TARGET_PROPERTIES( jsonapi PROPERTIES PREFIX "")
 

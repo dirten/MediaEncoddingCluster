@@ -1,6 +1,6 @@
 #include <iostream>
 #include <AV.h>
-#include "boost/thread/mutex.hpp"
+//#include "boost/thread/mutex.hpp"
 
 using namespace std;
 namespace org{
@@ -8,7 +8,7 @@ namespace org{
     namespace av{
       class Global{
         public:
-          static boost::mutex ffmpeg_global_mutex;
+          //static boost::mutex ffmpeg_global_mutex;
       };
       /*
 void __attribute__ ((constructor)) my_init(void);

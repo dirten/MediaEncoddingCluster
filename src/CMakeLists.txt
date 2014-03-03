@@ -57,13 +57,6 @@ add_executable (mhive Main.cpp )
 
 target_link_libraries (mhive 
   #${Boost_LIBRARIES}
-  lang
-  hive 
-  av 
-  util 
-  signal 
-  io 
-  net
   core
   #${POCO_LIB_FOUNDATION}
   #${POCO_LIB_FOUNDATION}

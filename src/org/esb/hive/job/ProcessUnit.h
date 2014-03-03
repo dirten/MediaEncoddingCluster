@@ -43,7 +43,7 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "org/esb/util/Log.h"
 #include "org/esb/lang/Deprecated.h"
-#include "../exports.h"
+#include "../../core/exports.h"
 using namespace std;
 using namespace org::esb::av;
 using namespace boost::posix_time;
@@ -51,7 +51,7 @@ namespace org {
     namespace esb {
         namespace hive {
             namespace job {
-                class HIVE_EXPORT ProcessUnit {
+                class CORE_EXPORT ProcessUnit {
                 public:
                     classlogger("org.esb.hive.job.ProcessUnit")
                     ProcessUnit();

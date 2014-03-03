@@ -166,10 +166,10 @@ add_library (util ${UTIL_LINK_TYPE}
   util/UUID.cpp
 )
 
-TARGET_LINK_LIBRARIES(util lang)
+TARGET_LINK_LIBRARIES(util io)
 
 IF(UNIX AND NOT APPLE)
-    TARGET_LINK_LIBRARIES(util rt)
+  TARGET_LINK_LIBRARIES(util rt)
   SET(LIB_EXT -1.0.so.4)
   SET(LIB_PRE lib)
 ENDIF()
@@ -182,15 +182,10 @@ ENDIF()
 SET_TARGET_PROPERTIES( util PROPERTIES PREFIX "libmhive-")
 IF(NOT WIN32)
   #SET_TARGET_PROPERTIES( util PROPERTIES PREFIX "libmhive")
-  TARGET_LINK_LIBRARIES(util pthread )
+  TARGET_LINK_LIBRARIES(util )
   SET(LOG4CPLUS_LIB log4cplus)
 ELSEIF(WIN32)
   TARGET_LINK_LIBRARIES(util advapi32 )
-  IF(CMAKE_BUILD_TYPE MATCHES "debug")
-    SET(LOG4CPLUS_LIB log4cplusd)
-  ELSE()
-    SET(LOG4CPLUS_LIB log4cplus)
-  ENDIF()
   SET(LIB_EXT .dll)
   SET(LIB_PRE)
 ENDIF(NOT WIN32)
@@ -265,7 +260,7 @@ add_library (net SHARED
 #      net/TcpSocketOutputStream.cpp
 )
 SET_TARGET_PROPERTIES( net PROPERTIES PREFIX "libmhive-")
-TARGET_LINK_LIBRARIES(net util lang io)
+TARGET_LINK_LIBRARIES(net av)
   INSTALL(TARGETS net
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
@@ -308,8 +303,8 @@ TARGET_LINK_LIBRARIES(net util lang io)
 #    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 #ENDIF(BUILD_SHARED_LIBS)
 
-include_directories (${MEC_SOURCE_DIR}/src/org/esb/hive)
-add_library (hive SHARED
+#include_directories (${MEC_SOURCE_DIR}/src/org/esb/hive)
+#add_library (hive SHARED
 #    hive/Command.cpp 
 #	hive/ProtocolServer.cpp 
 #	hive/HiveControl.cpp 
@@ -324,13 +319,13 @@ add_library (hive SHARED
 #	hive/job/JobWatcher.cpp 
 #	hive/job/ProcessUnitWatcher.cpp
 #	hive/job/PartitionManager.cpp 
-	hive/job/ProcessUnit.cpp 
+##	hive/job/ProcessUnit.cpp
 #	hive/DirectoryScanner.cpp 
 #	hive/DatabaseUtil.cpp
-	hive/DatabaseService.cpp
+##	hive/DatabaseService.cpp
 #	hive/FileImporter.cpp 
 #	hive/JobUtil.cpp 
-	hive/HiveClient.cpp
+##	hive/HiveClient.cpp
 #	hive/HiveClientAudio.cpp
 #	hive/Setup.cpp
 #	hive/FileExporter.cpp
@@ -346,50 +341,49 @@ add_library (hive SHARED
 #  hive/job/ProcessUnitController.cpp
 #  hive/job/JobController.cpp
 #  hive/ProcessManager.cpp
-  hive/HiveException.cpp
+##  hive/HiveException.cpp
 #  hive/CodecPropertyTransformer.cpp
 #  hive/PresetReader.cpp
-  hive/PresetReaderJson.cpp
+##  hive/PresetReaderJson.cpp
 #  hive/PresetFileWriter.cpp
 #  hive/PresetLoader.cpp
 #  hive/xml/Project.cpp
 #  hive/xml/JobCreator.cpp
-  config/config.cpp
+##  config/config.cpp
   #hive/TestLogAppender.cpp
-  hive/Environment.cpp
+##  hive/Environment.cpp
 #  hive/EncodingClientHandler.cpp
 #  hive/ClientStream.cpp
-)
+#)
 
-TARGET_LINK_LIBRARIES(hive
-  db
-  net
-  signal
-  av
-  lang
-  json
-  util
-  ${Boost_LIBRARIES}
-  ${POCO_LIB_ZIP}
-  ${POCO_LIB_NET}
-  ${POCO_LIB_FOUNDATION}
+#TARGET_LINK_LIBRARIES(hive
+#  db
+#  net
+#  signal
+#  av
+#  lang
+#  json
+#  util
+#  ${Boost_LIBRARIES}
+#  ${POCO_LIB_ZIP}
+#  ${POCO_LIB_NET}
+#  ${POCO_LIB_FOUNDATION}
+#)
+#if(MINGW)
+#  TARGET_LINK_LIBRARIES(hive
+#  iphlpapi
+#  ws2_32
+#    #wsock32
+#    #gdi32
+#  )
+#ENDIF(MINGW)
 
-)
-if(MINGW)
-  TARGET_LINK_LIBRARIES(hive
-  iphlpapi
-  ws2_32
-    #wsock32
-    #gdi32
-  )
-ENDIF(MINGW)
 
-
-INSTALL(TARGETS hive
-    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
-#    ARCHIVE DESTINATION ${LIB_INSTALL_DIR}
-)
+#INSTALL(TARGETS hive
+#    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+#    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
+##    ARCHIVE DESTINATION ${LIB_INSTALL_DIR}
+#)
 
 #SET_TARGET_PROPERTIES(web
 #PROPERTIES
@@ -399,7 +393,7 @@ INSTALL(TARGETS hive
 
 #TARGET_LINK_LIBRARIES(av z avcodec avformat avutil  swscale x264 pthread mp3lame theora vorbis vorbisenc xvidcore ogg)
 
-include_directories (${MEC_SOURCE_DIR}/src/org/esb/config)
+#include_directories (${MEC_SOURCE_DIR}/src/org/esb/config)
 #add_library (esb config/config.cpp)
 #TARGET_LINK_LIBRARIES(esb util io db)
 #IF(BUILD_SHARED_LIBS)

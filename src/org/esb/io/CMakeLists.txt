@@ -6,6 +6,7 @@ IF(SHARED_IO)
 ELSE(SHARED_IO)
     SET(IO_LINK_TYPE STATIC)
 ENDIF(SHARED_IO)
+
 MESSAGE("IO Build Type" ${LINK_TYPE})
 
 add_library (io ${IO_LINK_TYPE}
@@ -26,8 +27,10 @@ add_library (io ${IO_LINK_TYPE}
       portable_binary_oarchive.cpp
 )
 #MESSAGE("Boost Libraries in io " ${Boost_LIBRARIES})
+
 TARGET_LINK_LIBRARIES(io
-    ${Boost_LIBRARIES}
+  lang
+  #${Boost_LIBRARIES}
     #mq
     #lang
     #util

@@ -11,7 +11,7 @@ set(CMAKE_CXX_FLAGS "-Wdeprecated-declarations")
 #LINK_DIRECTORIES(${FFMPEG_LIB_DIR})
 add_library (av SHARED
   Init.cpp 
-  FrameConverter.cpp 
+  FrameConverter.cpp
 #  FrameOutputStream.cpp 
   FormatInputStream.cpp 
   FormatBaseStream.cpp 
@@ -61,9 +61,7 @@ TARGET_LINK_LIBRARIES(av
   ${FFMPEG_SWRESAMPLE_LIBRARY}
   ${FFMPEG_AVUTIL_LIBRARY}
 #  ${FFMPEG_AVCORE_LIBRARY}
-  ${BZ2_LIB}
-  util
-  io
+  signal
   mp3lame
   x264
   vpx
@@ -75,7 +73,7 @@ TARGET_LINK_LIBRARIES(av
 )
 IF(NOT WIN32)
 #	target_link_libraries (av x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora theoraenc theoradec z )
-	target_link_libraries (av pthread z io util lang)
+  target_link_libraries (av z)
 ENDIF(NOT WIN32)
 
 SET_TARGET_PROPERTIES( av PROPERTIES PREFIX "libmhive-")

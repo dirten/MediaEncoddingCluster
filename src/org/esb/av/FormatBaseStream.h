@@ -4,6 +4,8 @@
 #include "exports.h"
 #include <map>
 #include <list>
+#include "boost/thread/mutex.hpp"
+
 namespace org {
   namespace esb {
     namespace av {
@@ -20,6 +22,10 @@ namespace org {
         static void mhive_log_default_callback(void* ptr, int level, const char* fmt, va_list vl);
         static std::map<std::string, std::list<std::string> > logMap;
         static const int MAX_HISTORY=10;
+        static boost::mutex log_mutex;
+
+        static bool isInitialized;
+
       };
     }
   }

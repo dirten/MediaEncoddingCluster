@@ -27,7 +27,7 @@
 #include "org/esb/av/Encoder.h"
 #include "org/esb/av/FrameConverter.h"
 
-#include "exports.h"
+#include "../core/exports.h"
 //#include <boost/interprocess/ipc/message_queue.hpp>
 //namespace ipc=boost::interprocess;
 namespace org {
@@ -37,7 +37,7 @@ namespace org {
       }
         namespace hive {
 
-            class HIVE_EXPORT HiveClient : public org::esb::signal::MessageListener {
+            class CORE_EXPORT HiveClient : public org::esb::signal::MessageListener {
               classlogger("org.esb.hive.HiveClient")
             public:
                 HiveClient(std::string host, int port);

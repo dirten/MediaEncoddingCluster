@@ -9,12 +9,12 @@
 #define	HIVEEXCEPTION_H
 #include <exception>
 #include <string>
-#include "exports.h"
+#include "../core/exports.h"
 namespace org {
   namespace esb {
     namespace hive {
 
-      class HIVE_EXPORT HiveException : public std::exception {
+      class CORE_EXPORT HiveException : public std::exception {
       public:
         HiveException(std::string what);
         virtual ~HiveException() throw();

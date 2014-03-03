@@ -11,8 +11,6 @@ add_library (remote SHARED
 
 TARGET_LINK_LIBRARIES(remote
   core
-  json
-  grid
 )
 SET_TARGET_PROPERTIES( remote PROPERTIES PREFIX "")
 
