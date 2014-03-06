@@ -11,10 +11,10 @@ IF(APPLE)
   SET(POCO_CONFIGURE_COMMAND ${POCO_CONFIGURE_COMMAND} --cflags=-mmacosx-version-min=${MAC_OSX_MIN_VERSION} --static)
 ENDIF(APPLE)
 
-IF(LINUX)
+IF(UNIX)
   SET(POCO_CONFIGURE_COMMAND ${POCO_CONFIGURE_COMMAND} --cflags=-fPIC --static)
-ENDIF(LINUX)
-
+ENDIF(UNIX)
+MESSAGE("Poco configure with : " ${POCO_CONFIGURE_COMMAND})
 ExternalProject_Add(poco
   URL http://pocoproject.org/releases/poco-1.4.6/poco-1.4.6p2-all.tar.gz
   CONFIGURE_COMMAND ${POCO_CONFIGURE_COMMAND}
