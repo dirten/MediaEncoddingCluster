@@ -29,16 +29,21 @@ namespace org {
         //Message & setProperty(std::string key, boost::shared_ptr<void>);
         //std::string & getProperty(std::string key);
 
-        template<typename T>
+        template<class T>
         T getProperty(std::string key) {
-          //if (containsProperty(key))
           return boost::any_cast<T > (str_props[key]);
         }
-
+        /*
+        template<class T*>
+        boost::shared_ptr<T> getProperty(std::string key) {
+          return boost::static_pointer_cast<T> (void_props[key]);
+        }
+        */
+        /*
         template<typename T>
         boost::shared_ptr<T> getPtrProperty(std::string key) {
           return boost::static_pointer_cast<T > (void_props[key]);
-        }
+        }*/
         bool containsProperty(std::string key);
         ~Message();
       private:

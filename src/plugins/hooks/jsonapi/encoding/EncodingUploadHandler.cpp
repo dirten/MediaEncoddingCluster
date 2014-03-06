@@ -80,7 +80,7 @@ public:
       if (el->getParents().size() == 0) {
         LOGDEBUG("Element:"<<el->name);
         StreamSource * source=static_cast<StreamSource*>(el->task.get());
-        //source->setSource(Ptr<FormatInputStream>(new FormatInputStream(stream)));
+        source->setSource(Ptr<FormatInputStream>(new FormatInputStream(stream)));
       }
     }
     /*
@@ -193,6 +193,7 @@ public:
         Poco::Net::HTMLForm form(req, req.stream(), partHandler);
       }catch(...){
         LOGDEBUG("upload canceled");
+        res.setStatusAndReason(Poco::Net::HTTPServerResponse::HTTP_NOT_ACCEPTABLE,"Error while Uploading file");
       }
       job.status=db::Job::Status::Exporting;
       job.update();

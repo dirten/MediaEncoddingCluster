@@ -23,9 +23,17 @@
 #include "EncodingTask.h"
 #include "org/esb/util/Serializing.h"
 #include "org/esb/io/FileOutputStream.h"
+
+#include "org/esb/signal/Message.h"
+#include "org/esb/signal/Messenger.h"
+
 using org::esb::util::StringUtil;
 using org::esb::util::Serializing;
 using org::esb::io::FileOutputStream;
+
+using org::esb::signal::Message;
+using org::esb::signal::Messenger;
+
 namespace encodingtask {
 
   EncodingTask::EncodingTask() : Task() {
@@ -473,6 +481,11 @@ namespace encodingtask {
     //pu.sendid=std::string(oss.str());
 
     pu.update();
+
+    Message msg;
+    msg.setProperty("processunit_pushed",pu);
+    msg.setProperty("pu", unit);
+    Messenger::getInstance().sendRequest(msg);
     /*
     std::string d;
     litesql::Blob blob2=pu.data.value();

@@ -18,6 +18,9 @@ namespace plugin {
 
   void StreamSource::prepare(){
     Task::prepare();
+    if(!_fis){
+      throw org::esb::core::TaskException("Input FormatInputStream is not set!");
+    }
     _fis->dumpFormat();
 
     if(!_fis->isValid()){
