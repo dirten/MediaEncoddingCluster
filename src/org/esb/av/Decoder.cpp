@@ -54,7 +54,7 @@ Decoder::Decoder(CodecID id) : Codec(id, Codec::DECODER) {
   _input_packet_time_base.num=0;
   _input_packet_time_base.den=0;
 }
-
+/*
 Decoder::Decoder(std::string name) : Codec(name, Codec::DECODER) {
   _last_pts = AV_NOPTS_VALUE;
   _next_pts = AV_NOPTS_VALUE;
@@ -62,7 +62,7 @@ Decoder::Decoder(std::string name) : Codec(name, Codec::DECODER) {
   _input_packet_time_base.num=0;
   _input_packet_time_base.den=0;
 }
-
+*/
 Decoder::Decoder(AVStream * c) : Codec(c, Codec::DECODER) {
   _last_pts = AV_NOPTS_VALUE;
   _next_pts = AV_NOPTS_VALUE;

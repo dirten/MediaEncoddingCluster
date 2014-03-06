@@ -164,9 +164,11 @@ namespace org {
         LOGDEBUG("Search for codec:"<<data["codec_id"]);
         _codec = findCodecByName(data["codec_id"], mode);
         ctx = avcodec_alloc_context3(_codec);
+        ctx->codec_type = _codec->type;
+
         if (_codec) {
           LOGDEBUG("Code Name:" << _codec->name);
-          //avcodec_get_context_defaults2(ctx, _codec->type);
+          avcodec_get_context_defaults3(ctx, _codec);
           ctx->codec_id = _codec->id;
           //setContextDefaults();
         }else{
@@ -197,6 +199,7 @@ namespace org {
           //sdata.pass2encoder->setCodecOption(param.first, param.second);
         }
       }
+#if 0
 
       Codec::Codec(const Codec & cp)
       {
@@ -239,6 +242,7 @@ namespace org {
           }
         }
       }
+#endif
 
       Codec::Codec(std::string codec_name, int mode) {
         _stream_index=-1;
@@ -251,11 +255,13 @@ namespace org {
         setCodecOption("codec_name", codec_name);
         _codec = findCodecByName(codec_name, mode);
         ctx = avcodec_alloc_context3(_codec);
+        ctx->codec_type = _codec->type;
+
         if (_codec) {
           LOGDEBUG("Code Name:" << _codec->name);
-          //avcodec_get_context_defaults2(ctx, _codec->type);
-          //ctx->codec_id = _codec->id;
-          //setContextDefaults();
+          avcodec_get_context_defaults3(ctx, _codec);
+          ctx->codec_id = _codec->id;
+          setContextDefaults();
         }
         fifo = NULL;
         _pre_allocated = false;
@@ -267,6 +273,7 @@ namespace org {
       }
 
       Codec::Codec(const AVCodecID codecId, int mode) {
+        _codecId=codecId;
         _stream_index=-1;
         emptyFrameIsEOF=false;
         _dict=NULL;
@@ -283,7 +290,8 @@ namespace org {
           //findCodec(mode);
           if (_codec_resolved) {
             //avcodec_get_context_defaults3(ctx, _codec);
-            //avcodec_get_context_defaults2(ctx, _codec->type);
+            ctx = avcodec_alloc_context3(_codec);
+            avcodec_get_context_defaults3(ctx, _codec);
             //LOGERROR("error in setting defaults for the codec");
 
           }
@@ -291,6 +299,10 @@ namespace org {
           //setContextDefaults();
         }
 
+        //ctx = avcodec_alloc_context3(_codec);
+        //return;
+        ctx->codec_id = codecId;
+        ctx->codec_type = _codec->type;
 
         /*
          * special handling of the test decoder,
@@ -422,26 +434,26 @@ namespace org {
         //        if(_codec_resolved)return result;
         //        logdebug("try to find " << (mode == DECODER ? "Decoder" : "Encoder") << " with id:" << _codec_id);
         if (mode == DECODER) {
-          _codec = avcodec_find_decoder(ctx->codec_id);
+          _codec = avcodec_find_decoder(_codecId);
           if (_codec == NULL) {
-            LOGERROR("Decoder not found for id :" << ctx->codec_id);
+            LOGERROR("Decoder not found for id :" << _codecId);
             result = false;
           }
         } else
           if (mode == ENCODER) {
-            _codec = avcodec_find_encoder(ctx->codec_id);
+            _codec = avcodec_find_encoder(_codecId);
             if (_codec == NULL) {
-              LOGERROR("Encoder not found for id :" << ctx->codec_id);
+              LOGERROR("Encoder not found for id :" << _codecId);
               result = false;
             }
           } else {
             LOGERROR("Mode not set for Codec");
           }
         if (result) {
-          ctx->codec_type = _codec->type;
+          //ctx->codec_type = _codec->type;
           _codec_resolved = true;
         } else {
-          LOGERROR("in resolving codec id:" << ctx->codec_id);
+          LOGERROR("in resolving codec id:" << _codecId);
         }
 
         return result;
@@ -464,10 +476,9 @@ namespace org {
             LOGERROR("Mode not set for Codec");
           }
         if (result) {
-          //ctx->codec_type = result->type;
           _codec_resolved = true;
         } else {
-          LOGERROR("in resolving codec id:" << ctx->codec_id);
+          LOGERROR("in resolving codec id:" << result->id);
         }
         return result;
       }
