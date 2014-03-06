@@ -4,7 +4,6 @@
 #include <string.h>
 #include <stdexcept>
 
-#include "org/esb/util/Log.h"
 #include "org/esb/lang/Exception.h"
 #include "exports.h"
 
@@ -12,8 +11,8 @@ namespace org{
 namespace esb{
 namespace net{
 class NET_EXPORT SocketException : public org::esb::lang::Exception {
-  classlogger("org.esb.net.SocketException")
-	public:
+
+  public:
 		explicit SocketException(std::string & msg);
 		explicit SocketException(const char * msg);
 };
