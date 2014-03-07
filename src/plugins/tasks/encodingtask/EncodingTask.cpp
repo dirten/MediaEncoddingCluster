@@ -39,18 +39,6 @@ namespace encodingtask {
   EncodingTask::EncodingTask() : Task() {
     _sequence_counter = 0;
     flushed=false;
-    /*
-    ConnectionFactory* connectionFactory(ConnectionFactory::createCMSConnectionFactory("failover:tcp://127.0.0.1:61616"));
-    connection = connectionFactory->createConnection();
-    connection->start();
-
-    session = connection->createSession(Session::AUTO_ACKNOWLEDGE);
-    //Session*session = connection->createSession(Session::AUTO_ACKNOWLEDGE);
-    destination = session->createQueue("MHIVE.OUTPUT");
-    producer = session->createProducer(destination);
-    producer->setDeliveryMode(DeliveryMode::PERSISTENT);
-    */
-    //lastSequence=0;
   }
 
   EncodingTask::~EncodingTask() {
@@ -81,9 +69,7 @@ namespace encodingtask {
     _filters = reader.getFilterList();
     _preset = reader.getPreset();
     _format = _preset["id"];
-    //con=new org::esb::mq::QueueConnection("localhost", 20202);
 
-    //Ptr<Task> itask=_sources.front();
     if (getContext()->contains("decoder")) {
       std::map<int, Ptr<org::esb::av::Decoder> >tmp = getContext()->get<std::map<int, Ptr<org::esb::av::Decoder> > >("decoder");
       std::map<int, Ptr<org::esb::av::Decoder> >::iterator it = tmp.begin();
@@ -128,63 +114,15 @@ namespace encodingtask {
         StreamData & sd = _in_out_stream_map[(*it).first];
         sd.next_timestamp = 0;
         sd.last_timestamp = 0;
-        //sd.out_stream_index = a;
-        //sd.stream_type = data.second->getCodecType();
-        /*calculate the audio pu size*/
 
 
-        //_packetizer[(*it).first] = StreamPacketizer(0, (*it).second);
         _packetizer[(*it).first] = StreamPacketizer(_encs[(*it).first].get(), (*it).second);
         _spu[(*it).first]=StreamProcessUnitBuilder();
-        //std::string qReadName=_task_uuid+"#read#"+StringUtil::toString( (*it).first );
-        //std::string qWriteName=_task_uuid+"#write#"+StringUtil::toString( (*it).first );
-        /*creating queue for each stream*/
-        /*
-        if(!con->queueExist(qReadName)){
-            con->createQueue(qReadName);
-        }
-        if(!con->queueExist(qWriteName)){
-            con->createQueue(qWriteName);
-        }
-        _queueMap[(*it).first]=con->getMessageQueue(qReadName);
-        */
-        //_queueMap[(*it).first]=con->getMessageQueue("read_q");
-        /*
-        db::Queue queue(*database);
-        //queue.job.link(job);
-        queue.outputname=qReadName;
-        queue.inputname=qWriteName;
-        queue.uuid=_task_uuid;
-        if ((*it).second->getCodecType() == AVMEDIA_TYPE_AUDIO) {
-          queue.qtype=db::Queue::Qtype::ONE4ALL;
-        }
-        if ((*it).second->getCodecType() == AVMEDIA_TYPE_VIDEO) {
-          queue.qtype=db::Queue::Qtype::ONE2ONE;
-        }
-        queue.update();
-        */
       }
     } else {
       throw org::esb::core::TaskException("could not find decoder in Tasks PluginContext");
     }
-    /*
-    if(!con->queueExist("read_q-"+_task_uuid)){
-        con->createQueue("read_q-"+_task_uuid);
-    }
-    if(!con->queueExist("write_q-"+_task_uuid)){
-        con->createQueue("write_q-"+_task_uuid);
-    }
-    read_q=con->getMessageQueue("read_q-"+_task_uuid);
-    */
-    /*
-    if(!con->queueExist("read_q")){
-        con->createQueue("read_q");
-    }
-    if(!con->queueExist("write_q")){
-        con->createQueue("write_q");
-    }
-    read_q=con->getMessageQueue("read_q");
-    */
+
     getContext()->setProperty<std::map<int, Ptr<org::esb::av::Encoder> > >("encoder",_encs);
 
     getContext()->setProperty<std::string > ("profile.name", _preset["name"]);
@@ -203,16 +141,7 @@ namespace encodingtask {
     getContext()->setProperty<std::string > ("audio.channels", _codecs["audio"]["ac"]);
     getContext()->setProperty<std::string > ("audio.samples", _codecs["audio"]["ar"]);
 
-    /*} catch (std::exception & ex) {
-      setStatus(Task::ERROR);
-      setStatusMessage(std::string("Error while parsing JSON Profile:").append(ex.what()));
-      throw org::esb::core::TaskException(getStatusMessage());
-    }*/
-    //partitionservice::PartitionManager::getInstance()->addCollector(boost::bind(&EncodingTask::collector, this, _1,_2));
-    //_unit_list.addCallback(boost::bind(&EncodingTask::unitListCallback, this, _1));
     LOGDEBUG("starting progress observer");
-
-    //boost::thread(boost::bind(&EncodingTask::observeProgress,this));
 
     setStatus(PREPARED);
   }
@@ -402,105 +331,18 @@ namespace encodingtask {
   }
 
   void EncodingTask::putToPartition(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit, bool isLast) {
-    //org::esb::mq::ObjectMessage msg;
     unit->_sequence = _sequence_counter++;
-    //std::cerr <<"Sequence="<<_sequence_counter<<std::endl;
     unit->setJobId(_task_uuid);
     unit->uuid=org::esb::util::PUUID();
-    //unit->setJobId("121212");
 
-    partitionservice::PartitionManager::Type t = partitionservice::PartitionManager::TYPE_UNKNOWN;
-    LOGDEBUG("CodecType:" << unit->_decoder->getCodecType());
-    if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
-      //msg.setLabel(_task_uuid+org::esb::util::StringUtil::toString(unit->_input_packets.front()->getStreamIndex()));
-      t = partitionservice::PartitionManager::TYPE_AUDIO;
-    } else if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
-      t = partitionservice::PartitionManager::TYPE_VIDEO;
-    }
     /*create unique stream index*/
     unit->_source_stream = unit->_input_packets.front()->getStreamIndex();
     unit->_last_process_unit = isLast;
-    /*
-    BytesMessage * bmsg=serializeProcessUnit(unit);
-    producer->send(bmsg);
-    delete bmsg;
-    */
-    //msg.setObject(unit);
-    //_queueMap[unit->_source_stream]->Enqueue(msg);
-    db::ProcessUnit pu(*database);
-    pu.sorcestream=unit->_source_stream;
-    pu.targetstream=unit->_target_stream;
-    pu.send=litesql::DateTime(1);
-    pu.recv=litesql::DateTime(1);
-    pu.sendid=unit->uuid;
-    pu.jobid=_task_uuid;
-    pu.sequence=unit->_sequence;
-    if(unit->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO){
-      pu.codectype=db::ProcessUnit::Codectype::VIDEO;
-    }
-
-    if(unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO){
-      pu.codectype=db::ProcessUnit::Codectype::AUDIO;
-    }
-
-    if (unit->_input_packets.size() > 0) {
-      boost::shared_ptr<org::esb::av::Packet> first_packet = unit->_input_packets.front();
-      boost::shared_ptr<org::esb::av::Packet> last_packet = unit->_input_packets.back();
-      pu.startts=(double)first_packet->getDtsTimeStamp().getTime();
-      pu.endts=(double)last_packet->getDtsTimeStamp().getTime();
-      pu.timebasenum=first_packet->getDtsTimeStamp().getTimeBase().num;
-      pu.timebaseden=first_packet->getDtsTimeStamp().getTimeBase().den;
-      pu.framecount=(int)unit->_input_packets.size();
-    }
-    //std::string data=serializeProcessUnit(unit);
-    //boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit2;
-    //int c=deserializeProcessUnit(unit2, data);
-
-
-    /*writing process units to the file system for delivery*/
-    std::string base = org::esb::config::Config::get("hive.data_path");
-    /*
-    org::esb::io::File outputfile(base + "/"+_task_uuid+"/"+ unit->uuid);
-    if(!File(outputfile.getParent()).exists()){
-      File(outputfile.getParent()).mkdirs();
-    }*/
-    /*serialize the process unit into string format*/
-    std::ofstream ost((base + "/"+_task_uuid+"/"+ unit->uuid).c_str(), std::ofstream::out);
-    Serializing::serialize(unit, ost);
-    /*
-    FileOutputStream outstream(&outputfile);
-    outstream.write(data);
-    outstream.close();
-    */
-    LOGDEBUG("written ProcessUnit to "<<base + "/"+_task_uuid+"/"+ unit->uuid)
-
-    //litesql::Blob blob=litesql::Blob(data.c_str(),data.length());
-    //pu.data=blob;
-    //std::ostringstream oss;
-    //oss << msg.getMessageID();
-    //pu.sendid=std::string(oss.str());
-
-    pu.update();
 
     Message msg;
-    msg.setProperty("processunit_pushed",pu);
-    msg.setProperty("pu", unit);
-    Messenger::getInstance().sendRequest(msg);
-    /*
-    std::string d;
-    litesql::Blob blob2=pu.data.value();
-    d.reserve(blob2.length());
-    LOGDEBUG("start copying bytes:"+StringUtil::toString(blob2.length()))
-    for(int a=0;a<blob2.length();a++){
-      char ch=blob2.data(a);
-      d.push_back(ch);
-    }
-    LOGDEBUG("finish copy")
-    //char ch=pu.data.value().data(0);
-    c=deserializeProcessUnit(unit2, d);
-*/
-    //read_q->Enqueue(msg);
-    //partitionservice::PartitionManager::getInstance()->putProcessUnit(_partition, unit, t);
+    msg.setProperty("processunit_enque",unit);
+    Messenger::getInstance().sendMessage(msg);
+
     setProgressLength(getProgressLength() + 1);
   }
 

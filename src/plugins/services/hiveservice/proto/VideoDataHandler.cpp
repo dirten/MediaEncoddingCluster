@@ -23,6 +23,7 @@
 #include "org/esb/config/config.h"
 #include <map>
 #include <string>
+#include <sstream>
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
 
@@ -189,6 +190,17 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
         _oos->writeObject(un);
         */
 
+        Message msg;
+        msg.setProperty("processunit_deque",std::string());
+        Messenger::getInstance().sendRequest(msg);
+        boost::shared_ptr<org::esb::hive::job::ProcessUnit>punit=msg.getProperty<boost::shared_ptr<org::esb::hive::job::ProcessUnit> >("processunit_deque");
+        std::ostringstream ost;
+        Serializing::serialize<boost::archive::text_oarchive>(punit, ost);
+
+        _os->write((char*) ost.str().c_str(), ost.str().length());
+        _os->flush();
+        return;
+
         db::ProcessUnit unit=getProcessUnit();
 
         /*something is going wrong on the client, resetting the processUnit*/
@@ -235,8 +247,14 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
 
           string data;
           _is->read(data);
+          std::istringstream iss (data);
+          boost::shared_ptr<org::esb::hive::job::ProcessUnit>punit;
+          Serializing::deserialize<boost::archive::text_iarchive>(punit, iss);
+          Message msg;
+          msg.setProperty("processunit_put",punit);
+          Messenger::getInstance().sendRequest(msg);
 
-
+          return;
           std::string recvid=org::esb::util::PUUID();
           _current_unit->recvid=recvid;
           /*writing process units to the file system for delivery*/
@@ -248,21 +266,21 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
           FileOutputStream outstream(&outputfile);
           outstream.write(data);
           outstream.close();
-
+          return;
           /*
           litesql::Blob blob=litesql::Blob(data.c_str(),data.length());
           _current_unit->responseData=blob;
           */
 
           _current_unit->recv=litesql::DateTime();
-          _current_unit->update();
-
+          //_current_unit->update();
+          /*
           Message msg;
           msg.setProperty("processunit_encoded",_current_unit->id.value());
           msg.setProperty("jobid",_current_unit->jobid.value());
           msg.setProperty("sequence",_current_unit->sequence.value());
           Messenger::getInstance().sendRequest(msg);
-
+          */
           _current_unit.reset();
         } else {
           LOGERROR("unknown command received:" << command);

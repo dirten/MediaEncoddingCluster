@@ -19,35 +19,19 @@ namespace org {
           template<typename T>
           static std::string serialize(const T &object) {
               std::ostringstream archive_stream;
-              //portable_binary_oarchive archive(archive_stream);
-              boost::archive::text_oarchive archive(archive_stream);
-              archive << object;
-              std::string _outbound_data = archive_stream.str();
-              return _outbound_data;
+              serialize<boost::archive::text_oarchive>(object, archive_stream);
+              return archive_stream.str();
           }
 
           template < typename T >
-          static int deserialize(T & object, std::string data) {
-            if (data.length() <= 0) {
-              return -1;
-            }
+          static void deserialize(T & object, std::string data) {
             std::istringstream archive_stream(data);
-            //portable_binary_iarchive archive(archive_stream);
-            boost::archive::text_iarchive archive(archive_stream);
-            try {
-              archive >> object;
-            } catch (boost::archive::archive_exception & ex) {
-              std::cout << "Exception=" << ex.what() <<" code="<<ex.code<<std::endl;
-              throw ex;
-              //return -1;
-            }
-            return 0;
+            deserialize<boost::archive::text_iarchive>(object,archive_stream);
           }
 
-          template < typename T >
+          template <class C, typename T>
           static int deserialize(T & object, std::istream & data) {
-            //portable_binary_iarchive archive(data);
-            boost::archive::text_iarchive archive(data);
+            C archive(data);
             try {
               archive >> object;
             } catch (boost::archive::archive_exception & ex) {
@@ -57,14 +41,11 @@ namespace org {
             return 0;
           }
 
-
-          template<typename T>
+          template<class C,typename T>
           static void serialize(const T &object, std::ostream & ost) {
-              //portable_binary_oarchive archive(ost);
-              boost::archive::text_oarchive archive(ost);
+              C archive(ost);
               archive << object;
           }
-
       };
     }
   }

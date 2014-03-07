@@ -7,6 +7,7 @@ include_directories (${BOOST_INCLUDE_DIRS})
 
 
 add_library (mhive_storage SHARED
+  services/engines/Simple.cpp
   services/StorageService.cpp
 )
 

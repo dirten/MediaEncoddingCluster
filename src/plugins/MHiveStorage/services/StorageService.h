@@ -5,7 +5,7 @@
 #include "org/esb/signal/Message.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/lang/Thread.h"
-
+#include "engines/Engine.h"
 namespace mhivestorage{
   class StorageService : public org::esb::core::ServicePlugin, org::esb::signal::MessageListener
   {
@@ -16,7 +16,8 @@ namespace mhivestorage{
       void stopService();
       org::esb::core::OptionsDescription getOptionsDescription();
       //org::esb::core::ServicePlugin::ServiceType getServiceType();
-
+    private:
+      Ptr<engines::Engine> _storageEngine;
   };
 }
 

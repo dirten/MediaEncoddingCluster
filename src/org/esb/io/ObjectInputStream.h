@@ -27,27 +27,10 @@ namespace org {
         int read();
 
         template < typename T > int readObject(T & object) {
-
             string data;
             _is->read(data);
-            return Serializing::deserialize(object, data);
-            /*
-          if (!(data.length() > 0)) {
-            //LOGERROR("Fehler in der groesse INBOUND_DATA:" << data.length());
-            return -1;
-          }
-          istringstream archive_stream(data);
-          boost::archive::binary_iarchive archive(archive_stream);
-          //boost::archive::text_iarchive archive(archive_stream);
-          try {
-            archive >> object;
-          } catch (exception & ex) {
-            //LOGERROR("Exception reading archive:"<<ex.what());
-            return -1;
-          }
-          return 0;
-          */
-
+            Serializing::deserialize(object, data);
+            return data.size();
         }
       private:
         InputStream * _is;

@@ -49,6 +49,8 @@
 //logging header
 #include "Poco/Logger.h"
 #include "Poco/SimpleFileChannel.h"
+#include "Poco/ConsoleChannel.h"
+#include "Poco/SplitterChannel.h"
 #include "Poco/PatternFormatter.h"
 #include "Poco/FormattingChannel.h"
 
@@ -61,6 +63,8 @@ using org::esb::lang::ProcessSupervisor;
 
 using Poco::Logger;
 using Poco::SimpleFileChannel;
+using Poco::ConsoleChannel;
+using Poco::SplitterChannel;
 using Poco::PatternFormatter;
 using Poco::FormattingChannel;
 namespace po = boost::program_options;
@@ -71,13 +75,19 @@ int main(int argc, char * argv[]) {
 
   /*initializing new logging*/
   SimpleFileChannel * fileChannel=new SimpleFileChannel();
-  fileChannel->setProperty("path",Environment::get("log.path")+"/pocotest.log");
+  fileChannel->setProperty("path",Environment::get("log.path")+"/mhive.log");
   fileChannel->setProperty("rotation","10 M");
+
+  ConsoleChannel * consoleChannel=new ConsoleChannel();
+
+  SplitterChannel * splitter=new SplitterChannel();
+  splitter->addChannel(fileChannel);
+  //splitter->addChannel(consoleChannel);
 
   PatternFormatter * formater=new PatternFormatter();
   //formater->setProperty("pattern","%Y-%m-%d %H:%M:%S.%i [%I][%p][%U:%u] %s: %t");
   formater->setProperty("pattern","%Y-%m-%d %H:%M:%S.%i [%I][%p] %s: %t");
-  FormattingChannel * formatChannel=new FormattingChannel(formater, fileChannel);
+  FormattingChannel * formatChannel=new FormattingChannel(formater, splitter);
 
 
   Logger::root().setChannel(formatChannel);

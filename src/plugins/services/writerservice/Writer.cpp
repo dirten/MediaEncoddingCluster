@@ -192,7 +192,7 @@ namespace plugin {
         //LOGDEBUG("bytes readed:"+StringUtil::toString(readed))
         boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit;
         try{
-          Serializing::deserialize(unit, stream);
+          Serializing::deserialize<boost::archive::text_iarchive>(unit, stream);
           unit->_output_packets.sort(Writer::ptsComparator);
 
           foreach(PacketPtr p, unit->_output_packets) {
