@@ -4,6 +4,7 @@
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/hive/Environment.h"
 #include "engines/Simple.h"
+#include "engines/redundant_engine/RedundantEngine.h"
 
 using org::esb::hive::Environment;
 namespace mhivestorage{
@@ -38,14 +39,17 @@ namespace mhivestorage{
   void StorageService::startService()
   {
     std::string engine_name=getContext()->getEnvironment<string>("mhivestorage.engine");
+
     if (engine_name=="simple") {
       _storageEngine=new engines::Simple(getContext()->database, Environment::get("hive.data_path"));
     }else if(engine_name=="redundant"){
-
+      std::vector<std::string> hosts=getContext()->getProperty< std::vector<std::string> >("mhivestorage.hosts");
+      _storageEngine=new engines::RedundantEngine(getContext()->database, Environment::get("hive.data_path"), hosts);
     }else {
       LOGWARN("no storage engine\""<<engine_name<<"\" found, using simple storage!");
       _storageEngine=new engines::Simple(getContext()->database, Environment::get("hive.data_path"));
     }
+    _storageEngine->init();
     org::esb::signal::Messenger::getInstance().addMessageListener(*this);
   }
 
@@ -59,7 +63,8 @@ namespace mhivestorage{
   {
     org::esb::core::OptionsDescription result("mhivestorage");
     result.add_options()
-    ("mhivestorage.engine", boost::program_options::value<string >()->default_value("simple"), "which storage engine to use(simple,redundant)")
+        ("mhivestorage.engine", boost::program_options::value<string >()->default_value("simple"), "which storage engine to use(simple,redundant)")
+        ("mhivestorage.hosts", boost::program_options::value< std::vector<string> >()->multitoken(), "ip:port tuples for redundant storage")
     ("mhivestorage.redundancy_level", boost::program_options::value<int >()->default_value(2), "which redundancy level should the storage engine \"redundant\" use");
     return result;
   }

@@ -105,7 +105,9 @@ namespace mhivestorage{
 
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> Simple::get()
     {
+      boost::shared_ptr<org::esb::hive::job::ProcessUnit> result;
 
+      return result;
     }
 
 
