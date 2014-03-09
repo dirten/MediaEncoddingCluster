@@ -13,12 +13,16 @@
 #include "org/esb/util/UUID.h"
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/libjson/libjson.h"
+#include "org/esb/util/StringUtil.h"
+
+using org::esb::util::StringUtil;
 
 namespace org {
   namespace esb {
     namespace hive {
       std::map<std::string, std::string> Environment::_environmentMap;
       std::vector<std::string> Environment::_argumentMap;
+      std::map<std::string, boost::any>  Environment::_env;
 
       const std::string Environment::BASE_PATH="hive.base_path";
       const std::string Environment::USER_HOME="hive.user_path";
@@ -41,18 +45,47 @@ namespace org {
       std::vector<std::string> Environment::getArguments(){
         return _argumentMap;
       }
+      boost::any Environment::getAnyType(std::string key) {
+        if(_env.find(key)==_env.end()){
+          return boost::any();
+        }else{
+          return _env[key];
+        }
+      }
 
+      /*
       std::string Environment::get(std::string key, std::string def){
         if(_environmentMap.find(key)==_environmentMap.end()){
           return getenv(key.c_str())!=NULL?getenv(key.c_str()):def;
         }else{
           return _environmentMap[key];
         }
+      }*/
+      std::string Environment::get(std::string key, std::string def){
+        return get<std::string>(key, def);
       }
 
-      void Environment::set(std::string key, std::string value){
-        _environmentMap[key]=value;
-        config::Config::setProperty(key, value);
+      void Environment::set(std::string key, char * value){
+        set(key, std::string(value));
+      }
+
+      void Environment::set(std::string key, boost::any value){
+        _env[key]=value;
+        if (value.type() == typeid (int)) {
+          config::Config::setProperty(key, StringUtil::toString(boost::any_cast< int >(value)));
+        } else if (value.type() == typeid (double)) {
+          config::Config::setProperty(key, StringUtil::toString(boost::any_cast< double >(value)));
+        } else if (value.type() == typeid (bool)) {
+          config::Config::setProperty(key, StringUtil::toString(boost::any_cast< bool >(value)));
+        } else if (value.type() == typeid (std::vector<std::string>)) {
+          /*
+          std::vector<std::string>plugins=vm["explicit"].as<std::vector<std::string> >();
+          foreach(std::string pluginname, plugins){
+            std::cout << "setting evironment need to be done: "<<pluginname<< std::endl;
+          }*/
+        } else {
+          config::Config::setProperty(key, StringUtil::toString(boost::any_cast< std::string >(value)));
+        }
       }
 
       void Environment::build(int argc, char ** argv) {

@@ -180,11 +180,12 @@ int main(int argc, char * argv[]) {
       } else if (vm[val.first].value().type() == typeid (bool)) {
         Environment::set(val.first, StringUtil::toString(vm[val.first].as<bool>()));
       } else if (vm[val.first].value().type() == typeid (std::vector<std::string>)) {
+        Environment::set(val.first, vm[val.first].as<std::vector<std::string> >());
+        /*
         std::vector<std::string>plugins=vm["explicit"].as<std::vector<std::string> >();
         foreach(std::string pluginname, plugins){
-          /*TODO: setting list arguments in the environment*/
           std::cout << "setting evironment need to be done: "<<pluginname<< std::endl;
-        }
+        }*/
       } else {
         Environment::set(val.first, vm[val.first].as<std::string > ());
       }

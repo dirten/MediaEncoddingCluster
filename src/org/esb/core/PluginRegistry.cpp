@@ -276,11 +276,15 @@ namespace org {
               def = org::esb::util::StringUtil::toString(boost::any_cast<double>(data));
             } else if (data.type() == typeid (bool)) {
               def = org::esb::util::StringUtil::toString(boost::any_cast<bool>(data));
-            } else {
+            } else if (data.type() == typeid (std::string)) {
               def = org::esb::util::StringUtil::toString(boost::any_cast<std::string > (data));
             }
             LOGDEBUG("Key=" << value->long_name() << " Default=" << def << " Value=" << org::esb::config::Config::get(value->long_name()));
             _plugin_data[s.first].context->env[value->long_name()] = org::esb::config::Config::get(value->long_name());
+            if(org::esb::hive::Environment::_env.count(value->long_name())){
+              LOGDEBUG("Setting environment for key "<<value->long_name());
+              _plugin_data[s.first].context->_props[value->long_name()] = org::esb::hive::Environment::getAnyType(value->long_name());
+            }
             _config_data[value->long_name()] = org::esb::config::Config::get(value->long_name());
             if (org::esb::config::Config::get(value->long_name()) == def) {
               litesql::DataSource<db::Config> confs = litesql::select<db::Config > (*_plugin_data[s.first].context->database, db::Config::Configkey == value->long_name());
