@@ -79,6 +79,7 @@ namespace plugin {
           msg.setProperty("sequence",pu.sequence.value());
           Messenger::getInstance().sendMessage(msg);
           next_id++;
+          continue;
         }
       }
       Thread::sleep2(1000);
