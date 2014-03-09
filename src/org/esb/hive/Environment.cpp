@@ -53,14 +53,6 @@ namespace org {
         }
       }
 
-      /*
-      std::string Environment::get(std::string key, std::string def){
-        if(_environmentMap.find(key)==_environmentMap.end()){
-          return getenv(key.c_str())!=NULL?getenv(key.c_str()):def;
-        }else{
-          return _environmentMap[key];
-        }
-      }*/
       std::string Environment::get(std::string key, std::string def){
         return get<std::string>(key, def);
       }
@@ -78,25 +70,19 @@ namespace org {
         } else if (value.type() == typeid (bool)) {
           config::Config::setProperty(key, StringUtil::toString(boost::any_cast< bool >(value)));
         } else if (value.type() == typeid (std::vector<std::string>)) {
-          /*
-          std::vector<std::string>plugins=vm["explicit"].as<std::vector<std::string> >();
-          foreach(std::string pluginname, plugins){
-            std::cout << "setting evironment need to be done: "<<pluginname<< std::endl;
-          }*/
+          /*NOP, Config class could not handle list properties and will be removed in the near future*/
         } else {
           config::Config::setProperty(key, StringUtil::toString(boost::any_cast< std::string >(value)));
         }
       }
 
       void Environment::build(int argc, char ** argv) {
-        //std::cout << "build environment"<<std::endl;
-        //return;
+
         for(int a = 0;a<argc;a++){
-          std::cout << "arg:"<<argv[a]<<std::endl;
           std::string arg=argv[a];
           _argumentMap.push_back(arg);
         }
-        /*get the absolute path to the executable*/
+        /*building the absolute path to the executable*/
         org::esb::io::File ftmp(argv[0]);
         chdir(ftmp.getFilePath().c_str());
         char buf[1000];
