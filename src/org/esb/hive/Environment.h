@@ -44,20 +44,9 @@ namespace org {
           }
         }
 
-        //template<>
         static boost::any getAnyType(std::string key);
-        //{
-        //  if(_env.find(key)==_env.end()){
-        //    return boost::any();
-        //  }else{
-        //    return _env[key];
-        //  }
-        //}
 
         static std::string get(std::string key, std::string def="");
-        //{
-        //  return get<std::string>(key, def);
-        //}
 
         static void set(std::string key, char * value);
         static void set(std::string key, boost::any val);

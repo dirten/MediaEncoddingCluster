@@ -22,36 +22,18 @@ namespace org {
       public:
         Message();
         Message(boost::shared_ptr<void *> ent);
-        //Message & setProperty(std::string key, std::string value);
-        //Message & setProperty(std::string key, int value);
+
         Message & setProperty(std::string key, boost::any value);
-        //Message & setProperty(std::string key, boost::shared_ptr<org::esb::hive::job::ProcessUnit>);
-        //Message & setProperty(std::string key, boost::shared_ptr<void>);
-        //std::string & getProperty(std::string key);
 
         template<class T>
         T getProperty(std::string key) {
           return boost::any_cast<T > (str_props[key]);
         }
-        /*
-        template<class T*>
-        boost::shared_ptr<T> getProperty(std::string key) {
-          return boost::static_pointer_cast<T> (void_props[key]);
-        }
-        */
-        /*
-        template<typename T>
-        boost::shared_ptr<T> getPtrProperty(std::string key) {
-          return boost::static_pointer_cast<T > (void_props[key]);
-        }*/
+
         bool containsProperty(std::string key);
         ~Message();
       private:
         std::map<std::string, boost::any> str_props;
-        std::map<std::string, std::string> int_props;
-        std::map<std::string, boost::shared_ptr<org::esb::hive::job::ProcessUnit> > pu_props;
-        std::map<std::string, boost::shared_ptr<void> > void_props;
-
       };
     }
   }
