@@ -44,7 +44,8 @@ namespace mhivestorage{
       _storageEngine=new engines::Simple(getContext()->database, Environment::get("hive.data_path"));
     }else if(engine_name=="redundant"){
       std::vector<std::string> hosts=getContext()->getProperty< std::vector<std::string> >("mhivestorage.hosts");
-      _storageEngine=new engines::RedundantEngine(getContext()->database, Environment::get("hive.data_path"), hosts);
+      int port=getContext()->getProperty<int>("mhivestorage.port");
+      _storageEngine=new engines::RedundantEngine(getContext()->database, Environment::get("hive.data_path"), hosts, port);
     }else {
       LOGWARN("no storage engine\""<<engine_name<<"\" found, using simple storage!");
       _storageEngine=new engines::Simple(getContext()->database, Environment::get("hive.data_path"));
@@ -64,8 +65,10 @@ namespace mhivestorage{
     org::esb::core::OptionsDescription result("mhivestorage");
     result.add_options()
         ("mhivestorage.engine", boost::program_options::value<string >()->default_value("simple"), "which storage engine to use(simple,redundant)")
-        ("mhivestorage.hosts", boost::program_options::value< std::vector<string> >()->multitoken(), "ip:port tuples for redundant storage")
-    ("mhivestorage.redundancy_level", boost::program_options::value<int >()->default_value(2), "which redundancy level should the storage engine \"redundant\" use");
+    ("mhivestorage.hosts", boost::program_options::value< std::vector<string> >()->multitoken(), "ip:port tuples for the other redundant storage")
+    ("mhivestorage.port", boost::program_options::value< int >()->default_value(20202), "port number for own redundant storage")
+    //("mhivestorage.redundancy_level", boost::program_options::value<int >()->default_value(2), "which redundancy level should the storage engine \"redundant\" use")
+    ;
     return result;
   }
   REGISTER_SERVICE("storageservice", StorageService)

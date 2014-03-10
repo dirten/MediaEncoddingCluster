@@ -10,6 +10,8 @@ add_library (mhive_storage SHARED
   services/engines/Simple.cpp
   services/StorageService.cpp
   services/engines/redundant_engine/RedundantEngine.cpp
+  services/engines/redundant_engine/DLMBoostMutex.cpp
+  services/engines/redundant_engine/DLMHost.cpp
 
   web/LockHook.cpp
 )
