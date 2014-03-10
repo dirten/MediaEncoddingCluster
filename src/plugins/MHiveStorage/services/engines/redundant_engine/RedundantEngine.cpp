@@ -7,9 +7,7 @@ namespace mhivestorage{
 
     RedundantEngine::RedundantEngine(boost::shared_ptr<db::HiveDb> database, std::string storage_path, std::vector<std::string> hosts, int self_port) : Simple(database, storage_path), _mutex(self_port, hosts)
     {
-      foreach(std::string host, hosts){
-        LOGDEBUG("try using host for redundant group:"<<host);
-      }
+
     }
 
     void RedundantEngine::put(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit)
@@ -29,7 +27,7 @@ namespace mhivestorage{
 
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> RedundantEngine::deque()
     {
-      boost::mutex::scoped_lock enqueue_lock(_mutex);
+      //boost::mutex::scoped_lock enqueue_lock(_mutex);
       return Simple::deque();
     }
     }
