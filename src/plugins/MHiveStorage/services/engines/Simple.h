@@ -9,7 +9,7 @@ namespace mhivestorage{
     class Simple : public Engine
     {
     public:
-      Simple( boost::shared_ptr<db::HiveDb> database, std::string storage_path);
+      Simple( db::HiveDb database, std::string storage_path);
       void put(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit);
       boost::shared_ptr<org::esb::hive::job::ProcessUnit> get();
 
@@ -17,7 +17,7 @@ namespace mhivestorage{
       boost::shared_ptr<org::esb::hive::job::ProcessUnit> deque();
 
     private:
-      boost::shared_ptr<db::HiveDb> database;
+      db::HiveDb database;
       std::string _storage_path;
     };
     }

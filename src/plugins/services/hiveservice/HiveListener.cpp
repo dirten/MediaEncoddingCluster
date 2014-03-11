@@ -64,7 +64,7 @@ namespace org {
       }
 
       void HiveListener::startService() {
-        litesql::DataSource<db::ProcessUnit> source = litesql::select<db::ProcessUnit> (*getContext()->database, db::ProcessUnit::Send>1 && db::ProcessUnit::Recv==1);
+        litesql::DataSource<db::ProcessUnit> source = litesql::select<db::ProcessUnit> (getContext()->database, db::ProcessUnit::Send>1 && db::ProcessUnit::Recv==1);
         litesql::Cursor<db::ProcessUnit> cur=source.cursor();
         for (;cur.rowsLeft(); cur++){
           db::ProcessUnit out=(*cur);

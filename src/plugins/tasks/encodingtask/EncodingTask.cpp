@@ -47,7 +47,7 @@ namespace encodingtask {
   void EncodingTask::prepare() {
 
     LOGDEBUG("PluginContext uuid="+getContext()->get<std::string > ("uuid"))
-    database=getContext()->database;
+    //database=getContext()->database;
     _srcuristr = getContext()->getEnvironment<std::string > ("encodingtask.src");
     if (_srcuristr.length() == 0) {
       _srcuristr = getSource();

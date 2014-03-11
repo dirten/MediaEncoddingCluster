@@ -5,14 +5,14 @@ using org::esb::util::Serializing;
 namespace mhivestorage{
   namespace engines {
 
-    Simple::Simple(boost::shared_ptr<db::HiveDb> database, std::string storage_path):database(database), _storage_path(storage_path)
+    Simple::Simple(db::HiveDb database, std::string storage_path):database(database), _storage_path(storage_path)
     {
 
     }
 
     void Simple::enque(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit)
     {
-      db::ProcessUnit pu(*database);
+      db::ProcessUnit pu(database);
       pu.sorcestream=unit->_source_stream;
       pu.targetstream=unit->_target_stream;
       pu.send=litesql::DateTime(1);
@@ -44,7 +44,8 @@ namespace mhivestorage{
        * @TODO: massive performance impact by serializing ProcessUnit
        */
       std::ofstream ost((_storage_path + "/"+unit->getJobId()+"/"+ unit->uuid).c_str(), std::ofstream::out);
-      Serializing::serialize<boost::archive::text_oarchive>(unit, ost);
+      //Serializing::serialize<boost::archive::text_oarchive>(unit, ost);
+      Serializing::serialize<boost::archive::binary_oarchive>(unit, ost);
 
       LOGDEBUG("written ProcessUnit to "<<_storage_path + "/"+unit->getJobId()+"/"+ unit->uuid)
 
@@ -54,14 +55,14 @@ namespace mhivestorage{
 
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> Simple::deque()
     {
-      db::ProcessUnit result=db::ProcessUnit(*database);
+      db::ProcessUnit result=db::ProcessUnit(database);
       bool audioProcessunitReceived=false;
       bool responsible=false;
       boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit;
 
       //std::string client_id=StringUtil::toString(_ep);
       //database->query("begin exclusive");
-      litesql::DataSource<db::ProcessUnit> nextUnit=litesql::select<db::ProcessUnit > (*database, db::ProcessUnit::Send == 1);
+      litesql::DataSource<db::ProcessUnit> nextUnit=litesql::select<db::ProcessUnit > (database, db::ProcessUnit::Send == 1);
       litesql::Cursor<db::ProcessUnit>unit_cursor=nextUnit.orderBy(db::ProcessUnit::Id, true).cursor();
       if(unit_cursor.rowsLeft()){
         try{
@@ -79,7 +80,8 @@ namespace mhivestorage{
           result.deliverycount=result.deliverycount+1;
           //result.clientid=StringUtil::toString(_ep);
           std::ifstream ist((_storage_path + "/"+result.jobid+"/"+ result.sendid).c_str(), std::ifstream::in);
-          Serializing::deserialize<boost::archive::text_iarchive>(unit, ist);
+          //Serializing::deserialize<boost::archive::text_iarchive>(unit, ist);
+          Serializing::deserialize<boost::archive::binary_iarchive>(unit, ist);
           result.update();
         }
       }
@@ -89,7 +91,7 @@ namespace mhivestorage{
 
     void Simple::put(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit)
     {
-      litesql::Cursor<db::ProcessUnit> dbunit=litesql::select<db::ProcessUnit > (*database, db::ProcessUnit::Sendid == unit->uuid).cursor();
+      litesql::Cursor<db::ProcessUnit> dbunit=litesql::select<db::ProcessUnit > (database, db::ProcessUnit::Sendid == unit->uuid).cursor();
       if(dbunit.rowsLeft()){
         db::ProcessUnit pu=*dbunit;
         std::string recvid=org::esb::util::PUUID();

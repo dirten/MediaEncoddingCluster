@@ -7,7 +7,7 @@
 
 #ifndef PLUGINCONTEXT_H
 #define	PLUGINCONTEXT_H
-//#include "org/esb/db/hivedb.hpp"
+#include "org/esb/db/hivedb.hpp"
 #include <map>
 #include <list>
 #include <string>
@@ -27,8 +27,9 @@ namespace org {
 
       class CORE_EXPORT PluginContext {
       public:
-        boost::shared_ptr<db::HiveDb> database;
-        
+          //boost::shared_ptr<db::HiveDb> database;
+         db::HiveDb database;
+
         template<typename T>
         T getEnvironment(std::string key){
           return boost::lexical_cast<T>(env[key]);
@@ -36,9 +37,11 @@ namespace org {
         
         template<typename T>
         T get(std::string key){
+          return boost::any_cast<T>(_props[key]);
           boost::any data;
           if(_props.count(key)>0){
             data = _props[key];
+            std::cout<<"Key="<<key<<" type = "<<data.type().name()<<std::endl;
           }
           return boost::any_cast<T>(data);
         }

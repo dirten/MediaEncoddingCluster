@@ -48,7 +48,7 @@ namespace jobexecutor {
   void Service::startService() {
     /*clean up interrupted encodings*/
     LOGDEBUG("looking for aborted Jobs");
-    litesql::DataSource<db::Job> source = litesql::select<db::Job > (*getContext()->database, db::Job::Status == db::Job::Status::Waiting).orderBy(db::Job::Id, false);
+    litesql::DataSource<db::Job> source = litesql::select<db::Job > (getContext()->database, db::Job::Status == db::Job::Status::Waiting).orderBy(db::Job::Id, false);
     litesql::Cursor<db::Job> cur=source.cursor();
     for (;cur.rowsLeft(); cur++){
       db::Job out=(*cur);
@@ -98,7 +98,7 @@ namespace jobexecutor {
   void Service::run() {
     //LOGTRACEMETHOD("void JobExecutor::run() ")
     while (_status == RUNNING) {
-      litesql::DataSource<db::Job> source = litesql::select<db::Job > (*getContext()->database, db::Job::Status == db::Job::Status::Waiting);
+      litesql::DataSource<db::Job> source = litesql::select<db::Job > (getContext()->database, db::Job::Status == db::Job::Status::Waiting);
       if (source.count() > 0) {
         //LOGDEBUG("New Job found!!!");
         db::Job job = source.one();

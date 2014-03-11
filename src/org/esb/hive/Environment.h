@@ -32,6 +32,7 @@ namespace org {
         const static std::string EXE_NAME;
         const static std::string SYSTEM;
         const static std::string DB_URL;
+        const static std::string DB_TYPE;
         static void build(int argc, char**argv);
 
 

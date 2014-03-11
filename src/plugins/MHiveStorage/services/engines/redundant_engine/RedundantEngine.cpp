@@ -5,7 +5,7 @@
 namespace mhivestorage{
   namespace engines {
 
-    RedundantEngine::RedundantEngine(boost::shared_ptr<db::HiveDb> database, std::string storage_path, std::vector<std::string> hosts, int self_port) : Simple(database, storage_path), _mutex(self_port, hosts)
+    RedundantEngine::RedundantEngine(db::HiveDb database, std::string storage_path, std::vector<std::string> hosts, int self_port) : Simple(database, storage_path), _mutex(self_port, hosts)
     {
 
     }

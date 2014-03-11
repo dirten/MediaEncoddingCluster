@@ -35,7 +35,13 @@ namespace clientcontroller {
 
   }
 
+
   void Service::startService() {
+    std::cout << "Environment"<<getContext()->toString()<<std::endl;
+    if(getContext()->contains("clientcontroller.autodiscovery")){
+      std::cout << "contains key clientcontroller.autodiscovery"<<std::endl;
+
+    }
     if (getContext()->getEnvironment<bool>("clientcontroller.autodiscovery")) {
       org::esb::signal::Messenger::getInstance().addMessageListener(*this);
     } else {

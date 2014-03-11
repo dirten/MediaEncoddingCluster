@@ -75,7 +75,7 @@ namespace plugin {
   void Writer::startService(){
     std::string outfileid=getContext()->getEnvironment<std::string > ("writer.jobid");
     LOGDEBUG("looking for output with id:"<<outfileid);
-    litesql::DataSource<db::OutputFile> source = litesql::select<db::OutputFile > (*getContext()->database, db::OutputFile::Id==outfileid);
+    litesql::DataSource<db::OutputFile> source = litesql::select<db::OutputFile > (getContext()->database, db::OutputFile::Id==outfileid);
     if(source.count()>0){
       db::OutputFile outputfile=source.one();
       setOutputFile(outputfile);
@@ -192,8 +192,9 @@ namespace plugin {
         //LOGDEBUG("bytes readed:"+StringUtil::toString(readed))
         boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit;
         try{
-          Serializing::deserialize<boost::archive::text_iarchive>(unit, stream);
-          unit->_output_packets.sort(Writer::ptsComparator);
+          Serializing::deserialize<boost::archive::binary_iarchive>(unit, stream);
+          unit->_output_packets.sort(boost::bind(&Writer::ptsComparator, this, _1,_2));
+          //unit->_output_packets.sort(Writer::ptsComparator);
 
           foreach(PacketPtr p, unit->_output_packets) {
             int idx = p->getStreamIndex();
@@ -207,7 +208,8 @@ namespace plugin {
             //_in_out_stream_map[idx].last_timestamp = _in_out_stream_map[idx].next_timestamp;
             _stream_timestamps[idx] += p->getDuration();
           }
-          unit->_output_packets.sort(Writer::dtsComparator);
+          //unit->_output_packets.sort(Writer::dtsComparator);
+          unit->_output_packets.sort(boost::bind(&Writer::dtsComparator, this, _1,_2));
 
           foreach(PacketPtr p, unit->_output_packets) {
             _pos->writePacket(*p);

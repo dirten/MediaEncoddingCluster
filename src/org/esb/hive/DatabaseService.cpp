@@ -46,6 +46,7 @@
 namespace org {
   namespace esb {
     namespace hive {
+      using org::esb::hive::Environment;
       bool DatabaseService::_running = false;
       std::string DatabaseService::_base_path;
       Ptr<org::esb::lang::Process> DatabaseService::_dbServer;
@@ -248,7 +249,7 @@ namespace org {
         if (!_running) {
           start();
         }
-        static db::HiveDb db=db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
+        static db::HiveDb db=db::HiveDb(Environment::get(Environment::DB_TYPE), Environment::get(Environment::DB_URL));
         return db;
       }
     }

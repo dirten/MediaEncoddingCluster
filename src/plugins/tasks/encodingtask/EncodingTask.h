@@ -89,7 +89,7 @@ namespace encodingtask {
     //Ptr<safmq::MessageQueue> read_q;
     //std::map<int, Ptr<safmq::MessageQueue> > _queueMap;
 
-    boost::shared_ptr<db::HiveDb> database;
+    //boost::shared_ptr<db::HiveDb> database;
     boost::condition finish_condition;
     boost::mutex finish_mutex;
     boost::mutex finish_notify_mutex;

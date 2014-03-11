@@ -14,6 +14,7 @@ add_library (mhive_storage SHARED
   services/engines/redundant_engine/DLMHost.cpp
 
   web/LockHook.cpp
+  web/EnqueHandler.cpp
 )
 
 TARGET_LINK_LIBRARIES(mhive_storage

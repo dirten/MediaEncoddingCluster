@@ -5,18 +5,19 @@
  * Created on 4. Oktober 2011, 10:52
  */
 
-#include "org/esb/db/hivedb.hpp"
+//#include "org/esb/db/hivedb.hpp"
 
 #include "PluginContext.h"
 #include "org/esb/config/config.h"
 #include "org/esb/core/AppContext.h"
+#include "org/esb/hive/DatabaseService.h"
 
 namespace org {
   namespace esb {
     namespace core {
-
-      PluginContext::PluginContext() {
-        database = boost::shared_ptr<db::HiveDb>(new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url")));
+      using org::esb::hive::DatabaseService;
+      PluginContext::PluginContext():database(DatabaseService::getDatabase()) {
+        //database = boost::shared_ptr<db::HiveDb>(new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url")));
       }
 
 

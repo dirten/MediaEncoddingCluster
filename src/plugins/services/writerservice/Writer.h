@@ -41,8 +41,8 @@ namespace plugin {
     std::map<int, boost::shared_ptr<org::esb::av::Encoder> > encoder_map;
     Ptr<db::OutputFile> _outputfile;
     //std::string _jobid;
-    static bool ptsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b);
-    static bool dtsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b);
+    bool ptsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b);
+    bool dtsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b);
 
     map<int,int64_t> _stream_timestamps;
     list< boost::shared_ptr<org::esb::av::Encoder> > _encoderList;

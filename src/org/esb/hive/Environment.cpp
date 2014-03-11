@@ -31,6 +31,7 @@ namespace org {
       const std::string Environment::EXE_NAME="hive.exec_name";
       const std::string Environment::SYSTEM="hive.arch";
       const std::string Environment::DB_URL="db.url";
+      const std::string Environment::DB_TYPE="db.type";
 
 
       Environment::Environment() {
@@ -45,8 +46,9 @@ namespace org {
       std::vector<std::string> Environment::getArguments(){
         return _argumentMap;
       }
+
       boost::any Environment::getAnyType(std::string key) {
-        if(_env.find(key)==_env.end()){
+        if(_env.count(key)==0){
           return boost::any();
         }else{
           return _env[key];
@@ -102,7 +104,7 @@ namespace org {
         set(SYSTEM, "Darwin");
 #elif defined __LINUX__
         std::string upath = get("HOME") + "/.mhive";
-        set(SYSTEM, "Linux");
+        set(SYSTEM, std::string("Linux"));
 #else
 #error "plattform not supported"
 #endif
@@ -119,6 +121,7 @@ namespace org {
         set(EXE_NAME, f.getFileName());
 
         set(DB_URL, "database=" + upath + "/data/hive.db");
+        set(DB_TYPE, std::string("sqlite3"));
 
         set("web.docroot", bpath + "/web");
         set("hive.config_path", upath + "/conf");

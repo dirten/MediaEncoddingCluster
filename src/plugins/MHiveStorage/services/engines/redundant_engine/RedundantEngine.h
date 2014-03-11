@@ -11,7 +11,7 @@ namespace mhivestorage{
     class RedundantEngine : public Simple
     {
     public:
-      RedundantEngine( boost::shared_ptr<db::HiveDb> database, std::string storage_path, std::vector<std::string> hosts, int self_port);
+      RedundantEngine( db::HiveDb database, std::string storage_path, std::vector<std::string> hosts, int self_port);
 
       void put(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit);
       boost::shared_ptr<org::esb::hive::job::ProcessUnit> get();
@@ -20,7 +20,7 @@ namespace mhivestorage{
       boost::shared_ptr<org::esb::hive::job::ProcessUnit> deque();
 
     private:
-      boost::shared_ptr<db::HiveDb> database;
+      //db::HiveDb database;
       std::string _storage_path;
       DLMBoostMutex _mutex;
     };

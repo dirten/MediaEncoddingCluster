@@ -28,7 +28,7 @@ namespace plugin {
 
 
     LOGDEBUG("looking for aborted exports")
-    litesql::DataSource<db::OutputFile> source = litesql::select<db::OutputFile > (*getContext()->database, db::OutputFile::Status==db::OutputFile::Status::Processing);
+    litesql::DataSource<db::OutputFile> source = litesql::select<db::OutputFile > (getContext()->database, db::OutputFile::Status==db::OutputFile::Status::Processing);
     litesql::Cursor<db::OutputFile> cur=source.cursor();
     for (;cur.rowsLeft(); cur++){
       db::OutputFile out=(*cur);
@@ -65,12 +65,12 @@ namespace plugin {
     int next_id=0;
     while (_status == RUNNING) {
       if(next_id==0){
-        litesql::DataSource<db::ProcessUnit> pu_ds=litesql::select<db::ProcessUnit > (*getContext()->database, db::ProcessUnit::Recv == 1).orderBy(db::ProcessUnit::Id);
+        litesql::DataSource<db::ProcessUnit> pu_ds=litesql::select<db::ProcessUnit > (getContext()->database, db::ProcessUnit::Recv == 1).orderBy(db::ProcessUnit::Id);
         if(pu_ds.count()){
           next_id=pu_ds.one().id;
         }
       }else{
-        litesql::DataSource<db::ProcessUnit> next_pu_ds=litesql::select<db::ProcessUnit > (*getContext()->database, db::ProcessUnit::Id == next_id && db::ProcessUnit::Recv > 1);
+        litesql::DataSource<db::ProcessUnit> next_pu_ds=litesql::select<db::ProcessUnit > (getContext()->database, db::ProcessUnit::Id == next_id && db::ProcessUnit::Recv > 1);
         if(next_pu_ds.count()){
           db::ProcessUnit pu=next_pu_ds.one();
           Message msg;
@@ -89,7 +89,7 @@ namespace plugin {
   void WriterService::run(){
     LOGDEBUG("WriterService");
     while (_status == RUNNING) {
-      litesql::DataSource<db::OutputFile> source = litesql::select<db::OutputFile > (*getContext()->database, db::OutputFile::Status==db::OutputFile::Status::Waiting);
+      litesql::DataSource<db::OutputFile> source = litesql::select<db::OutputFile > (getContext()->database, db::OutputFile::Status==db::OutputFile::Status::Waiting);
       if(source.count()>0){
         db::OutputFile outputfile=source.one();
         Ptr<Writer> writer=new Writer(outputfile);

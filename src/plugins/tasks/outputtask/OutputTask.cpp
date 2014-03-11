@@ -77,9 +77,9 @@ namespace plugin {
     std::string encdata=Serializing::serialize(encoder_map_copy);
     //litesql::Blob encdata=litesql::Blob(sdata.c_str(),sdata.length());
 
-    boost::shared_ptr<db::HiveDb> database=getContext()->database;
+    //db::HiveDb database=getContext()->database;
 
-    db::OutputFile oFile(*database);
+    db::OutputFile oFile(getContext()->database);
     oFile.jobid=getContext()->get<std::string > ("uuid");
     oFile.path=_trguristr;
     oFile.outfiledata=encdata;
