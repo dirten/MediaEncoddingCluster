@@ -90,7 +90,12 @@ namespace org {
           LOGDEBUG("handle client : "<<boost::this_thread::get_id());
 
           std::string buffer;
-          s->getInputStream()->read(buffer);
+          try{
+            s->getInputStream()->read(buffer);
+          }catch(std::exception & ex){
+            LOGERROR("Exception in read request:"<<ex.what();)
+          }
+
           if (!s->isConnected())return;
           if (buffer.length() <= 0) {
             LOGWARN("Request buffer is empty!");
@@ -144,7 +149,12 @@ namespace org {
           anRPCResponse.SerializeToString(&out);
 
           LOGDEBUG("send response size:" << out.length());
+          try{
           s->getOutputStream()->write(out);
+          }catch(std::exception & ex){
+            LOGERROR("Exception in write response:"<<ex.what())
+          }
+
           LOGDEBUG("response sended");
         }
       }
