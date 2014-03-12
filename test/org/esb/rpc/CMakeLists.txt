@@ -5,9 +5,10 @@ add_executable (RpcServerTest RpcServerTest.cpp)
 add_executable (RpcClientTest RpcClientTest.cpp)
 add_executable (RpcRegisterNode RpcRegisterNode.cpp)
 
-target_link_libraries (RpcServerTest rpc hive)
-target_link_libraries (RpcClientTest rpc hive)
-target_link_libraries (RpcRegisterNode rpc hive)
+
+target_link_libraries (RpcServerTest rpc core)
+target_link_libraries (RpcClientTest rpc core)
+target_link_libraries (RpcRegisterNode rpc core)
 
 
 

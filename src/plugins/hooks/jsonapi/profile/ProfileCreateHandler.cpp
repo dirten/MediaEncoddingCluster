@@ -1,5 +1,6 @@
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/core/WebHookPlugin.h"
+#include "org/esb/core/PluginContext.h"
 #include "org/esb/libjson/libjson.h"
 #include "org/esb/libjson/JSONResult.h"
 #include "Poco/Net/PartHandler.h"
@@ -36,9 +37,9 @@ public:
           if (msg.length() > 0) {
             result.setStatus(res.HTTP_BAD_REQUEST, msg);
           } else {
+            db::HiveDb db=getContext()->database;//"sqlite3", req.get("db.url"));
             if (req.has("profileid")) {
               std::string iddata = req.get("profileid");
-              db::HiveDb db("sqlite3", req.get("db.url"));
               litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == iddata);
               if (s.count() == 1) {
                 LOGDEBUG("Update profile");
@@ -55,7 +56,7 @@ public:
               }
             } else {
               std::string uuid = org::esb::util::PUUID();
-              db::HiveDb db("sqlite3", req.get("db.url"));
+              //db::HiveDb db("sqlite3", req.get("db.url"));
               db::Preset preset(db);
               preset.data = data;
               preset.uuid = uuid;

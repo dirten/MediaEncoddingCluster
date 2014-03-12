@@ -41,6 +41,8 @@ int main(int argc, char** argv) {
     org::esb::rpc::ProcessResponse pcres;
 
     org::esb::rpc::Controller ctrl;
+
+
     node.set_address("127.0.0.1");
     node.set_name("test node");
     *pcreq.mutable_node() = node;
@@ -57,7 +59,7 @@ int main(int argc, char** argv) {
     }
 
   }
-  Log::close();
+  //Log::close();
   return 0;
 }
 

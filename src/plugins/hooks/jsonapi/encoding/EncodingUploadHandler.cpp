@@ -31,6 +31,7 @@
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/av/Packet.h"
 
+#include "org/esb/hive/DatabaseService.h"
 
 #include "org/esb/core/Graph.h"
 #include "org/esb/core/GraphParser.h"
@@ -45,7 +46,7 @@ using org::esb::av::PacketInputStream;
 using org::esb::av::Packet;
 using org::esb::core::Graph;
 using org::esb::util::StringTokenizer;
-
+using org::esb::hive::DatabaseService;
 using plugin::StreamSource;
 
 
@@ -121,9 +122,9 @@ private:
 
 class JSONAPI_EXPORT EncodingUploadHandler : public org::esb::core::WebHookPlugin {
   //org::esb::core::Graph * graphobj;
-  db::HiveDb _db;
+  //db::HiveDb _db;
 public:
-  EncodingUploadHandler() : _db(db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"))){
+  EncodingUploadHandler() {
 
   }
   ~EncodingUploadHandler(){
@@ -137,6 +138,7 @@ public:
 
     JSONResult result(req);
     std::string id = req.get("profileid");
+    db::HiveDb _db=getContext()->database;
     litesql::DataSource<db::Preset> s = litesql::select<db::Preset > (_db, db::Preset::Uuid == id);
     if (s.count() > 0) {
       LOGDEBUG("preset found");
@@ -264,7 +266,7 @@ private:
   }
 
   std::string createJob(std::string graphname, std::string graph, std::string infile) {
-    db::Job job(_db);
+    db::Job job(getContext()->database);
     job.uuid = (std::string)org::esb::util::PUUID();
     job.status = db::Job::Status::Waiting;
     job.graph = graph;

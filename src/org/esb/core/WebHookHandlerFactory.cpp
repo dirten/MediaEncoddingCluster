@@ -8,6 +8,7 @@
 #include "WebHookHandlerFactory.h"
 #include "WebHookPlugin.h"
 #include "WebHookProxy.h"
+#include "PluginContext.h"
 #include "http/RootRequestHandler.h"
 #include "org/esb/util/Foreach.h"
 #include "Poco/RegularExpression.h"
@@ -116,6 +117,7 @@ using namespace Poco;
                 req.add("db.url", org::esb::config::Config::get("db.url"));
                 req.add("hive.tmp_path", org::esb::config::Config::get("hive.tmp_path"));
                 WebHookPlugin * ptr = factory->create();
+                ptr->setContext(new PluginContext());
                 return static_cast<org::esb::core::http::RequestHandler *> (ptr);
               }
             }

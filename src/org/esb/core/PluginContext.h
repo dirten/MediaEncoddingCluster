@@ -72,6 +72,7 @@ namespace org {
       private:
         std::map<std::string, boost::any> _props;
         friend class PluginRegistry;
+        friend class WebHookHandlerFactory;
         PluginContext();
         std::map<std::string, std::string> env;
       };

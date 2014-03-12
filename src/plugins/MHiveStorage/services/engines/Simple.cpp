@@ -105,6 +105,21 @@ namespace mhivestorage{
       }
     }
 
+    void Simple::commit(std::string uuid)
+    {
+
+    }
+
+    void Simple::rollback(std::string uuid)
+    {
+      litesql::Cursor<db::ProcessUnit> dbunit=litesql::select<db::ProcessUnit > (database, db::ProcessUnit::Sendid == uuid).cursor();
+      if(dbunit.rowsLeft()){
+        db::ProcessUnit pu=*dbunit;
+        pu.send=1;
+        pu.update();
+      }
+    }
+
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> Simple::get()
     {
       boost::shared_ptr<org::esb::hive::job::ProcessUnit> result;

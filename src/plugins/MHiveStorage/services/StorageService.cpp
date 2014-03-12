@@ -33,6 +33,8 @@ namespace mhivestorage{
       LOGDEBUG("deque received message");
       boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit=_storageEngine->deque();
       msg.setProperty("processunit_deque", unit);
+    }else if(msg.containsProperty("processunit_rollback")){
+      _storageEngine->rollback(msg.getProperty<std::string>("processunit_rollback"));
     }
   }
 

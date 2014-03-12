@@ -138,7 +138,7 @@ namespace org {
       }
 
       void ExportScanner::restart_failed_exports() {
-        db::HiveDb db("sqlite3", org::esb::config::Config::get("db.url"));
+        db::HiveDb db=*getContext()->database;//("sqlite3", org::esb::config::Config::get("db.url"));
         while (_run) {
           std::vector<db::Job> completed_jobs = litesql::select<db::Job > (db, db::Job::Status == db::Job::Status::Error).all();
           std::vector<db::Job>::iterator job_it = completed_jobs.begin();

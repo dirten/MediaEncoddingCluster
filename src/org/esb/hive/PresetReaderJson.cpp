@@ -11,6 +11,7 @@
 #include "org/esb/av/AV.h"
 #include "org/esb/lang/Exception.h"
 #include "org/esb/config/config.h"
+#include "DatabaseService.h"
 namespace org {
   namespace esb {
     namespace hive {
@@ -19,7 +20,7 @@ namespace org {
         LOGDEBUG("Preset Data:" << data);
         JSONNode node = libjson::parse(data);
         if(node.contains("profile-uuid")){
-          db::HiveDb db("sqlite3", org::esb::config::Config::get("db.url"));
+          db::HiveDb db=DatabaseService::getDatabase();//"sqlite3", org::esb::config::Config::get("db.url"));
           litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == node["profile-uuid"].as_string());
           if(s.count()==1){
             data=s.one().data;

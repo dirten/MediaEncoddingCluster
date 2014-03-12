@@ -1,0 +1,17 @@
+
+set(BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build")
+
+IF(MINGW)
+  SET(USER_CONFIG "--host=x86_64-w64-mingw32")
+ENDIF(MINGW)
+
+ExternalProject_Add(protobufdep
+URL http://protobuf.googlecode.com/files/protobuf-2.4.1.tar.bz2
+#SVN_REPOSITORY http://google-breakpad.googlecode.com/svn/trunk/
+CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --disable-shared --enable-static --with-pic ${USER_CONFIG}
+#UPDATE_COMMAND true
+#INSTALL_COMMAND true
+BUILD_IN_SOURCE 1
+)
+SET(GTEST_DIR "${CMAKE_CURRENT_BINARY_DIR}/gtestdep-prefix/src/gtestdep")
+

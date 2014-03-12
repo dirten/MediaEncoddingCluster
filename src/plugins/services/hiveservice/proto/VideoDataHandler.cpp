@@ -149,6 +149,11 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
           _db.query("UPDATE processunit_ set clientid_='', send_=1, recv_=1 where jobid_='"+(*i)[0]+"' and codectype_='AUDIO' AND clientid_='"+StringUtil::toString(_ep)+"'");
         }*/
       }
+      if(un){
+        Message msg;
+        msg.setProperty("processunit_rollback",un->uuid);
+        Messenger::getInstance().sendRequest(msg);
+      }
       shutdown = true;
       if (_oos)
         delete _oos;
@@ -193,9 +198,9 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
         Message msg;
         msg.setProperty("processunit_deque",std::string());
         Messenger::getInstance().sendRequest(msg);
-        boost::shared_ptr<org::esb::hive::job::ProcessUnit>punit=msg.getProperty<boost::shared_ptr<org::esb::hive::job::ProcessUnit> >("processunit_deque");
+        un=msg.getProperty<boost::shared_ptr<org::esb::hive::job::ProcessUnit> >("processunit_deque");
         std::ostringstream ost;
-        Serializing::serialize<boost::archive::text_oarchive>(punit, ost);
+        Serializing::serialize<boost::archive::text_oarchive>(un, ost);
 
         _os->write((char*) ost.str().c_str(), ost.str().length());
         _os->flush();
@@ -253,7 +258,7 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
           Message msg;
           msg.setProperty("processunit_put",punit);
           Messenger::getInstance().sendRequest(msg);
-
+          un.reset();
           return;
           std::string recvid=org::esb::util::PUUID();
           _current_unit->recvid=recvid;

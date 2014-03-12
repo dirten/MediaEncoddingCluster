@@ -10,6 +10,8 @@
 #include "org/esb/util/Log.h"
 
 #include "org/esb/rpc/services/ProcessUnitServiceImpl.h"
+#include "org/esb/rpc/services/ProcessServiceImpl.h"
+
 using namespace std;
 
 /*
@@ -19,6 +21,7 @@ int main(int argc, char** argv) {
   Log::open();
   org::esb::rpc::Server server(6000);
   server.registerService(new org::esb::rpc::ProcessUnitServiceImpl(&server));
+  server.registerService(new org::esb::rpc::ProcessServiceImpl());
 
   server.start();
   Log::close();

@@ -1,5 +1,6 @@
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/core/WebHookPlugin.h"
+#include "org/esb/core/PluginContext.h"
 #include "org/esb/libjson/libjson.h"
 #include "org/esb/libjson/JSONResult.h"
 #include "Poco/Net/PartHandler.h"
@@ -29,7 +30,7 @@ public:
           if (msg.length() > 0) {
             result.setStatus("error", msg);
           } else {
-            db::HiveDb db("sqlite3", req.get("db.url"));
+            db::HiveDb db=getContext()->database;//"sqlite3", req.get("db.url"));
             std::string iddata = req.get("profileid");
             litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == iddata);
             if (s.count() == 1) {

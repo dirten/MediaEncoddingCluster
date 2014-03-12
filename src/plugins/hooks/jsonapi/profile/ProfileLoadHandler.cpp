@@ -1,5 +1,6 @@
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/core/WebHookPlugin.h"
+#include "org/esb/core/PluginContext.h"
 #include "org/esb/libjson/libjson.h"
 #include "org/esb/libjson/JSONResult.h"
 #include "org/esb/io/File.h"
@@ -14,7 +15,7 @@ public:
 
 
     JSONResult result(req);
-    db::HiveDb db("sqlite3", req.get("db.url"));
+    db::HiveDb db=getContext()->database;//"sqlite3", req.get("db.url"));
     std::string id=req.get("profileid");
     litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == id);
     if (s.count() > 0) {
