@@ -17,6 +17,7 @@
 
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "services/ApiServiceImpl.h"
+
 namespace org {
   namespace esb {
     namespace rpc {
@@ -24,8 +25,8 @@ namespace org {
       class ConcreteDiscoveryService : public org::esb::rpc::DiscoveryService {
       public:
 
-        ConcreteDiscoveryService(Server *aServer) : DiscoveryService(), mServer(aServer) {
-        };
+        ConcreteDiscoveryService(Server *aServer): mServer(aServer) {
+        }
 
         void QueryForService(google::protobuf::RpcController* controller,
                 const org::esb::rpc::QueryForServiceRequest* request,
@@ -50,7 +51,7 @@ namespace org {
 
       Server::Server(int port) : _port(port) {
         registerService(new ConcreteDiscoveryService(this));
-        registerService(new ApiServiceImpl(this));
+        //registerService(new ApiServiceImpl(this));
         //registerService(new ProcessUnitServiceImpl(this));
       }
 
@@ -71,6 +72,7 @@ namespace org {
           LOGDEBUG("RpcServer started and listen in "<<_port);
           for (; true;) {
             org::esb::net::TcpSocket * clientSocket = _server->accept();
+            if (!clientSocket->isConnected())continue;
             boost::thread(boost::bind(&Server::handleClient, this, clientSocket));
             //handleClient(clientSocket);
           }
@@ -85,7 +87,7 @@ namespace org {
 
       void Server::handleClient(org::esb::net::TcpSocket* s) {
         while (s->isConnected()) {
-          LOGDEBUG(boost::this_thread::get_id());
+          LOGDEBUG("handle client : "<<boost::this_thread::get_id());
 
           std::string buffer;
           s->getInputStream()->read(buffer);

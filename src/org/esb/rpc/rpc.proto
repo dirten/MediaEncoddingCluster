@@ -1,5 +1,5 @@
 package org.esb.rpc;
-
+option cc_generic_services = true;
 message Request {
 
   // RPC service full name

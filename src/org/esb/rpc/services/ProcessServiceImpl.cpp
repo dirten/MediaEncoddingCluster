@@ -42,6 +42,7 @@ namespace org {
               const org::esb::rpc::ProcessRequest* request,
               org::esb::rpc::ProcessResponse* response,
               google::protobuf::Closure* done) {
+        return;
         if (!request->has_process_data()) {
           LOGDEBUG("request does not contain process data");
         }
@@ -49,8 +50,8 @@ namespace org {
         LOGDEBUG("try starting process " << process_name);
         if (_process_map.count(process_name) > 0) {
           LOGDEBUG("ProcessDefinition found for " << process_name);
-          if(!_process_map.find(process_name)->second->isRunning())
-            _process_map.find(process_name)->second->run();
+          //if(!_process_map.find(process_name)->second->isRunning())
+          //  _process_map.find(process_name)->second->run();
         }
       }
 
@@ -58,6 +59,7 @@ namespace org {
               const org::esb::rpc::ProcessRequest* request,
               org::esb::rpc::ProcessResponse* response,
               google::protobuf::Closure* done) {
+        return;
         if (!request->has_process_data()) {
           LOGDEBUG("request does not contain process data");
         }
