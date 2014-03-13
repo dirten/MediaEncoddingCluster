@@ -61,6 +61,7 @@ IF(NOT WIN32)
   add_definitions(-fPIC)
   set(CMAKE_CXX_FLAGS "-D_REENTRANT -Wl,-Bsymbolic")
   set(CMAKE_C_FLAGS "-D_REENTRANT -Wl,-Bsymbolic")
+  SET( CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_SHARED_LINKER_FLAGS}  -Wl,-Bsymbolic" )
 ENDIF(NOT WIN32)
 
 IF(WIN32)
