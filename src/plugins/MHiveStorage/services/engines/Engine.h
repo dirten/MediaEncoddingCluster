@@ -16,6 +16,7 @@ namespace mhivestorage{
 
         virtual void enque(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit)=0;
         virtual boost::shared_ptr<org::esb::hive::job::ProcessUnit> deque()=0;
+        virtual boost::shared_ptr<std::istream>dequeStream()=0;
         virtual ~Engine(){}
     };
   }

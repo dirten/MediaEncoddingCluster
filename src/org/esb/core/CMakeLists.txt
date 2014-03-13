@@ -1,8 +1,9 @@
 
 
 #add_subdirectory (http)
+include_directories (${BOOST_INCLUDE_DIRS})
+include_directories (${LITESQL_DIR}/include)
 
-include_directories (${BREAKPAD_INCLUDE_DIR})
 LINK_DIRECTORIES(${BREAKPAD_LIB_DIR})
 
 SET(core_source

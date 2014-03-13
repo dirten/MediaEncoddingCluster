@@ -4,7 +4,14 @@
 using org::esb::util::Serializing;
 namespace mhivestorage{
   namespace engines {
+    typedef boost::archive::text_oarchive oarchive;
+    typedef boost::archive::text_iarchive iarchive;
 
+    //typedef boost::archive::binary_oarchive oarchive;
+    //typedef boost::archive::binary_iarchive iarchive;
+
+    //typedef portable_binary_oarchive oarchive;
+    //typedef portable_binary_iarchive iarchive;
     Simple::Simple(db::HiveDb database, std::string storage_path):database(database), _storage_path(storage_path)
     {
 
@@ -45,18 +52,18 @@ namespace mhivestorage{
        */
       std::ofstream ost((_storage_path + "/"+unit->getJobId()+"/"+ unit->uuid).c_str(), std::ofstream::out);
       //Serializing::serialize<boost::archive::text_oarchive>(unit, ost);
-      Serializing::serialize<boost::archive::binary_oarchive>(unit, ost);
+      Serializing::serialize<oarchive>(unit, ost);
 
       LOGDEBUG("written ProcessUnit to "<<_storage_path + "/"+unit->getJobId()+"/"+ unit->uuid)
 
       pu.update();
 
     }
-
-    boost::shared_ptr<org::esb::hive::job::ProcessUnit> Simple::deque()
+    boost::shared_ptr<std::istream> Simple::dequeStream()
     {
+      boost::shared_ptr<std::istream> stream;
       db::ProcessUnit result=db::ProcessUnit(database);
-      bool audioProcessunitReceived=false;
+
       bool responsible=false;
       boost::shared_ptr<org::esb::hive::job::ProcessUnit> unit;
 
@@ -79,12 +86,23 @@ namespace mhivestorage{
           result.send=litesql::DateTime();
           result.deliverycount=result.deliverycount+1;
           //result.clientid=StringUtil::toString(_ep);
-          std::ifstream ist((_storage_path + "/"+result.jobid+"/"+ result.sendid).c_str(), std::ifstream::in);
+          stream=boost::shared_ptr<std::istream>(new std::ifstream((_storage_path + "/"+result.jobid+"/"+ result.sendid).c_str(), std::ifstream::in));
           //Serializing::deserialize<boost::archive::text_iarchive>(unit, ist);
-          Serializing::deserialize<boost::archive::binary_iarchive>(unit, ist);
+          //Serializing::deserialize<iarchive>(unit, ist);
           result.update();
         }
       }
+      //database->query("end");
+      return stream;
+
+    }
+
+    boost::shared_ptr<org::esb::hive::job::ProcessUnit> Simple::deque()
+    {
+      boost::shared_ptr<std::istream> stream=dequeStream();
+      boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit;
+      Serializing::deserialize<iarchive>(unit, *stream);
+
       //database->query("end");
       return unit;
     }
@@ -99,7 +117,7 @@ namespace mhivestorage{
         pu.recv=litesql::DateTime();
 
         std::ofstream ost((_storage_path + "/"+unit->getJobId()+"/"+ recvid).c_str(), std::ofstream::out);
-        Serializing::serialize<boost::archive::text_oarchive>(unit, ost);
+        Serializing::serialize<oarchive>(unit, ost);
 
         pu.update();
       }

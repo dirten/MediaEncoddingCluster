@@ -43,6 +43,7 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "org/esb/util/Log.h"
 #include "org/esb/lang/Deprecated.h"
+#include "cereal/cereal.hpp"
 #include "../../core/exports.h"
 using namespace std;
 using namespace org::esb::av;

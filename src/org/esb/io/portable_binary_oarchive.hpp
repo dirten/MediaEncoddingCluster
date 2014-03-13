@@ -114,11 +114,6 @@ protected:
         // floats not supported
         //BOOST_STATIC_ASSERT(false);
     }
-    void save(const long long & t){
-        this->primitive_base_t::save(t);
-        // floats not supported
-        //BOOST_STATIC_ASSERT(false);
-    }
     void save(const double & t){
         this->primitive_base_t::save(t);
         // doubles not supported

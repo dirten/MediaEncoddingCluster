@@ -139,11 +139,6 @@ protected:
         // floats not supported
         //BOOST_STATIC_ASSERT(false);
     }
-    void load(long long & t){
-        this->primitive_base_t::load(t);
-        // floats not supported
-        //BOOST_STATIC_ASSERT(false);
-    }
     void load(double & t){
         this->primitive_base_t::load(t);
         // doubles not supported

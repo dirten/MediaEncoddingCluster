@@ -12,6 +12,7 @@ INCLUDE(cmake/CMakeExternalsPoco.txt)
 INCLUDE(cmake/CMakeExternalsLitesql.txt)
 INCLUDE(cmake/CMakeExternalsFFMpeg.txt)
 INCLUDE(cmake/CMakeExternalsProtobuf.txt)
+INCLUDE(cmake/CMakeExternalsCereal.txt)
 ##temporary disabled until it will compile under mingw/linux(cross)
 #INCLUDE(cmake/CMakeExternalsBreakpad.txt
 #INCLUDE(cmake/CMakeExternalsThrift.txt)

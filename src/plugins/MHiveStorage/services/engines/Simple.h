@@ -15,6 +15,7 @@ namespace mhivestorage{
 
       void enque(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit);
       boost::shared_ptr<org::esb::hive::job::ProcessUnit> deque();
+      boost::shared_ptr<std::istream>dequeStream();
 
       void commit(std::string uuid);
       void rollback(std::string uuid);
