@@ -34,5 +34,5 @@ add_library (rpc
     services/ApiServiceImpl.cpp
 )
 
-TARGET_LINK_LIBRARIES(rpc ${PROTOBUF_LIBRARY} protobuf net core)
+TARGET_LINK_LIBRARIES(rpc ${PROTOBUF_LIBRARY} protobuf net)
 
