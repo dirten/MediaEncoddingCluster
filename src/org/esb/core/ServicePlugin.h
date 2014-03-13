@@ -20,12 +20,12 @@ namespace org {
       public:
         virtual void startService()=0;
         virtual void stopService()=0;
-		  enum ServiceType {
-        SERVICE_TYPE_EXPLICIT,
-        SERVICE_TYPE_ALL,
-        SERVICE_TYPE_SERVER,
-        SERVICE_TYPE_CLIENT
-		  };
+        enum ServiceType {
+          SERVICE_TYPE_EXPLICIT,
+          SERVICE_TYPE_ALL,
+          SERVICE_TYPE_SERVER,
+          SERVICE_TYPE_CLIENT
+        };
         virtual ServiceType getServiceType(){
           return SERVICE_TYPE_ALL;
         }
