@@ -12,7 +12,7 @@ IF(APPLE)
 ENDIF(APPLE)
 
 IF(UNIX)
-  SET(POCO_CONFIGURE_COMMAND ${POCO_CONFIGURE_COMMAND} --cflags=-fPIC --static)
+  SET(POCO_CONFIGURE_COMMAND ${POCO_CONFIGURE_COMMAND} --cflags=-fPIC --static -cflags=-m32)
 ENDIF(UNIX)
 MESSAGE("Poco configure with : " ${POCO_CONFIGURE_COMMAND})
 ExternalProject_Add(poco
