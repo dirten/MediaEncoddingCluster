@@ -774,17 +774,37 @@ class ProcessUnit : public ::google::protobuf::Message {
   inline ::std::string* release_serialized_data();
   inline void set_allocated_serialized_data(::std::string* serialized_data);
 
+  // required int32 source_stream = 2;
+  inline bool has_source_stream() const;
+  inline void clear_source_stream();
+  static const int kSourceStreamFieldNumber = 2;
+  inline ::google::protobuf::int32 source_stream() const;
+  inline void set_source_stream(::google::protobuf::int32 value);
+
+  // required int32 target_stream = 3;
+  inline bool has_target_stream() const;
+  inline void clear_target_stream();
+  static const int kTargetStreamFieldNumber = 3;
+  inline ::google::protobuf::int32 target_stream() const;
+  inline void set_target_stream(::google::protobuf::int32 value);
+
   // @@protoc_insertion_point(class_scope:org.esb.rpc.ProcessUnit)
  private:
   inline void set_has_serialized_data();
   inline void clear_has_serialized_data();
+  inline void set_has_source_stream();
+  inline void clear_has_source_stream();
+  inline void set_has_target_stream();
+  inline void clear_has_target_stream();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* serialized_data_;
+  ::google::protobuf::int32 source_stream_;
+  ::google::protobuf::int32 target_stream_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
 
   friend void  protobuf_AddDesc_rpc_2eproto();
   friend void protobuf_AssignDesc_rpc_2eproto();
@@ -3226,6 +3246,50 @@ inline void ProcessUnit::set_allocated_serialized_data(::std::string* serialized
     clear_has_serialized_data();
     serialized_data_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
+}
+
+// required int32 source_stream = 2;
+inline bool ProcessUnit::has_source_stream() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void ProcessUnit::set_has_source_stream() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void ProcessUnit::clear_has_source_stream() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void ProcessUnit::clear_source_stream() {
+  source_stream_ = 0;
+  clear_has_source_stream();
+}
+inline ::google::protobuf::int32 ProcessUnit::source_stream() const {
+  return source_stream_;
+}
+inline void ProcessUnit::set_source_stream(::google::protobuf::int32 value) {
+  set_has_source_stream();
+  source_stream_ = value;
+}
+
+// required int32 target_stream = 3;
+inline bool ProcessUnit::has_target_stream() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void ProcessUnit::set_has_target_stream() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void ProcessUnit::clear_has_target_stream() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void ProcessUnit::clear_target_stream() {
+  target_stream_ = 0;
+  clear_has_target_stream();
+}
+inline ::google::protobuf::int32 ProcessUnit::target_stream() const {
+  return target_stream_;
+}
+inline void ProcessUnit::set_target_stream(::google::protobuf::int32 value) {
+  set_has_target_stream();
+  target_stream_ = value;
 }
 
 // -------------------------------------------------------------------

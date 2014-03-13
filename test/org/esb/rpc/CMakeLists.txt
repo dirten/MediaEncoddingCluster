@@ -7,7 +7,7 @@ add_executable (RpcRegisterNode RpcRegisterNode.cpp)
 
 
 target_link_libraries (RpcServerTest rpc core)
-target_link_libraries (RpcClientTest rpc core)
+target_link_libraries (RpcClientTest rpc protobuf protobuf-lite core)
 target_link_libraries (RpcRegisterNode rpc core)
 
 

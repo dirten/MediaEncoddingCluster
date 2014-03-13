@@ -85,6 +85,8 @@ service NodeService {
 
 message ProcessUnit {
     required bytes serialized_data = 1;
+    required int32 source_stream=2;
+    required int32 target_stream=3;
 }
 
 message ProcessUnitRequest {

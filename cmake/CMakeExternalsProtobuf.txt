@@ -8,7 +8,7 @@ ENDIF(MINGW)
 ExternalProject_Add(protobufdep
 URL http://protobuf.googlecode.com/files/protobuf-2.5.0.tar.bz2
 #SVN_REPOSITORY http://google-breakpad.googlecode.com/svn/trunk/
-CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --disable-shared --enable-static --with-pic ${USER_CONFIG}
+CONFIGURE_COMMAND env CFLAGS=-mmacosx-version-min=${MAC_OSX_MIN_VERSION} LDFLAGS=-mmacosx-version-min=${MAC_OSX_MIN_VERSION} CPPFLAGS=-mmacosx-version-min=${MAC_OSX_MIN_VERSION} <SOURCE_DIR>/configure --prefix=${BUILD_DIR} --disable-shared --enable-static --with-pic ${USER_CONFIG}
 #UPDATE_COMMAND true
 #INSTALL_COMMAND true
 BUILD_IN_SOURCE 1

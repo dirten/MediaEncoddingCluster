@@ -4,6 +4,7 @@ namespace mhivestorage{
     LockHook::LockHook()
     {
     }
+
     void LockHook::handle(org::esb::core::http::HTTPServerRequest&req, org::esb::core::http::HTTPServerResponse&res){
 
     }
