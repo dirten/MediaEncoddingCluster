@@ -1,0 +1,31 @@
+
+set(BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build")
+
+IF(MINGW)
+  SET(USER_CONFIG "--host=x86_64-w64-mingw32")
+ENDIF(MINGW)
+#https://downloads.sourceforge.net/project/scons/scons/2.3.1/scons-2.3.1.tar.gz?r=&ts=1395063639&use_mirror=cznic
+
+ExternalProject_Add(scons
+URL http://downloads.sourceforge.net/project/scons/scons/2.3.1/scons-2.3.1.tar.gz
+CONFIGURE_COMMAND cd <SOURCE_DIR> && python setup.py install --prefix=${BUILD_DIR}
+BUILD_COMMAND true
+INSTALL_COMMAND true
+)
+
+
+IF(APPLE)
+  #SET(PROTO_FLAGS env CFLAGS=-mmacosx-version-min=${MAC_OSX_MIN_VERSION} LDFLAGS=-mmacosx-version-min=${MAC_OSX_MIN_VERSION} CPPFLAGS=-mmacosx-version-min=${MAC_OSX_MIN_VERSION})
+ENDIF(APPLE)
+
+ExternalProject_Add(mongodbdep
+DEPENDS scons
+URL http://fastdl.mongodb.org/src/mongodb-src-r2.6.0-rc1.tar.gz
+CONFIGURE_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && cd <SOURCE_DIR> && scons --prefix=${BUILD_DIR} --full --use-system-boost --extrapath=${BUILD_DIR} install
+BUILD_COMMAND true
+INSTALL_COMMAND true
+#PATH=${BUILD_DIR}/bin:$ENV{PATH} && cd <SOURCE_DIR> && scons --prefix=${BUILD_DIR} install
+BUILD_IN_SOURCE 1
+)
+SET(MONGODB_DIR ${BUILD_DIR})
+

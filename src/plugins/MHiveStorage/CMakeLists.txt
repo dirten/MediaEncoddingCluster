@@ -19,6 +19,8 @@ add_library (mhive_storage SHARED
 
 TARGET_LINK_LIBRARIES(mhive_storage
   core
+  mongoclient
+
 )
 
 SET_TARGET_PROPERTIES( mhive_storage PROPERTIES PREFIX "")
