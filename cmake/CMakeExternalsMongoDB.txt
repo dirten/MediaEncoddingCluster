@@ -21,9 +21,11 @@ ENDIF(APPLE)
 ExternalProject_Add(mongodbdep
 DEPENDS scons
 #URL http://fastdl.mongodb.org/src/mongodb-src-r2.6.0-rc1.tar.gz
-URL http://github.com/mongodb/mongo-cxx-driver/archive/legacy.zip
-CONFIGURE_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && cd <SOURCE_DIR> && scons --prefix=${BUILD_DIR} --extrapath=${BUILD_DIR} install-mongoclient
-BUILD_COMMAND true
+#URL http://github.com/mongodb/mongo-cxx-driver/archive/legacy.zip
+GIT_REPOSITORY https://github.com/mongodb/mongo-cxx-driver.git
+CONFIGURE_COMMAND git checkout legacy
+BUILD_COMMAND PATH=${BUILD_DIR}/bin:$ENV{PATH} && cd <SOURCE_DIR> && scons --prefix=${BUILD_DIR} --extrapath=${BUILD_DIR} install-mongoclient
+#BUILD_COMMAND true
 INSTALL_COMMAND true
 #PATH=${BUILD_DIR}/bin:$ENV{PATH} && cd <SOURCE_DIR> && scons --prefix=${BUILD_DIR} install
 BUILD_IN_SOURCE 1

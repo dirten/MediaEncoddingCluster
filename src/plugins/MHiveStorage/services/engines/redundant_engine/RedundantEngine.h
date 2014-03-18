@@ -5,6 +5,8 @@
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/db/hivedb.hpp"
 #include "DLMBoostMutex.h"
+#include "boost/bind.hpp"
+#include "mongo/client/dbclient.h"
 
 
 #include "Poco/Net/HTTPClientSession.h"
@@ -32,7 +34,8 @@ namespace mhivestorage{
       std::string _storage_path;
       DLMBoostMutex _mutex;
 
-      std::list<Ptr<HTTPClientSession> > _clients;
+      //std::list<Ptr<HTTPClientSession> > _clients;
+      //Ptr<mongo::DBClientConnection> c;
     };
     }
   }

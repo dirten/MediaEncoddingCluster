@@ -2,7 +2,7 @@
 #include "org/esb/util/Log.h"
 #include "org/esb/util/Foreach.h"
 #include "org/esb/util/StringTokenizer.h"
-#include "mongo/client/dbclient.h"
+
 using org::esb::util::StringTokenizer;
 using Poco::Net::HTTPClientSession;
 
@@ -16,7 +16,7 @@ namespace mhivestorage{
         rs_hosts.push_back(mongo::HostAndPort(host));
       }
       mongo::DBClientReplicaSet * dbcrs=new mongo::DBClientReplicaSet("first", rs_hosts);
-      mongo::DBClientConnection c(true, dbcrs);
+      // c=new mongo::DBClientConnection(true, dbcrs);
     }
 
     void RedundantEngine::put(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit)

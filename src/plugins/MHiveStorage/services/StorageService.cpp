@@ -1,10 +1,10 @@
+#include "engines/redundant_engine/RedundantEngine.h"
 #include "StorageService.h"
+#include "engines/Simple.h"
 #include "org/esb/core/PluginContext.h"
 #include "org/esb/signal/Messenger.h"
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/hive/Environment.h"
-#include "engines/Simple.h"
-#include "engines/redundant_engine/RedundantEngine.h"
 
 using org::esb::hive::Environment;
 namespace mhivestorage{
@@ -46,8 +46,8 @@ namespace mhivestorage{
       _storageEngine=new engines::Simple(getContext()->database, Environment::get("hive.data_path"));
     }else if(engine_name=="redundant"){
       std::vector<std::string> hosts=getContext()->getProperty< std::vector<std::string> >("mhivestorage.hosts");
-      int port=getContext()->getProperty<int>("mhivestorage.port");
-      _storageEngine=new engines::RedundantEngine(getContext()->database, Environment::get("hive.data_path"), hosts, port);
+      //int port=getContext()->getProperty<int>("mhivestorage.port");
+      _storageEngine=new engines::RedundantEngine(getContext()->database, Environment::get("hive.data_path"), hosts, 0);
     }else {
       LOGWARN("no storage engine\""<<engine_name<<"\" found, using simple storage!");
       _storageEngine=new engines::Simple(getContext()->database, Environment::get("hive.data_path"));
