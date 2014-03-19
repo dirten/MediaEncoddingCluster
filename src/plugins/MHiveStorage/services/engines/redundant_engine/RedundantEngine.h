@@ -32,10 +32,10 @@ namespace mhivestorage{
     private:
       //db::HiveDb database;
       std::string _storage_path;
-      DLMBoostMutex _mutex;
+      //DLMBoostMutex _mutex;
 
       //std::list<Ptr<HTTPClientSession> > _clients;
-      //Ptr<mongo::DBClientConnection> c;
+      Ptr<mongo::DBClientConnection> c;
     };
     }
   }
