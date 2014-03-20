@@ -5,7 +5,7 @@
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/db/hivedb.hpp"
 #include "DLMBoostMutex.h"
-#include "boost/bind.hpp"
+#include "boost/thread/mutex.hpp"
 #include "mongo/client/dbclient.h"
 
 
@@ -36,6 +36,12 @@ namespace mhivestorage{
 
       //std::list<Ptr<HTTPClientSession> > _clients;
       Ptr<mongo::DBClientConnection> c;
+      Ptr<mongo::DBClientReplicaSet> dbcrs;
+      Ptr<mongo::GridFS> gridfs;
+      boost::mutex enqueue_mutex;
+
+
+
     };
     }
   }

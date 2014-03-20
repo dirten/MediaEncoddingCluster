@@ -341,7 +341,8 @@ namespace encodingtask {
 
     Message msg;
     msg.setProperty("processunit_enque",unit);
-    Messenger::getInstance().sendMessage(msg);
+    //Messenger::getInstance().sendMessage(msg);
+    Messenger::getInstance().sendRequest(msg);
 
     setProgressLength(getProgressLength() + 1);
   }
