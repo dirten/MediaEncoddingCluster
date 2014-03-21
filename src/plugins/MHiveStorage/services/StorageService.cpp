@@ -6,6 +6,8 @@
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/hive/Environment.h"
 
+#include "org/esb/db/Job.h"
+#include "org/esb/db/OutputFile.h"
 using org::esb::hive::Environment;
 namespace mhivestorage{
 
@@ -35,6 +37,13 @@ namespace mhivestorage{
       msg.setProperty("processunit_deque", unit);
     }else if(msg.containsProperty("processunit_rollback")){
       _storageEngine->rollback(msg.getProperty<std::string>("processunit_rollback"));
+    }else if(msg.containsProperty("outputfile.put")){
+    }else if(msg.containsProperty("outputfile.get")){
+
+    }else if(msg.containsProperty("job.put")){
+      org::esb::model::Job job=msg.getProperty<org::esb::model::Job >("outputfile.put");
+    }else if(msg.containsProperty("job.get")){
+
     }
   }
 
@@ -49,17 +58,21 @@ namespace mhivestorage{
       //int port=getContext()->getProperty<int>("mhivestorage.port");
       _storageEngine=new engines::RedundantEngine(getContext()->database, Environment::get("hive.data_path"), hosts, 0);
     }else {
-      LOGWARN("no storage engine\""<<engine_name<<"\" found, using simple storage!");
-      _storageEngine=new engines::Simple(getContext()->database, Environment::get("hive.data_path"));
+      LOGWARN("no storage engine\""<<engine_name<<"\" found!");
+      //_storageEngine=new engines::Simple(getContext()->database, Environment::get("hive.data_path"));
     }
-    _storageEngine->init();
-    org::esb::signal::Messenger::getInstance().addMessageListener(*this);
+    if(_storageEngine){
+      _storageEngine->init();
+      org::esb::signal::Messenger::getInstance().addMessageListener(*this);
+    }
   }
 
   void StorageService::stopService()
   {
-    org::esb::signal::Messenger::getInstance().removeMessageListener(*this);
-    _storageEngine.reset();
+    if(_storageEngine){
+      org::esb::signal::Messenger::getInstance().removeMessageListener(*this);
+      _storageEngine.reset();
+    }
   }
 
   org::esb::core::OptionsDescription StorageService::getOptionsDescription()

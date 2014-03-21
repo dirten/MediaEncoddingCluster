@@ -145,6 +145,35 @@ namespace mhivestorage{
       return result;
     }
 
+    void Simple::putJob(org::esb::model::Job job){
 
+    }
+
+    void Simple::putOutputFile(org::esb::model::OutputFile file){
+
+    }
+
+    void Simple::getJob(org::esb::model::Job job){
+
+    }
+
+    void Simple::getOutputFile(org::esb::model::OutputFile file){
+
+    }
+
+    void Simple::putUnit(org::esb::model::Unit unit)
+    {
+
+    }
+
+    void Simple::getUnit(org::esb::model::Unit unit)
+    {
+
+    }
+
+    void Simple::dequeUnit(org::esb::model::Unit unit)
+    {
+
+    }
   }
 }
