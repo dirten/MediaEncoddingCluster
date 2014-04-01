@@ -15,6 +15,10 @@
 
 #include "org/esb/signal/Message.h"
 #include "org/esb/signal/Messenger.h"
+
+#include "org/esb/core/PluginRegistry.h"
+#include "org/esb/core/StorageEngine.h"
+
 #include "plugins/services/partitionservice/PartitionManager.h"
 //#include "org/esb/mq/QueueConnection.h"
 //#include "org/esb/mq/ObjectMessage.h"
@@ -194,16 +198,23 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
         //un = man->getProcessUnit(_ep);
         _oos->writeObject(un);
         */
-
+        /*
         Message msg;
         msg.setProperty("processunit_deque",std::string());
         Messenger::getInstance().sendRequest(msg);
         un=msg.getProperty<boost::shared_ptr<org::esb::hive::job::ProcessUnit> >("processunit_deque");
+        */
+        LOGDEBUG("try getting pu from storage:");
+        un=org::esb::core::PluginRegistry::getInstance()->getStorageEngine()->deque();
+        if(un)
+          LOGDEBUG("getting pu from storage:"<<un->uuid);
         std::ostringstream ost;
+        LOGDEBUG("serializing pu to client:");
         Serializing::serialize<boost::archive::text_oarchive>(un, ost);
 
         _os->write((char*) ost.str().c_str(), ost.str().length());
         _os->flush();
+        LOGDEBUG("transfered to client:");
         return;
 
         db::ProcessUnit unit=getProcessUnit();
@@ -255,9 +266,10 @@ class VideoDataHandler : public org::esb::plugin::ProtocolCommand {
           std::istringstream iss (data);
           boost::shared_ptr<org::esb::hive::job::ProcessUnit>punit;
           Serializing::deserialize<boost::archive::text_iarchive>(punit, iss);
-          Message msg;
-          msg.setProperty("processunit_put",punit);
-          Messenger::getInstance().sendRequest(msg);
+          org::esb::core::PluginRegistry::getInstance()->getStorageEngine()->put(punit);
+          //Message msg;
+          //msg.setProperty("processunit_put",punit);
+          //Messenger::getInstance().sendRequest(msg);
           un.reset();
           return;
           std::string recvid=org::esb::util::PUUID();

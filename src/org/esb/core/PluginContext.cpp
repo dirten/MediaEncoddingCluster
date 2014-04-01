@@ -11,12 +11,12 @@
 #include "org/esb/config/config.h"
 #include "org/esb/core/AppContext.h"
 #include "org/esb/hive/DatabaseService.h"
-
+#include "StorageEngine.h"
 namespace org {
   namespace esb {
     namespace core {
       using org::esb::hive::DatabaseService;
-      PluginContext::PluginContext():database(DatabaseService::getDatabase()) {
+      PluginContext::PluginContext(StorageEngine * engine):database(DatabaseService::getDatabase()), _storageEngine(engine) {
         //database = boost::shared_ptr<db::HiveDb>(new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url")));
       }
 
@@ -25,7 +25,11 @@ namespace org {
         //LOGDEBUG("PluginContext::~PluginContext()")
         //delete database;
       }
-      
+      StorageEngine * PluginContext::getStorageEngine()
+      {
+        return _storageEngine;
+      }
+
       bool PluginContext::contains(std::string key) {
         return _props.count(key)>0;
       }

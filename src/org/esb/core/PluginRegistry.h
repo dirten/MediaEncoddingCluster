@@ -25,6 +25,7 @@ namespace org {
       class Plugin;
       class PluginContext;
       class ServicePlugin;
+      class StorageEngine;
       class WebservicePlugin;
       class HookPlugin;
       class HookProvider;
@@ -46,6 +47,7 @@ namespace org {
           static void close();
           void registerPlugin(std::string, Plugin*);
           void registerService(std::string, ServicePlugin*);
+          void registerStorage(std::string, StorageEngine*);
           void registerHookPlugin(std::string, HookPlugin*);
           void registerHookProvider(std::string, HookProvider*);
           //void CORE_EXPORT registerTaskFactory(std::string,Ptr<TaskFactory>);
@@ -55,11 +57,15 @@ namespace org {
           void startWebService();
           void startServiceByName(std::string name);
           void stopServiceByName(std::string name);
+          StorageEngine * getStorageEngine();
+          void startStorageByName(std::string name);
+          void stopStorageByName(std::string name);
           void startClientServices();
           void stopServices();
           void load(std::string);
           void initPlugins();
           bool isRunning(std::string plugin_name);
+          OptionsDescription getOptionsDescription();
           OptionsDescription getOptionsDescription(std::string);
           std::list<std::string> getPluginNameList();
 
@@ -82,6 +88,7 @@ namespace org {
 
           std::map<std::string, Plugin*> _plug_map;
           std::map<std::string, ServicePlugin*> _service_map;
+          std::map<std::string, StorageEngine*> _storage_map;
           std::map<std::string, HookProvider*> _hook_provider_map;
           std::map<std::string, HookPlugin*> _hook_map;
           std::map<std::string, org::esb::lang::SharedObjectLoader*> _shared_objects;

@@ -1,17 +1,23 @@
 #include "Simple.h"
 #include "org/esb/util/Serializing.h"
 #include "org/esb/util/UUID.h"
+#include "org/esb/hive/DatabaseService.h"
+#include "org/esb/hive/Environment.h"
 using org::esb::util::Serializing;
 namespace mhivestorage{
   namespace engines {
-    typedef boost::archive::text_oarchive oarchive;
-    typedef boost::archive::text_iarchive iarchive;
+    //typedef boost::archive::text_oarchive oarchive;
+    //typedef boost::archive::text_iarchive iarchive;
 
-    //typedef boost::archive::binary_oarchive oarchive;
-    //typedef boost::archive::binary_iarchive iarchive;
+    typedef boost::archive::binary_oarchive oarchive;
+    typedef boost::archive::binary_iarchive iarchive;
 
     //typedef portable_binary_oarchive oarchive;
     //typedef portable_binary_iarchive iarchive;
+    Simple::Simple():database(org::esb::hive::DatabaseService::getDatabase()), _storage_path(org::esb::hive::Environment::get("hive.data_path")){
+
+    }
+
     Simple::Simple(db::HiveDb database, std::string storage_path):database(database), _storage_path(storage_path)
     {
 
@@ -51,12 +57,12 @@ namespace mhivestorage{
        * @TODO: massive performance impact by serializing ProcessUnit
        */
       std::ofstream ost((_storage_path + "/"+unit->getJobId()+"/"+ unit->uuid).c_str(), std::ofstream::out);
-      //Serializing::serialize<boost::archive::text_oarchive>(unit, ost);
+
       Serializing::serialize<oarchive>(unit, ost);
 
       LOGDEBUG("written ProcessUnit to "<<_storage_path + "/"+unit->getJobId()+"/"+ unit->uuid)
 
-      pu.update();
+          pu.update();
 
     }
     boost::shared_ptr<std::istream> Simple::dequeStream()
@@ -76,7 +82,7 @@ namespace mhivestorage{
           do{
             result=*unit_cursor;
             LOGDEBUG("fetch next ProcessUnit:"<<result.codectype<<":id:"<<result.id)
-            responsible=true;
+                responsible=true;
           }while(!responsible && unit_cursor.rowsLeft());
         }catch(std::exception & ex){
           LOGERROR("exception:"<<ex.what())
@@ -101,9 +107,8 @@ namespace mhivestorage{
     {
       boost::shared_ptr<std::istream> stream=dequeStream();
       boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit;
-      Serializing::deserialize<iarchive>(unit, *stream);
-
-      //database->query("end");
+      if(stream)
+        Serializing::deserialize<iarchive>(unit, *stream);
       return unit;
     }
 
@@ -120,6 +125,7 @@ namespace mhivestorage{
         Serializing::serialize<oarchive>(unit, ost);
 
         pu.update();
+        //processedUnitReveived(org::esb::model::Unit());
       }
     }
 
@@ -145,35 +151,67 @@ namespace mhivestorage{
       return result;
     }
 
-    void Simple::putJob(org::esb::model::Job job){
+    void Simple::putJob(org::esb::model::Job & job){
 
     }
 
-    void Simple::putOutputFile(org::esb::model::OutputFile file){
+    void Simple::putOutputFile(org::esb::model::OutputFile & file){
 
     }
 
-    void Simple::getJob(org::esb::model::Job job){
+    void Simple::getJob(org::esb::model::Job & job){
 
     }
 
-    void Simple::getOutputFile(org::esb::model::OutputFile file){
+    void Simple::getOutputFile(org::esb::model::OutputFile & file){
 
     }
 
-    void Simple::putUnit(org::esb::model::Unit unit)
+    void Simple::putUnit(org::esb::model::Unit & unit)
     {
 
     }
 
-    void Simple::getUnit(org::esb::model::Unit unit)
+    org::esb::model::Unit Simple::getUnit(org::esb::model::Unit & unit)
     {
 
     }
 
-    void Simple::dequeUnit(org::esb::model::Unit unit)
+    void Simple::dequeUnit(org::esb::model::Unit & unit)
     {
 
+    }
+
+    void Simple::saveUnitStream(org::esb::model::Unit & unit,std::ostream& stream)
+    {
+
+    }
+
+    void Simple::readUnitStream(org::esb::model::Unit & unit,std::istream& stream)
+    {
+
+    }
+
+    void Simple::putProfile(org::esb::model::Profile & profile)
+    {
+
+    }
+
+    void Simple::getProfile(org::esb::model::Profile & profile)
+    {
+
+    }
+
+    void Simple::startup()
+    {
+
+    }
+
+    void Simple::shutdown()
+    {
+
+    }
+
+    REGISTER_STORAGE("sqlite3", Simple)
     }
   }
-}

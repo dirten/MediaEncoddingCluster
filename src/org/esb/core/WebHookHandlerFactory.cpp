@@ -108,7 +108,7 @@ using namespace Poco;
                 for(Poco::StringTokenizer::Iterator it=param_tokenz.begin();it!=param_tokenz.end();it++){
                   Poco::StringTokenizer key_tokenz(*it,"=");
 
-                  LOGDEBUG("setting query parameter -> key="<<key_tokenz[0]<<" val="<< (key_tokenz.count()>1)?key_tokenz[1]:"");
+                  LOGDEBUG("setting query parameter -> key="<<key_tokenz[0]<<" val="<< (key_tokenz.count()>1?key_tokenz[1]:""));
                   req.add(key_tokenz[0], key_tokenz.count()>1?key_tokenz[1]:"");
 
                 }

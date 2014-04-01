@@ -20,16 +20,18 @@
 
 namespace db{
   class HiveDb;
-}
+  }
 namespace org {
   namespace esb {
     namespace core {
 
+      class StorageEngine;
       class CORE_EXPORT PluginContext {
       public:
-          //boost::shared_ptr<db::HiveDb> database;
-         db::HiveDb database;
+        //boost::shared_ptr<db::HiveDb> database;
+        db::HiveDb database;
 
+        StorageEngine *  getStorageEngine();
         template<typename T>
         T getEnvironment(std::string key){
           return boost::lexical_cast<T>(env[key]);
@@ -73,12 +75,13 @@ namespace org {
         std::map<std::string, boost::any> _props;
         friend class PluginRegistry;
         friend class WebHookHandlerFactory;
-        PluginContext();
+        PluginContext(StorageEngine * engine=NULL);
+        StorageEngine * _storageEngine;
         std::map<std::string, std::string> env;
       };
+      }
     }
   }
-}
 
 #endif	/* PLUGINCONTEXT_H */
 

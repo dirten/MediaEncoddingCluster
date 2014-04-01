@@ -10,6 +10,7 @@
 
 #include "PluginRegistry.h"
 #include "ServicePlugin.h"
+#include "StorageEngine.h"
 #include "org/esb/lang/Introspec.h"
 #include "org/esb/core/HookPlugin.h"
 #include "org/esb/util/Foreach.h"
@@ -54,12 +55,32 @@ namespace org {
         return OptionsDescription();
       }
 
+      org::esb::core::OptionsDescription PluginRegistry::getOptionsDescription()
+      {
+        org::esb::core::OptionsDescription result("registry");
+        std::string storage_engines="";
+        typedef std::map<std::string, StorageEngine*> PluginMap;
+
+        foreach(PluginMap::value_type s, _storage_map) {
+          storage_engines+=s.first+", ";
+        }
+        storage_engines="which storage engine to use("+storage_engines+")";
+        result.add_options()
+            ("storage.engine", boost::program_options::value<string >()->default_value("sqlite3"), storage_engines.c_str())
+            //("storage.hosts", boost::program_options::value< std::vector<string> >()->multitoken(), "ip:port tuples for the other redundant storage")
+            //("storage.port", boost::program_options::value< int >()->default_value(20202), "port number for own redundant storage")
+            ;
+        return result;
+      }
+
+
       std::list<std::string> PluginRegistry::getPluginNameList() {
         std::list<std::string> result;
         typedef std::map<std::string, Plugin*> PluginMap;
         foreach(PluginMap::value_type s, _plug_map) {
           result.push_back(s.first);
         }
+        result.push_back("registry");
         return result;
       }
 
@@ -72,6 +93,35 @@ namespace org {
         _service_map[name] = plugin;
         _plug_map[name] = plugin;
       }
+
+      void PluginRegistry::registerStorage(std::string name, StorageEngine*storage){
+        _storage_map[name]=storage;
+        _plug_map[name] = storage;
+      }
+
+      void PluginRegistry::startStorageByName(std::string name)
+      {
+        typedef std::map<std::string, StorageEngine*> PluginMap;
+
+        foreach(PluginMap::value_type s, _storage_map) {
+          if (s.first==name){
+            s.second->startup();
+            break;
+          }
+        }
+      }
+
+      void PluginRegistry::stopStorageByName(std::string name)
+      {
+        typedef std::map<std::string, StorageEngine*> PluginMap;
+        foreach(PluginMap::value_type s, _storage_map) {
+          if (s.first==name){
+            s.second->shutdown();
+            break;
+          }
+        }
+      }
+
 
       void PluginRegistry::startServerServices() {
         startWebService();
@@ -220,7 +270,7 @@ namespace org {
         Ptr<Task>result;
         if (_task_factories.count(name) > 0) {
           result = _task_factories[name]->create();
-          result->setContext(new PluginContext());
+          result->setContext(new PluginContext(getStorageEngine()));
           
           /*fill up PluginContext with default Options*/
           OptionsDescription desc = result->getOptionsDescription();
@@ -240,13 +290,13 @@ namespace org {
               def = org::esb::util::StringUtil::toString(boost::any_cast<std::string > (data));
             }
             result->getContext()->env[value->long_name()] = def;
-            result->getContext()->set<std::string>(value->long_name(), def);
+            result->getContext()->setProperty<std::string>(value->long_name(), def);
           }
 
           typedef std::map<std::string, std::string> stringmap;
           foreach(stringmap::value_type config, cfg) {
             result->getContext()->env[config.first] = config.second;
-            result->getContext()->set<std::string>(config.first, config.second);
+            result->getContext()->setProperty<std::string>(config.first, config.second);
             LOGDEBUG("Setting plugin Context : " << config.first << "=" << config.second);
           }
         }
@@ -256,10 +306,12 @@ namespace org {
       void PluginRegistry::initPlugins() {
         typedef std::map<std::string, Plugin*> PluginMap;
 
+
+
         foreach(PluginMap::value_type s, _plug_map) {
           LOGDEBUG("Initialize Plugin:" << s.first);
           _plugin_data[s.first].name = s.first;
-          _plugin_data[s.first].context = new PluginContext();
+          _plugin_data[s.first].context = new PluginContext(getStorageEngine());
           _plugin_data[s.first].plugin = s.second;
 
           /*fill up PluginContext with Options*/
@@ -322,6 +374,24 @@ namespace org {
         }else{
           loadFile(file);
         }
+      }
+
+      StorageEngine * PluginRegistry::getStorageEngine(){
+        static StorageEngine * engine=NULL;
+        if(engine==NULL){
+          std::string storage_name=org::esb::hive::Environment::get<std::string>("storage.engine");
+          std::cout << "configure storage engine:"<<storage_name<<std::endl;
+          typedef std::map<std::string, StorageEngine*> PluginMap;
+
+          foreach(PluginMap::value_type s, _storage_map) {
+            if (s.first==storage_name){
+              engine=s.second;
+              engine->startup();
+              break;
+            }
+          }
+        }
+        return engine;
       }
 
       /**

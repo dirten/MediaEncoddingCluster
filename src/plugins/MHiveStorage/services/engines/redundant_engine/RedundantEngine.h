@@ -1,6 +1,6 @@
 #ifndef REDUNTANTENGINE_H
 #define REDUNTANTENGINE_H
-#include "../Engine.h"
+//#include "org/esb/core/StorageEngine.h"
 #include "../Simple.h"
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/db/hivedb.hpp"
@@ -18,6 +18,7 @@ namespace mhivestorage{
     class RedundantEngine : public Simple
     {
     public:
+      RedundantEngine();
       RedundantEngine( db::HiveDb database, std::string storage_path, std::vector<std::string> hosts, int self_port);
 
       void put(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit);
@@ -28,7 +29,7 @@ namespace mhivestorage{
 
       void commit(std::string uuid);
       void rollback(std::string uuid);
-
+      org::esb::core::OptionsDescription getOptionsDescription();
     private:
       //db::HiveDb database;
       std::string _storage_path;

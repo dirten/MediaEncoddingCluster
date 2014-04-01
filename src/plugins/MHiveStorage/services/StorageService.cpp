@@ -38,16 +38,18 @@ namespace mhivestorage{
     }else if(msg.containsProperty("processunit_rollback")){
       _storageEngine->rollback(msg.getProperty<std::string>("processunit_rollback"));
     }else if(msg.containsProperty("outputfile.put")){
+
     }else if(msg.containsProperty("outputfile.get")){
 
     }else if(msg.containsProperty("job.put")){
-      org::esb::model::Job job=msg.getProperty<org::esb::model::Job >("outputfile.put");
+      org::esb::model::Job job=msg.getProperty<org::esb::model::Job >("job.put");
+
     }else if(msg.containsProperty("job.get")){
 
     }
   }
 
-  void StorageService::startService()
+  void StorageService::startup()
   {
     std::string engine_name=getContext()->getEnvironment<string>("mhivestorage.engine");
 
@@ -67,7 +69,7 @@ namespace mhivestorage{
     }
   }
 
-  void StorageService::stopService()
+  void StorageService::shutdown()
   {
     if(_storageEngine){
       org::esb::signal::Messenger::getInstance().removeMessageListener(*this);
@@ -80,12 +82,13 @@ namespace mhivestorage{
     org::esb::core::OptionsDescription result("mhivestorage");
     result.add_options()
         ("mhivestorage.engine", boost::program_options::value<string >()->default_value("simple"), "which storage engine to use(simple,redundant)")
-    ("mhivestorage.hosts", boost::program_options::value< std::vector<string> >()->multitoken(), "ip:port tuples for the other redundant storage")
-    ("mhivestorage.port", boost::program_options::value< int >()->default_value(20202), "port number for own redundant storage")
-    //("mhivestorage.redundancy_level", boost::program_options::value<int >()->default_value(2), "which redundancy level should the storage engine \"redundant\" use")
-    ;
+        ("mhivestorage.hosts", boost::program_options::value< std::vector<string> >()->multitoken(), "ip:port tuples for the other redundant storage")
+        ("mhivestorage.port", boost::program_options::value< int >()->default_value(20202), "port number for own redundant storage")
+        //("mhivestorage.redundancy_level", boost::program_options::value<int >()->default_value(2), "which redundancy level should the storage engine \"redundant\" use")
+        ;
     return result;
   }
-  REGISTER_SERVICE("storageservice", StorageService)
+  //REGISTER_SERVICE("storageservice", StorageService)
+  //REGISTER_STORAGE("storageservice", StorageService)
 
-}
+  }

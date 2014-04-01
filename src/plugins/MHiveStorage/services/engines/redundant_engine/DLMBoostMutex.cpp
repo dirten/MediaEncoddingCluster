@@ -14,6 +14,7 @@ namespace mhivestorage{
       foreach(std::string h, hosts){
         DLMHost*host = new DLMHost(h);
         _hosts.push_back(host);
+
         host->receiveLockRequest=boost::bind(&DLMBoostMutex::reveiveLockRequest, this);
         host->receiveLockRequestAnswer=boost::bind(&DLMBoostMutex::reveiveLockRequestAnswer, this, _1);
         host->receiveUnlockRequest=boost::bind(&DLMBoostMutex::reveiveUnlockRequest, this);

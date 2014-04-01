@@ -146,6 +146,10 @@ int main(int argc, char * argv[]) {
     /*loading all plugins from directory*/
     org::esb::core::PluginRegistry::getInstance()->load(pluginDir);
 
+    /*add options from the pluginregistry*/
+    OptionsDescription od = PluginRegistry::getInstance()->getOptionsDescription();
+    all.add(od);
+
     po::options_description plugin_opts("Plugin options");
 
     /*retrieving all option from the loaded plugins*/
@@ -155,6 +159,7 @@ int main(int argc, char * argv[]) {
         plugin_opts.add(od);
       }
     }
+
 
     all.add(plugin_opts);
 

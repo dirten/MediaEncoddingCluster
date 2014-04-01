@@ -43,7 +43,7 @@ namespace org{
         for(Poco::StringTokenizer::Iterator it=param_tokenz.begin();it!=param_tokenz.end();it++){
           Poco::StringTokenizer key_tokenz(*it,"=");
 
-          LOGDEBUG("setting query parameter -> key="<<key_tokenz[0]<<" val="<< (key_tokenz.count()>1)?key_tokenz[1]:"");
+          LOGDEBUG("setting query parameter -> key="<<key_tokenz[0]<<" val="<< (key_tokenz.count()>1?key_tokenz[1]:""));
           if(key_tokenz[0]=="ip"){
             ip_address=(key_tokenz.count()>1)?key_tokenz[1]:"";
             continue;

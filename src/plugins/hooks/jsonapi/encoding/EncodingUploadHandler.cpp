@@ -193,8 +193,8 @@ public:
         //release this scope before the graph will be freed
         EncodingUploadPartHandler partHandler(graphobj);
         Poco::Net::HTMLForm form(req, req.stream(), partHandler);
-      }catch(...){
-        LOGDEBUG("upload canceled");
+      }catch(std::exception & ex){
+        LOGDEBUG("upload canceled:"<<ex.what());
         res.setStatusAndReason(Poco::Net::HTTPServerResponse::HTTP_NOT_ACCEPTABLE,"Error while Uploading file");
       }
       job.status=db::Job::Status::Exporting;

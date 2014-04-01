@@ -29,28 +29,20 @@
 #ifndef _PROFILE_H
 #define	_PROFILE_H
 #include <string>
-#include "org/esb/av/AV.h"
+
 namespace org{
   namespace esb{
-    namespace dbold{
+    namespace model{
+
       struct Profile{
-        int id;
-        std::string name;
-        std::string video_format;
-        CodecID video_codec;
-        int video_bitrate;
-        int video_framerate;
-        int video_width;
-        int video_height;
-        std::string video_extra;
-        CodecID audio_codec;
-        int audio_channels;
-        int audio_bitrate;
-        int audio_samplerate;
+          std::string uuid;
+          std::string name;
+          std::string data;
       };
     }
   }
 }
+
 
 #endif	/* _PROFILE_H */
 

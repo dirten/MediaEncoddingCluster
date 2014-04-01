@@ -14,8 +14,11 @@ namespace mhivestorage{
     //typedef boost::archive::text_iarchive iarchive;
     typedef boost::archive::binary_oarchive oarchive;
     typedef boost::archive::binary_iarchive iarchive;
+    RedundantEngine::RedundantEngine():Simple()
+    {
 
-    RedundantEngine::RedundantEngine(db::HiveDb database, std::string storage_path, std::vector<std::string> hosts, int self_port) : Simple(database, storage_path)
+    }
+    RedundantEngine::RedundantEngine(db::HiveDb database, std::string storage_path, std::vector<std::string> hosts, int self_port) : Simple()
     {
       mongo::Status state= mongo::client::initialize();
       if(!state.isOK()){
@@ -31,7 +34,7 @@ namespace mhivestorage{
       gridfs=new mongo::GridFS(*dbcrs, "mhive");
 
       //c=new mongo::DBClientConnection(true, dbcrs);
-       //c->connect();
+      //c->connect();
       //LOGDEBUG("Mongo Connected:"<<c->isStillConnected());
 
     }
@@ -65,9 +68,10 @@ namespace mhivestorage{
       std::ostringstream ost;
       //Serializing::serialize<boost::archive::text_oarchive>(unit, ost);
       Serializing::serialize<oarchive>(unit, ost);
+      /*this for loop is for a failover process (push to fail)*/
       for(int a=3;a>0;a--){
         try{
-          LOGDEBUG("tra writing processunit "<<unit->uuid)
+          LOGDEBUG("try writing processunit "<<unit->uuid);
           gridfs->storeFile(ost.str().c_str(),ost.str().length(),unit->uuid);
           dbcrs->insert("mhive.processunits", p);
           /*break retry loop*/
@@ -97,6 +101,20 @@ namespace mhivestorage{
     {
       Simple::rollback(uuid);
     }
+    org::esb::core::OptionsDescription RedundantEngine::getOptionsDescription()
+    {
+      org::esb::core::OptionsDescription result("mongodb");
+      result.add_options()
+          ("mongodb.engine", boost::program_options::value<string >()->default_value("simple"), "which storage engine to use(simple,redundant)")
+          ("mongodb.hosts", boost::program_options::value< std::vector<string> >()->multitoken(), "ip:port tuples for the other redundant storage")
+          ("mongodb.port", boost::program_options::value< int >()->default_value(20202), "port number for own redundant storage")
+          //("mhivestorage.redundancy_level", boost::program_options::value<int >()->default_value(2), "which redundancy level should the storage engine \"redundant\" use")
+          ;
+      return result;
+    }
+
+    REGISTER_STORAGE("mongodb", RedundantEngine)
 
     }
+
   }

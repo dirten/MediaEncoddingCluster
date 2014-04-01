@@ -27,6 +27,8 @@
 #include "org/esb/signal/Message.h"
 #include "org/esb/signal/Messenger.h"
 
+#include "org/esb/core/StorageEngine.h"
+
 using org::esb::util::StringUtil;
 using org::esb::util::Serializing;
 using org::esb::io::FileOutputStream;
@@ -338,12 +340,14 @@ namespace encodingtask {
     /*create unique stream index*/
     unit->_source_stream = unit->_input_packets.front()->getStreamIndex();
     unit->_last_process_unit = isLast;
+    getContext()->getStorageEngine()->enque(unit);
 
+    /*
     Message msg;
     msg.setProperty("processunit_enque",unit);
     //Messenger::getInstance().sendMessage(msg);
     Messenger::getInstance().sendRequest(msg);
-
+    */
     setProgressLength(getProgressLength() + 1);
   }
 
