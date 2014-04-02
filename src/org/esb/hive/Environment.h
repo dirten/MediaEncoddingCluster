@@ -44,7 +44,7 @@ namespace org {
             return boost::any_cast<T > (_env[key]);
           }
         }
-
+        static bool contains(std::string key);
         static boost::any getAnyType(std::string key);
 
         static std::string get(std::string key, std::string def="");

@@ -45,7 +45,7 @@ namespace org{
         /* here are comming the callback functions,
          * @TODO: should i really need this
          */
-        boost::function<void(org::esb::model::Unit unit)> processedUnitReveived;
+        boost::function<void(org::esb::model::Unit unit)> processedUnitReceived;
 
 
         /*the following functions are deprecated*/

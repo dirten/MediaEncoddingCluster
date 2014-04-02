@@ -20,7 +20,7 @@ namespace mhivestorage{
     public:
       RedundantEngine();
       RedundantEngine( db::HiveDb database, std::string storage_path, std::vector<std::string> hosts, int self_port);
-
+      void startup();
       void put(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit);
       boost::shared_ptr<org::esb::hive::job::ProcessUnit> get();
 
@@ -31,13 +31,15 @@ namespace mhivestorage{
       void rollback(std::string uuid);
       org::esb::core::OptionsDescription getOptionsDescription();
     private:
+      void initRedundant();
+      void initSimple();
       //db::HiveDb database;
       std::string _storage_path;
       //DLMBoostMutex _mutex;
 
       //std::list<Ptr<HTTPClientSession> > _clients;
       Ptr<mongo::DBClientConnection> c;
-      Ptr<mongo::DBClientReplicaSet> dbcrs;
+      Ptr<mongo::DBClientBase> dbcrs;
       Ptr<mongo::GridFS> gridfs;
       boost::mutex enqueue_mutex;
 

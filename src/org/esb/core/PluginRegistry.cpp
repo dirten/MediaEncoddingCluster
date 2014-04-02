@@ -27,6 +27,8 @@
 
 #include <string.h>
 //#include "org/esb/api/ApiWebServer.h"
+
+
 namespace org {
   namespace esb {
     namespace core {
@@ -303,6 +305,25 @@ namespace org {
         return result;
       }
 
+      void PluginRegistry::initPluginContext(Plugin*plugin, PluginContext*context)
+      {
+        OptionsDescription desc=plugin->getOptionsDescription();
+        typedef boost::shared_ptr<boost::program_options::option_description> option;
+        foreach(const option value, desc.options()) {
+
+          /*loading default data into the context*/
+          boost::any data;
+          value->semantic()->apply_default(data);
+          context->setProperty(value->long_name(), data);
+
+          /*overwrite option data with specific data from command option*/
+          if(Environment::contains(value->long_name())){
+            context->setProperty(value->long_name(), Environment::getAnyType(value->long_name()));
+          }
+
+        }
+      }
+
       void PluginRegistry::initPlugins() {
         typedef std::map<std::string, Plugin*> PluginMap;
 
@@ -386,6 +407,9 @@ namespace org {
           foreach(PluginMap::value_type s, _storage_map) {
             if (s.first==storage_name){
               engine=s.second;
+              PluginContext * context=new PluginContext();
+              engine->setContext(context);
+              initPluginContext(engine, context);
               engine->startup();
               break;
             }

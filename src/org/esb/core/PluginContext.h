@@ -52,6 +52,7 @@ namespace org {
           boost::any data;
           if(_props.count(key)>0){
             data = _props[key];
+            std::cout<<"Key="<<key<<" type = "<<data.type().name()<<std::endl;
           }
           return boost::any_cast<T>(data);
         }

@@ -9,6 +9,7 @@
 #include "WebHookPlugin.h"
 #include "WebHookProxy.h"
 #include "PluginContext.h"
+#include "PluginRegistry.h"
 #include "http/RootRequestHandler.h"
 #include "org/esb/util/Foreach.h"
 #include "Poco/RegularExpression.h"
@@ -21,6 +22,7 @@ namespace org {
   namespace esb {
     namespace core {
 using namespace Poco;
+      using org::esb::core::PluginRegistry;
       WebHookHandlerFactory::WebHookHandlerFactory() {
         _user_path = org::esb::config::Config::get("hive.graph_path");
 
@@ -117,7 +119,7 @@ using namespace Poco;
                 req.add("db.url", org::esb::config::Config::get("db.url"));
                 req.add("hive.tmp_path", org::esb::config::Config::get("hive.tmp_path"));
                 WebHookPlugin * ptr = factory->create();
-                ptr->setContext(new PluginContext());
+                ptr->setContext(new PluginContext(PluginRegistry::getInstance()->getStorageEngine()));
                 return static_cast<org::esb::core::http::RequestHandler *> (ptr);
               }
             }

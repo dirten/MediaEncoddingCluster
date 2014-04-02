@@ -16,6 +16,7 @@
 #include "org/esb/lang/SharedObjectLoader.h"
 #include "org/esb/lang/Ptr.h"
 #include "exports.h"
+
 namespace org {
   namespace esb {
     namespace grid{
@@ -79,6 +80,8 @@ namespace org {
           virtual ~PluginRegistry();
           static PluginRegistry * _instance;
           void loadFile(std::string);
+          void initPluginContext(Plugin*, PluginContext*);
+
           WebHookHandlerFactory * _webhook_handler_factory;
           struct PluginData{
               std::string name;

@@ -47,6 +47,14 @@ namespace org {
         return _argumentMap;
       }
 
+      bool Environment::contains(string key)
+      {
+        if(_env.count(key)==0){
+          return false;
+        }
+        return true;
+      }
+
       boost::any Environment::getAnyType(std::string key) {
         if(_env.count(key)==0){
           return boost::any();
