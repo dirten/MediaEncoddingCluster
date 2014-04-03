@@ -3,7 +3,10 @@
 #include "org/esb/util/UUID.h"
 #include "org/esb/hive/DatabaseService.h"
 #include "org/esb/hive/Environment.h"
+
+#include "Poco/StreamCopier.h"
 using org::esb::util::Serializing;
+using Poco::StreamCopier;
 namespace mhivestorage{
   namespace engines {
     //typedef boost::archive::text_oarchive oarchive;
@@ -182,14 +185,16 @@ namespace mhivestorage{
 
     }
 
-    void Simple::saveUnitStream(org::esb::model::Unit & unit,std::ostream& stream)
+    void Simple::writeUnitStream(org::esb::model::Unit & unit,std::istream & stream)
     {
-
+      std::ofstream ost((_storage_path + "/"+unit.jobid+"/"+ unit.uuid).c_str(), std::ofstream::out);
+      ost << stream;
     }
 
-    void Simple::readUnitStream(org::esb::model::Unit & unit,std::istream& stream)
+    void Simple::readUnitStream(org::esb::model::Unit & unit,std::ostream& stream)
     {
-
+      std::ifstream istream((_storage_path + "/"+unit.jobid+"/"+ unit.uuid).c_str(), std::ifstream::in);
+      stream << istream;
     }
 
     void Simple::putProfile(org::esb::model::Profile & profile)

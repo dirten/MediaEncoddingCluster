@@ -15,13 +15,14 @@ namespace org{
 
       class StorageEngine: public org::esb::core::Plugin {
       public:
+
         /*function for handling the processunits*/
         virtual void putUnit(org::esb::model::Unit & unit)=0;
         virtual org::esb::model::Unit getUnit(org::esb::model::Unit & unit)=0;
         virtual void dequeUnit(org::esb::model::Unit & unit)=0;
 
-        virtual void saveUnitStream(org::esb::model::Unit & unit,std::ostream&)=0;
-        virtual void readUnitStream(org::esb::model::Unit & unit,std::istream &)=0;
+        virtual void writeUnitStream(org::esb::model::Unit & unit,std::istream&)=0;
+        virtual void readUnitStream(org::esb::model::Unit & unit,std::ostream &)=0;
 
         /*functions for handling the jobs*/
         virtual void putJob(org::esb::model::Job & job)=0;
