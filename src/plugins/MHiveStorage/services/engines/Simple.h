@@ -23,8 +23,8 @@ namespace mhivestorage{
       void putUnit(org::esb::model::Unit & unit);
       org::esb::model::Unit getUnit(org::esb::model::Unit & unit);
 
-      void writeUnitStream(org::esb::model::Unit & unit,std::istream& );
-      void readUnitStream(org::esb::model::Unit & unit,std::ostream& );
+      void writeUnitStream(org::esb::model::Unit & unit,std::ostream& );
+      void readUnitStream(org::esb::model::Unit & unit,std::istream& );
 
       void dequeUnit(org::esb::model::Unit & unit);
 
