@@ -5,6 +5,7 @@
 #include "org/esb/hive/Environment.h"
 
 #include "Poco/StreamCopier.h"
+#include "org/esb/util/Foreach.h"
 using org::esb::util::Serializing;
 using Poco::StreamCopier;
 namespace mhivestorage{
@@ -28,6 +29,7 @@ namespace mhivestorage{
 
     void Simple::enque(boost::shared_ptr<org::esb::hive::job::ProcessUnit>unit)
     {
+      if(!unit)return;
       db::ProcessUnit pu(database);
       pu.sorcestream=unit->_source_stream;
       pu.targetstream=unit->_target_stream;
@@ -36,14 +38,15 @@ namespace mhivestorage{
       pu.sendid=unit->uuid;
       pu.jobid=unit->getJobId();
       pu.sequence=unit->_sequence;
-      if(unit->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO){
-        pu.codectype=db::ProcessUnit::Codectype::VIDEO;
-      }
+      if(unit->_decoder){
+        if(unit->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO){
+          pu.codectype=db::ProcessUnit::Codectype::VIDEO;
+        }
 
-      if(unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO){
-        pu.codectype=db::ProcessUnit::Codectype::AUDIO;
+        if(unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO){
+          pu.codectype=db::ProcessUnit::Codectype::AUDIO;
+        }
       }
-
       if (unit->_input_packets.size() > 0) {
         boost::shared_ptr<org::esb::av::Packet> first_packet = unit->_input_packets.front();
         boost::shared_ptr<org::esb::av::Packet> last_packet = unit->_input_packets.back();
@@ -59,15 +62,22 @@ namespace mhivestorage{
        * serialize the process unit into string format
        * @TODO: massive performance impact by serializing ProcessUnit
        */
-      std::ofstream ost((_storage_path + "/"+unit->getJobId()+"/"+ unit->uuid).c_str(), std::ofstream::out);
+      LOGDEBUG("writing processunit to "<<(_storage_path + "/"+unit->getJobId()+"/"+ unit->uuid));
+
+      std::string filename=(_storage_path + "/"+unit->getJobId()+"/"+ unit->uuid);
+      org::esb::io::File outputfile(filename);
+      if(!File(outputfile.getParent()).exists()){
+        File(outputfile.getParent()).mkdirs();
+      }
+
+      std::ofstream ost(filename.c_str(), std::ofstream::out);
 
       Serializing::serialize<oarchive>(unit, ost);
 
-      LOGDEBUG("written ProcessUnit to "<<_storage_path + "/"+unit->getJobId()+"/"+ unit->uuid)
-
-          pu.update();
+      pu.update();
 
     }
+
     boost::shared_ptr<std::istream> Simple::dequeStream()
     {
       boost::shared_ptr<std::istream> stream;
@@ -84,8 +94,8 @@ namespace mhivestorage{
         try{
           do{
             result=*unit_cursor;
-            LOGDEBUG("fetch next ProcessUnit:"<<result.codectype<<":id:"<<result.id)
-                responsible=true;
+            LOGDEBUG("fetch next ProcessUnit:"<<result.codectype<<":id:"<<result.id);
+            responsible=true;
           }while(!responsible && unit_cursor.rowsLeft());
         }catch(std::exception & ex){
           LOGERROR("exception:"<<ex.what())
@@ -162,13 +172,30 @@ namespace mhivestorage{
 
     }
 
+    void Simple::getOutputFile(org::esb::model::OutputFile & file){
+
+    }
+
+    org::esb::model::OutputFile Simple::getOutputFileByUUID(std::string & uuid)
+    {
+      org::esb::model::OutputFile result;
+
+
+      return result;
+    }
+
+    std::list<org::esb::model::OutputFile> Simple::getOutputFileList()
+    {
+      std::list<org::esb::model::OutputFile> result;
+
+      return result;
+    }
+
+
     void Simple::getJob(org::esb::model::Job & job){
 
     }
 
-    void Simple::getOutputFile(org::esb::model::OutputFile & file){
-
-    }
 
     void Simple::putUnit(org::esb::model::Unit & unit)
     {
@@ -178,6 +205,10 @@ namespace mhivestorage{
     org::esb::model::Unit Simple::getUnit(org::esb::model::Unit & unit)
     {
 
+      org::esb::model::Unit result;
+
+
+      return result;
     }
 
     void Simple::dequeUnit(org::esb::model::Unit & unit)
@@ -202,11 +233,67 @@ namespace mhivestorage{
     void Simple::putProfile(org::esb::model::Profile & profile)
     {
 
+      litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (database, db::Preset::Uuid == profile.uuid);
+      if (s.count() == 1) {
+        /*update*/
+        db::Preset preset = s.one();
+        preset.name=profile.name;
+        preset.data=profile.data;
+        LOGDEBUG("update profile uuid:"<<profile.uuid);
+        preset.update();
+      }else{
+        /*insert*/
+        std::string uuid = org::esb::util::PUUID();
+        profile.uuid=uuid;
+        db::Preset preset(database);
+        preset.data = profile.data;
+        preset.uuid = profile.uuid;
+        preset.name = profile.name;
+        LOGDEBUG("insert profile uuid:"<<profile.uuid);
+        preset.update();
+      }
     }
 
     void Simple::getProfile(org::esb::model::Profile & profile)
     {
 
+    }
+
+    org::esb::model::Profile Simple::getProfileByUUID(std::string & uuid)
+    {
+      org::esb::model::Profile result;
+      litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (database, db::Preset::Uuid == uuid);
+      if (s.count() == 1) {
+        db::Preset preset = s.one();
+        result.name=preset.name;
+        result.uuid=preset.uuid;
+        result.data=preset.data;
+      }
+      return result;
+    }
+
+    std::list<org::esb::model::Profile> Simple::getProfileList()
+    {
+      std::list<org::esb::model::Profile> result;
+      vector<db::Preset> presets = litesql::select<db::Preset > (database).orderBy(db::Preset::Name).all();
+      foreach(db::Preset preset, presets) {
+        org::esb::model::Profile profile;
+        profile.uuid=preset.uuid;
+        profile.name=preset.name;
+        profile.data=preset.data;
+        result.push_back(profile);
+      }
+      return result;
+    }
+
+    bool Simple::deleteProfile(org::esb::model::Profile & profile)
+    {
+      litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (database, db::Preset::Uuid == profile.uuid);
+      if (s.count() == 1) {
+        s.one().del();
+        return true;
+      }
+      return false;
     }
 
     void Simple::startup()

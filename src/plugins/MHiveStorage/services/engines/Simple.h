@@ -8,6 +8,7 @@ namespace mhivestorage{
   namespace engines {
     class Simple : public org::esb::core::StorageEngine
     {
+      classlogger("plugins.storage.simple")
     public:
       Simple();
       Simple( db::HiveDb database, std::string storage_path);
@@ -33,9 +34,15 @@ namespace mhivestorage{
 
       void putOutputFile(org::esb::model::OutputFile & file);
       void getOutputFile(org::esb::model::OutputFile & file);
+      org::esb::model::OutputFile getOutputFileByUUID(std::string & uuid);
+      std::list<org::esb::model::OutputFile> getOutputFileList();
 
       void putProfile(org::esb::model::Profile & profile);
       void getProfile(org::esb::model::Profile & profile);
+
+      org::esb::model::Profile getProfileByUUID(std::string & uuid);
+      std::list<org::esb::model::Profile> getProfileList();
+      bool deleteProfile(org::esb::model::Profile & profile);
 
       void startup();
       void shutdown();

@@ -31,10 +31,16 @@ namespace org{
         /*functions for handling the outputfiles*/
         virtual void putOutputFile(org::esb::model::OutputFile & file)=0;
         virtual void getOutputFile(org::esb::model::OutputFile & file)=0;
+        virtual org::esb::model::OutputFile getOutputFileByUUID(std::string & uuid)=0;
+        virtual std::list<org::esb::model::OutputFile> getOutputFileList()=0;
+
 
         /*functions for handling the profiles*/
         virtual void putProfile(org::esb::model::Profile & profile)=0;
         virtual void getProfile(org::esb::model::Profile & profile)=0;
+        virtual org::esb::model::Profile getProfileByUUID(std::string & uuid)=0;
+        virtual std::list<org::esb::model::Profile> getProfileList()=0;
+        virtual bool deleteProfile(org::esb::model::Profile & profile)=0;
 
         /*management functions*/
         virtual void startup()=0;

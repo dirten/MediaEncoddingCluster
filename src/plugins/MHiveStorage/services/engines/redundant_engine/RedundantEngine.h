@@ -17,6 +17,8 @@ namespace mhivestorage{
 
     class RedundantEngine : public Simple
     {
+      classlogger("plugins.storage.mongodb")
+
     public:
       RedundantEngine();
       RedundantEngine( db::HiveDb database, std::string storage_path, std::vector<std::string> hosts, int self_port);
