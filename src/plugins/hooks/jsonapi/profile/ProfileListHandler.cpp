@@ -42,7 +42,7 @@ public:
     }*/
     result.setData(c);
 
-    res.setContentType("text/plain");
+    res.setContentType("application/json");
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();
   }
