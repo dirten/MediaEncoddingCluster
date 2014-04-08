@@ -255,16 +255,21 @@ namespace mhivestorage{
 
     org::esb::model::Job Simple::getJobByUUID(std::string & uuid)
     {
-      org::esb::model::Job result;
+      org::esb::model::Job job;
       litesql::Cursor<db::Job> outfile=litesql::select<db::Job> (database, db::Job::Uuid == uuid).cursor();
       if(outfile.rowsLeft()){
         db::Job file=*outfile;
-        result.uuid=file.uuid;
-        result.graph=file.graph;
-        result.outputfile=file.outfile;
-        result.status=file.status;
+        job.uuid=file.uuid;
+        job.graph=file.graph;
+        job.graphstatus=file.graphstatus;
+        job.outputfile=file.outfile;
+        job.status=file.status;
+        job.created=file.created.value().timeStamp();
+        job.begintime=file.begintime.value().timeStamp();
+        job.endtime=file.endtime.value().timeStamp();
+        job.progress=file.progress;
       }
-      return result;
+      return job;
     }
 
     std::list<org::esb::model::Job> Simple::getJobList(int start, int count)
@@ -276,9 +281,15 @@ namespace mhivestorage{
         org::esb::model::Job job;
         job.uuid=file.uuid;
         job.graph=file.graph;
+        job.graphstatus=file.graphstatus;
         job.outputfile=file.outfile;
         job.status=file.status;
+        job.created=file.created.value().timeStamp();
+        job.begintime=file.begintime.value().timeStamp();
+        job.endtime=file.endtime.value().timeStamp();
+        job.progress=file.progress;
         result.push_back(job);
+        outfile++;
       }
       return result;
     }

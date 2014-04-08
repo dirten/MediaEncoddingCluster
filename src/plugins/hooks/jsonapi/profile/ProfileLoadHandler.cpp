@@ -3,10 +3,14 @@
 #include "org/esb/core/PluginContext.h"
 #include "org/esb/libjson/libjson.h"
 #include "org/esb/libjson/JSONResult.h"
-#include "org/esb/io/File.h"
-#include "org/esb/av/FormatInputStream.h"
-#include "org/esb/util/Foreach.h"
+
 #include "../exports.h"
+
+
+#include "org/esb/core/StorageEngine.h"
+#include "org/esb/db/Profile.h"
+
+using org::esb::model::Profile;
 
 class JSONAPI_EXPORT ProfileLoadHandler : public org::esb::core::WebHookPlugin {
 public:
@@ -15,13 +19,13 @@ public:
 
 
     JSONResult result(req);
-    db::HiveDb db=getContext()->database;//"sqlite3", req.get("db.url"));
     std::string id=req.get("profileid");
-    litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == id);
-    if (s.count() > 0) {
+
+    Profile profile=getContext()->getStorageEngine()->getProfileByUUID(id);
+
+    if (profile.uuid==id) {
       try {
-        db::Preset preset = s.one();
-        JSONNode data = libjson::parse(preset.data);
+        JSONNode data = libjson::parse(profile.data);
 
         data.set_name("data");
         if (data.contains("id")) {
@@ -70,7 +74,7 @@ public:
       result.setStatus("error","profile not found");
     }
     //req.response().setContentType("text/plain");
-    res.setContentType("text/plain");
+    res.setContentType("application/json");
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();
   }

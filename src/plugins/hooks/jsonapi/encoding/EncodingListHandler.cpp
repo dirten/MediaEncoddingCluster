@@ -1,5 +1,7 @@
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/core/WebHookPlugin.h"
+#include "org/esb/core/PluginContext.h"
+
 #include "org/esb/libjson/libjson.h"
 #include "org/esb/libjson/JSONResult.h"
 #include "org/esb/io/File.h"
@@ -7,6 +9,10 @@
 #include "org/esb/util/Foreach.h"
 #include "../exports.h"
 
+#include "org/esb/core/StorageEngine.h"
+#include "org/esb/db/Job.h"
+
+using org::esb::model::Job;
 
 class JSONAPI_EXPORT EncodingListHandler : public org::esb::core::WebHookPlugin {
 public:
@@ -15,6 +21,20 @@ public:
     db::HiveDb db("sqlite3", req.get("db.url"));
     JSONNode c(JSON_ARRAY);
     c.set_name("data");
+
+    std::list<Job> jobs=getContext()->getStorageEngine()->getJobList();
+    foreach(Job job, jobs){
+      JSONNode entry(JSON_NODE);
+      entry.push_back(JSONNode("id",job.uuid));
+      entry.push_back(JSONNode("submitted", job.created));
+      entry.push_back(JSONNode("progress", job.progress));
+      entry.push_back(JSONNode("infile", job.infile));
+      //entry.push_back(JSONNode("status", job.getStatusText()));
+      entry.push_back(JSONNode("status", job.status));
+      //entry.push_back(JSONNode("flowname", job.graphname.value()));
+      c.push_back(entry);
+    }
+    /*
     std::vector<db::Job> jobs = litesql::select<db::Job > (db, db::Job::Status != db::Job::Status::Deleted).orderBy(db::Job::Id, false).all();
     std::vector<db::Job>::iterator jobit = jobs.begin();
     for (; jobit != jobs.end(); jobit++) {
@@ -28,9 +48,9 @@ public:
       entry.push_back(JSONNode("statuscode", job.status.value()));
       entry.push_back(JSONNode("flowname", job.graphname.value()));
       c.push_back(entry);
-    }
+    }*/
     result.setData(c);
-    res.setContentType("text/plain");
+    res.setContentType("application/json");
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();
   }

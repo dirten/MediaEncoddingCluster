@@ -52,7 +52,7 @@ public:
         result.setStatus("error", ex.what());
       }
     }
-    res.setContentType("text/plain");
+    res.setContentType("application/json");
     std::ostream& ostr = res.send();
     ostr << result.write_formatted();
   }

@@ -19,6 +19,12 @@
 #include "Poco/TextConverter.h"
 #include "Poco/Latin1Encoding.h"
 #include "Poco/UTF8Encoding.h"
+
+#include "org/esb/core/StorageEngine.h"
+#include "org/esb/db/Profile.h"
+
+using org::esb::model::Profile;
+
 class JSONAPI_EXPORT ProfileCreateHandler : public org::esb::core::WebHookPlugin {
   private:
 public:
@@ -37,34 +43,14 @@ public:
           if (msg.length() > 0) {
             result.setStatus(res.HTTP_BAD_REQUEST, msg);
           } else {
-            db::HiveDb db=getContext()->database;//"sqlite3", req.get("db.url"));
+            Profile profile;
+            profile.name=inode["name"].as_string();
             if (req.has("profileid")) {
-              std::string iddata = req.get("profileid");
-              litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == iddata);
-              if (s.count() == 1) {
-                LOGDEBUG("Update profile");
-                db::Preset preset = s.one();
-                preset.data = data;
-                std::string name=inode["name"].as_string();
-                preset.name = inode["name"].as_string();
-                preset.update();
-                result.push_back(JSONNode("uuid", iddata));
-                result.setStatus("ok", "Profile successful updated");
-              } else {
-                result.setStatus(res.HTTP_NOT_FOUND, "profile with the given id not found");
-                //res.setStatusAndReason(res.HTTP_NOT_FOUND, "profile with the given id not found");
-              }
-            } else {
-              std::string uuid = org::esb::util::PUUID();
-              //db::HiveDb db("sqlite3", req.get("db.url"));
-              db::Preset preset(db);
-              preset.data = data;
-              preset.uuid = uuid;
-              preset.name = inode["name"].as_string();
-              preset.update();
-              result.setStatus("ok", "Profile successful created");
-              result.push_back(JSONNode("uuid", uuid));
+              profile.uuid=req.get("profileid");
             }
+            profile.data=data;
+            getContext()->getStorageEngine()->putProfile(profile);
+            result.push_back(JSONNode("uuid", profile.uuid));
           }
         } else {
           result.setStatus(res.HTTP_BAD_REQUEST, "no valid json format given");
