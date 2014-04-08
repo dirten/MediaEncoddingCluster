@@ -49,7 +49,7 @@ namespace org {
 
         static std::string get(std::string key, std::string def="");
 
-        static void set(std::string key, char * value);
+        static void set(std::string key, const char * value);
         static void set(std::string key, boost::any val);
         static std::vector<std::string> getArguments();
         static void close();

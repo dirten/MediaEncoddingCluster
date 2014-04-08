@@ -67,7 +67,7 @@ namespace org {
         return get<std::string>(key, def);
       }
 
-      void Environment::set(std::string key, char * value){
+      void Environment::set(std::string key, const char * value){
         set(key, std::string(value));
       }
 
@@ -82,7 +82,7 @@ namespace org {
         } else if (value.type() == typeid (std::vector<std::string>)) {
           /*NOP, Config class could not handle list properties and will be removed in the near future*/
         } else {
-          config::Config::setProperty(key, StringUtil::toString(boost::any_cast< std::string >(value)));
+          config::Config::setProperty(key, boost::any_cast< std::string >(value));
         }
       }
 

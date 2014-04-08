@@ -1000,6 +1000,8 @@ protected:
 public:
     static const OutputFile::StatusType Status;
     litesql::Field<std::string> status;
+    static const OutputFile::StatusType Uuid;
+    litesql::Field<std::string> uuid;
     static void initValues();
 protected:
     void defaults();
@@ -1740,28 +1742,28 @@ public:
     };
     class StatusType : public litesql::FieldType {
     public:
-        static const int Waiting;
-        static const int Processing;
-        static const int Error;
-        static const int Stopping;
-        static const int Stopped;
-        static const int Exporting;
-        static const int Completed;
-        static const int Deleted;
-        static const int CompletedWithError;
+        static const std::string Waiting;
+        static const std::string Processing;
+        static const std::string Error;
+        static const std::string Stopping;
+        static const std::string Stopped;
+        static const std::string Exporting;
+        static const std::string Completed;
+        static const std::string Deleted;
+        static const std::string CompletedWithError;
         StatusType(const std::string& n, AT_field_type t, const std::string& tbl, const litesql::FieldType::Values& vals=Values());
     };
     class Status {
     public:
-        static const int Waiting;
-        static const int Processing;
-        static const int Error;
-        static const int Stopping;
-        static const int Stopped;
-        static const int Exporting;
-        static const int Completed;
-        static const int Deleted;
-        static const int CompletedWithError;
+        static const std::string Waiting;
+        static const std::string Processing;
+        static const std::string Error;
+        static const std::string Stopping;
+        static const std::string Stopped;
+        static const std::string Exporting;
+        static const std::string Completed;
+        static const std::string Deleted;
+        static const std::string CompletedWithError;
     };
     class TasksHandle : public litesql::RelationHandle<Job> {
     public:
@@ -1863,7 +1865,7 @@ protected:
     static std::vector < std::pair< std::string, std::string > > status_values;
 public:
     static const Job::StatusType Status;
-    litesql::Field<int> status;
+    litesql::Field<std::string> status;
     static const Job::StatusType Infile;
     litesql::Field<std::string> infile;
     static const Job::StatusType Outfile;

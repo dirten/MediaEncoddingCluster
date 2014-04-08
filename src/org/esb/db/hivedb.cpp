@@ -2641,6 +2641,7 @@ const litesql::FieldType OutputFile::Jobid("jobid_",A_field_type_string,table__)
 const litesql::FieldType OutputFile::Outfiledata("outfiledata_",A_field_type_string,table__);
 std::vector < std::pair< std::string, std::string > > OutputFile::status_values;
 const OutputFile::StatusType OutputFile::Status("status_",A_field_type_string,table__,status_values);
+const OutputFile::StatusType OutputFile::Uuid("uuid_",A_field_type_string,table__);
 void OutputFile::initValues() {
     status_values.clear();
     status_values.push_back(make_pair<std::string, std::string>("Waiting","WAITING"));
@@ -2652,14 +2653,16 @@ void OutputFile::defaults() {
     id = 0;
 }
 OutputFile::OutputFile(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), filename(Filename), path(Path), jobid(Jobid), outfiledata(Outfiledata), status(Status) {
+     : litesql::Persistent(db), id(Id), type(Type), filename(Filename), path(Path), jobid(Jobid), outfiledata(Outfiledata), status(Status), uuid(Uuid) {
     defaults();
 }
 OutputFile::OutputFile(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), filename(Filename), path(Path), jobid(Jobid), outfiledata(Outfiledata), status(Status) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), filename(Filename), path(Path), jobid(Jobid), outfiledata(Outfiledata), status(Status), uuid(Uuid) {
     defaults();
-    size_t size = (rec.size() > 7) ? 7 : rec.size();
+    size_t size = (rec.size() > 8) ? 8 : rec.size();
     switch(size) {
+    case 8: uuid = convert<const std::string&, std::string>(rec[7]);
+        uuid.setModified(false);
     case 7: status = convert<const std::string&, std::string>(rec[6]);
         status.setModified(false);
     case 6: outfiledata = convert<const std::string&, std::string>(rec[5]);
@@ -2677,7 +2680,7 @@ OutputFile::OutputFile(const litesql::Database& db, const litesql::Record& rec)
     }
 }
 OutputFile::OutputFile(const OutputFile& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), filename(obj.filename), path(obj.path), jobid(obj.jobid), outfiledata(obj.outfiledata), status(obj.status) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), filename(obj.filename), path(obj.path), jobid(obj.jobid), outfiledata(obj.outfiledata), status(obj.status), uuid(obj.uuid) {
 }
 const OutputFile& OutputFile::operator=(const OutputFile& obj) {
     if (this != &obj) {
@@ -2688,6 +2691,7 @@ const OutputFile& OutputFile::operator=(const OutputFile& obj) {
         jobid = obj.jobid;
         outfiledata = obj.outfiledata;
         status = obj.status;
+        uuid = obj.uuid;
     }
     litesql::Persistent::operator=(obj);
     return *this;
@@ -2717,6 +2721,9 @@ std::string OutputFile::insert(litesql::Record& tables, litesql::Records& fieldR
     fields.push_back(status.name());
     values.push_back(status);
     status.setModified(false);
+    fields.push_back(uuid.name());
+    values.push_back(uuid);
+    uuid.setModified(false);
     fieldRecs.push_back(fields);
     valueRecs.push_back(values);
     return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
@@ -2739,6 +2746,7 @@ void OutputFile::addUpdates(Updates& updates) {
     updateField(updates, table__, jobid);
     updateField(updates, table__, outfiledata);
     updateField(updates, table__, status);
+    updateField(updates, table__, uuid);
 }
 void OutputFile::addIDUpdates(Updates& updates) {
 }
@@ -2750,6 +2758,7 @@ void OutputFile::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Jobid);
     ftypes.push_back(Outfiledata);
     ftypes.push_back(Status);
+    ftypes.push_back(Uuid);
 }
 void OutputFile::delRecord() {
     deleteFromTable(table__, id);
@@ -2798,6 +2807,7 @@ std::auto_ptr<OutputFile> OutputFile::upcastCopy() const {
     np->jobid = jobid;
     np->outfiledata = outfiledata;
     np->status = status;
+    np->uuid = uuid;
     np->inDatabase = inDatabase;
     return auto_ptr<OutputFile>(np);
 }
@@ -2810,6 +2820,7 @@ std::ostream & operator<<(std::ostream& os, OutputFile o) {
     os << o.jobid.name() << " = " << o.jobid << std::endl;
     os << o.outfiledata.name() << " = " << o.outfiledata << std::endl;
     os << o.status.name() << " = " << o.status << std::endl;
+    os << o.uuid.name() << " = " << o.uuid << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -5187,27 +5198,27 @@ std::ostream & operator<<(std::ostream& os, Config o) {
     return os;
 }
 const litesql::FieldType Job::Own::Id("id_",A_field_type_integer,"Job_");
-const int Job::StatusType::Waiting(0);
-const int Job::StatusType::Processing(1);
-const int Job::StatusType::Error(2);
-const int Job::StatusType::Stopping(3);
-const int Job::StatusType::Stopped(4);
-const int Job::StatusType::Exporting(5);
-const int Job::StatusType::Completed(6);
-const int Job::StatusType::Deleted(7);
-const int Job::StatusType::CompletedWithError(8);
+const std::string Job::StatusType::Waiting("WAITING");
+const std::string Job::StatusType::Processing("PROCESSING");
+const std::string Job::StatusType::Error("ERROR");
+const std::string Job::StatusType::Stopping("STOPPING");
+const std::string Job::StatusType::Stopped("STOPPED");
+const std::string Job::StatusType::Exporting("EXPORTING");
+const std::string Job::StatusType::Completed("COMPLETED");
+const std::string Job::StatusType::Deleted("DELETED");
+const std::string Job::StatusType::CompletedWithError("COMPLETEDWITHERROR");
 Job::StatusType::StatusType(const std::string& n, AT_field_type t, const std::string& tbl, const litesql::FieldType::Values& vals)
          : litesql::FieldType(n,t,tbl,vals) {
 }
-const int Job::Status::Waiting(0);
-const int Job::Status::Processing(1);
-const int Job::Status::Error(2);
-const int Job::Status::Stopping(3);
-const int Job::Status::Stopped(4);
-const int Job::Status::Exporting(5);
-const int Job::Status::Completed(6);
-const int Job::Status::Deleted(7);
-const int Job::Status::CompletedWithError(8);
+const std::string Job::Status::Waiting("WAITING");
+const std::string Job::Status::Processing("PROCESSING");
+const std::string Job::Status::Error("ERROR");
+const std::string Job::Status::Stopping("STOPPING");
+const std::string Job::Status::Stopped("STOPPED");
+const std::string Job::Status::Exporting("EXPORTING");
+const std::string Job::Status::Completed("COMPLETED");
+const std::string Job::Status::Deleted("DELETED");
+const std::string Job::Status::CompletedWithError("COMPLETEDWITHERROR");
 Job::TasksHandle::TasksHandle(const Job& owner)
          : litesql::RelationHandle<Job>(owner) {
 }
@@ -5380,7 +5391,7 @@ const litesql::FieldType Job::Created("created_",A_field_type_datetime,table__);
 const litesql::FieldType Job::Begintime("begintime_",A_field_type_datetime,table__);
 const litesql::FieldType Job::Endtime("endtime_",A_field_type_datetime,table__);
 std::vector < std::pair< std::string, std::string > > Job::status_values;
-const Job::StatusType Job::Status("status_",A_field_type_integer,table__,status_values);
+const Job::StatusType Job::Status("status_",A_field_type_string,table__,status_values);
 const Job::StatusType Job::Infile("infile_",A_field_type_string,table__);
 const Job::StatusType Job::Outfile("outfile_",A_field_type_string,table__);
 const Job::StatusType Job::Starttime("starttime_",A_field_type_double,table__);
@@ -5395,22 +5406,21 @@ const Job::StatusType Job::Graphstatus("graphstatus_",A_field_type_string,table_
 const Job::StatusType Job::Graphname("graphname_",A_field_type_string,table__);
 void Job::initValues() {
     status_values.clear();
-    status_values.push_back(make_pair<std::string, std::string>("Waiting","0"));
-    status_values.push_back(make_pair<std::string, std::string>("Processing","1"));
-    status_values.push_back(make_pair<std::string, std::string>("Error","2"));
-    status_values.push_back(make_pair<std::string, std::string>("Stopping","3"));
-    status_values.push_back(make_pair<std::string, std::string>("Stopped","4"));
-    status_values.push_back(make_pair<std::string, std::string>("Exporting","5"));
-    status_values.push_back(make_pair<std::string, std::string>("Completed","6"));
-    status_values.push_back(make_pair<std::string, std::string>("Deleted","7"));
-    status_values.push_back(make_pair<std::string, std::string>("CompletedWithError","8"));
+    status_values.push_back(make_pair<std::string, std::string>("Waiting","WAITING"));
+    status_values.push_back(make_pair<std::string, std::string>("Processing","PROCESSING"));
+    status_values.push_back(make_pair<std::string, std::string>("Error","ERROR"));
+    status_values.push_back(make_pair<std::string, std::string>("Stopping","STOPPING"));
+    status_values.push_back(make_pair<std::string, std::string>("Stopped","STOPPED"));
+    status_values.push_back(make_pair<std::string, std::string>("Exporting","EXPORTING"));
+    status_values.push_back(make_pair<std::string, std::string>("Completed","COMPLETED"));
+    status_values.push_back(make_pair<std::string, std::string>("Deleted","DELETED"));
+    status_values.push_back(make_pair<std::string, std::string>("CompletedWithError","COMPLETEDWITHERROR"));
 }
 void Job::defaults() {
     id = 0;
     created = -1;
     begintime = -1;
     endtime = -1;
-    status = 0;
     starttime = 0.0;
     duration = 0.0;
     progress = 0;
@@ -5450,7 +5460,7 @@ Job::Job(const litesql::Database& db, const litesql::Record& rec)
         outfile.setModified(false);
     case 8: infile = convert<const std::string&, std::string>(rec[7]);
         infile.setModified(false);
-    case 7: status = convert<const std::string&, int>(rec[6]);
+    case 7: status = convert<const std::string&, std::string>(rec[6]);
         status.setModified(false);
     case 6: endtime = convert<const std::string&, litesql::DateTime>(rec[5]);
         endtime.setModified(false);
@@ -8628,7 +8638,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Filter_","table","CREATE TABLE Filter_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",filtername_ " + backend->getSQLType(A_field_type_string,"") + "" +",filterid_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
     res.push_back(Database::SchemaItem("FilterParameter_","table","CREATE TABLE FilterParameter_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",fkey_ " + backend->getSQLType(A_field_type_string,"") + "" +",fval_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
     res.push_back(Database::SchemaItem("MediaFile_","table","CREATE TABLE MediaFile_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",filename_ " + backend->getSQLType(A_field_type_string,"") + "" +",path_ " + backend->getSQLType(A_field_type_string,"") + "" +",filesize_ " + backend->getSQLType(A_field_type_double,"") + "" +",streamcount_ " + backend->getSQLType(A_field_type_integer,"") + "" +",containertype_ " + backend->getSQLType(A_field_type_string,"") + "" +",duration_ " + backend->getSQLType(A_field_type_double,"") + "" +",starttime_ " + backend->getSQLType(A_field_type_double,"") + "" +",bitrate_ " + backend->getSQLType(A_field_type_integer,"") + "" +",created_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",filetype_ " + backend->getSQLType(A_field_type_integer,"") + "" +",parent_ " + backend->getSQLType(A_field_type_integer,"") + "" +",metatitle_ " + backend->getSQLType(A_field_type_string,"") + "" +",metaauthor_ " + backend->getSQLType(A_field_type_string,"") + "" +",metacopyright_ " + backend->getSQLType(A_field_type_string,"") + "" +",metacomment_ " + backend->getSQLType(A_field_type_string,"") + "" +",metaalbum_ " + backend->getSQLType(A_field_type_string,"") + "" +",metayear_ " + backend->getSQLType(A_field_type_integer,"") + "" +",metatrack_ " + backend->getSQLType(A_field_type_integer,"") + "" +",metagenre_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
-    res.push_back(Database::SchemaItem("OutputFile_","table","CREATE TABLE OutputFile_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",filename_ " + backend->getSQLType(A_field_type_string,"") + "" +",path_ " + backend->getSQLType(A_field_type_string,"") + "" +",jobid_ " + backend->getSQLType(A_field_type_string,"") + "" +",outfiledata_ " + backend->getSQLType(A_field_type_string,"") + "" +",status_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("OutputFile_","table","CREATE TABLE OutputFile_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",filename_ " + backend->getSQLType(A_field_type_string,"") + "" +",path_ " + backend->getSQLType(A_field_type_string,"") + "" +",jobid_ " + backend->getSQLType(A_field_type_string,"") + "" +",outfiledata_ " + backend->getSQLType(A_field_type_string,"") + "" +",status_ " + backend->getSQLType(A_field_type_string,"") + "" +",uuid_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
     res.push_back(Database::SchemaItem("ProfileGroup_","table","CREATE TABLE ProfileGroup_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
     res.push_back(Database::SchemaItem("Profile_","table","CREATE TABLE Profile_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +",created_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",format_ " + backend->getSQLType(A_field_type_string,"") + "" +",formatext_ " + backend->getSQLType(A_field_type_string,"") + "" +",vcodec_ " + backend->getSQLType(A_field_type_integer,"") + "" +",vbitrate_ " + backend->getSQLType(A_field_type_integer,"") + "" +",vframerate_ " + backend->getSQLType(A_field_type_string,"") + "" +",vwidth_ " + backend->getSQLType(A_field_type_integer,"") + "" +",vheight_ " + backend->getSQLType(A_field_type_integer,"") + "" +",vextra_ " + backend->getSQLType(A_field_type_string,"") + "" +",achannels_ " + backend->getSQLType(A_field_type_integer,"") + "" +",acodec_ " + backend->getSQLType(A_field_type_integer,"") + "" +",abitrate_ " + backend->getSQLType(A_field_type_integer,"") + "" +",asamplerate_ " + backend->getSQLType(A_field_type_integer,"") + "" +",aextra_ " + backend->getSQLType(A_field_type_string,"") + "" +",profiletype_ " + backend->getSQLType(A_field_type_integer,"") + "" +",deinterlace_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
     res.push_back(Database::SchemaItem("Preset_","table","CREATE TABLE Preset_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",uuid_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +",filename_ " + backend->getSQLType(A_field_type_string,"") + "" +",data_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
@@ -8638,7 +8648,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("CodecPreset_","table","CREATE TABLE CodecPreset_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +",created_ " + backend->getSQLType(A_field_type_date,"") + "" +",codecid_ " + backend->getSQLType(A_field_type_integer,"") + "" +",preset_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
     res.push_back(Database::SchemaItem("CodecPresetParameter_","table","CREATE TABLE CodecPresetParameter_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +",val_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
     res.push_back(Database::SchemaItem("Config_","table","CREATE TABLE Config_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",configkey_ " + backend->getSQLType(A_field_type_string,"") + "" +",configval_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
-    res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",uuid_ " + backend->getSQLType(A_field_type_string,"") + "" +",created_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",begintime_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",endtime_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",status_ " + backend->getSQLType(A_field_type_integer,"") + "" +",infile_ " + backend->getSQLType(A_field_type_string,"") + "" +",outfile_ " + backend->getSQLType(A_field_type_string,"") + "" +",starttime_ " + backend->getSQLType(A_field_type_double,"") + "" +",duration_ " + backend->getSQLType(A_field_type_double,"") + "" +",progress_ " + backend->getSQLType(A_field_type_integer,"") + "" +",fps_ " + backend->getSQLType(A_field_type_integer,"") + "" +",data_ " + backend->getSQLType(A_field_type_string,"") + "" +",deleted_ " + backend->getSQLType(A_field_type_integer,"") + "" +",partitionname_ " + backend->getSQLType(A_field_type_string,"") + "" +",graph_ " + backend->getSQLType(A_field_type_string,"") + "" +",graphstatus_ " + backend->getSQLType(A_field_type_string,"") + "" +",graphname_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",uuid_ " + backend->getSQLType(A_field_type_string,"") + "" +",created_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",begintime_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",endtime_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",status_ " + backend->getSQLType(A_field_type_string,"") + "" +",infile_ " + backend->getSQLType(A_field_type_string,"") + "" +",outfile_ " + backend->getSQLType(A_field_type_string,"") + "" +",starttime_ " + backend->getSQLType(A_field_type_double,"") + "" +",duration_ " + backend->getSQLType(A_field_type_double,"") + "" +",progress_ " + backend->getSQLType(A_field_type_integer,"") + "" +",fps_ " + backend->getSQLType(A_field_type_integer,"") + "" +",data_ " + backend->getSQLType(A_field_type_string,"") + "" +",deleted_ " + backend->getSQLType(A_field_type_integer,"") + "" +",partitionname_ " + backend->getSQLType(A_field_type_string,"") + "" +",graph_ " + backend->getSQLType(A_field_type_string,"") + "" +",graphstatus_ " + backend->getSQLType(A_field_type_string,"") + "" +",graphname_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
     res.push_back(Database::SchemaItem("Task_","table","CREATE TABLE Task_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",uuid_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"") + "" +",parameter_ " + backend->getSQLType(A_field_type_string,"") + "" +",statustext_ " + backend->getSQLType(A_field_type_string,"") + "" +",progress_ " + backend->getSQLType(A_field_type_integer,"") + "" +",status_ " + backend->getSQLType(A_field_type_integer,"") + "" +",sortorder_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
     res.push_back(Database::SchemaItem("JobLog_","table","CREATE TABLE JobLog_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",created_ " + backend->getSQLType(A_field_type_datetime,"") + "" +",message_ " + backend->getSQLType(A_field_type_string,"") + "" +")"));
     res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",lastpts_ " + backend->getSQLType(A_field_type_double,"") + "" +",lastdts_ " + backend->getSQLType(A_field_type_double,"") + "" +",deinterlace_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));

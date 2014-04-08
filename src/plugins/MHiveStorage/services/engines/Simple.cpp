@@ -164,12 +164,29 @@ namespace mhivestorage{
       return result;
     }
 
-    void Simple::putJob(org::esb::model::Job & job){
-
-    }
 
     void Simple::putOutputFile(org::esb::model::OutputFile & file){
-
+      litesql::DataSource<db::OutputFile>s = litesql::select<db::OutputFile> (database, db::OutputFile::Uuid == file.uuid);
+      if(s.count()==1){
+        db::OutputFile outfile=s.one();
+        outfile.jobid=file.jobid;
+        outfile.path=file.path;
+        outfile.filename=file.filename;
+        outfile.outfiledata=file.encoder_data;
+        outfile.status=file.status;
+        outfile.uuid=file.uuid;
+        outfile.update();
+      }else{
+        file.uuid=static_cast<std::string>(org::esb::util::PUUID());
+        db::OutputFile outfile(database);
+        outfile.jobid=file.jobid;
+        outfile.path=file.path;
+        outfile.filename=file.filename;
+        outfile.outfiledata=file.encoder_data;
+        outfile.status=file.status;
+        outfile.uuid=file.uuid;
+        outfile.update();
+      }
     }
 
     void Simple::getOutputFile(org::esb::model::OutputFile & file){
@@ -179,21 +196,91 @@ namespace mhivestorage{
     org::esb::model::OutputFile Simple::getOutputFileByUUID(std::string & uuid)
     {
       org::esb::model::OutputFile result;
-
+      litesql::Cursor<db::OutputFile> outfile=litesql::select<db::OutputFile> (database, db::OutputFile::Uuid == uuid).cursor();
+      if(outfile.rowsLeft()){
+        db::OutputFile file=*outfile;
+        result.uuid=file.uuid;
+        result.jobid=file.jobid;
+        result.path=file.path;
+        result.filename=file.filename;
+        result.encoder_data=file.outfiledata;
+        result.status=file.status;
+      }
 
       return result;
     }
 
-    std::list<org::esb::model::OutputFile> Simple::getOutputFileList()
+    std::list<org::esb::model::OutputFile> Simple::getOutputFileList(int start, int count)
     {
       std::list<org::esb::model::OutputFile> result;
-
+      vector<db::OutputFile> files = litesql::select<db::OutputFile > (database).orderBy(db::OutputFile::Id).all();
+      foreach(db::OutputFile file, files) {
+        org::esb::model::OutputFile outfile;
+        outfile.uuid=file.uuid;
+        outfile.jobid=file.jobid;
+        outfile.path=file.path;
+        outfile.filename=file.filename;
+        outfile.encoder_data=file.outfiledata;
+        outfile.status=file.status;
+        result.push_back(outfile);
+      }
       return result;
     }
 
+
+    void Simple::putJob(org::esb::model::Job & job){
+      litesql::DataSource<db::Job>s = litesql::select<db::Job> (database, db::Job::Uuid == job.uuid);
+      if(s.count()==1){
+        db::Job result=s.one();
+        result.graph=job.graph;
+        result.outfile=job.outputfile;
+        result.status=job.status;
+        result.uuid=job.uuid;
+        result.update();
+      }else{
+        job.uuid=static_cast<std::string>(org::esb::util::PUUID());
+        db::Job result(database);
+        result.graph=job.graph;
+        result.outfile=job.outputfile;
+        result.status=job.status;
+        result.uuid=job.uuid;
+        result.update();
+      }
+
+    }
 
     void Simple::getJob(org::esb::model::Job & job){
 
+    }
+
+    org::esb::model::Job Simple::getJobByUUID(std::string & uuid)
+    {
+      org::esb::model::Job result;
+      litesql::Cursor<db::Job> outfile=litesql::select<db::Job> (database, db::Job::Uuid == uuid).cursor();
+      if(outfile.rowsLeft()){
+        db::Job file=*outfile;
+        result.uuid=file.uuid;
+        result.graph=file.graph;
+        result.outputfile=file.outfile;
+        result.status=file.status;
+      }
+      return result;
+    }
+
+    std::list<org::esb::model::Job> Simple::getJobList(int start, int count)
+    {
+      std::list<org::esb::model::Job> result;
+      litesql::Cursor<db::Job> outfile=litesql::select<db::Job> (database).orderBy(db::Job::Id).cursor();
+      while(outfile.rowsLeft()){
+        db::Job file=*outfile;
+        org::esb::model::Job job;
+        job.uuid=file.uuid;
+        job.graph=file.graph;
+        job.outputfile=file.outfile;
+        job.status=file.status;
+        result.push_back(job);
+      }
+      return result;
     }
 
 
@@ -272,7 +359,7 @@ namespace mhivestorage{
       return result;
     }
 
-    std::list<org::esb::model::Profile> Simple::getProfileList()
+    std::list<org::esb::model::Profile> Simple::getProfileList(int start, int count)
     {
       std::list<org::esb::model::Profile> result;
       vector<db::Preset> presets = litesql::select<db::Preset > (database).orderBy(db::Preset::Name).all();
@@ -307,5 +394,5 @@ namespace mhivestorage{
     }
 
     REGISTER_STORAGE("sqlite3", Simple)
-    }
   }
+}

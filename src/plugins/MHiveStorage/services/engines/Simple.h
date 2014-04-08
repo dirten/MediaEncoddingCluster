@@ -31,17 +31,19 @@ namespace mhivestorage{
 
       void putJob(org::esb::model::Job & job);
       void getJob(org::esb::model::Job & job);
+      org::esb::model::Job getJobByUUID(std::string & uuid);
+      std::list<org::esb::model::Job> getJobList(int start=0, int count=0);
 
       void putOutputFile(org::esb::model::OutputFile & file);
       void getOutputFile(org::esb::model::OutputFile & file);
       org::esb::model::OutputFile getOutputFileByUUID(std::string & uuid);
-      std::list<org::esb::model::OutputFile> getOutputFileList();
+      std::list<org::esb::model::OutputFile> getOutputFileList(int start=0, int count=0);
 
       void putProfile(org::esb::model::Profile & profile);
       void getProfile(org::esb::model::Profile & profile);
 
       org::esb::model::Profile getProfileByUUID(std::string & uuid);
-      std::list<org::esb::model::Profile> getProfileList();
+      std::list<org::esb::model::Profile> getProfileList(int start=0, int count=0);
       bool deleteProfile(org::esb::model::Profile & profile);
 
       void startup();

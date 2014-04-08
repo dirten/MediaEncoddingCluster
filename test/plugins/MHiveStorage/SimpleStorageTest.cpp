@@ -12,11 +12,17 @@
 
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/util/Foreach.h"
+
+
+#include "org/esb/hive/DatabaseService.h"
+
 using org::esb::hive::Environment;
 using org::esb::core::StorageEngine;
 using org::esb::model::Profile;
+using org::esb::model::Job;
 using org::esb::hive::job::ProcessUnit;
-
+using org::esb::hive::DatabaseService;
+using org::esb::model::OutputFile;
 bool testProcessUnit(StorageEngine * engine){
   /*testing processunit storage*/
   boost::shared_ptr<ProcessUnit> punit(new ProcessUnit());
@@ -28,6 +34,14 @@ bool testProcessUnit(StorageEngine * engine){
   assert(punit2->getJobId()=="0815");
   assert(punit2->uuid=="4711");
 
+  boost::shared_ptr<ProcessUnit> punit3=engine->deque();
+  assert(!punit3);
+
+  engine->rollback(punit2->uuid);
+
+  boost::shared_ptr<ProcessUnit> punit4=engine->deque();
+  assert(punit4);
+  assert(punit4->uuid=="4711");
   return true;
 }
 
@@ -63,12 +77,50 @@ bool testProfile(StorageEngine * engine){
   return true;
 }
 
+bool testOutputFile(StorageEngine * engine){
+  OutputFile outfile;
+  outfile.jobid="0815";
+  outfile.uuid="4711";
+
+
+  engine->putOutputFile(outfile);
+  OutputFile outfile2=engine->getOutputFileByUUID(outfile.uuid);
+
+  assert(outfile2.uuid==outfile.uuid);
+
+  std::list<OutputFile>list=engine->getOutputFileList();
+  assert(list.size()==1);
+
+return true;
+}
+
+
+bool testJob(StorageEngine * engine){
+  Job job;
+  job.graph="graph";
+  job.status="test";
+  job.uuid="4711";
+
+  engine->putJob(job);
+
+  Job job2=engine->getJobByUUID(job.uuid);
+
+  assert(job2.uuid==job.uuid);
+
+  return true;
+}
+
 int main(int argc, char ** argv){
 
   Environment::set("MHIVE_DATA_PATH",".");
   Environment::build(argc, argv);
   Environment::set("storage.engine","sqlite3");
   Log::open("");
+
+  /*cleanup test environment*/
+  DatabaseService::dropTables();
+  DatabaseService::createDatabase();
+  DatabaseService::createTables();
 
   org::esb::av::FormatBaseStream::initialize();
   org::esb::core::PluginRegistry::getInstance()->load(STORAGE_PLUGIN);
@@ -79,7 +131,8 @@ int main(int argc, char ** argv){
   assert(engine);
   assert(testProcessUnit(engine));
   assert(testProfile(engine));
-
+  assert(testOutputFile(engine));
+  assert(testJob(engine));
 
   //engine->writeUnitStream();
 

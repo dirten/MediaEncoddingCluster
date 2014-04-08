@@ -71,6 +71,7 @@
           <value name="Error" value="ERROR"/>
           <value name="Completed" value="COMPLETED"/>
         </field>
+        <field name="uuid" type="string"/>
     </object>
 
     <relation>
@@ -243,16 +244,16 @@
         <field name="created" type="datetime" default="-1"/>
         <field name="begintime" type="datetime" default="-1"/>
         <field name="endtime" type="datetime" default="-1"/>
-        <field name="status" type="integer">
-          <value name="Waiting" value="0"/>
-          <value name="Processing" value="1"/>
-          <value name="Error" value="2"/>
-          <value name="Stopping" value="3"/>
-          <value name="Stopped" value="4"/>
-          <value name="Exporting" value="5"/>
-          <value name="Completed" value="6"/>
-          <value name="Deleted" value="7"/>
-          <value name="CompletedWithError" value="8"/>
+        <field name="status" type="string">
+          <value name="Waiting" value="WAITING"/>
+          <value name="Processing" value="PROCESSING"/>
+          <value name="Error" value="ERROR"/>
+          <value name="Stopping" value="STOPPING"/>
+          <value name="Stopped" value="STOPPED"/>
+          <value name="Exporting" value="EXPORTING"/>
+          <value name="Completed" value="COMPLETED"/>
+          <value name="Deleted" value="DELETED"/>
+          <value name="CompletedWithError" value="COMPLETEDWITHERROR"/>
         </field>
         <field name="infile" type="string"/>
         <field name="outfile" type="string"/>
